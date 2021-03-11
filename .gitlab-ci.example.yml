@@ -1,0 +1,73 @@
+stages:
+  - composer
+  - assets
+  - deploy
+
+variables:
+  PLUGIN_SLUG: wpify-plugin
+
+cache:
+  paths:
+    - build/
+    - deps/
+    - vendor/
+
+composer:
+  stage: composer
+  image: composer:2
+  script:
+    - ./bin/install-deps
+  only:
+    - tags
+
+assets:
+  stage: assets
+  image: node:12
+  script:
+    - ./bin/build-assets
+  only:
+    - tags
+
+.deploy_template_wporg: &deploy_definition_wporg
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk update
+    - apk add subversion bash
+  script:
+    - ./bin/ci-deploy-wporg
+  only:
+    - tags
+
+.deploy_template_server: &deploy_definition_server
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk update
+    - apk add openssh-client bash rsync
+    - eval $(ssh-agent -s)
+    - echo "$PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -t rsa "$SERVER_ADDR" >> ~/.ssh/known_hosts
+  script:
+    - ./bin/create-dist
+    - ./bin/ci-deploy-server
+
+deploy_production:
+  <<: *deploy_definition_wporg
+  environment:
+    name: production
+    url: https://www.dogsie.cz
+  only:
+    - tags
+
+deploy_staging:
+  <<: *deploy_definition_server
+  variables:
+    SERVER_PATH: $SERVER_PATH/$WPIFY_PLUGIN_URL
+  environment:
+    name: staging
+    url: https://staging.wpify.io
+  only:
+    - master

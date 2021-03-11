@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+
+# Inspiration: https://git.ethitter.com/open-source/wp-org-plugin-deploy/-/blob/master/scripts/deploy.sh
+
+if [[ -z "$CI" ]]; then
+	echo "𝘅︎ Script is only to be run by GitLab CI" 1>&2
+	exit 1
+fi
+
+# Ensure certain environment variables are set
+# IMPORTANT: while access to secrets is restricted in the GitLab UI,
+# they are by necessity provided as plaintext in the context of this script,
+# so do not echo or use debug mode unless you want your secrets exposed!
+if [[ -z "$WPORG_USERNAME" ]]; then
+	echo "𝘅︎ WordPress.org username not set" 1>&2
+	exit 1
+fi
+
+if [[ -z "$WPORG_PASSWORD" ]]; then
+	echo "𝘅︎ WordPress.org password not set" 1>&2
+	exit 1
+fi
+
+if [[ -z "$PLUGIN_SLUG" ]]; then
+	echo "𝘅︎ Plugin's SVN slug is not set" 1>&2
+	exit 1
+fi
+
+if [[ -z "$CI_COMMIT_REF_NAME" ]]; then
+	echo "𝘅︎ Plugin's version is not set" 1>&2
+	exit 1
+fi
+
+SVN_URL="https://plugins.svn.wordpress.org/${PLUGIN_SLUG}/"
+PROJECT_DIR="$CI_PROJECT_DIR"
+SVN_DIR="$PROJECT_DIR/svn"
+SVN_TAG_DIR="${SVN_DIR}/tags/${CI_COMMIT_REF_NAME}"
+
+if [[ ! -d "$PROJECT_DIR/build" ]]; then
+  echo "Build directory doesn't exists"
+  exit 1
+fi
+
+if [[ ! -d "$PROJECT_DIR/vendor" ]]; then
+  echo "Vendor directory doesn't exists"
+  exit 1
+fi
+
+ls -la "$PROJECT_DIR/build";
+ls -la "$PROJECT_DIR/vendor";
+
+# Limit checkouts for efficiency
+echo "➤ Checking out dotorg repository..."
+svn checkout --depth immediates "$SVN_URL" "$SVN_DIR"
+
+cd "$SVN_DIR" || exit 1
+
+svn update --set-depth infinity assets
+svn update --set-depth infinity trunk
+svn update --set-depth infinity "$SVN_TAG_DIR"
+
+# Copy from clean copy to /trunk
+echo "➤ Copying files..."
+rsync -a --stats --include-from="$PROJECT_DIR/.rsyncinclude" --exclude="*" --exclude=".git" --delete-excluded "$PROJECT_DIR/" "$SVN_DIR/trunk/"
+find . -type d | grep .git | xargs rm -rf
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  sed -i '' -e "s/WPORG_VERSION/$CI_COMMIT_REF_NAME/g" "$SVN_DIR/trunk/$PLUGIN_SLUG.php"
+  sed -i '' -e "s/WPORG_VERSION/$CI_COMMIT_REF_NAME/g" "$SVN_DIR/trunk/readme.txt"
+  sed -i '' -e "s/WPORG_VERSION/$CI_COMMIT_REF_NAME/g" "$SVN_DIR/trunk/src/Plugin.php"
+else
+  sed -i "s/WPORG_VERSION/$CI_COMMIT_REF_NAME/g" "$SVN_DIR/trunk/$PLUGIN_SLUG.php"
+  sed -i "s/WPORG_VERSION/$CI_COMMIT_REF_NAME/g" "$SVN_DIR/trunk/readme.txt"
+  sed -i "s/WPORG_VERSION/$CI_COMMIT_REF_NAME/g" "$SVN_DIR/trunk/src/Plugin.php"
+fi
+
+# Copy dotorg assets to /assets
+rsync -r "$PROJECT_DIR/assets-dist/" "$SVN_DIR/assets/" --delete
+
+# Add everything and commit to SVN
+# The force flag ensures we recurse into subdirectories even if they are already added
+# Suppress stdout in favor of svn status later for readability
+echo "➤ Preparing files..."
+svn add . --force > /dev/null
+
+# SVN delete all deleted files
+# Also suppress stdout here
+svn status | grep '^\!' | sed 's/! *//' | xargs -I% svn rm % > /dev/null
+
+# If tag already exists, remove and update from trunk.
+# Generally, this applies when bumping WP version compatibility.
+# svn doesn't have a proper rename function, prompting the remove/copy dance.
+if [[ -d "$SVN_TAG_DIR" ]]; then
+	echo "➤ Removing existing tag before update..."
+	svn rm "$SVN_TAG_DIR"
+fi
+
+# Copy new/updated tag to maintain svn history.
+if [[ ! -d "$SVN_TAG_DIR" ]]; then
+	echo "➤ Copying tag..."
+	svn cp "trunk" "$SVN_TAG_DIR"
+fi
+
+svn status
+
+echo "➤ Committing files..."
+svn commit -m "Update to version $CI_COMMIT_REF_NAME" --no-auth-cache --non-interactive  --username "$WPORG_USERNAME" --password "$WPORG_PASSWORD"
+echo "✓ Plugin deployed!"
