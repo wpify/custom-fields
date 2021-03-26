@@ -1,6 +1,6 @@
 <?php
 
-use WpifyCustomFields\Controllers\FrontPageController;
+use WpifyCustomFieldsPlugin\Controllers\FrontPageController;
 
 /** @var FrontPageController */
 $controller = wpify_custom_fields()->get_controller( FrontPageController::class );

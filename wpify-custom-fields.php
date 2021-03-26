@@ -14,10 +14,10 @@
  * Domain Path: /languages
 */
 
-use WpifyCustomFields\Plugin;
-use WpifyCustomFieldsDeps\Wpify\Core\Container;
-use WpifyCustomFieldsDeps\Wpify\Core\WebpackManifest;
-use WpifyCustomFieldsDeps\DI;
+use WpifyCustomFieldsPlugin\Plugin;
+use WpifyCustomFieldsPluginDeps\Wpify\Core\Container;
+use WpifyCustomFieldsPluginDeps\Wpify\Core\WebpackManifest;
+use WpifyCustomFieldsPluginDeps\DI;
 
 if ( ! defined( 'WPIFY_CUSTOM_FIELDS_MIN_PHP_VERSION' ) ) {
 	define( 'WPIFY_CUSTOM_FIELDS_MIN_PHP_VERSION', '7.3.0' );
@@ -28,7 +28,7 @@ if ( ! defined( 'WPIFY_CUSTOM_FIELDS_MIN_PHP_VERSION' ) ) {
  * and is a bad design overall
  *
  * @SuppressWarnings(PHPMD.StaticAccess)
- * @return WpifyCustomFields\Plugin
+ * @return WpifyCustomFieldsPlugin\Plugin
  * @throws Exception
  */
 function wpify_custom_fields(): Plugin {
@@ -136,7 +136,8 @@ if ( version_compare( PHP_VERSION, WPIFY_CUSTOM_FIELDS_MIN_PHP_VERSION ) < 0 ) {
 } else {
 	if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 		include_once __DIR__ . '/vendor/autoload.php';
-		include_once __DIR__ . '/deps/prefixed/vendor/scoper-autoload.php';
+		include_once __DIR__ . '/deps/scoper-autoload.php';
+		include_once __DIR__ . '/wcf/functions.php';
 
 		add_action( 'plugins_loaded', 'wpify_custom_fields_init', 11 );
 		register_activation_hook( __FILE__, 'wpify_custom_fields_activate' );

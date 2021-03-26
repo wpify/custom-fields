@@ -1,16 +1,16 @@
 <?php
 
-namespace WpifyCustomFields;
+namespace WpifyCustomFieldsPlugin;
 
 use Exception;
-use WpifyCustomFields\Managers\ApiManager;
-use WpifyCustomFields\Managers\RepositoriesManager;
-use WpifyCustomFieldsDeps\Wpify\Core\Abstracts\AbstractPlugin;
-use WpifyCustomFieldsDeps\Wpify\Core\Exceptions\ContainerInvalidException;
-use WpifyCustomFieldsDeps\Wpify\Core\Exceptions\ContainerNotExistsException;
-use WpifyCustomFieldsDeps\Wpify\Core\Interfaces\RepositoryInterface;
-use WpifyCustomFieldsDeps\Wpify\Core\WebpackManifest;
-use WpifyCustomFieldsDeps\Wpify\Core\WordPressTemplate;
+use WPifyCustomFields\WpifyCustomFields;
+use WpifyCustomFieldsPlugin\Managers\ApiManager;
+use WpifyCustomFieldsPlugin\Managers\RepositoriesManager;
+use WpifyCustomFieldsPluginDeps\Wpify\Core\Abstracts\AbstractPlugin;
+use WpifyCustomFieldsPluginDeps\Wpify\Core\Exceptions\ContainerInvalidException;
+use WpifyCustomFieldsPluginDeps\Wpify\Core\Exceptions\ContainerNotExistsException;
+use WpifyCustomFieldsPluginDeps\Wpify\Core\WebpackManifest;
+use WpifyCustomFieldsPluginDeps\Wpify\Core\WordPressTemplate;
 
 /**
  * Class Plugin
@@ -27,11 +27,6 @@ class Plugin extends AbstractPlugin {
 	/** Plugin namespace */
 	public const PLUGIN_NAMESPACE = '\\' . __NAMESPACE__;
 
-	/** @var RepositoriesManager */
-	private $repositories_manager;
-
-	/** @var ApiManager */
-	private $api_manager;
 
 	/** @var WebpackManifest */
 	private $webpack_manifest;
@@ -39,11 +34,12 @@ class Plugin extends AbstractPlugin {
 	/** @var WordPressTemplate */
 	private $template;
 
+	/** @var WpifyCustomFields */
+	private $wcf;
+
 	/**
 	 * Plugin constructor.
 	 *
-	 * @param RepositoriesManager $repositories_manager
-	 * @param ApiManager $api_manager
 	 * @param WebpackManifest $webpack_manifest
 	 * @param WordPressTemplate $template
 	 *
@@ -51,51 +47,29 @@ class Plugin extends AbstractPlugin {
 	 * @throws ContainerNotExistsException
 	 */
 	public function __construct(
-		RepositoriesManager $repositories_manager,
-		ApiManager $api_manager,
 		WebpackManifest $webpack_manifest,
 		WordPressTemplate $template
 	) {
-		$this->repositories_manager = $repositories_manager;
-		$this->api_manager          = $api_manager;
-		$this->webpack_manifest     = $webpack_manifest;
-		$this->template             = $template;
+		$this->webpack_manifest = $webpack_manifest;
+		$this->template         = $template;
+		$this->wcf              = get_wpify_custom_fields();
 
 		parent::__construct();
-
-		add_filter( 'wpify_custom_fields_options_pages', function ( $repositories ) {
-			$repositories[] = array(
-				'page_title'  => 'Test page title',
-				'menu_title'  => 'Test menu title',
-				'menu_slug'   => 'test',
-			);
-
-			return $repositories;
-		} );
 	}
 
 	public function setup() {
-	}
-
-	public function get_repositories_manager(): RepositoriesManager {
-		return $this->repositories_manager;
-	}
-
-	/**
-	 * @param string $class
-	 *
-	 * @return RepositoryInterface
-	 */
-	public function get_repository( string $class ) {
-		return $this->repositories_manager->get_module( $class );
-	}
-
-	public function get_api_manager(): ApiManager {
-		return $this->api_manager;
-	}
-
-	public function get_api( string $class ) {
-		return $this->api_manager->get_module( $class );
+		$this->wcf->add_options_page( array(
+			'page_title'  => 'Test page',
+			'menu_title'  => 'Test page',
+			'menu_slug'   => 'test',
+			'items'       => array(
+				array(
+					'type' => 'text',
+					'name' => 'some_custom_field',
+					'label' => 'This is my custom field'
+				)
+			)
+		) );
 	}
 
 	/** @return WebpackManifest */

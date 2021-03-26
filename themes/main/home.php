@@ -1,6 +1,6 @@
 <?php
 
-use WpifyCustomFields\Controllers\ButtonController;
+use WpifyCustomFieldsPlugin\Controllers\ButtonController;
 
 get_header();
 wpify_custom_fields_render(

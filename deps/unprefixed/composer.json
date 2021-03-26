@@ -1,6 +1,0 @@
-{
-    "require": {
-        "wpify/core": "^4.2",
-        "doctrine/collections": "^1.6"
-    }
-}
