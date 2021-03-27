@@ -80,6 +80,8 @@ final class OptionsPage {
 		} else {
 			add_action( 'admin_menu', array( $this, 'register' ) );
 		}
+
+		add_action( 'admin_init', array( $this, 'register_settings' ) );
 	}
 
 	/**
@@ -118,8 +120,6 @@ final class OptionsPage {
 					$this->get_position()
 			);
 		}
-
-		register_setting( $this->get_menu_slug(), $this->get_menu_slug() . '_options' );
 	}
 
 	/**
@@ -171,6 +171,30 @@ final class OptionsPage {
 		return $this->parent_slug;
 	}
 
+	public function register_settings() {
+		add_settings_section(
+				'general',
+				null,
+				array( $this, 'render_settings' ),
+				$this->get_menu_slug()
+		);
+
+		foreach ( $this->get_items() as $item ) {
+			register_setting(
+					$this->get_menu_slug(),
+					$item['name']
+			);
+
+			add_settings_field(
+					$item['name'],
+					$item['label'],
+					'__return_empty_string',
+					$this->get_parent_slug(),
+					'general'
+			);
+		}
+	}
+
 	/**
 	 * @return array
 	 */
@@ -178,41 +202,26 @@ final class OptionsPage {
 		return $this->items;
 	}
 
-	/** @return string */
-	public function get_section(): string {
-		return $this->section;
-	}
-
-	/** @return string */
-	public function get_page(): string {
-		return $this->page;
-	}
-
-	public function render() {
+	public function render_settings() {
 		$data = $this->get_data();
+
+		foreach ( $data['items'] as $key => $item ) {
+			if ( empty( $data['items'][ $key ]['id'] ) ) {
+				$data['items'][ $key ]['id'] = $data['items'][ $key ]['name'];
+			}
+
+			$value = $this->get_field( $item['name'] );
+
+			if ( empty( $value ) ) {
+				$data['items'][ $key ]['value'] = '';
+			} else {
+				$data['items'][ $key ]['value'] = $value;
+			}
+		}
+
 		$json = wp_json_encode( $data );
-
-		if ( ! current_user_can( $this->get_capability() ) ) {
-			return;
-		}
-
-		if ( isset( $_GET['settings-updated'] ) ) {
-			add_settings_error( $this->get_menu_slug() . '_messages', $this->get_menu_slug() . '_message', __( 'Settings saved', 'wpify-custom-fields' ), 'updated' );
-		}
-
-		settings_errors( $this->get_menu_slug() . '_messages' );
 		?>
-		<div class="wrap">
-			<h1><?php echo $this->get_page_title(); ?></h1>
-			<form method="post" name="form" action="options.php">
-				<div class="js-wcf" data-wcf="<?php echo esc_attr( $json ) ?>"></div>
-				<?php
-				settings_fields( $this->get_menu_slug() );
-				do_settings_sections( $this->get_menu_slug() );
-				submit_button();
-				?>
-			</form>
-		</div>
+		<div class="js-wcf" data-wcf="<?php echo esc_attr( $json ) ?>"></div>
 		<?php
 	}
 
@@ -235,19 +244,45 @@ final class OptionsPage {
 		);
 	}
 
-	public function get_form_action() {
-		if ( empty( $this->get_parent_slug() ) ) {
-			return add_query_arg( 'page', $this->get_menu_slug(), admin_url( 'admin.php' ) );
-		} else {
-			return add_query_arg( 'page', $this->get_menu_slug(), admin_url( $this->get_parent_slug() ) );
+	public function get_field( $name ) {
+		return get_option( $name );
+	}
+
+	public function render() {
+		if ( ! current_user_can( $this->get_capability() ) ) {
+			return;
 		}
+
+		if ( isset( $_GET['settings-updated'] ) ) {
+			add_settings_error( $this->get_menu_slug() . '_messages', $this->get_menu_slug() . '_message', __( 'Settings saved', 'wpify-custom-fields' ), 'updated' );
+		}
+
+		settings_errors( $this->get_menu_slug() . '_messages' );
+		?>
+		<div class="wrap">
+			<h1><?php echo $this->get_page_title(); ?></h1>
+			<form method="post" name="form" action="options.php">
+				<?php
+				settings_fields( $this->get_menu_slug() );
+				do_settings_sections( $this->get_menu_slug() );
+				submit_button();
+				?>
+			</form>
+		</div>
+		<?php
 	}
 
-	public function get_field( $key ) {
-		// TODO: Implement get_field() method.
+	/** @return string */
+	public function get_section(): string {
+		return $this->section;
 	}
 
-	public function set_field( $key, $value ) {
-		// TODO: Implement set_field() method.
+	/** @return string */
+	public function get_page(): string {
+		return $this->page;
+	}
+
+	public function set_field( $option, $value ) {
+		return update_option( $option, $value );
 	}
 }

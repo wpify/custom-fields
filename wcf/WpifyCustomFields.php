@@ -23,4 +23,8 @@ final class WpifyCustomFields {
 	public function add_options_page( $args = array() ) {
 		return new OptionsPage( $args );
 	}
+
+	public function add_metabox( $args = array() ) {
+		return new Metabox( $args );
+	}
 }

@@ -22,9 +22,9 @@ export const parseDataset = (dataset) => {
 };
 
 export const registerField = (type, Field) => {
-	addFilter('wcf-text', 'wpify-custom-fields', (Component, props) => <Field {...props} />);
+	addFilter('wcf-' + type, 'wpify-custom-fields', (Component, props) => <Field {...props} />);
 };
 
 export const renderField = (data) => {
-	return applyFilters('wcf-' + data.type, data);
+	return applyFilters('wcf-' + data.type, <React.Fragment />, data);
 };

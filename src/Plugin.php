@@ -4,8 +4,6 @@ namespace WpifyCustomFieldsPlugin;
 
 use Exception;
 use WPifyCustomFields\WpifyCustomFields;
-use WpifyCustomFieldsPlugin\Managers\ApiManager;
-use WpifyCustomFieldsPlugin\Managers\RepositoriesManager;
 use WpifyCustomFieldsPluginDeps\Wpify\Core\Abstracts\AbstractPlugin;
 use WpifyCustomFieldsPluginDeps\Wpify\Core\Exceptions\ContainerInvalidException;
 use WpifyCustomFieldsPluginDeps\Wpify\Core\Exceptions\ContainerNotExistsException;
@@ -58,17 +56,47 @@ class Plugin extends AbstractPlugin {
 	}
 
 	public function setup() {
+		$items = array(
+			array(
+				'type'        => 'text',
+				'name'        => 'some_custom_field',
+				'label'       => 'This is my custom field',
+				'description' => 'This is some description of the field',
+			),
+			array(
+				'type'  => 'url',
+				'name'  => 'some_example_url',
+				'label' => 'Example URL',
+			),
+			array(
+				'type'  => 'email',
+				'name'  => 'some_example_email',
+				'label' => 'Example email',
+			),
+			array(
+				'type'        => 'number',
+				'name'        => 'some_example_number',
+				'label'       => 'Example number',
+				'min'         => 0,
+				'max'         => 100,
+				'placeholder' => 'Put some number here',
+				'step'        => 0.2,
+				'suffix'      => 'dollars',
+			),
+		);
+
 		$this->wcf->add_options_page( array(
-			'page_title'  => 'Test page',
-			'menu_title'  => 'Test page',
-			'menu_slug'   => 'test',
-			'items'       => array(
-				array(
-					'type' => 'text',
-					'name' => 'some_custom_field',
-					'label' => 'This is my custom field'
-				)
-			)
+			'page_title' => 'Test page',
+			'menu_title' => 'Test page',
+			'menu_slug'  => 'test',
+			'items'      => $items,
+		) );
+
+		$this->wcf->add_metabox( array(
+			'id'         => 'test_meta_box',
+			'title'      => 'Test Metabox',
+			'items'      => $items,
+			'post_types' => array( 'post', 'page' ),
 		) );
 	}
 
