@@ -48,11 +48,11 @@ class Plugin extends AbstractPlugin {
 		WebpackManifest $webpack_manifest,
 		WordPressTemplate $template
 	) {
+		parent::__construct();
+
 		$this->webpack_manifest = $webpack_manifest;
 		$this->template         = $template;
 		$this->wcf              = get_wpify_custom_fields();
-
-		parent::__construct();
 	}
 
 	public function setup() {
@@ -97,6 +97,16 @@ class Plugin extends AbstractPlugin {
 			'title'      => 'Test Metabox',
 			'items'      => $items,
 			'post_types' => array( 'post', 'page' ),
+		) );
+
+		$this->wcf->add_product_options( array(
+			'tab'   => array( 'id' => 'custom', 'label' => 'Custom' ),
+			'items' => $items,
+		) );
+
+		$this->wcf->add_taxonomy_options( array(
+			'taxonomy' => 'category',
+			'items'    => $items,
 		) );
 	}
 

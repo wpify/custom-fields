@@ -1,19 +1,21 @@
 import React from 'react';
-import classnames from 'classnames';
 import PT from 'prop-types';
 import { renderField } from '../helpers';
 
 const Options = (props) => {
-	const { wcf = {}, className } = props;
-	const { items = [] } = wcf;
+	const { wcf: { items = [] } } = props;
 
 	return (
 		<React.Fragment>
 			{items.map(item => (
-				<label key={item.id || item.name} htmlFor={item.id || item.name}>
-					<span dangerouslySetInnerHTML={{ __html: item.label }} />
+				<p key={item.id || item.name}>
+					<label
+						htmlFor={item.id || item.name}
+						dangerouslySetInnerHTML={{ __html: item.label }}
+					/>
+					<br />
 					{renderField(item)}
-				</label>
+				</p>
 			))}
 		</React.Fragment>
 	);

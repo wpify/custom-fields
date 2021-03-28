@@ -1,8 +1,8 @@
 <?php
 
-namespace WpifyCustomFields;
+namespace WpifyCustomFields\Implementations;
 
-final class OptionsPage {
+final class Options {
 	/** @var string */
 	private $type;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace WpifyCustomFields;
+namespace WpifyCustomFields\Implementations;
 
 use WP_Post;
 
@@ -136,7 +136,9 @@ final class Metabox {
 			return $post_id;
 		}
 
-		// TODO: Check the capability to edit the post
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return $post_id;
+		}
 
 		foreach ( $this->items as $item ) {
 			$value = $_POST[ $item['name'] ];

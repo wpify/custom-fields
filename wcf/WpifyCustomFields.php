@@ -2,6 +2,11 @@
 
 namespace WpifyCustomFields;
 
+use WpifyCustomFields\Implementations\Metabox;
+use WpifyCustomFields\Implementations\Options;
+use WpifyCustomFields\Implementations\ProductOptions;
+use WpifyCustomFields\Implementations\Taxonomy;
+
 final class WpifyCustomFields {
 	private $assets;
 
@@ -21,10 +26,18 @@ final class WpifyCustomFields {
 	}
 
 	public function add_options_page( $args = array() ) {
-		return new OptionsPage( $args );
+		return new Options( $args );
 	}
 
 	public function add_metabox( $args = array() ) {
 		return new Metabox( $args );
+	}
+
+	public function add_product_options( $args = array() ) {
+		return new ProductOptions( $args );
+	}
+
+	public function add_taxonomy_options( $args = array() ) {
+		return new Taxonomy( $args );
 	}
 }

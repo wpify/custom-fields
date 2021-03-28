@@ -139,7 +139,8 @@ if ( version_compare( PHP_VERSION, WPIFY_CUSTOM_FIELDS_MIN_PHP_VERSION ) < 0 ) {
 		include_once __DIR__ . '/deps/scoper-autoload.php';
 		include_once __DIR__ . '/wcf/functions.php';
 
-		add_action( 'plugins_loaded', 'wpify_custom_fields_init', 11 );
+		//add_action( 'plugins_loaded', 'wpify_custom_fields_init' );
+		wpify_custom_fields_init();
 		register_activation_hook( __FILE__, 'wpify_custom_fields_activate' );
 		register_deactivation_hook( __FILE__, 'wpify_custom_fields_deactivate' );
 	} else {

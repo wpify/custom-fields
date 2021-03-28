@@ -8,15 +8,33 @@ import UrlField from './fields/UrlField';
 import EmailField from './fields/EmailField';
 import NumberField from './fields/NumberField';
 import Metabox from './components/Metabox';
+import ProductOptions from './components/ProductOptions';
+import AddTaxonomy from './components/AddTaxonomy';
+import EditTaxonomy from './components/EditTaxonomy';
 
 const WcfApp = (props) => {
-	if (props.wcf.object_type === 'options_page') {
+	const { wcf: { object_type } } = props;
+
+	if (object_type === 'options_page') {
 		return <Options {...props} />;
 	}
 
-	if (props.wcf.object_type === 'metabox') {
-		return <Metabox {...props} />
+	if (object_type === 'metabox') {
+		return <Metabox {...props} />;
 	}
+
+	if (object_type === 'product_options') {
+		return <ProductOptions {...props} />;
+	}
+
+	if (object_type === 'add_taxonomy') {
+		return <AddTaxonomy {...props} />
+	}
+
+	if (object_type === 'edit_taxonomy') {
+		return <EditTaxonomy {...props} />
+	}
+
 	return null;
 };
 
@@ -37,10 +55,7 @@ const renderWcf = () => {
 	document.querySelectorAll('.js-wcf[data-wcf]').forEach((container) => {
 		const props = parseDataset(container.dataset);
 
-		ReactDOM.render(
-			<WcfApp {...props} />,
-			container
-		);
+		ReactDOM.render(<WcfApp {...props} />, container);
 	});
 };
 
