@@ -91,27 +91,12 @@ final class ProductOptions extends AbstractPostImplementation {
 	public function render_custom_fields() {
 		global $post;
 
-		$data = $this->get_data();
 		$this->set_post( $post->ID );
+		$this->render_fields();
+	}
 
-		foreach ( $data['items'] as $key => $item ) {
-			if ( empty( $data['items'][ $key ]['id'] ) ) {
-				$data['items'][ $key ]['id'] = $data['items'][ $key ]['name'];
-			}
-
-			$value = $this->get_field( $item['name'] );
-
-			if ( empty( $value ) ) {
-				$data['items'][ $key ]['value'] = '';
-			} else {
-				$data['items'][ $key ]['value'] = $value;
-			}
-		}
-
-		$json = wp_json_encode( $data );
-		?>
-		<div class="js-wcf" data-wcf="<?php echo esc_attr( $json ) ?>"></div>
-		<?php
+	public function set_post( $post_id ) {
+		$this->product_id = $post_id;
 	}
 
 	public function get_data() {
@@ -120,10 +105,6 @@ final class ProductOptions extends AbstractPostImplementation {
 				'tab'         => $this->tab,
 				'items'       => $this->items,
 		);
-	}
-
-	public function set_post( $post_id ) {
-		$this->product_id = $post_id;
 	}
 
 	public function get_field( $name ) {

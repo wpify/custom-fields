@@ -79,26 +79,7 @@ final class WooCommerceSettings extends AbstractImplementation {
 			return;
 		}
 
-		$data = $this->get_data();
-
-		foreach ( $data['items'] as $key => $item ) {
-			if ( empty( $data['items'][ $key ]['id'] ) ) {
-				$data['items'][ $key ]['id'] = $data['items'][ $key ]['name'];
-			}
-
-			$value = $this->get_field( $item['name'] );
-
-			if ( empty( $value ) ) {
-				$data['items'][ $key ]['value'] = '';
-			} else {
-				$data['items'][ $key ]['value'] = $value;
-			}
-		}
-
-		$json = wp_json_encode( $data );
-		?>
-		<div class="js-wcf" data-wcf="<?php echo esc_attr( $json ) ?>"></div>
-		<?php
+		$this->render_fields();
 	}
 
 	public function get_sections() {

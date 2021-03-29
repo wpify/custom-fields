@@ -27,15 +27,15 @@ final class Metabox extends AbstractPostImplementation {
 
 	public function __construct( array $args ) {
 		$args = wp_parse_args( $args, array(
-				'id'            => null,
-				'title'         => null,
-				'screen'        => null,
-				'context'       => 'advanced',
-				'priority'      => 'default',
-				'callback_args' => null,
-				'items'         => array(),
-				'post_types'    => array(),
-				'post_id'       => null,
+			'id'            => null,
+			'title'         => null,
+			'screen'        => null,
+			'context'       => 'advanced',
+			'priority'      => 'default',
+			'callback_args' => null,
+			'items'         => array(),
+			'post_types'    => array(),
+			'post_id'       => null,
 		) );
 
 		$this->id            = $args['id'];
@@ -60,13 +60,13 @@ final class Metabox extends AbstractPostImplementation {
 	public function add_meta_box( $post_type ) {
 		if ( in_array( $post_type, $this->post_types ) ) {
 			add_meta_box(
-					$this->id,
-					$this->title,
-					array( $this, 'render' ),
-					$this->screen,
-					$this->context,
-					$this->priority,
-					$this->callback_args
+				$this->id,
+				$this->title,
+				array( $this, 'render' ),
+				$this->screen,
+				$this->context,
+				$this->priority,
+				$this->callback_args
 			);
 		}
 	}
@@ -77,45 +77,26 @@ final class Metabox extends AbstractPostImplementation {
 	public function render( WP_Post $post ) {
 		wp_nonce_field( $this->id, $this->nonce );
 
-		$data = $this->get_data();
 		$this->set_post( $post->ID );
-
-		foreach ( $data['items'] as $key => $item ) {
-			if ( empty( $data['items'][ $key ]['id'] ) ) {
-				$data['items'][ $key ]['id'] = $data['items'][ $key ]['name'];
-			}
-
-			$value = $this->get_field( $item['name'] );
-
-			if ( empty( $value ) ) {
-				$data['items'][ $key ]['value'] = '';
-			} else {
-				$data['items'][ $key ]['value'] = $value;
-			}
-		}
-
-		$json = wp_json_encode( $data );
-		?>
-		<div class="js-wcf" data-wcf="<?php echo esc_attr( $json ) ?>"></div>
-		<?php
-	}
-
-	public function get_data() {
-		return array(
-				'object_type'   => 'metabox',
-				'id'            => $this->id,
-				'title'         => $this->title,
-				'screen'        => $this->screen,
-				'context'       => $this->context,
-				'priority'      => $this->priority,
-				'callback_args' => $this->callback_args,
-				'items'         => $this->items,
-				'post_types'    => $this->post_types,
-		);
+		$this->render_fields();
 	}
 
 	public function set_post( $post_id ) {
 		$this->post_id = $post_id;
+	}
+
+	public function get_data() {
+		return array(
+			'object_type'   => 'metabox',
+			'id'            => $this->id,
+			'title'         => $this->title,
+			'screen'        => $this->screen,
+			'context'       => $this->context,
+			'priority'      => $this->priority,
+			'callback_args' => $this->callback_args,
+			'items'         => $this->items,
+			'post_types'    => $this->post_types,
+		);
 	}
 
 	public function get_field( $name ) {

@@ -112,7 +112,7 @@ final class Options extends AbstractImplementation {
 		add_settings_section(
 				'general',
 				null,
-				array( $this, 'render_settings' ),
+				array( $this, 'render_fields' ),
 				$this->menu_slug
 		);
 
@@ -122,29 +122,6 @@ final class Options extends AbstractImplementation {
 					$item['name']
 			);
 		}
-	}
-
-	public function render_settings() {
-		$data = $this->get_data();
-
-		foreach ( $data['items'] as $key => $item ) {
-			if ( empty( $data['items'][ $key ]['id'] ) ) {
-				$data['items'][ $key ]['id'] = $data['items'][ $key ]['name'];
-			}
-
-			$value = $this->get_field( $item['name'] );
-
-			if ( empty( $value ) ) {
-				$data['items'][ $key ]['value'] = '';
-			} else {
-				$data['items'][ $key ]['value'] = $value;
-			}
-		}
-
-		$json = wp_json_encode( $data );
-		?>
-		<div class="js-wcf" data-wcf="<?php echo esc_attr( $json ) ?>"></div>
-		<?php
 	}
 
 	/**
