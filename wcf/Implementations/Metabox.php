@@ -80,7 +80,7 @@ final class Metabox {
 				$data['items'][ $key ]['id'] = $data['items'][ $key ]['name'];
 			}
 
-			$value = $this->get_field( $post, $item['name'] );
+			$value = $this->get_field( $post->ID, $item['name'] );
 
 			if ( empty( $value ) ) {
 				$data['items'][ $key ]['value'] = '';
@@ -109,12 +109,8 @@ final class Metabox {
 		);
 	}
 
-	public function get_field( WP_Post $post, $name ) {
-		return get_post_meta( $post->ID, $name, true );
-	}
-
-	public function set_field( WP_Post $post, $name, $value ) {
-		return update_post_meta( $post->ID, $name, $value );
+	public function get_field( $post_id, $name ) {
+		return get_post_meta( $post_id, $name, true );
 	}
 
 	public function save( $post_id ) {
@@ -142,8 +138,12 @@ final class Metabox {
 
 		foreach ( $this->items as $item ) {
 			$value = $_POST[ $item['name'] ];
-			// TODO: Sanitize the item by it's type
-			update_post_meta( $post_id, $item['name'], $value );
+			$this->set_field( $post_id, $item['name'], $value );
 		}
+	}
+
+	public function set_field( $post_id, $name, $value ) {
+		// TODO: Sanitize the item by it's type
+		return update_post_meta( $post_id, $name, $value );
 	}
 }

@@ -108,6 +108,18 @@ class Plugin extends AbstractPlugin {
 			'taxonomy' => 'category',
 			'items'    => $items,
 		) );
+
+		$this->wcf->add_woocommerce_settings( array(
+			'tab'   => array( 'id' => 'wpify-woo', 'label' => 'Custom' ),
+			'section' => array('id' => '', 'label' => 'General'),
+			'items' => $items,
+		) );
+
+		$this->wcf->add_woocommerce_settings( array(
+			'tab'   => array( 'id' => 'wpify-woo', 'label' => 'Custom' ),
+			'section' => array('id' => 'wpify-woo', 'label' => 'Custom'),
+			'items' => $items,
+		) );
 	}
 
 	/** @return WebpackManifest */

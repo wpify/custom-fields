@@ -84,91 +84,28 @@ final class Options {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 	}
 
-	/**
-	 * @return string
-	 */
-	public function get_type() {
-		return $this->type;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function get_hook_suffix() {
-		return $this->hook_suffix;
-	}
-
 	public function register() {
 		if ( empty( $this->parent_slug ) ) {
 			$this->hook_suffix = add_menu_page(
-					$this->get_page_title(),
-					$this->get_menu_title(),
-					$this->get_capability(),
-					$this->get_menu_slug(),
+					$this->page_title,
+					$this->menu_title,
+					$this->capability,
+					$this->menu_slug,
 					array( $this, 'render' ),
-					$this->get_icon_url(),
-					$this->get_position()
+					$this->icon_url,
+					$this->position
 			);
 		} elseif ( ! empty( $this->menu_slug ) ) {
 			$this->hook_suffix = add_submenu_page(
-					$this->get_parent_slug(),
-					$this->get_page_title(),
-					$this->get_menu_title(),
-					$this->get_capability(),
-					$this->get_menu_slug(),
+					$this->parent_slug,
+					$this->page_title,
+					$this->menu_title,
+					$this->capability,
+					$this->menu_slug,
 					array( $this, 'render' ),
-					$this->get_position()
+					$this->position
 			);
 		}
-	}
-
-	/**
-	 * @return string
-	 */
-	public function get_page_title() {
-		return $this->page_title;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function get_menu_title() {
-		return $this->menu_title;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function get_capability() {
-		return $this->capability;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function get_menu_slug() {
-		return $this->menu_slug;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function get_icon_url() {
-		return $this->icon_url;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function get_position() {
-		return $this->position;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function get_parent_slug() {
-		return $this->parent_slug;
 	}
 
 	public function register_settings() {
@@ -176,30 +113,15 @@ final class Options {
 				'general',
 				null,
 				array( $this, 'render_settings' ),
-				$this->get_menu_slug()
+				$this->menu_slug
 		);
 
-		foreach ( $this->get_items() as $item ) {
+		foreach ( $this->items as $item ) {
 			register_setting(
-					$this->get_menu_slug(),
+					$this->menu_slug,
 					$item['name']
 			);
-
-			add_settings_field(
-					$item['name'],
-					$item['label'],
-					'__return_empty_string',
-					$this->get_parent_slug(),
-					'general'
-			);
 		}
-	}
-
-	/**
-	 * @return array
-	 */
-	public function get_items() {
-		return $this->items;
 	}
 
 	public function render_settings() {
@@ -249,22 +171,22 @@ final class Options {
 	}
 
 	public function render() {
-		if ( ! current_user_can( $this->get_capability() ) ) {
+		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
 
 		if ( isset( $_GET['settings-updated'] ) ) {
-			add_settings_error( $this->get_menu_slug() . '_messages', $this->get_menu_slug() . '_message', __( 'Settings saved', 'wpify-custom-fields' ), 'updated' );
+			add_settings_error( $this->menu_slug . '_messages', $this->menu_slug . '_message', __( 'Settings saved', 'wpify-custom-fields' ), 'updated' );
 		}
 
-		settings_errors( $this->get_menu_slug() . '_messages' );
+		settings_errors( $this->menu_slug . '_messages' );
 		?>
 		<div class="wrap">
-			<h1><?php echo $this->get_page_title(); ?></h1>
+			<h1><?php echo $this->page_title; ?></h1>
 			<form method="post" name="form" action="options.php">
 				<?php
-				settings_fields( $this->get_menu_slug() );
-				do_settings_sections( $this->get_menu_slug() );
+				settings_fields( $this->menu_slug );
+				do_settings_sections( $this->menu_slug );
 				submit_button();
 				?>
 			</form>
@@ -272,17 +194,8 @@ final class Options {
 		<?php
 	}
 
-	/** @return string */
-	public function get_section(): string {
-		return $this->section;
-	}
-
-	/** @return string */
-	public function get_page(): string {
-		return $this->page;
-	}
-
 	public function set_field( $option, $value ) {
+		// TODO: Sanitize
 		return update_option( $option, $value );
 	}
 }

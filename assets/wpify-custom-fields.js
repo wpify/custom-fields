@@ -15,7 +15,7 @@ import EditTaxonomy from './components/EditTaxonomy';
 const WcfApp = (props) => {
 	const { wcf: { object_type } } = props;
 
-	if (object_type === 'options_page') {
+	if (['options_page', 'woocommerce_settings'].includes(object_type)) {
 		return <Options {...props} />;
 	}
 
@@ -28,11 +28,11 @@ const WcfApp = (props) => {
 	}
 
 	if (object_type === 'add_taxonomy') {
-		return <AddTaxonomy {...props} />
+		return <AddTaxonomy {...props} />;
 	}
 
 	if (object_type === 'edit_taxonomy') {
-		return <EditTaxonomy {...props} />
+		return <EditTaxonomy {...props} />;
 	}
 
 	return null;

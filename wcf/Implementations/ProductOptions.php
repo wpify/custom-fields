@@ -50,7 +50,7 @@ final class ProductOptions {
 		add_filter( 'woocommerce_product_data_tabs', array( $this, 'woocommerce_product_data_tabs' ), 98 );
 		add_action( 'woocommerce_product_data_panels', array( $this, 'render_data_panels' ) );
 		add_action( 'woocommerce_product_options_' . $this->tab['target'], array( $this, 'render_custom_fields' ) );
-		add_action( 'woocommerce_process_product_meta', array( $this, 'save_custom_fields' ) );
+		add_action( 'woocommerce_process_product_meta', array( $this, 'save' ) );
 	}
 
 	public function woocommerce_product_data_tabs( array $tabs ) {
@@ -97,7 +97,7 @@ final class ProductOptions {
 				$data['items'][ $key ]['id'] = $data['items'][ $key ]['name'];
 			}
 
-			$value = $this->get_field( $product, $item['name'] );
+			$value = $this->get_field( $product->get_id(), $item['name'] );
 
 			if ( empty( $value ) ) {
 				$data['items'][ $key ]['value'] = '';
@@ -120,15 +120,19 @@ final class ProductOptions {
 		);
 	}
 
-	public function get_field( WC_Product $product, $name ) {
-		return get_post_meta( $product->get_id(), $name, true );
+	public function get_field( $product_id, $name ) {
+		return get_post_meta( $product_id, $name, true );
 	}
-	
-	public function save_custom_fields( $post_id ) {
+
+	public function set_field($product_id, $name, $value) {
+		// TODO: Sanitize the item by it's type
+		return update_post_meta( $product_id, $name, $value );
+	}
+
+	public function save( $post_id ) {
 		foreach ( $this->items as $item ) {
 			$value = $_POST[ $item['name'] ];
-			// TODO: Sanitize the item by it's type
-			update_post_meta( $post_id, $item['name'], $value );
+			$this->set_field( $post_id, $item['name'], $value );
 		}
 	}
 }

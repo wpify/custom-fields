@@ -22,7 +22,7 @@ final class Taxonomy {
 
 	public function setup() {
 		add_action( $this->taxonomy . '_add_form_fields', array( $this, 'render_add_form' ) );
-		add_action( $this->taxonomy . '_edit_form_fields', array( $this, 'render_edit_form' ), 10, 2 );
+		add_action( $this->taxonomy . '_edit_form_fields', array( $this, 'render_edit_form' ) );
 		add_action( 'created_' . $this->taxonomy, array( $this, 'save' ) );
 		add_action( 'edited_' . $this->taxonomy, array( $this, 'save' ) );
 	}
@@ -46,7 +46,7 @@ final class Taxonomy {
 		);
 	}
 
-	public function render_edit_form( $term, $taxonomy ) {
+	public function render_edit_form( $term ) {
 		$data = $this->get_data();
 
 		$data['object_type'] = 'edit_' . $data['object_type'];
@@ -76,15 +76,13 @@ final class Taxonomy {
 	}
 
 	public function save( $term_id ) {
-		$term = get_term( $term_id, $this->taxonomy );
-
 		foreach ( $this->items as $item ) {
-			$this->set_field( $term, $item['name'], $_POST[ $item['name'] ] );
+			$this->set_field( $term_id, $item['name'], $_POST[ $item['name'] ] );
 		}
 	}
 
-	public function set_field( WP_Term $term, $name, $value ) {
+	public function set_field( $term_id, $name, $value ) {
 		// TODO: Sanitize input
-		return update_term_meta( $term->term_id, $name, $value );
+		return update_term_meta( $term_id, $name, $value );
 	}
 }

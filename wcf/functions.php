@@ -10,9 +10,7 @@ function get_wpify_custom_fields(): WpifyCustomFields {
 	static $plugin;
 
 	if ( empty( $plugin ) ) {
-		$assets_path = realpath( __DIR__ . '/../build' );
-
-		$plugin = new WpifyCustomFields( $assets_path );
+		$plugin = new WpifyCustomFields();
 	}
 
 	return $plugin;
