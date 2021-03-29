@@ -4,7 +4,8 @@ namespace WpifyCustomFields\Implementations;
 
 use WP_Term;
 
-final class Taxonomy extends AbstractImplementation {
+final class Taxonomy extends AbstractPostImplementation {
+	private $term_id;
 	private $taxonomy;
 	private $items;
 
@@ -12,10 +13,12 @@ final class Taxonomy extends AbstractImplementation {
 		$args = wp_parse_args( $args, array(
 				'taxonomy' => null,
 				'items'    => array(),
+				'term_id'  => null,
 		) );
 
 		$this->taxonomy = $args['taxonomy'];
 		$this->items    = $this->prepare_items( $args['items'] );
+		$this->term_id  = $args['term_id'];
 
 		$this->setup();
 	}
@@ -46,8 +49,9 @@ final class Taxonomy extends AbstractImplementation {
 		);
 	}
 
-	public function render_edit_form( $term ) {
+	public function render_edit_form( WP_Term $term ) {
 		$data = $this->get_data();
+		$this->set_post( $term->term_id );
 
 		$data['object_type'] = 'edit_' . $data['object_type'];
 
@@ -56,7 +60,7 @@ final class Taxonomy extends AbstractImplementation {
 				$data['items'][ $key ]['id'] = $data['items'][ $key ]['name'];
 			}
 
-			$value = $this->get_field( $term, $item['name'] );
+			$value = $this->get_field( $item['name'] );
 
 			if ( empty( $value ) ) {
 				$data['items'][ $key ]['value'] = '';
@@ -71,18 +75,24 @@ final class Taxonomy extends AbstractImplementation {
 		<?php
 	}
 
-	public function get_field( WP_Term $term, $name ) {
-		return get_term_meta( $term->term_id, $name, true );
+	public function set_post( $post_id ) {
+		$this->term_id = $post_id;
+	}
+
+	public function get_field( $name ) {
+		return get_term_meta( $this->term_id, $name, true );
 	}
 
 	public function save( $term_id ) {
+		$this->set_post( $term_id );
+		
 		foreach ( $this->items as $item ) {
-			$this->set_field( $term_id, $item['name'], $_POST[ $item['name'] ] );
+			$this->set_field( $item['name'], $_POST[ $item['name'] ] );
 		}
 	}
 
-	public function set_field( $term_id, $name, $value ) {
+	public function set_field( $name, $value ) {
 		// TODO: Sanitize input
-		return update_term_meta( $term_id, $name, $value );
+		return update_term_meta( $this->term_id, $name, $value );
 	}
 }

@@ -29,7 +29,7 @@ const Options = (props) => {
 							</td>
 						) : (
 							<React.Fragment>
-								<th scope="row" class="titledesc">
+								<th scope="row" className="titledesc">
 									<label htmlFor={item.id} dangerouslySetInnerHTML={{ __html: item.title }}/>
 								</th>
 								<td className={classnames('forminp', 'forminp-' + item.type)}>

@@ -1,6 +1,6 @@
 import React from 'react';
 import PT from 'prop-types';
-import { getItemComponent, renderField } from '../helpers';
+import { getItemComponent } from '../helpers';
 
 const AddTaxonomy = (props) => {
 	const { wcf = {} } = props;

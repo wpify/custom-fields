@@ -36,4 +36,8 @@ abstract class AbstractImplementation {
 
 		return $args;
 	}
+
+	abstract function get_field( $name );
+
+	abstract function set_field( $name, $value );
 }

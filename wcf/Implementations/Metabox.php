@@ -4,7 +4,7 @@ namespace WpifyCustomFields\Implementations;
 
 use WP_Post;
 
-final class Metabox extends AbstractImplementation {
+final class Metabox extends AbstractPostImplementation {
 	private $id;
 
 	private $title;
@@ -23,6 +23,8 @@ final class Metabox extends AbstractImplementation {
 
 	private $nonce;
 
+	private $post_id;
+
 	public function __construct( array $args ) {
 		$args = wp_parse_args( $args, array(
 				'id'            => null,
@@ -33,6 +35,7 @@ final class Metabox extends AbstractImplementation {
 				'callback_args' => null,
 				'items'         => array(),
 				'post_types'    => array(),
+				'post_id'       => null,
 		) );
 
 		$this->id            = $args['id'];
@@ -44,6 +47,7 @@ final class Metabox extends AbstractImplementation {
 		$this->items         = $this->prepare_items( $args['items'] );
 		$this->post_types    = $args['post_types'];
 		$this->nonce         = $args['id'] . '_nonce';
+		$this->post_id       = $args['post_id'];
 
 		$this->setup();
 	}
@@ -74,13 +78,14 @@ final class Metabox extends AbstractImplementation {
 		wp_nonce_field( $this->id, $this->nonce );
 
 		$data = $this->get_data();
+		$this->set_post( $post->ID );
 
 		foreach ( $data['items'] as $key => $item ) {
 			if ( empty( $data['items'][ $key ]['id'] ) ) {
 				$data['items'][ $key ]['id'] = $data['items'][ $key ]['name'];
 			}
 
-			$value = $this->get_field( $post->ID, $item['name'] );
+			$value = $this->get_field( $item['name'] );
 
 			if ( empty( $value ) ) {
 				$data['items'][ $key ]['value'] = '';
@@ -109,8 +114,12 @@ final class Metabox extends AbstractImplementation {
 		);
 	}
 
-	public function get_field( $post_id, $name ) {
-		return get_post_meta( $post_id, $name, true );
+	public function set_post( $post_id ) {
+		$this->post_id = $post_id;
+	}
+
+	public function get_field( $name ) {
+		return get_post_meta( $this->post_id, $name, true );
 	}
 
 	public function save( $post_id ) {
@@ -136,14 +145,16 @@ final class Metabox extends AbstractImplementation {
 			return $post_id;
 		}
 
+		$this->set_post( $post_id );
+
 		foreach ( $this->items as $item ) {
 			$value = $_POST[ $item['name'] ];
-			$this->set_field( $post_id, $item['name'], $value );
+			$this->set_field( $item['name'], $value );
 		}
 	}
 
-	public function set_field( $post_id, $name, $value ) {
+	public function set_field( $name, $value ) {
 		// TODO: Sanitize the item by it's type
-		return update_post_meta( $post_id, $name, $value );
+		return update_post_meta( $this->post_id, $name, $value );
 	}
 }

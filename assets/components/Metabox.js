@@ -10,7 +10,7 @@ const Options = (props) => {
 			{items.map(item => {
 				const Field = getItemComponent(item);
 
-				return item.noSection ? (
+				return Field.noSection ? (
 					<Field {...item} />
 				) : (
 					<p key={item.id}>

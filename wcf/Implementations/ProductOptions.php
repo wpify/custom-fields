@@ -2,7 +2,9 @@
 
 namespace WpifyCustomFields\Implementations;
 
-final class ProductOptions extends AbstractImplementation {
+final class ProductOptions extends AbstractPostImplementation {
+	private $product_id;
+
 	/** @var array */
 	private $tab;
 
@@ -16,18 +18,20 @@ final class ProductOptions extends AbstractImplementation {
 		 * show_if_external, hide_if_external, hide_if_grouped, hide_if_virtual
 		 */
 		$args = wp_parse_args( $args, array(
-				'tab' => array(
+				'product_id' => null,
+				'tab'        => array(
 						'id'       => 'general',
 						'label'    => null,
 						'priority' => 100,
 						'target'   => 'general_product_data',
 						'class'    => array(),
 				),
-				$this->items = $this->prepare_items( $args['items'] ),
+				'items'      => array(),
 		) );
 
-		$this->tab   = $args['tab'];
-		$this->items = $args['items'];
+		$this->tab        = $args['tab'];
+		$this->items      = $this->prepare_items( $args['items'] );
+		$this->product_id = $args['product_id'];
 
 		if ( empty( $this->tab['target'] ) ) {
 			$this->tab['target'] = $this->tab['id'] . '_product_data';
@@ -87,15 +91,15 @@ final class ProductOptions extends AbstractImplementation {
 	public function render_custom_fields() {
 		global $post;
 
-		$product = wc_get_product( $post );
-		$data    = $this->get_data();
+		$data = $this->get_data();
+		$this->set_post( $post->ID );
 
 		foreach ( $data['items'] as $key => $item ) {
 			if ( empty( $data['items'][ $key ]['id'] ) ) {
 				$data['items'][ $key ]['id'] = $data['items'][ $key ]['name'];
 			}
 
-			$value = $this->get_field( $product->get_id(), $item['name'] );
+			$value = $this->get_field( $item['name'] );
 
 			if ( empty( $value ) ) {
 				$data['items'][ $key ]['value'] = '';
@@ -118,19 +122,25 @@ final class ProductOptions extends AbstractImplementation {
 		);
 	}
 
-	public function get_field( $product_id, $name ) {
-		return get_post_meta( $product_id, $name, true );
+	public function set_post( $post_id ) {
+		$this->product_id = $post_id;
+	}
+
+	public function get_field( $name ) {
+		return get_post_meta( $this->product_id, $name, true );
 	}
 
 	public function save( $post_id ) {
+		$this->set_post( $post_id );
+
 		foreach ( $this->items as $item ) {
 			$value = $_POST[ $item['name'] ];
-			$this->set_field( $post_id, $item['name'], $value );
+			$this->set_field( $item['name'], $value );
 		}
 	}
 
-	public function set_field( $product_id, $name, $value ) {
+	public function set_field( $name, $value ) {
 		// TODO: Sanitize the item by it's type
-		return update_post_meta( $product_id, $name, $value );
+		return update_post_meta( $this->product_id, $name, $value );
 	}
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import PT from 'prop-types';
-import { getItemComponent, renderField } from '../helpers';
+import { getItemComponent } from '../helpers';
 
 const EditTaxonomy = (props) => {
 	const { wcf = {} } = props;
@@ -14,7 +14,7 @@ const EditTaxonomy = (props) => {
 				return (
 					<tr key={item.id} className="form-field">
 						{Field.noSection ? (
-							<td colSpan={2}>
+							<td colSpan={2} style={{ padding: 0 }}>
 								<Field {...item} />
 							</td>
 						) : (
