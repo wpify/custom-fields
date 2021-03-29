@@ -1,15 +1,15 @@
 /* eslint-disable react/prop-types */
 
 import React, { useEffect, useState } from 'react';
+import classnames from 'classnames';
 
-const InputField = (props) => {
+const TextareaField = (props) => {
 	const {
 		name,
 		id = name,
 		value,
 		onChange = () => null,
 		description,
-		suffix,
 		custom_attributes,
 		className,
 		type,
@@ -27,17 +27,17 @@ const InputField = (props) => {
 
 	return (
 		<React.Fragment>
-			<input
+			<textarea
 				type={type}
 				name={name}
 				id={id}
-				value={currentValue}
 				onChange={handleChange}
-				aria-describedby={describedBy}
-				className={className}
+				aria-describedby={description && describedBy}
+				className={classnames('large-text', className)}
+				rows={10}
+				cols={50}
 				{...custom_attributes}
-			/>
-			{suffix && ' ' + suffix}
+			>{currentValue}</textarea>
 			{description && (
 				<p className="description" id={describedBy} dangerouslySetInnerHTML={{ __html: description }} />
 			)}
@@ -45,4 +45,4 @@ const InputField = (props) => {
 	);
 };
 
-export default InputField;
+export default TextareaField;

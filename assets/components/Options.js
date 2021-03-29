@@ -1,7 +1,15 @@
 import React from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
-import { renderField } from '../helpers';
+import { getItemComponent, renderField } from '../helpers';
+
+const ItemWrapper = (item, index, isSectionOpen) => {
+	if (item.noSection) {
+		if (isSectionOpen) {
+			return null;
+		}
+	}
+};
 
 const Options = (props) => {
 	const { wcf = {}, className } = props;
@@ -10,16 +18,28 @@ const Options = (props) => {
 	return (
 		<table className={classnames('form-table', className)} role="presentation">
 			<tbody>
-			{items.map(item => (
-				<tr key={item.name}>
-					<th scope="row">
-						<label htmlFor={item.id || item.name} dangerouslySetInnerHTML={{ __html: item.label }}/>
-					</th>
-					<td>
-						{renderField(item)}
-					</td>
-				</tr>
-			))}
+			{items.map(item => {
+				const Field = getItemComponent(item);
+
+				return (
+					<tr key={item.name} valign="top">
+						{Field.noSection ? (
+							<td colSpan={2} style={{ padding: 0 }}>
+								<Field {...item} />
+							</td>
+						) : (
+							<React.Fragment>
+								<th scope="row" class="titledesc">
+									<label htmlFor={item.id} dangerouslySetInnerHTML={{ __html: item.title }}/>
+								</th>
+								<td className={classnames('forminp', 'forminp-' + item.type)}>
+									<Field {...item} />
+								</td>
+							</React.Fragment>
+						)}
+					</tr>
+				);
+			})}
 			</tbody>
 		</table>
 	);

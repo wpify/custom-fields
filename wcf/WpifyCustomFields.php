@@ -14,7 +14,6 @@ final class WpifyCustomFields {
 	public function __construct() {
 		$assets_path  = realpath( __DIR__ . '/../build' );
 		$this->assets = new Assets( $assets_path );
-
 		$this->setup();
 	}
 

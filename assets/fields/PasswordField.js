@@ -4,16 +4,16 @@ import React from 'react';
 import classnames from 'classnames';
 import InputField from './InputField';
 
-const UrlField = (props) => {
+const PasswordField = (props) => {
 	const { className, ...rest } = props;
 
 	return (
 		<InputField
-			className={classnames('regular-text ltr', className)}
+			className={classnames('regular-text', className)}
 			{...rest}
-			type="email"
+			type="password"
 		/>
 	);
 };
 
-export default UrlField;
+export default PasswordField;

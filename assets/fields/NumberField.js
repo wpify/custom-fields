@@ -9,11 +9,11 @@ const NumberField = (props) => {
 
 	return (
 		<InputField
-			type="number"
 			className={classnames(className, {
 				'small-text': max < 9999 || !max,
 			})}
 			{...rest}
+			type="number"
 		/>
 	);
 };

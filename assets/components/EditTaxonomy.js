@@ -1,6 +1,6 @@
 import React from 'react';
 import PT from 'prop-types';
-import { renderField } from '../helpers';
+import { getItemComponent, renderField } from '../helpers';
 
 const EditTaxonomy = (props) => {
 	const { wcf = {} } = props;
@@ -8,16 +8,28 @@ const EditTaxonomy = (props) => {
 
 	return (
 		<React.Fragment>
-			{items.map(item => (
-				<tr key={item.id || item.name} className="form-field">
-					<th>
-						<label htmlFor={item.id || item.name} dangerouslySetInnerHTML={{ __html: item.label }}/>
-					</th>
-					<td>
-						{renderField(item)}
-					</td>
-				</tr>
-			))}
+			{items.map(item => {
+				const Field = getItemComponent(item);
+
+				return (
+					<tr key={item.id} className="form-field">
+						{Field.noSection ? (
+							<td colSpan={2}>
+								<Field {...item} />
+							</td>
+						) : (
+							<React.Fragment>
+								<th>
+									<label htmlFor={item.id} dangerouslySetInnerHTML={{ __html: item.title }}/>
+								</th>
+								<td>
+									<Field {...item} />
+								</td>
+							</React.Fragment>
+						)}
+					</tr>
+				);
+			})}
 		</React.Fragment>
 	);
 };

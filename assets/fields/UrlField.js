@@ -9,9 +9,9 @@ const UrlField = (props) => {
 
 	return (
 		<InputField
-			type="url"
 			className={classnames('regular-text code', className)}
 			{...rest}
+			type="url"
 		/>
 	);
 };

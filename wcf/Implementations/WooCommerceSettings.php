@@ -4,7 +4,7 @@ namespace WpifyCustomFields\Implementations;
 
 use WC_Admin_Settings;
 
-final class WooCommerceSettings {
+final class WooCommerceSettings extends AbstractImplementation {
 	private $tab;
 	private $section;
 	private $items;
@@ -19,7 +19,7 @@ final class WooCommerceSettings {
 
 		$this->tab     = $args['tab'];
 		$this->section = $args['section'];
-		$this->items   = $args['items'];
+		$this->items   = $this->prepare_items( $args['items'] );
 
 		$this->setup();
 	}
@@ -34,7 +34,7 @@ final class WooCommerceSettings {
 	public function woocommerce_settings_tabs_array( $tabs ) {
 		if ( empty( $tabs[ $this->tab['id'] ] ) ) {
 			$tabs[ $this->tab['id'] ] = $this->tab['label'];
-			$this->is_new_tab = true;
+			$this->is_new_tab         = true;
 		}
 
 		return $tabs;
@@ -48,14 +48,10 @@ final class WooCommerceSettings {
 		return $sections;
 	}
 
-	public function get_sections() {
-		return apply_filters( 'woocommerce_get_sections_' . $this->tab['id'], array() );
-	}
-
 	public function render() {
 		global $current_section;
 
-		if ($this->is_new_tab) {
+		if ( $this->is_new_tab ) {
 			$sections = $this->get_sections();
 
 			if ( empty( $sections ) || 1 === count( $sections ) ) {
@@ -67,14 +63,15 @@ final class WooCommerceSettings {
 			<ul class="subsubsub">
 				<?php foreach ( $sections as $id => $label ): ?>
 					<li>
-						<a href="<?php echo admin_url( 'admin.php?page=wc-settings&tab=' . $this->tab['id'] . '&section=' . sanitize_title( $id ) ); ?>" class="<?php echo $current_section == $id ? 'current' : ''; ?>">
+						<a href="<?php echo admin_url( 'admin.php?page=wc-settings&tab=' . $this->tab['id'] . '&section=' . sanitize_title( $id ) ); ?>"
+						   class="<?php echo $current_section == $id ? 'current' : ''; ?>">
 							<?php echo $label; ?>
 						</a>
 						<?php echo end( $array_keys ) == $id ? '' : '|'; ?>
 					</li>
 				<?php endforeach; ?>
 			</ul>
-			<br class="clear" />
+			<br class="clear"/>
 			<?php
 		}
 
@@ -102,6 +99,10 @@ final class WooCommerceSettings {
 		?>
 		<div class="js-wcf" data-wcf="<?php echo esc_attr( $json ) ?>"></div>
 		<?php
+	}
+
+	public function get_sections() {
+		return apply_filters( 'woocommerce_get_sections_' . $this->tab['id'], array() );
 	}
 
 	public function get_data() {

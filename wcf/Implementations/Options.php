@@ -2,7 +2,7 @@
 
 namespace WpifyCustomFields\Implementations;
 
-final class Options {
+final class Options extends AbstractImplementation {
 	/** @var string */
 	private $type;
 
@@ -64,7 +64,7 @@ final class Options {
 		$this->page        = $args['page'];
 		$this->icon_url    = $args['icon_url'];
 		$this->position    = $args['position'];
-		$this->items       = is_array( $args['items'] ) ? $args['items'] : array();
+		$this->items       = $this->prepare_items( $args['items'] );
 
 		$this->setup();
 	}

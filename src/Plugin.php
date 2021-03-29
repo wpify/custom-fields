@@ -58,30 +58,82 @@ class Plugin extends AbstractPlugin {
 	public function setup() {
 		$items = array(
 			array(
+				'type'        => 'title',
+				'title'       => 'Some title',
+				'description' => 'Some description',
+			),
+			array(
 				'type'        => 'text',
 				'name'        => 'some_custom_field',
-				'label'       => 'This is my custom field',
+				'title'       => 'This is my custom field',
 				'description' => 'This is some description of the field',
 			),
 			array(
 				'type'  => 'url',
 				'name'  => 'some_example_url',
-				'label' => 'Example URL',
+				'title' => 'Example URL',
 			),
 			array(
 				'type'  => 'email',
 				'name'  => 'some_example_email',
-				'label' => 'Example email',
+				'title' => 'Example email',
 			),
 			array(
-				'type'        => 'number',
-				'name'        => 'some_example_number',
-				'label'       => 'Example number',
-				'min'         => 0,
-				'max'         => 100,
-				'placeholder' => 'Put some number here',
-				'step'        => 0.2,
-				'suffix'      => 'dollars',
+				'type'  => 'tel',
+				'name'  => 'some_example_tel',
+				'title' => 'Example tel',
+			),
+			array(
+				'type'              => 'number',
+				'name'              => 'some_example_number',
+				'title'             => 'Example number',
+				'custom_attributes' => array(
+					'min'  => 0,
+					'max'  => 100,
+					'step' => 0.2,
+				),
+				'placeholder'       => 'Put some number here',
+				'suffix'            => 'dollars',
+			),
+			array(
+				'type'  => 'password',
+				'name'  => 'some_example_password',
+				'title' => 'Example password',
+			),
+			array(
+				'type'  => 'color',
+				'name'  => 'some_example_color',
+				'title' => 'Example color',
+			),
+			array(
+				'type'  => 'datetime',
+				'name'  => 'some_example_datetime',
+				'title' => 'Example datetime',
+			),
+			array(
+				'type'  => 'week',
+				'name'  => 'some_example_week',
+				'title' => 'Example week',
+			),
+			array(
+				'type'  => 'month',
+				'name'  => 'some_example_month',
+				'title' => 'Example month',
+			),
+			array(
+				'type'  => 'date',
+				'name'  => 'some_example_date',
+				'title' => 'Example date',
+			),
+			array(
+				'type'  => 'time',
+				'name'  => 'some_example_time',
+				'title' => 'Example time',
+			),
+			array(
+				'type'  => 'textarea',
+				'name'  => 'some_example_textarea',
+				'title' => 'Example textarea',
 			),
 		);
 
@@ -110,15 +162,15 @@ class Plugin extends AbstractPlugin {
 		) );
 
 		$this->wcf->add_woocommerce_settings( array(
-			'tab'   => array( 'id' => 'wpify-woo', 'label' => 'Custom' ),
-			'section' => array('id' => '', 'label' => 'General'),
-			'items' => $items,
+			'tab'     => array( 'id' => 'wpify-woo', 'label' => 'Custom' ),
+			'section' => array( 'id' => '', 'label' => 'General' ),
+			'items'   => $items,
 		) );
 
 		$this->wcf->add_woocommerce_settings( array(
-			'tab'   => array( 'id' => 'wpify-woo', 'label' => 'Custom' ),
-			'section' => array('id' => 'wpify-woo', 'label' => 'Custom'),
-			'items' => $items,
+			'tab'     => array( 'id' => 'wpify-woo', 'label' => 'Custom' ),
+			'section' => array( 'id' => 'wpify-woo', 'label' => 'Custom' ),
+			'items'   => $items,
 		) );
 	}
 

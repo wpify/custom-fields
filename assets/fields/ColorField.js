@@ -4,16 +4,18 @@ import React from 'react';
 import classnames from 'classnames';
 import InputField from './InputField';
 
-const UrlField = (props) => {
+const ColorField = (props) => {
 	const { className, ...rest } = props;
 
 	return (
-		<InputField
-			className={classnames('regular-text ltr', className)}
-			{...rest}
-			type="email"
-		/>
+		<React.Fragment>
+			<InputField
+				className={classnames('colorpick', className)}
+				{...rest}
+				type="color"
+			/>
+		</React.Fragment>
 	);
 };
 
-export default UrlField;
+export default ColorField;

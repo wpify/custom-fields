@@ -4,7 +4,7 @@ namespace WpifyCustomFields\Implementations;
 
 use WP_Term;
 
-final class Taxonomy {
+final class Taxonomy extends AbstractImplementation {
 	private $taxonomy;
 	private $items;
 
@@ -15,7 +15,7 @@ final class Taxonomy {
 		) );
 
 		$this->taxonomy = $args['taxonomy'];
-		$this->items    = $args['items'];
+		$this->items    = $this->prepare_items( $args['items'] );
 
 		$this->setup();
 	}

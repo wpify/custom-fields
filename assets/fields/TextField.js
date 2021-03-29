@@ -9,9 +9,9 @@ const TextField = (props) => {
 
 	return (
 		<InputField
-			type="text"
 			className={classnames('regular-text', className)}
 			{...rest}
+			type="text"
 		/>
 	);
 };

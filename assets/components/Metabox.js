@@ -1,22 +1,28 @@
 import React from 'react';
 import PT from 'prop-types';
-import { renderField } from '../helpers';
+import { getItemComponent, renderField } from '../helpers';
 
 const Options = (props) => {
 	const { wcf: { items = [] } } = props;
 
 	return (
 		<React.Fragment>
-			{items.map(item => (
-				<p key={item.id || item.name}>
-					<label
-						htmlFor={item.id || item.name}
-						dangerouslySetInnerHTML={{ __html: item.label }}
-					/>
-					<br />
-					{renderField(item)}
-				</p>
-			))}
+			{items.map(item => {
+				const Field = getItemComponent(item);
+
+				return item.noSection ? (
+					<Field {...item} />
+				) : (
+					<p key={item.id}>
+						<label
+							htmlFor={item.id}
+							dangerouslySetInnerHTML={{ __html: item.title }}
+						/>
+						<br />
+						<Field {...item} />
+					</p>
+				);
+			})}
 		</React.Fragment>
 	);
 };

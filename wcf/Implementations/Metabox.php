@@ -4,7 +4,7 @@ namespace WpifyCustomFields\Implementations;
 
 use WP_Post;
 
-final class Metabox {
+final class Metabox extends AbstractImplementation {
 	private $id;
 
 	private $title;
@@ -41,7 +41,7 @@ final class Metabox {
 		$this->context       = $args['context'];
 		$this->priority      = $args['priority'];
 		$this->callback_args = $args['callback_args'];
-		$this->items         = $args['items'];
+		$this->items         = $this->prepare_items( $args['items'] );
 		$this->post_types    = $args['post_types'];
 		$this->nonce         = $args['id'] . '_nonce';
 

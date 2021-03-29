@@ -2,9 +2,7 @@
 
 namespace WpifyCustomFields\Implementations;
 
-use WC_Product;
-
-final class ProductOptions {
+final class ProductOptions extends AbstractImplementation {
 	/** @var array */
 	private $tab;
 
@@ -18,14 +16,14 @@ final class ProductOptions {
 		 * show_if_external, hide_if_external, hide_if_grouped, hide_if_virtual
 		 */
 		$args = wp_parse_args( $args, array(
-				'tab'   => array(
+				'tab' => array(
 						'id'       => 'general',
 						'label'    => null,
 						'priority' => 100,
 						'target'   => 'general_product_data',
 						'class'    => array(),
 				),
-				'items' => array(),
+				$this->items = $this->prepare_items( $args['items'] ),
 		) );
 
 		$this->tab   = $args['tab'];
@@ -124,15 +122,15 @@ final class ProductOptions {
 		return get_post_meta( $product_id, $name, true );
 	}
 
-	public function set_field($product_id, $name, $value) {
-		// TODO: Sanitize the item by it's type
-		return update_post_meta( $product_id, $name, $value );
-	}
-
 	public function save( $post_id ) {
 		foreach ( $this->items as $item ) {
 			$value = $_POST[ $item['name'] ];
 			$this->set_field( $post_id, $item['name'], $value );
 		}
+	}
+
+	public function set_field( $product_id, $name, $value ) {
+		// TODO: Sanitize the item by it's type
+		return update_post_meta( $product_id, $name, $value );
 	}
 }
