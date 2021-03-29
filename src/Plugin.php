@@ -131,6 +131,11 @@ class Plugin extends AbstractPlugin {
 				'title' => 'Example time',
 			),
 			array(
+				'type'  => 'group',
+				'name'  => 'some_example_group',
+				'title' => 'Example group',
+			),
+			array(
 				'type'  => 'textarea',
 				'name'  => 'some_example_textarea',
 				'title' => 'Example textarea',
