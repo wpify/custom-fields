@@ -13,11 +13,11 @@ const Options = (props) => {
 				const Field = getItemComponent(item);
 
 				return Field.noSection ? (
-					<Field {...item} />
+					<Field {...props} {...item} />
 				) : (
 					<p key={item.id} className="form-field">
 						<label htmlFor={item.id} dangerouslySetInnerHTML={{ __html: item.title }}/>
-						<Field {...item} />
+						<Field {...props} {...item} />
 					</p>
 				);
 			})}

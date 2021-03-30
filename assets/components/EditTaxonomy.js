@@ -15,7 +15,7 @@ const EditTaxonomy = (props) => {
 					<tr key={item.id} className="form-field">
 						{Field.noSection ? (
 							<td colSpan={2} style={{ padding: 0 }}>
-								<Field {...item} />
+								<Field {...props} {...item} />
 							</td>
 						) : (
 							<React.Fragment>
@@ -23,7 +23,7 @@ const EditTaxonomy = (props) => {
 									<label htmlFor={item.id} dangerouslySetInnerHTML={{ __html: item.title }}/>
 								</th>
 								<td>
-									<Field {...item} />
+									<Field {...props} {...item} />
 								</td>
 							</React.Fragment>
 						)}

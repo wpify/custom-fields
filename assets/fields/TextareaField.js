@@ -1,36 +1,36 @@
 /* eslint-disable react/prop-types */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import classnames from 'classnames';
 
 const TextareaField = (props) => {
 	const {
-		name,
-		id = name,
+		id,
 		value,
-		onChange = () => null,
+		onChange,
 		description,
 		custom_attributes,
 		className,
-		type,
+		group_level = 0,
 	} = props;
 
 	const [currentValue, setCurrentValue] = useState(value);
 
-	useEffect(() => {
-		onChange(currentValue);
-	}, [currentValue]);
+	const handleChange = useCallback((event) => {
+		setCurrentValue(event.target.value);
 
-	const handleChange = (event) => setCurrentValue(event.target.value);
+		if (onChange) {
+			onChange(event.target.value);
+		}
+	}, [setCurrentValue, onChange]);
 
 	const describedBy = description ? id + '-description' : null;
 
 	return (
 		<React.Fragment>
 			<textarea
-				type={type}
-				name={name}
 				id={id}
+				name={group_level === 0 && id}
 				onChange={handleChange}
 				aria-describedby={description && describedBy}
 				className={classnames('large-text', className)}

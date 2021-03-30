@@ -5,13 +5,20 @@ import classnames from 'classnames';
 import InputField from './InputField';
 
 const TimeField = (props) => {
-	const { className, ...rest } = props;
+	const { id, className, onChange } = props;
+
+	const handleChange = (value) => {
+		if (onChange) {
+			onChange({ [id]: value });
+		}
+	};
 
 	return (
 		<InputField
-			className={classnames(className)}
-			{...rest}
+			{...props}
 			type="time"
+			className={classnames(className)}
+			onChange={handleChange}
 		/>
 	);
 };

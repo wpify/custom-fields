@@ -16,7 +16,7 @@ const AddTaxonomy = (props) => {
 						{!Field.noSection && (
 							<label htmlFor={item.id} dangerouslySetInnerHTML={{ __html: item.title }}/>
 						)}
-						<Field {...item} />
+						<Field {...props} {...item} />
 					</div>
 				);
 			})}

@@ -21,38 +21,20 @@ import DateField from './fields/DateField';
 import TimeField from './fields/TimeField';
 import WeekField from './fields/WeekField';
 import TextareaField from './fields/TextareaField';
+import GroupField from './fields/GroupField';
+import RootWrapper from './components/RootWrapper';
 
 const WcfApp = (props) => {
 	const { wcf: { object_type } } = props;
 
-	if (['options_page', 'woocommerce_settings'].includes(object_type)) {
-		return <Options {...props} />;
-	}
-
-	if (object_type === 'metabox') {
-		return <Metabox {...props} />;
-	}
-
-	if (object_type === 'product_options') {
-		return <ProductOptions {...props} />;
-	}
-
-	if (object_type === 'add_taxonomy') {
-		return <AddTaxonomy {...props} />;
-	}
-
-	if (object_type === 'edit_taxonomy') {
-		return <EditTaxonomy {...props} />;
-	}
-
-	return null;
+	return <RootWrapper object_type={object_type} {...props} />
 };
 
 WcfApp.propTypes = {
 	wcf: PT.object,
 };
 
-const registerFields = () => {
+const renderWcf = () => {
 	registerFieldType('text', TextField);
 	registerFieldType('url', UrlField);
 	registerFieldType('email', EmailField);
@@ -67,13 +49,13 @@ const registerFields = () => {
 	registerFieldType('time', TimeField);
 	registerFieldType('week', WeekField);
 	registerFieldType('textarea', TextareaField);
-};
-
-const renderWcf = () => {
-	registerFields();
+	registerFieldType('group', GroupField);
 
 	document.querySelectorAll('.js-wcf[data-wcf]').forEach((container) => {
 		const props = parseDataset(container.dataset);
+
+		console.log(props.wcf.items);
+
 		ReactDOM.render(<WcfApp {...props} />, container);
 	});
 };

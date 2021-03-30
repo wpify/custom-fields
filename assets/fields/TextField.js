@@ -5,13 +5,20 @@ import classnames from 'classnames';
 import InputField from './InputField';
 
 const TextField = (props) => {
-	const { className, ...rest } = props;
+	const { id, className, onChange } = props;
+
+	const handleChange = (value) => {
+		if (onChange) {
+			onChange({ [id]: value });
+		}
+	};
 
 	return (
 		<InputField
-			className={classnames('regular-text', className)}
-			{...rest}
+			{...props}
 			type="text"
+			className={classnames('regular-text', className)}
+			onChange={handleChange}
 		/>
 	);
 };

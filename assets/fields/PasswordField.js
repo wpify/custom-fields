@@ -5,14 +5,23 @@ import classnames from 'classnames';
 import InputField from './InputField';
 
 const PasswordField = (props) => {
-	const { className, ...rest } = props;
+	const { id, className, onChange } = props;
+
+	const handleChange = (value) => {
+		if (onChange) {
+			onChange({ [id]: value });
+		}
+	};
 
 	return (
-		<InputField
-			className={classnames('regular-text', className)}
-			{...rest}
-			type="password"
-		/>
+		<React.Fragment>
+			<InputField
+				{...props}
+				type="password"
+				className={classnames('regular-text', className)}
+				onChange={handleChange}
+			/>
+		</React.Fragment>
 	);
 };
 

@@ -5,15 +5,22 @@ import classnames from 'classnames';
 import InputField from './InputField';
 
 const NumberField = (props) => {
-	const { className, max, ...rest } = props;
+	const { id, className, max, onChange } = props;
+
+	const handleChange = (value) => {
+		if (onChange) {
+			onChange({ [id]: value });
+		}
+	};
 
 	return (
 		<InputField
+			{...props}
+			type="number"
 			className={classnames(className, {
 				'small-text': max < 9999 || !max,
 			})}
-			{...rest}
-			type="number"
+			onChange={handleChange}
 		/>
 	);
 };

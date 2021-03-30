@@ -119,7 +119,7 @@ final class Options extends AbstractImplementation {
 		foreach ( $this->items as $item ) {
 			register_setting(
 				$this->menu_slug,
-				$item['name']
+				$item['id']
 			);
 		}
 	}
@@ -176,9 +176,9 @@ final class Options extends AbstractImplementation {
 		<?php
 	}
 
-	public function set_field( $option, $value ) {
+	public function set_field( $name, $value ) {
 		// TODO: Sanitize
-		return update_option( $option, $value );
+		return update_option( $name, $value );
 	}
 
 	public function render_section() {

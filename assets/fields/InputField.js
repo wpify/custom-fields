@@ -1,27 +1,29 @@
 /* eslint-disable react/prop-types */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 const InputField = (props) => {
 	const {
-		name,
-		id = name,
+		id,
 		value,
-		onChange = () => null,
+		onChange,
 		description,
 		suffix,
-		custom_attributes,
+		custom_attributes = {},
+		group_level = 0,
 		className,
 		type,
 	} = props;
 
 	const [currentValue, setCurrentValue] = useState(value);
 
-	useEffect(() => {
-		onChange(currentValue);
-	}, [currentValue]);
+	const handleChange = useCallback((event) => {
+		setCurrentValue(event.target.value);
 
-	const handleChange = (event) => setCurrentValue(event.target.value);
+		if (onChange) {
+			onChange(event.target.value);
+		}
+	}, [setCurrentValue, onChange]);
 
 	const describedBy = description ? id + '-description' : null;
 
@@ -29,8 +31,8 @@ const InputField = (props) => {
 		<React.Fragment>
 			<input
 				type={type}
-				name={name}
 				id={id}
+				name={group_level === 0 && id}
 				value={currentValue}
 				onChange={handleChange}
 				aria-describedby={describedBy}

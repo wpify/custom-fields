@@ -5,13 +5,20 @@ import classnames from 'classnames';
 import InputField from './InputField';
 
 const WeekField = (props) => {
-	const { className, ...rest } = props;
+	const { id, className, onChange } = props;
+
+	const handleChange = (value) => {
+		if (onChange) {
+			onChange({ [id]: value });
+		}
+	};
 
 	return (
 		<InputField
-			className={classnames(className)}
-			{...rest}
+			{...props}
 			type="week"
+			className={classnames('regular-text code', className)}
+			onChange={handleChange}
 		/>
 	);
 };

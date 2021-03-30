@@ -64,28 +64,28 @@ class Plugin extends AbstractPlugin {
 			),
 			array(
 				'type'        => 'text',
-				'name'        => 'some_custom_field',
+				'id'          => 'some_custom_field',
 				'title'       => 'This is my custom field',
 				'description' => 'This is some description of the field',
 			),
 			array(
 				'type'  => 'url',
-				'name'  => 'some_example_url',
+				'id'    => 'some_example_url',
 				'title' => 'Example URL',
 			),
 			array(
 				'type'  => 'email',
-				'name'  => 'some_example_email',
+				'id'    => 'some_example_email',
 				'title' => 'Example email',
 			),
 			array(
 				'type'  => 'tel',
-				'name'  => 'some_example_tel',
+				'id'    => 'some_example_tel',
 				'title' => 'Example tel',
 			),
 			array(
 				'type'              => 'number',
-				'name'              => 'some_example_number',
+				'id'                => 'some_example_number',
 				'title'             => 'Example number',
 				'custom_attributes' => array(
 					'min'  => 0,
@@ -97,47 +97,78 @@ class Plugin extends AbstractPlugin {
 			),
 			array(
 				'type'  => 'password',
-				'name'  => 'some_example_password',
+				'id'    => 'some_example_password',
 				'title' => 'Example password',
 			),
 			array(
 				'type'  => 'color',
-				'name'  => 'some_example_color',
+				'id'    => 'some_example_color',
 				'title' => 'Example color',
 			),
 			array(
 				'type'  => 'datetime',
-				'name'  => 'some_example_datetime',
+				'id'    => 'some_example_datetime',
 				'title' => 'Example datetime',
 			),
 			array(
 				'type'  => 'week',
-				'name'  => 'some_example_week',
+				'id'    => 'some_example_week',
 				'title' => 'Example week',
 			),
 			array(
 				'type'  => 'month',
-				'name'  => 'some_example_month',
+				'id'    => 'some_example_month',
 				'title' => 'Example month',
 			),
 			array(
 				'type'  => 'date',
-				'name'  => 'some_example_date',
+				'id'    => 'some_example_date',
 				'title' => 'Example date',
 			),
 			array(
 				'type'  => 'time',
-				'name'  => 'some_example_time',
+				'id'    => 'some_example_time',
 				'title' => 'Example time',
 			),
 			array(
 				'type'  => 'group',
-				'name'  => 'some_example_group',
+				'id'    => 'some_example_group',
 				'title' => 'Example group',
+				'items' => array(
+					array(
+						'type'        => 'title',
+						'title'       => 'Some title 2',
+						'description' => 'Some description 2',
+					),
+					array(
+						'type'        => 'text',
+						'id'          => 'some_custom_field_2',
+						'title'       => 'This is my custom field 2',
+						'description' => 'This is some description of the field 2',
+					),
+					array(
+						'type'  => 'group',
+						'title' => 'Example group 2',
+						'id'    => 'some_example_group_2',
+						'items' => array(
+							array(
+								'type'        => 'title',
+								'title'       => 'Some title 3',
+								'description' => 'Some description 3',
+							),
+							array(
+								'type'        => 'text',
+								'id'          => 'some_custom_field_3',
+								'title'       => 'This is my custom field 3',
+								'description' => 'This is some description of the field 3',
+							),
+						)
+					)
+				)
 			),
 			array(
+				'id'    => 'some_example_textarea',
 				'type'  => 'textarea',
-				'name'  => 'some_example_textarea',
 				'title' => 'Example textarea',
 			),
 		);

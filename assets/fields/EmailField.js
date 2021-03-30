@@ -5,13 +5,20 @@ import classnames from 'classnames';
 import InputField from './InputField';
 
 const UrlField = (props) => {
-	const { className, ...rest } = props;
+	const { id, className, onChange } = props;
+
+	const handleChange = (value) => {
+		if (onChange) {
+			onChange({ [id]: value });
+		}
+	};
 
 	return (
 		<InputField
-			className={classnames('regular-text ltr', className)}
-			{...rest}
+			{...props}
 			type="email"
+			className={classnames('regular-text ltr', className)}
+			onChange={handleChange}
 		/>
 	);
 };

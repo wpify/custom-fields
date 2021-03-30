@@ -5,14 +5,21 @@ import classnames from 'classnames';
 import InputField from './InputField';
 
 const ColorField = (props) => {
-	const { className, ...rest } = props;
+	const { id, className, onChange } = props;
+
+	const handleChange = (value) => {
+		if (onChange) {
+			onChange({ [id]: value });
+		}
+	};
 
 	return (
 		<React.Fragment>
 			<InputField
-				className={classnames('colorpick', className)}
-				{...rest}
+				{...props}
 				type="color"
+				className={classnames('colorpick', className)}
+				onChange={handleChange}
 			/>
 		</React.Fragment>
 	);

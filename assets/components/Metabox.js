@@ -1,6 +1,6 @@
 import React from 'react';
 import PT from 'prop-types';
-import { getItemComponent, renderField } from '../helpers';
+import { getItemComponent } from '../helpers';
 
 const Options = (props) => {
 	const { wcf: { items = [] } } = props;
@@ -11,7 +11,7 @@ const Options = (props) => {
 				const Field = getItemComponent(item);
 
 				return Field.noSection ? (
-					<Field {...item} />
+					<Field {...props} {...item} />
 				) : (
 					<p key={item.id}>
 						<label
@@ -19,7 +19,7 @@ const Options = (props) => {
 							dangerouslySetInnerHTML={{ __html: item.title }}
 						/>
 						<br />
-						<Field {...item} />
+						<Field {...props} {...item} />
 					</p>
 				);
 			})}

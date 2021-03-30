@@ -9,8 +9,8 @@ const TitleField = (props) => {
 	return (
 		<React.Fragment>
 			<h2
-				className={classnames('regular-text ltr', className)}
 				{...rest}
+				className={classnames('regular-text ltr', className)}
 				dangerouslySetInnerHTML={{ __html: title }}
 			/>
 			{description && (
@@ -21,5 +21,6 @@ const TitleField = (props) => {
 };
 
 TitleField.noSection = true;
+TitleField.noLabel = true;
 
 export default TitleField;

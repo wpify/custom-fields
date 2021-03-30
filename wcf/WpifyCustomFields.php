@@ -19,6 +19,7 @@ final class WpifyCustomFields {
 
 	private function setup() {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+		add_filter( 'wcf_parse_group_value', array( $this, 'parse_group_value' ), 10, 2 );
 	}
 
 	public function admin_enqueue_scripts() {
@@ -44,5 +45,15 @@ final class WpifyCustomFields {
 
 	public function add_woocommerce_settings( $args = array() ) {
 		return new WooCommerceSettings( $args );
+	}
+
+	public function parse_group_value( $value, $item = array() ) {
+		$data = json_decode( $value, true );
+		
+		if ( is_array( $data ) ) {
+			return $data;
+		}
+
+		return array();
 	}
 }

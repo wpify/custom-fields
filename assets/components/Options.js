@@ -1,18 +1,10 @@
 import React from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
-import { getItemComponent, renderField } from '../helpers';
-
-const ItemWrapper = (item, index, isSectionOpen) => {
-	if (item.noSection) {
-		if (isSectionOpen) {
-			return null;
-		}
-	}
-};
+import { getItemComponent } from '../helpers';
 
 const Options = (props) => {
-	const { wcf = {}, className } = props;
+	const { wcf = {}, group_level, className } = props;
 	const { items = [] } = wcf;
 
 	return (
@@ -20,20 +12,23 @@ const Options = (props) => {
 			<tbody>
 			{items.map(item => {
 				const Field = getItemComponent(item);
+				const noSection = group_level > 0 ? false : Field.noSection;
 
 				return (
 					<tr key={item.name} valign="top">
-						{Field.noSection ? (
+						{noSection ? (
 							<td colSpan={2} style={{ padding: 0 }}>
-								<Field {...item} />
+								<Field {...props} {...item} />
 							</td>
 						) : (
 							<React.Fragment>
 								<th scope="row" className="titledesc">
-									<label htmlFor={item.id} dangerouslySetInnerHTML={{ __html: item.title }}/>
+									{!Field.noLabel && (
+										<label htmlFor={item.id} dangerouslySetInnerHTML={{ __html: item.title }}/>
+									)}
 								</th>
 								<td className={classnames('forminp', 'forminp-' + item.type)}>
-									<Field {...item} />
+									<Field {...props} {...item} />
 								</td>
 							</React.Fragment>
 						)}
@@ -48,6 +43,7 @@ const Options = (props) => {
 Options.propTypes = {
 	className: PT.string,
 	wcf: PT.object,
+	group_level: PT.number,
 };
 
 export default Options;

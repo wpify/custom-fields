@@ -5,14 +5,23 @@ import classnames from 'classnames';
 import InputField from './InputField';
 
 const TelField = (props) => {
-	const { className, ...rest } = props;
+	const { id, className, onChange } = props;
+
+	const handleChange = (value) => {
+		if (onChange) {
+			onChange({ [id]: value });
+		}
+	};
 
 	return (
-		<InputField
-			className={classnames('regular-text', className)}
-			{...rest}
-			type="tel"
-		/>
+		<React.Fragment>
+			<InputField
+				{...props}
+				type="tel"
+				className={classnames('regular-text', className)}
+				onChange={handleChange}
+			/>
+		</React.Fragment>
 	);
 };
 
