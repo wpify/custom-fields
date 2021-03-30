@@ -2,17 +2,29 @@
 
 namespace WpifyCustomFields\Implementations;
 
+use WpifyCustomFields\Parser;
+use WpifyCustomFields\Sanitizer;
+
 final class ProductOptions extends AbstractPostImplementation {
+	/** @var Parser */
+	private $parser;
+
+	/** @var Sanitizer */
+	private $sanitizer;
+
+	/** @var int */
 	private $product_id;
 
 	/** @var array */
 	private $tab;
 
+	/** @var array */
 	private $items;
 
+	/** @var bool */
 	private $is_new_tab = false;
 
-	public function __construct( array $args = array() ) {
+	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer ) {
 		/*
 		 * Possible classes: hide_if_grouped, show_if_simple, show_if_variable, show_if_grouped,
 		 * show_if_external, hide_if_external, hide_if_grouped, hide_if_virtual
@@ -32,6 +44,8 @@ final class ProductOptions extends AbstractPostImplementation {
 		$this->tab        = $args['tab'];
 		$this->items      = $this->prepare_items( $args['items'] );
 		$this->product_id = $args['product_id'];
+		$this->parser     = $parser;
+		$this->sanitizer  = $sanitizer;
 
 		if ( empty( $this->tab['target'] ) ) {
 			$this->tab['target'] = $this->tab['id'] . '_product_data';
@@ -45,14 +59,19 @@ final class ProductOptions extends AbstractPostImplementation {
 			$this->tab['class'] = array();
 		}
 
-		$this->setup();
-	}
-
-	public function setup() {
 		add_filter( 'woocommerce_product_data_tabs', array( $this, 'woocommerce_product_data_tabs' ), 98 );
 		add_action( 'woocommerce_product_data_panels', array( $this, 'render_data_panels' ) );
 		add_action( 'woocommerce_product_options_' . $this->tab['target'], array( $this, 'render_custom_fields' ) );
 		add_action( 'woocommerce_process_product_meta', array( $this, 'save' ) );
+
+		foreach ( $this->items as $item ) {
+			$sanitizer = $this->sanitizer->get_sanitizer( $item );
+
+			register_post_meta( 'product', $item['id'], array(
+					'single'            => true,
+					'sanitize_callback' => $sanitizer,
+			) );
+		}
 	}
 
 	public function woocommerce_product_data_tabs( array $tabs ) {

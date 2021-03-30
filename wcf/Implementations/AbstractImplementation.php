@@ -5,7 +5,7 @@ namespace WpifyCustomFields\Implementations;
 abstract class AbstractImplementation {
 	abstract public function set_field( $name, $value );
 
-	public function render_fields( $object_type = '' ) {
+	public function render_fields( $object_type = '', $tag = 'div' ) {
 		$data = $this->get_data();
 
 		if ( ! empty( $object_type ) ) {
@@ -15,7 +15,7 @@ abstract class AbstractImplementation {
 		$data = $this->fill_values( $data );
 		$json = wp_json_encode( $data );
 		?>
-		<div class="js-wcf" data-wcf="<?php echo esc_attr( $json ) ?>"></div>
+		<<?php echo $tag ?> class="js-wcf" data-wcf="<?php echo esc_attr( $json ) ?>"></<?php echo $tag ?>>
 		<?php
 	}
 
@@ -25,7 +25,7 @@ abstract class AbstractImplementation {
 		foreach ( $definition['items'] as $key => $item ) {
 			$value = isset( $values[ $item['id'] ] )
 					? $values[ $item['id'] ]
-					: apply_filters( 'wcf_parse_' . $item['type'] . '_value', $this->get_field( $item['id'] ), $item );
+					: $this->parse_value( $this->get_field( $item['id'] ), $item );
 
 			if ( ! empty( $definition['items'][ $key ]['items'] ) ) {
 				$definition['items'][ $key ]['items'] = array_map(
@@ -44,6 +44,10 @@ abstract class AbstractImplementation {
 		}
 
 		return $definition;
+	}
+
+	protected function parse_value( $value, $item = array() ) {
+		return apply_filters( 'wcf_parse_' . $item['type'] . '_value', $value, $item );
 	}
 
 	abstract public function get_field( $name );

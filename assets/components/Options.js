@@ -8,7 +8,7 @@ const Options = (props) => {
 	const { items = [] } = wcf;
 
 	return (
-		<table className={classnames('form-table', className)} role="presentation">
+		<table className={classnames('form-table', className)} role="presentation" style={{ tableLayout: 'auto' }}>
 			<tbody>
 			{items.map(item => {
 				const Field = getItemComponent(item);

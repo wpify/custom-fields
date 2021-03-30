@@ -3,7 +3,7 @@ import PT from 'prop-types';
 import { getItemComponent } from '../helpers';
 
 const EditTaxonomy = (props) => {
-	const { wcf = {} } = props;
+	const { group_level = 0, wcf = {} } = props;
 	const { items = [] } = wcf;
 
 	return (
@@ -11,16 +11,20 @@ const EditTaxonomy = (props) => {
 			{items.map(item => {
 				const Field = getItemComponent(item);
 
+				const noSection = group_level > 0 ? false : Field.noSection;
+
 				return (
 					<tr key={item.id} className="form-field">
-						{Field.noSection ? (
+						{noSection ? (
 							<td colSpan={2} style={{ padding: 0 }}>
 								<Field {...props} {...item} />
 							</td>
 						) : (
 							<React.Fragment>
 								<th>
-									<label htmlFor={item.id} dangerouslySetInnerHTML={{ __html: item.title }}/>
+									{!Field.noLabel && (
+										<label htmlFor={item.id} dangerouslySetInnerHTML={{ __html: item.title }} />
+									)}
 								</th>
 								<td>
 									<Field {...props} {...item} />
@@ -37,6 +41,7 @@ const EditTaxonomy = (props) => {
 EditTaxonomy.propTypes = {
 	className: PT.string,
 	wcf: PT.object,
+	group_level: PT.number,
 };
 
 export default EditTaxonomy;

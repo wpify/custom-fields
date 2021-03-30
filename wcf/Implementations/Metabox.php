@@ -3,29 +3,24 @@
 namespace WpifyCustomFields\Implementations;
 
 use WP_Post;
+use WpifyCustomFields\Parser;
+use WpifyCustomFields\Sanitizer;
 
 final class Metabox extends AbstractPostImplementation {
+	private $parser;
+	private $sanitizer;
 	private $id;
-
 	private $title;
-
 	private $screen;
-
 	private $context;
-
 	private $priority;
-
 	private $callback_args;
-
 	private $items;
-
 	private $post_types;
-
 	private $nonce;
-
 	private $post_id;
 
-	public function __construct( array $args ) {
+	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer ) {
 		$args = wp_parse_args( $args, array(
 			'id'            => null,
 			'title'         => null,
@@ -48,13 +43,22 @@ final class Metabox extends AbstractPostImplementation {
 		$this->post_types    = $args['post_types'];
 		$this->nonce         = $args['id'] . '_nonce';
 		$this->post_id       = $args['post_id'];
+		$this->parser        = $parser;
+		$this->sanitizer     = $sanitizer;
 
-		$this->setup();
-	}
-
-	public function setup() {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 		add_action( 'save_post', array( $this, 'save' ) );
+
+		foreach ( $this->items as $item ) {
+			foreach ( $this->post_types as $post_type ) {
+				$sanitizer = $this->sanitizer->get_sanitizer( $item );
+
+				register_post_meta( $post_type, $item['id'], array(
+					'single'            => true,
+					'sanitize_callback' => $sanitizer,
+				) );
+			}
+		}
 	}
 
 	public function add_meta_box( $post_type ) {
@@ -129,13 +133,11 @@ final class Metabox extends AbstractPostImplementation {
 		$this->set_post( $post_id );
 
 		foreach ( $this->items as $item ) {
-			$value = $_POST[ $item['name'] ];
-			$this->set_field( $item['name'], $value );
+			$this->set_field( $item['id'], $_POST[ $item['id'] ] );
 		}
 	}
 
 	public function set_field( $name, $value ) {
-		// TODO: Sanitize the item by it's type
 		return update_post_meta( $this->post_id, $name, $value );
 	}
 }

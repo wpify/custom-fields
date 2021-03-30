@@ -10,11 +10,15 @@ const InnerGroup = (props) => {
 
 		return (
 			<React.Fragment key={item.id}>
-				<label
-					htmlFor={item.id}
-					dangerouslySetInnerHTML={{ __html: item.title }}
-				/>
-				<br/>
+				{!Field.noLabel && (
+					<React.Fragment>
+						<label
+							htmlFor={item.id}
+							dangerouslySetInnerHTML={{ __html: item.title }}
+						/>
+						<br/>
+					</React.Fragment>
+				)}
 				<Field {...props} {...item} />
 			</React.Fragment>
 		);

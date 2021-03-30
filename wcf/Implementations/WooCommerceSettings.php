@@ -3,28 +3,41 @@
 namespace WpifyCustomFields\Implementations;
 
 use WC_Admin_Settings;
+use WpifyCustomFields\Parser;
+use WpifyCustomFields\Sanitizer;
 
 final class WooCommerceSettings extends AbstractImplementation {
+	/** @var Parser */
+	private $parser;
+
+	/** @var Sanitizer */
+	private $sanitizer;
+
+	/** @var array */
 	private $tab;
+
+	/** @var array */
 	private $section;
+
+	/** @var array */
 	private $items;
+
+	/** @var bool */
 	private $is_new_tab = false;
 
-	public function __construct( array $args = array() ) {
+	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer ) {
 		$args = wp_parse_args( $args, array(
 				'tab'     => array( 'id' => '', 'label' => null ),
 				'section' => array( 'id' => '', 'label' => null ),
 				'items'   => array(),
 		) );
 
-		$this->tab     = $args['tab'];
-		$this->section = $args['section'];
-		$this->items   = $this->prepare_items( $args['items'] );
+		$this->tab       = $args['tab'];
+		$this->section   = $args['section'];
+		$this->items     = $this->prepare_items( $args['items'] );
+		$this->parser    = $parser;
+		$this->sanitizer = $sanitizer;
 
-		$this->setup();
-	}
-
-	public function setup() {
 		add_filter( 'woocommerce_settings_tabs_array', array( $this, 'woocommerce_settings_tabs_array' ), 30 );
 		add_filter( 'woocommerce_get_sections_' . $this->tab['id'], array( $this, 'woocommerce_get_sections' ) );
 		add_action( 'woocommerce_settings_' . $this->tab['id'], array( $this, 'render' ), 11 );
@@ -101,12 +114,20 @@ final class WooCommerceSettings extends AbstractImplementation {
 
 	public function save() {
 		foreach ( $this->items as $item ) {
-			$this->set_field( $item['name'], $_POST[ $item['name'] ] );
+			if ( ! empty( $item['id'] ) ) {
+				$this->set_field( $item['id'], $_POST[ $item['id'] ] );
+			}
 		}
 	}
 
 	public function set_field( $name, $value ) {
-		// TODO: Sanitize
-		return update_option( $name, $value );
+		foreach ( $this->items as $item ) {
+			if ( $item['id'] === $name ) {
+				$sanitizer       = $this->sanitizer->get_sanitizer( $item );
+				$sanitized_value = $sanitizer( wp_unslash( $value ) );
+
+				return update_option( $name, $sanitized_value );
+			}
+		}
 	}
 }

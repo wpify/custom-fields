@@ -27,7 +27,7 @@ const GroupField = (props) => {
 	return (
 		<React.Fragment>
 			{group_level === 0 && (
-				<input type="hidden" id={id} name={id} value={JSON.stringify(currentValue)} data-group-level={group_level}/>
+				<input type="hidden" id={id} name={id} value={JSON.stringify(currentValue)} />
 			)}
 			<RootWrapper {...props} onChange={handleChange} wcf={{ ...wcf, items }} group_level={group_level + 1}/>
 		</React.Fragment>
