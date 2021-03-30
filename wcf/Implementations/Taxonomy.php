@@ -22,6 +22,13 @@ final class Taxonomy extends AbstractPostImplementation {
 	/** @var array */
 	private $items;
 
+	/**
+	 * Taxonomy constructor.
+	 *
+	 * @param array $args
+	 * @param Parser $parser
+	 * @param Sanitizer $sanitizer
+	 */
 	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer ) {
 		$args = wp_parse_args( $args, array(
 			'taxonomy' => null,
@@ -50,10 +57,16 @@ final class Taxonomy extends AbstractPostImplementation {
 		}
 	}
 
+	/**
+	 * @param string $taxonomy
+	 */
 	public function render_add_form( $taxonomy ) {
 		$this->render_fields( 'add_taxonomy' );
 	}
 
+	/**
+	 * @return array
+	 */
 	public function get_data() {
 		return array(
 			'object_type' => 'taxonomy',
@@ -62,20 +75,34 @@ final class Taxonomy extends AbstractPostImplementation {
 		);
 	}
 
+	/**
+	 * @param WP_Term $term
+	 */
 	public function render_edit_form( WP_Term $term ) {
 		$this->set_post( $term->term_id );
 		$this->render_fields( 'edit_taxonomy', 'tbody' );
 
 	}
 
+	/**
+	 * @param number $post_id
+	 */
 	public function set_post( $post_id ) {
 		$this->term_id = $post_id;
 	}
 
+	/**
+	 * @param string $name
+	 *
+	 * @return mixed
+	 */
 	public function get_field( $name ) {
 		return get_term_meta( $this->term_id, $name, true );
 	}
 
+	/**
+	 * @param number $term_id
+	 */
 	public function save( $term_id ) {
 		$this->set_post( $term_id );
 
@@ -84,6 +111,12 @@ final class Taxonomy extends AbstractPostImplementation {
 		}
 	}
 
+	/**
+	 * @param string $name
+	 * @param string $value
+	 *
+	 * @return bool|int|\WP_Error
+	 */
 	public function set_field( $name, $value ) {
 		return update_term_meta( $this->term_id, $name, $value );
 	}

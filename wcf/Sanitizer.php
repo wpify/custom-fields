@@ -3,6 +3,7 @@
 namespace WpifyCustomFields;
 
 final class Sanitizer {
+	/** @var string[] */
 	private $sanitizers = array(
 		'group'    => 'sanitize_group_value',
 		'text'     => 'sanitize_text_field',
@@ -20,6 +21,9 @@ final class Sanitizer {
 		'week'     => 'sanitize_text_field',
 	);
 
+	/**
+	 * Sanitizer constructor.
+	 */
 	public function __construct() {
 		foreach ( $this->sanitizers as $type => $function_name ) {
 			add_filter( 'wcf_sanitize_' . $type . '_value_callback', function ( $callable ) use ( $function_name, $type ) {
@@ -34,10 +38,20 @@ final class Sanitizer {
 		}
 	}
 
+	/**
+	 * @param $value
+	 *
+	 * @return mixed
+	 */
 	public function no_sanitizer( $value ) {
 		return $value;
 	}
 
+	/**
+	 * @param $value
+	 *
+	 * @return array|mixed
+	 */
 	public function sanitize_group_value( $value ) {
 		if ( is_string( $value ) ) {
 			$value = json_decode( $value, true );
@@ -50,6 +64,11 @@ final class Sanitizer {
 		return array();
 	}
 
+	/**
+	 * @param $value
+	 *
+	 * @return float|null
+	 */
 	public function sanitize_number_value( $value ) {
 		if ( is_numeric( $value ) ) {
 			return floatval( $value );
@@ -58,6 +77,11 @@ final class Sanitizer {
 		return null;
 	}
 
+	/**
+	 * @param $item
+	 *
+	 * @return mixed|void
+	 */
 	public function get_sanitizer( $item ) {
 		return apply_filters( 'wcf_sanitize_' . $item['type'] . '_value_callback', array( $this, 'no_sanitizer' ) );
 	}

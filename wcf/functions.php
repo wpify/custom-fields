@@ -3,7 +3,8 @@
 use WpifyCustomFields\WpifyCustomFields;
 
 /**
- * Gets an instance of the plugin
+ * Gets an instance of the WCF plugin
+ *
  * @return WpifyCustomFields
  */
 function get_wpify_custom_fields(): WpifyCustomFields {

@@ -3,10 +3,14 @@
 namespace WpifyCustomFields;
 
 final class Parser {
+	/** @var string[] */
 	private $parsers = array(
 		'group' => 'parse_group_value',
 	);
 
+	/**
+	 * Parser constructor.
+	 */
 	public function __construct() {
 		foreach ( $this->parsers as $type => $parser ) {
 			$this->parsers[ $type ] = array( $this, $parser );
@@ -14,10 +18,20 @@ final class Parser {
 		}
 	}
 
+	/**
+	 * @param $value
+	 *
+	 * @return mixed
+	 */
 	public function no_parser( $value ) {
 		return $value;
 	}
 
+	/**
+	 * @param $value
+	 *
+	 * @return array|mixed|string
+	 */
 	public function parse_group_value( $value ) {
 		if ( is_serialized_string( $value ) ) {
 			$value = maybe_unserialize( $value );
@@ -32,6 +46,11 @@ final class Parser {
 		return array();
 	}
 
+	/**
+	 * @param $item
+	 *
+	 * @return mixed|void
+	 */
 	public function get_parser( $item ) {
 		return apply_filters(
 			'wcf_parse_' . $item['type'] . '_value',

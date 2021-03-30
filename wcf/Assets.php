@@ -3,17 +3,39 @@
 namespace WpifyCustomFields;
 
 final class Assets {
+	/** @var string */
 	private $assets_path;
+
+	/** @var array */
 	private $manifest = array();
 
+	/**
+	 * Assets constructor.
+	 *
+	 * @param $assets_path
+	 */
 	public function __construct( $assets_path ) {
 		$this->assets_path = $assets_path;
 	}
 
+	/**
+	 * @param string $file
+	 * @param array $deps
+	 * @param false $in_footer
+	 * @param array $localize
+	 */
 	public function enqueue_script( string $file, array $deps = array(), $in_footer = false, $localize = array() ) {
 		wp_enqueue_script( $this->register_script( $file, $deps, $in_footer, $localize ) );
 	}
 
+	/**
+	 * @param string $file
+	 * @param array $deps
+	 * @param false $in_footer
+	 * @param array $localize
+	 *
+	 * @return mixed|null
+	 */
 	public function register_script( string $file, array $deps = array(), $in_footer = false, $localize = array() ) {
 		$data = $this->get_file( $file );
 
@@ -34,6 +56,11 @@ final class Assets {
 		}
 	}
 
+	/**
+	 * @param $file
+	 *
+	 * @return mixed
+	 */
 	private function get_file( $file ) {
 		$manifest = $this->get_manifest();
 
@@ -42,6 +69,9 @@ final class Assets {
 		}
 	}
 
+	/**
+	 * @return array
+	 */
 	private function get_manifest() {
 		if ( empty( $this->manifest ) && file_exists( $this->assets_path . '/assets-manifest.json' ) ) {
 			$deps = array();
@@ -77,6 +107,11 @@ final class Assets {
 		return $this->manifest;
 	}
 
+	/**
+	 * @param string $path
+	 *
+	 * @return string
+	 */
 	private function path_to_url( string $path ) {
 		$url = str_replace(
 			wp_normalize_path( untrailingslashit( ABSPATH ) ),
@@ -87,10 +122,22 @@ final class Assets {
 		return esc_url_raw( $url );
 	}
 
+	/**
+	 * @param string $file
+	 * @param array $deps
+	 * @param string $media
+	 */
 	public function enqueue_style( string $file, array $deps = array(), string $media = 'all' ) {
 		wp_enqueue_style( $this->register_style( $file, $deps, $media ) );
 	}
 
+	/**
+	 * @param string $file
+	 * @param array $deps
+	 * @param string $media
+	 *
+	 * @return mixed|null
+	 */
 	public function register_style( string $file, array $deps = array(), string $media = 'all' ) {
 		$data = $this->get_file( $file );
 

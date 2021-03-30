@@ -3,8 +3,18 @@
 namespace WpifyCustomFields\Implementations;
 
 abstract class AbstractImplementation {
+	/**
+	 * @param string $name
+	 * @param string $value
+	 *
+	 * @return mixed
+	 */
 	abstract public function set_field( $name, $value );
 
+	/**
+	 * @param string $object_type
+	 * @param string $tag
+	 */
 	public function render_fields( $object_type = '', $tag = 'div' ) {
 		$data = $this->get_data();
 
@@ -19,8 +29,17 @@ abstract class AbstractImplementation {
 		<?php
 	}
 
+	/**
+	 * @return array
+	 */
 	abstract public function get_data();
 
+	/**
+	 * @param array $definition
+	 * @param array $values
+	 *
+	 * @return array
+	 */
 	private function fill_values( $definition, array $values = array() ) {
 		foreach ( $definition['items'] as $key => $item ) {
 			$value = isset( $values[ $item['id'] ] )
@@ -46,12 +65,28 @@ abstract class AbstractImplementation {
 		return $definition;
 	}
 
+	/**
+	 * @param string $value
+	 * @param array $item
+	 *
+	 * @return mixed|void
+	 */
 	protected function parse_value( $value, $item = array() ) {
 		return apply_filters( 'wcf_parse_' . $item['type'] . '_value', $value, $item );
 	}
 
+	/**
+	 * @param string $name
+	 *
+	 * @return mixed
+	 */
 	abstract public function get_field( $name );
 
+	/**
+	 * @param array $items
+	 *
+	 * @return array
+	 */
 	protected function prepare_items( array $items = array() ) {
 		foreach ( $items as $key => $item ) {
 			$items[ $key ] = $this->normalize_item( $item );
@@ -60,6 +95,11 @@ abstract class AbstractImplementation {
 		return array_values( array_filter( $items ) );
 	}
 
+	/**
+	 * @param array $args
+	 *
+	 * @return array
+	 */
 	private function normalize_item( array $args = array() ) {
 		$args = wp_parse_args( $args, array(
 				'type'              => '',

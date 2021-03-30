@@ -48,6 +48,13 @@ final class Options extends AbstractImplementation {
 	/** @var array */
 	private $items;
 
+	/**
+	 * Options constructor.
+	 *
+	 * @param $args
+	 * @param Parser $parser
+	 * @param Sanitizer $sanitizer
+	 */
 	public function __construct( $args, Parser $parser, Sanitizer $sanitizer ) {
 		$args = wp_parse_args( $args, array(
 				'type'        => 'normal',
@@ -88,6 +95,9 @@ final class Options extends AbstractImplementation {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function register() {
 		if ( empty( $this->parent_slug ) ) {
 			$this->hook_suffix = add_menu_page(
@@ -112,6 +122,9 @@ final class Options extends AbstractImplementation {
 		}
 	}
 
+	/**
+	 * @return void
+	 */
 	public function register_settings() {
 		add_settings_section(
 				'general',
@@ -152,10 +165,18 @@ final class Options extends AbstractImplementation {
 		);
 	}
 
+	/**
+	 * @param string $name
+	 *
+	 * @return false|mixed|void
+	 */
 	public function get_field( $name ) {
 		return get_option( $name );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function render() {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
@@ -185,11 +206,20 @@ final class Options extends AbstractImplementation {
 		<?php
 	}
 
+	/**
+	 * @param string $name
+	 * @param string $value
+	 *
+	 * @return bool
+	 */
 	public function set_field( $name, $value ) {
 		return update_option( $name, $value );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function render_section() {
-		$this->render_fields();
+		return $this->render_fields();
 	}
 }

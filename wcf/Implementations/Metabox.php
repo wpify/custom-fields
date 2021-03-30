@@ -7,19 +7,49 @@ use WpifyCustomFields\Parser;
 use WpifyCustomFields\Sanitizer;
 
 final class Metabox extends AbstractPostImplementation {
+	/** @var Parser */
 	private $parser;
+
+	/** @var Sanitizer */
 	private $sanitizer;
+
+	/** @var string */
 	private $id;
+
+	/** @var string */
 	private $title;
+
+	/** @var string */
 	private $screen;
+
+	/** @var mixed */
 	private $context;
+
+	/** @var mixed */
 	private $priority;
+
+	/** @var mixed */
 	private $callback_args;
+
+	/** @var array */
 	private $items;
+
+	/** @var array */
 	private $post_types;
+
+	/** @var string */
 	private $nonce;
+
+	/** @var number */
 	private $post_id;
 
+	/**
+	 * Metabox constructor.
+	 *
+	 * @param array $args
+	 * @param Parser $parser
+	 * @param Sanitizer $sanitizer
+	 */
 	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer ) {
 		$args = wp_parse_args( $args, array(
 			'id'            => null,
@@ -61,6 +91,9 @@ final class Metabox extends AbstractPostImplementation {
 		}
 	}
 
+	/**
+	 * @param string $post_type
+	 */
 	public function add_meta_box( $post_type ) {
 		if ( in_array( $post_type, $this->post_types ) ) {
 			add_meta_box(
@@ -85,10 +118,16 @@ final class Metabox extends AbstractPostImplementation {
 		$this->render_fields();
 	}
 
+	/**
+	 * @param number $post_id
+	 */
 	public function set_post( $post_id ) {
 		$this->post_id = $post_id;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function get_data() {
 		return array(
 			'object_type'   => 'metabox',
@@ -103,10 +142,20 @@ final class Metabox extends AbstractPostImplementation {
 		);
 	}
 
+	/**
+	 * @param string $name
+	 *
+	 * @return mixed
+	 */
 	public function get_field( $name ) {
 		return get_post_meta( $this->post_id, $name, true );
 	}
 
+	/**
+	 * @param number $post_id
+	 *
+	 * @return mixed
+	 */
 	public function save( $post_id ) {
 		if ( ! isset( $_POST[ $this->nonce ] ) ) {
 			return $post_id;
@@ -137,6 +186,12 @@ final class Metabox extends AbstractPostImplementation {
 		}
 	}
 
+	/**
+	 * @param string $name
+	 * @param string $value
+	 *
+	 * @return bool|int
+	 */
 	public function set_field( $name, $value ) {
 		return update_post_meta( $this->post_id, $name, $value );
 	}

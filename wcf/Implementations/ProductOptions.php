@@ -24,6 +24,13 @@ final class ProductOptions extends AbstractPostImplementation {
 	/** @var bool */
 	private $is_new_tab = false;
 
+	/**
+	 * ProductOptions constructor.
+	 *
+	 * @param array $args
+	 * @param Parser $parser
+	 * @param Sanitizer $sanitizer
+	 */
 	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer ) {
 		/*
 		 * Possible classes: hide_if_grouped, show_if_simple, show_if_variable, show_if_grouped,
@@ -74,6 +81,11 @@ final class ProductOptions extends AbstractPostImplementation {
 		}
 	}
 
+	/**
+	 * @param array $tabs
+	 *
+	 * @return array
+	 */
 	public function woocommerce_product_data_tabs( array $tabs ) {
 		if ( isset( $tabs[ $this->tab['id'] ] ) ) {
 			if ( ! empty( $this->tab['label'] ) ) {
@@ -97,6 +109,9 @@ final class ProductOptions extends AbstractPostImplementation {
 		return $tabs;
 	}
 
+	/**
+	 * @return void
+	 */
 	public function render_data_panels() {
 		if ( $this->is_new_tab ) {
 			?>
@@ -107,6 +122,9 @@ final class ProductOptions extends AbstractPostImplementation {
 		}
 	}
 
+	/**
+	 * @return void
+	 */
 	public function render_custom_fields() {
 		global $post;
 
@@ -114,10 +132,16 @@ final class ProductOptions extends AbstractPostImplementation {
 		$this->render_fields();
 	}
 
+	/**
+	 * @param number $post_id
+	 */
 	public function set_post( $post_id ) {
 		$this->product_id = $post_id;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function get_data() {
 		return array(
 				'object_type' => 'product_options',
@@ -126,10 +150,18 @@ final class ProductOptions extends AbstractPostImplementation {
 		);
 	}
 
+	/**
+	 * @param string $name
+	 *
+	 * @return mixed
+	 */
 	public function get_field( $name ) {
 		return get_post_meta( $this->product_id, $name, true );
 	}
 
+	/**
+	 * @param number $post_id
+	 */
 	public function save( $post_id ) {
 		$this->set_post( $post_id );
 
@@ -139,8 +171,13 @@ final class ProductOptions extends AbstractPostImplementation {
 		}
 	}
 
+	/**
+	 * @param string $name
+	 * @param string $value
+	 *
+	 * @return bool|int
+	 */
 	public function set_field( $name, $value ) {
-		// TODO: Sanitize the item by it's type
 		return update_post_meta( $this->product_id, $name, $value );
 	}
 }

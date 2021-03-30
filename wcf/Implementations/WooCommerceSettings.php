@@ -25,6 +25,13 @@ final class WooCommerceSettings extends AbstractImplementation {
 	/** @var bool */
 	private $is_new_tab = false;
 
+	/**
+	 * WooCommerceSettings constructor.
+	 *
+	 * @param array $args
+	 * @param Parser $parser
+	 * @param Sanitizer $sanitizer
+	 */
 	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer ) {
 		$args = wp_parse_args( $args, array(
 				'tab'     => array( 'id' => '', 'label' => null ),
@@ -44,6 +51,11 @@ final class WooCommerceSettings extends AbstractImplementation {
 		add_action( 'woocommerce_settings_save_' . $this->tab['id'], array( $this, 'save' ) );
 	}
 
+	/**
+	 * @param $tabs
+	 *
+	 * @return mixed
+	 */
 	public function woocommerce_settings_tabs_array( $tabs ) {
 		if ( empty( $tabs[ $this->tab['id'] ] ) ) {
 			$tabs[ $this->tab['id'] ] = $this->tab['label'];
@@ -53,6 +65,11 @@ final class WooCommerceSettings extends AbstractImplementation {
 		return $tabs;
 	}
 
+	/**
+	 * @param $sections
+	 *
+	 * @return mixed
+	 */
 	public function woocommerce_get_sections( $sections ) {
 		if ( ! empty( $this->section ) ) {
 			$sections[ $this->section['id'] ] = $this->section['label'];
@@ -61,6 +78,9 @@ final class WooCommerceSettings extends AbstractImplementation {
 		return $sections;
 	}
 
+	/**
+	 * @return void
+	 */
 	public function render() {
 		global $current_section;
 
@@ -95,10 +115,16 @@ final class WooCommerceSettings extends AbstractImplementation {
 		$this->render_fields();
 	}
 
+	/**
+	 * @return mixed|void
+	 */
 	public function get_sections() {
 		return apply_filters( 'woocommerce_get_sections_' . $this->tab['id'], array() );
 	}
 
+	/**
+	 * @return array
+	 */
 	public function get_data() {
 		return array(
 				'object_type' => 'woocommerce_settings',
@@ -108,10 +134,19 @@ final class WooCommerceSettings extends AbstractImplementation {
 		);
 	}
 
+	/**
+	 * @param string $name
+	 * @param string $default
+	 *
+	 * @return mixed
+	 */
 	public function get_field( $name, $default = '' ) {
 		return WC_Admin_Settings::get_option( $name, $default );
 	}
 
+	/**
+	 * @return void
+	 */
 	public function save() {
 		foreach ( $this->items as $item ) {
 			if ( ! empty( $item['id'] ) ) {
@@ -120,6 +155,12 @@ final class WooCommerceSettings extends AbstractImplementation {
 		}
 	}
 
+	/**
+	 * @param string $name
+	 * @param string $value
+	 *
+	 * @return bool
+	 */
 	public function set_field( $name, $value ) {
 		foreach ( $this->items as $item ) {
 			if ( $item['id'] === $name ) {
