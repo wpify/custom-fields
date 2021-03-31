@@ -1,0 +1,8 @@
+assets            export-ignore
+.editorconfig     export-ignore
+.eslintignore     export-ignore
+.nvmrc            export-ignore
+.stylelintignore  export-ignore
+package.json      export-ignore
+package-lock.json export-ignore
+wpify.config.js   export-ignore

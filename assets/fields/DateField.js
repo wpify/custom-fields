@@ -1,26 +1,22 @@
-/* eslint-disable react/prop-types */
-
 import React from 'react';
 import classnames from 'classnames';
 import InputField from './InputField';
+import PT from 'prop-types';
 
 const DateField = (props) => {
-	const { id, className, onChange } = props;
-
-	const handleChange = (value) => {
-		if (onChange) {
-			onChange({ [id]: value });
-		}
-	};
+	const { className } = props;
 
 	return (
 		<InputField
 			{...props}
 			type="date"
 			className={classnames(className)}
-			onChange={handleChange}
 		/>
 	);
 };
+
+DateField.propTypes = {
+	className: PT.string,
+}
 
 export default DateField;

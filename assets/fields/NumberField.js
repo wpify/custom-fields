@@ -1,17 +1,10 @@
-/* eslint-disable react/prop-types */
-
 import React from 'react';
 import classnames from 'classnames';
 import InputField from './InputField';
+import PT from 'prop-types';
 
 const NumberField = (props) => {
-	const { id, className, max, onChange } = props;
-
-	const handleChange = (value) => {
-		if (onChange) {
-			onChange({ [id]: value });
-		}
-	};
+	const { className, custom_attributes: { max } } = props;
 
 	return (
 		<InputField
@@ -20,9 +13,13 @@ const NumberField = (props) => {
 			className={classnames(className, {
 				'small-text': max < 9999 || !max,
 			})}
-			onChange={handleChange}
 		/>
 	);
+};
+
+NumberField.propTypes = {
+	className: PT.string,
+	custom_attributes: PT.object,
 };
 
 export default NumberField;

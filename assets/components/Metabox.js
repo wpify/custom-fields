@@ -1,35 +1,33 @@
 import React from 'react';
 import PT from 'prop-types';
 import { getItemComponent } from '../helpers';
+import ScreenContext from './ScreenContext';
+import MetaboxRow from './MetaboxRow';
 
-const Options = (props) => {
-	const { wcf: { items = [] } } = props;
+const Metabox = (props) => {
+	const { wcf: { items = [] }, group_level } = props;
 
 	return (
-		<React.Fragment>
-			{items.map(item => {
+		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: MetaboxRow }}>
+			{items.map((item) => {
 				const Field = getItemComponent(item);
 
 				return Field.noSection ? (
-					<Field {...props} {...item} />
+					<Field key={item.id} {...item} group_level={group_level} />
 				) : (
-					<p key={item.id}>
-						<label
-							htmlFor={item.id}
-							dangerouslySetInnerHTML={{ __html: item.title }}
-						/>
-						<br />
-						<Field {...props} {...item} />
-					</p>
+					<MetaboxRow item={item} group_level={group_level}>
+						<Field key={item.id} {...item} group_level={group_level} />
+					</MetaboxRow>
 				);
 			})}
-		</React.Fragment>
+		</ScreenContext.Provider>
 	);
 };
 
-Options.propTypes = {
+Metabox.propTypes = {
 	className: PT.string,
 	wcf: PT.object,
+	group_level: PT.number,
 };
 
-export default Options;
+export default Metabox;

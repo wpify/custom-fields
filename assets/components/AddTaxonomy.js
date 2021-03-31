@@ -1,26 +1,25 @@
 import React from 'react';
 import PT from 'prop-types';
 import { getItemComponent } from '../helpers';
+import ScreenContext from './ScreenContext';
+import AddTaxonomyRow from './AddTaxonomyRow';
 
 const AddTaxonomy = (props) => {
 	const { wcf = {} } = props;
 	const { items = [] } = wcf;
 
 	return (
-		<React.Fragment>
+		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: AddTaxonomyRow }}>
 			{items.map(item => {
 				const Field = getItemComponent(item);
 
 				return (
-					<div key={item.id} className="form-field">
-						{!Field.noSection && (
-							<label htmlFor={item.id} dangerouslySetInnerHTML={{ __html: item.title }}/>
-						)}
-						<Field {...props} {...item} />
-					</div>
+					<AddTaxonomyRow key={item.id} item={item}>
+						<Field {...item} />
+					</AddTaxonomyRow>
 				);
 			})}
-		</React.Fragment>
+		</ScreenContext.Provider>
 	);
 };
 

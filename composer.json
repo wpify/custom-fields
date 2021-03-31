@@ -1,7 +1,7 @@
 {
   "name": "wpify/custom-fields",
-  "description": "wcf",
-  "type": "project",
+  "description": "WPify Custom Fields",
+  "type": "library",
   "license": "GPL-2.0-or-later",
   "scripts": {
 	"phpcs": "phpcs --standard=WordPress",
@@ -9,31 +9,13 @@
   },
   "autoload": {
 	"psr-4": {
-	  "WpifyCustomFieldsPlugin\\": "src/",
-	  "WpifyCustomFields\\": "wcf/"
-	}
+	  "WpifyCustomFields\\": "src/"
+	},
+	"files": [
+	  "wpify-custom-fields.php"
+	]
   },
   "require": {
 	"php": ">=7.3.0||^8.0.0"
-  },
-  "require-dev": {
-	"squizlabs/php_codesniffer": "^3.5",
-	"wpify/cli": "^0.3",
-	"wp-coding-standards/wpcs": "^2.3",
-	"dealerdirect/phpcodesniffer-composer-installer": "^0.7",
-	"symfony/var-dumper": "^5.2"
-  },
-  "extra": {
-	"wordpress-scoper": {
-	  "prefix": "WpifyCustomFieldsPluginDeps",
-	  "folder": "deps",
-	  "globals": [
-		"wordpress",
-		"woocommerce"
-	  ],
-	  "packages": {
-		"wpify/core": "^4.2"
-	  }
-	}
   }
 }

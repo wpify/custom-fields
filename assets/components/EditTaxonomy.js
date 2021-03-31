@@ -1,40 +1,31 @@
 import React from 'react';
 import PT from 'prop-types';
 import { getItemComponent } from '../helpers';
+import ScreenContext from './ScreenContext';
+import EditTaxonomyRow from './EditTaxonomyRow';
 
 const EditTaxonomy = (props) => {
 	const { group_level = 0, wcf = {} } = props;
 	const { items = [] } = wcf;
 
 	return (
-		<React.Fragment>
-			{items.map(item => {
+		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: EditTaxonomyRow }}>
+			{items.map((item) => {
 				const Field = getItemComponent(item);
 
-				const noSection = group_level > 0 ? false : Field.noSection;
+				if (Field.renderWrapper && !Field.renderWrapper(group_level)) {
+					return (
+						<Field {...item} group_level={group_level}/>
+					);
+				}
 
 				return (
-					<tr key={item.id} className="form-field">
-						{noSection ? (
-							<td colSpan={2} style={{ padding: 0 }}>
-								<Field {...props} {...item} />
-							</td>
-						) : (
-							<React.Fragment>
-								<th>
-									{!Field.noLabel && (
-										<label htmlFor={item.id} dangerouslySetInnerHTML={{ __html: item.title }} />
-									)}
-								</th>
-								<td>
-									<Field {...props} {...item} />
-								</td>
-							</React.Fragment>
-						)}
-					</tr>
+					<EditTaxonomyRow key={item.id} item={item} group_level={group_level}>
+						<Field {...item} group_level={group_level} />
+					</EditTaxonomyRow>
 				);
 			})}
-		</React.Fragment>
+		</ScreenContext.Provider>
 	);
 };
 

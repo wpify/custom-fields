@@ -2,32 +2,36 @@ import React from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 import { getItemComponent } from '../helpers';
+import ScreenContext from './ScreenContext';
+import ProductOptionsRow from './ProductOptionsRow';
 
 const Options = (props) => {
-	const { wcf = {}, className } = props;
+	const { wcf = {}, className, group_level = 0 } = props;
 	const { items = [] } = wcf;
 
 	return (
-		<div className={classnames(className, 'options_group')}>
-			{items.map((item) => {
-				const Field = getItemComponent(item);
+		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: ProductOptionsRow }}>
+			<div className={classnames(className, 'options_group')}>
+				{items.map((item) => {
+					const Field = getItemComponent(item);
 
-				return Field.noSection ? (
-					<Field {...props} {...item} />
-				) : (
-					<p key={item.id} className="form-field">
-						<label htmlFor={item.id} dangerouslySetInnerHTML={{ __html: item.title }}/>
-						<Field {...props} {...item} />
-					</p>
-				);
-			})}
-		</div>
+					return Field.noSection ? (
+						<Field key={item.id} {...item} group_level={group_level} />
+					) : (
+						<ProductOptionsRow key={item.id} item={item}>
+							<Field {...item} group_level={group_level} />
+						</ProductOptionsRow>
+					);
+				})}
+			</div>
+		</ScreenContext.Provider>
 	);
 };
 
 Options.propTypes = {
 	className: PT.string,
 	wcf: PT.object,
+	group_level: PT.number,
 };
 
 export default Options;

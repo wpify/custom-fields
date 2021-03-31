@@ -1,7 +1,6 @@
-/* eslint-disable react/prop-types */
-
 import React from 'react';
 import classnames from 'classnames';
+import PT from 'prop-types';
 
 const TitleField = (props) => {
 	const { className, title, description, custom_attributes } = props;
@@ -18,6 +17,13 @@ const TitleField = (props) => {
 			)}
 		</React.Fragment>
 	);
+};
+
+TitleField.propTypes = {
+	className: PT.string,
+	title: PT.string,
+	description: PT.string,
+	custom_attributes: PT.object,
 };
 
 TitleField.noSection = true;

@@ -1,10 +1,19 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import PT from 'prop-types';
-import RootWrapper from '../components/RootWrapper';
-import InnerGroup from '../components/InnerGroup';
+import ScreenContext from '../components/ScreenContext';
+import { getItemComponent } from '../helpers';
 
 const GroupField = (props) => {
-	const { group_level = 0, onChange, id, wcf, items, value } = props;
+	const {
+		group_level = 0,
+		onChange,
+		id,
+		items,
+		value = {}
+	} = props;
+
+	const { RootWrapper, RowWrapper } = useContext(ScreenContext);
+
 	const [currentValue, setCurrentValue] = useState(value);
 
 	const handleChange = useCallback((newValue = {}) => {
@@ -20,21 +29,38 @@ const GroupField = (props) => {
 		}
 	}, [currentValue, onChange, id]);
 
-	if (group_level > 0) {
-		return <InnerGroup {...props} onChange={handleChange} wcf={{ ...wcf, items }} group_level={group_level + 1}/>;
-	}
-
 	return (
 		<React.Fragment>
 			{group_level === 0 && (
-				<input type="hidden" id={id} name={id} value={JSON.stringify(currentValue)} />
+				<input type="hidden" id={id} name={id} value={JSON.stringify(currentValue)}/>
 			)}
-			<RootWrapper {...props} onChange={handleChange} wcf={{ ...wcf, items }} group_level={group_level + 1}/>
+			<RootWrapper group_level={group_level + 1}>
+				{items.map((item) => {
+					const Field = getItemComponent(item);
+
+					return (
+						<RowWrapper
+							key={item.id}
+							item={item}
+							group_level={group_level + 1}
+							htmlId={itemId => id + '_' + itemId}
+						>
+							<Field
+								{...item}
+								htmlId={itemId => id + '_' + itemId}
+								group_level={group_level + 1}
+								onChange={handleChange}
+								value={currentValue[item.id]}
+							/>
+						</RowWrapper>
+					);
+				})}
+			</RootWrapper>
 		</React.Fragment>
 	);
 };
 
-GroupField.noSection = true;
+GroupField.renderWrapper = (group_level = 0) => group_level > 0;
 
 GroupField.propTypes = {
 	object_type: PT.string,

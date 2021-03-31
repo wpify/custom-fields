@@ -1,17 +1,10 @@
-/* eslint-disable react/prop-types */
-
 import React from 'react';
 import classnames from 'classnames';
 import InputField from './InputField';
+import PT from 'prop-types';
 
 const ColorField = (props) => {
-	const { id, className, onChange } = props;
-
-	const handleChange = (value) => {
-		if (onChange) {
-			onChange({ [id]: value });
-		}
-	};
+	const { className } = props;
 
 	return (
 		<React.Fragment>
@@ -19,10 +12,13 @@ const ColorField = (props) => {
 				{...props}
 				type="color"
 				className={classnames('colorpick', className)}
-				onChange={handleChange}
 			/>
 		</React.Fragment>
 	);
+};
+
+ColorField.propTypes = {
+	className: PT.string,
 };
 
 export default ColorField;

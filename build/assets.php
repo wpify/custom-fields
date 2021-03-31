@@ -1,0 +1,1 @@
+<?php return array('wpify-custom-fields.js' => array('dependencies' => array('react', 'react-dom', 'wp-element', 'wp-hooks', 'wp-polyfill'), 'version' => 'a90c5ed5c5d6c56fd002867461223583'));

@@ -1,28 +1,22 @@
-/* eslint-disable react/prop-types */
-
 import React from 'react';
 import classnames from 'classnames';
 import InputField from './InputField';
+import PT from 'prop-types';
 
 const PasswordField = (props) => {
-	const { id, className, onChange } = props;
-
-	const handleChange = (value) => {
-		if (onChange) {
-			onChange({ [id]: value });
-		}
-	};
+	const { className } = props;
 
 	return (
-		<React.Fragment>
-			<InputField
-				{...props}
-				type="password"
-				className={classnames('regular-text', className)}
-				onChange={handleChange}
-			/>
-		</React.Fragment>
+		<InputField
+			{...props}
+			type="password"
+			className={classnames('regular-text', className)}
+		/>
 	);
+};
+
+PasswordField.propTypes = {
+	className: PT.string,
 };
 
 export default PasswordField;

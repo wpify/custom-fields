@@ -1,10 +1,10 @@
-/* eslint-disable react/prop-types */
-
 import React, { useState, useCallback } from 'react';
+import PT from 'prop-types';
 
 const InputField = (props) => {
 	const {
 		id,
+		htmlId = id => id,
 		value,
 		onChange,
 		description,
@@ -21,9 +21,9 @@ const InputField = (props) => {
 		setCurrentValue(event.target.value);
 
 		if (onChange) {
-			onChange(event.target.value);
+			onChange({ [id]: event.target.value });
 		}
-	}, [setCurrentValue, onChange]);
+	}, [id, setCurrentValue, onChange]);
 
 	const describedBy = description ? id + '-description' : null;
 
@@ -31,7 +31,7 @@ const InputField = (props) => {
 		<React.Fragment>
 			<input
 				type={type}
-				id={id}
+				id={htmlId(id)}
 				name={group_level === 0 && id}
 				value={currentValue}
 				onChange={handleChange}
@@ -45,6 +45,19 @@ const InputField = (props) => {
 			)}
 		</React.Fragment>
 	);
+};
+
+InputField.propTypes = {
+	id: PT.string,
+	htmlId: PT.func,
+	value: PT.string,
+	onChange: PT.func,
+	description: PT.oneOfType([PT.string, PT.element]),
+	suffix: PT.oneOfType([PT.string, PT.element]),
+	custom_attributes: PT.object,
+	group_level: PT.number,
+	className: PT.string,
+	type: PT.oneOf(['color', 'date', 'datetime-local', 'email', 'month', 'number', 'password', 'tel', 'text', 'time', 'url', 'week']),
 };
 
 export default InputField;

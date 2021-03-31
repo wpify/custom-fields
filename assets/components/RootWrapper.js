@@ -5,14 +5,9 @@ import Metabox from './Metabox';
 import ProductOptions from './ProductOptions';
 import AddTaxonomy from './AddTaxonomy';
 import EditTaxonomy from './EditTaxonomy';
-import InnerGroup from './InnerGroup';
 
 const RootWrapper = (props) => {
-	const { object_type, group_level } = props;
-
-	if (group_level > 1) {
-		return <InnerGroup {...props} />;
-	}
+	const { object_type } = props;
 
 	if (['options_page', 'woocommerce_settings'].includes(object_type)) {
 		return <Options {...props} />;

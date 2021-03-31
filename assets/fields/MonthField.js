@@ -1,26 +1,22 @@
-/* eslint-disable react/prop-types */
-
 import React from 'react';
 import classnames from 'classnames';
 import InputField from './InputField';
+import PT from 'prop-types';
 
 const MonthField = (props) => {
-	const { id, className, onChange } = props;
-
-	const handleChange = (value) => {
-		if (onChange) {
-			onChange({ [id]: value });
-		}
-	};
+	const { className } = props;
 
 	return (
 		<InputField
 			{...props}
 			type="month"
 			className={classnames(className)}
-			onChange={handleChange}
 		/>
 	);
+};
+
+MonthField.propTypes = {
+	className: PT.string,
 };
 
 export default MonthField;

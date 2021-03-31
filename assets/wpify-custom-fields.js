@@ -19,6 +19,7 @@ import TextareaField from './fields/TextareaField';
 import GroupField from './fields/GroupField';
 import RootWrapper from './components/RootWrapper';
 import HtmlField from './fields/HtmlField';
+import MultiGroupField from './fields/MultiGroupField';
 
 const WcfApp = (props) => {
 	const { wcf: { object_type } } = props;
@@ -45,8 +46,9 @@ const renderWcf = () => {
 	registerFieldType('time', TimeField);
 	registerFieldType('week', WeekField);
 	registerFieldType('textarea', TextareaField);
-	registerFieldType('group', GroupField);
 	registerFieldType('html', HtmlField);
+	registerFieldType('group', GroupField);
+	registerFieldType('multi_group', MultiGroupField);
 
 	document.querySelectorAll('.js-wcf[data-wcf]').forEach((container) => {
 		const props = parseDataset(container.dataset);

@@ -1,26 +1,22 @@
-/* eslint-disable react/prop-types */
-
 import React from 'react';
 import classnames from 'classnames';
 import InputField from './InputField';
+import PT from 'prop-types';
 
 const TextField = (props) => {
-	const { id, className, onChange } = props;
-
-	const handleChange = (value) => {
-		if (onChange) {
-			onChange({ [id]: value });
-		}
-	};
+	const { className } = props;
 
 	return (
 		<InputField
 			{...props}
 			type="text"
 			className={classnames('regular-text', className)}
-			onChange={handleChange}
 		/>
 	);
+};
+
+TextField.propTypes = {
+	className: PT.string,
 };
 
 export default TextField;

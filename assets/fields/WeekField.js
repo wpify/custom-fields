@@ -1,26 +1,22 @@
-/* eslint-disable react/prop-types */
-
 import React from 'react';
+import PT from 'prop-types';
 import classnames from 'classnames';
 import InputField from './InputField';
 
 const WeekField = (props) => {
-	const { id, className, onChange } = props;
-
-	const handleChange = (value) => {
-		if (onChange) {
-			onChange({ [id]: value });
-		}
-	};
+	const { className } = props;
 
 	return (
 		<InputField
 			{...props}
 			type="week"
 			className={classnames('regular-text code', className)}
-			onChange={handleChange}
 		/>
 	);
+};
+
+WeekField.propTypes = {
+	className: PT.string,
 };
 
 export default WeekField;

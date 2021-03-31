@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-ssh $SERVER_USER@$SERVER_ADDR mkdir -p $SERVER_PATH
-rsync -a --stats --delete ./dist/ $SERVER_USER@$SERVER_ADDR:$SERVER_PATH
-ssh $SERVER_USER@$SERVER_ADDR /usr/bin/sudo /usr/local/sbin/purge_cache.sh

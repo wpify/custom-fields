@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-npm i
-NODE_ENV=production npm run build
