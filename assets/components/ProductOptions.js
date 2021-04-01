@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 import { getItemComponent } from '../helpers';
 import ScreenContext from './ScreenContext';
 import ProductOptionsRow from './ProductOptionsRow';
+import AppContext from './AppContext';
 
-const Options = (props) => {
-	const { wcf = {}, className, group_level = 0 } = props;
-	const { items = [] } = wcf;
+const Options = () => {
+	const data = useContext(AppContext);
+	const { items = [] } = data;
 
 	return (
 		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: ProductOptionsRow }}>
@@ -16,10 +17,10 @@ const Options = (props) => {
 					const Field = getItemComponent(item);
 
 					return Field.noSection ? (
-						<Field key={item.id} {...item} group_level={group_level} />
+						<Field key={item.id} {...item} />
 					) : (
 						<ProductOptionsRow key={item.id} item={item}>
-							<Field {...item} group_level={group_level} />
+							<Field {...item} />
 						</ProductOptionsRow>
 					);
 				})}

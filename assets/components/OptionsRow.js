@@ -3,7 +3,7 @@ import PT from 'prop-types';
 import React from 'react';
 
 const OptionsRow = (props) => {
-	const { item, children, group_level, className, htmlId = id => id } = props;
+	const { item, children, group_level = 0, className, htmlId = id => id } = props;
 
 	const label = item.title
 		? <label htmlFor={htmlId(item.id)} dangerouslySetInnerHTML={{ __html: item.title }}/>

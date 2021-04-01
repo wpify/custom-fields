@@ -2,6 +2,7 @@
 
 namespace WpifyCustomFields\Implementations;
 
+use WpifyCustomFields\Api;
 use WpifyCustomFields\Parser;
 use WpifyCustomFields\Sanitizer;
 
@@ -16,7 +17,10 @@ abstract class AbstractImplementation {
 	/** @var Sanitizer */
 	protected $sanitizer;
 
-	abstract public function __construct( array $args, Parser $parser, Sanitizer $sanitizer );
+	/** @var Api */
+	protected $api;
+
+	abstract public function __construct( array $args, Parser $parser, Sanitizer $sanitizer, Api $api );
 
 	/**
 	 * @param string $name
@@ -37,7 +41,12 @@ abstract class AbstractImplementation {
 			$data['object_type'] = $object_type;
 		}
 
-		$data = $this->fill_values( $data );
+		$data        = $this->fill_values( $data );
+		$data['api'] = array(
+				'url'   => $this->api->get_rest_url(),
+				'nonce' => $this->api->get_rest_nonce(),
+		);
+
 		$json = wp_json_encode( $data );
 		?>
 		<<?php echo $tag ?> class="js-wcf" data-wcf="<?php echo esc_attr( $json ) ?>"></<?php echo $tag ?>>

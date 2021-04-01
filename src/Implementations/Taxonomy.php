@@ -3,6 +3,7 @@
 namespace WpifyCustomFields\Implementations;
 
 use WP_Term;
+use WpifyCustomFields\Api;
 use WpifyCustomFields\Parser;
 use WpifyCustomFields\Sanitizer;
 
@@ -26,8 +27,9 @@ final class Taxonomy extends AbstractPostImplementation {
 	 * @param array $args
 	 * @param Parser $parser
 	 * @param Sanitizer $sanitizer
+	 * @param Api $api
 	 */
-	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer ) {
+	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer, Api $api ) {
 		$args = wp_parse_args( $args, array(
 			'taxonomy' => null,
 			'items'    => array(),
@@ -39,6 +41,7 @@ final class Taxonomy extends AbstractPostImplementation {
 		$this->term_id   = $args['term_id'];
 		$this->parser    = $parser;
 		$this->sanitizer = $sanitizer;
+		$this->api       = $api;
 
 		add_action( $this->taxonomy . '_add_form_fields', array( $this, 'render_add_form' ) );
 		add_action( $this->taxonomy . '_edit_form_fields', array( $this, 'render_edit_form' ) );

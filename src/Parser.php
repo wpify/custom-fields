@@ -11,6 +11,7 @@ final class Parser {
 	private $parsers = array(
 		'group'       => 'parse_group_value',
 		'multi_group' => 'parse_multi_group_value',
+		'multi_select' => 'parse_multi_select_value',
 	);
 
 	/**
@@ -73,6 +74,27 @@ final class Parser {
 		if ( is_array( $values ) ) {
 			return array_values( array_filter( $values, function ( $value ) {
 				return is_array( $value );
+			} ) );
+		}
+
+		return array();
+	}
+
+	/**
+	 * @param $value
+	 *
+	 * @return array
+	 */
+	public function parse_multi_select_value( $values ) {
+		if ( is_serialized_string( $values ) ) {
+			$values = maybe_unserialize( $values );
+		} else if ( is_string( $values ) ) {
+			$values = json_decode( $values, true );
+		}
+
+		if ( is_array( $values ) ) {
+			return array_values( array_filter( $values, function ( $value ) {
+				return ! is_array( $value );
 			} ) );
 		}
 

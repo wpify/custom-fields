@@ -3,6 +3,7 @@
 namespace WpifyCustomFields\Implementations;
 
 use WP_Post;
+use WpifyCustomFields\Api;
 use WpifyCustomFields\Parser;
 use WpifyCustomFields\Sanitizer;
 
@@ -47,8 +48,9 @@ final class Metabox extends AbstractPostImplementation {
 	 * @param array $args
 	 * @param Parser $parser
 	 * @param Sanitizer $sanitizer
+	 * @param Api $api
 	 */
-	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer ) {
+	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer, Api $api ) {
 		$args = wp_parse_args( $args, array(
 			'id'            => null,
 			'title'         => null,
@@ -73,6 +75,7 @@ final class Metabox extends AbstractPostImplementation {
 		$this->post_id       = $args['post_id'];
 		$this->parser        = $parser;
 		$this->sanitizer     = $sanitizer;
+		$this->api           = $api;
 
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 		add_action( 'save_post', array( $this, 'save' ) );

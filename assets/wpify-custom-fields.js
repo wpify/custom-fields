@@ -2,6 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PT from 'prop-types';
 import { parseDataset, registerFieldType } from './helpers';
+
+import './wpify-custom-fields.scss';
+
 import TextField from './fields/TextField';
 import UrlField from './fields/UrlField';
 import EmailField from './fields/EmailField';
@@ -17,14 +20,41 @@ import TimeField from './fields/TimeField';
 import WeekField from './fields/WeekField';
 import TextareaField from './fields/TextareaField';
 import GroupField from './fields/GroupField';
-import RootWrapper from './components/RootWrapper';
 import HtmlField from './fields/HtmlField';
 import MultiGroupField from './fields/MultiGroupField';
+import CheckboxField from './fields/CheckboxField';
+import ToggleField from './fields/ToggleField';
+import Options from './components/Options';
+import Metabox from './components/Metabox';
+import ProductOptions from './components/ProductOptions';
+import AddTaxonomy from './components/AddTaxonomy';
+import EditTaxonomy from './components/EditTaxonomy';
+import SelectField from './fields/SelectField';
+import AppContext from './components/AppContext';
+import MultiSelectField from './fields/MultiSelectField';
+import CodeField from './fields/CodeField';
 
 const WcfApp = (props) => {
-	const { wcf: { object_type } } = props;
+	const { wcf = {} } = props;
+	const { object_type } = wcf;
 
-	return <RootWrapper object_type={object_type} {...props} />;
+	const types = {
+		options_page: Options,
+		woocommerce_settings: Options,
+		product_options: ProductOptions,
+		add_taxonomy: AddTaxonomy,
+		edit_taxonomy: EditTaxonomy,
+		metabox: Metabox,
+		default: Options,
+	};
+
+	const Component = types[object_type] || types.default;
+
+	return (
+		<AppContext.Provider value={wcf}>
+			<Component />
+		</AppContext.Provider>
+	);
 };
 
 WcfApp.propTypes = {
@@ -49,6 +79,11 @@ const renderWcf = () => {
 	registerFieldType('html', HtmlField);
 	registerFieldType('group', GroupField);
 	registerFieldType('multi_group', MultiGroupField);
+	registerFieldType('checkbox', CheckboxField);
+	registerFieldType('toggle', ToggleField);
+	registerFieldType('select', SelectField);
+	registerFieldType('multi_select', MultiSelectField);
+	registerFieldType('code', CodeField);
 
 	document.querySelectorAll('.js-wcf[data-wcf]').forEach((container) => {
 		const props = parseDataset(container.dataset);

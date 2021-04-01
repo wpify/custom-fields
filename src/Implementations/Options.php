@@ -2,6 +2,7 @@
 
 namespace WpifyCustomFields\Implementations;
 
+use WpifyCustomFields\Api;
 use WpifyCustomFields\Parser;
 use WpifyCustomFields\Sanitizer;
 
@@ -49,23 +50,24 @@ final class Options extends AbstractImplementation {
 	/**
 	 * Options constructor.
 	 *
-	 * @param $args
+	 * @param array $args
 	 * @param Parser $parser
 	 * @param Sanitizer $sanitizer
+	 * @param Api $api
 	 */
-	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer ) {
+	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer, Api $api ) {
 		$args = wp_parse_args( $args, array(
-				'type'        => 'normal',
-				'parent_slug' => null,
-				'page_title'  => '',
-				'menu_title'  => '',
-				'capability'  => 'manage_options',
-				'menu_slug'   => null,
-				'section'     => null,
-				'page'        => null,
-				'icon_url'    => null,
-				'position'    => null,
-				'items'       => array(),
+			'type'        => 'normal',
+			'parent_slug' => null,
+			'page_title'  => '',
+			'menu_title'  => '',
+			'capability'  => 'manage_options',
+			'menu_slug'   => null,
+			'section'     => null,
+			'page'        => null,
+			'icon_url'    => null,
+			'position'    => null,
+			'items'       => array(),
 		) );
 
 		$this->type        = in_array( $args['type'], array( 'normal', 'user', 'network' ) ) ? $args['type'] : 'normal';
@@ -81,6 +83,7 @@ final class Options extends AbstractImplementation {
 		$this->items       = $this->prepare_items( $args['items'] );
 		$this->parser      = $parser;
 		$this->sanitizer   = $sanitizer;
+		$this->api         = $api;
 
 		if ( $this->type === 'user' ) {
 			add_action( 'user_admin_menu', array( $this, 'register' ) );
@@ -99,23 +102,23 @@ final class Options extends AbstractImplementation {
 	public function register() {
 		if ( empty( $this->parent_slug ) ) {
 			$this->hook_suffix = add_menu_page(
-					$this->page_title,
-					$this->menu_title,
-					$this->capability,
-					$this->menu_slug,
-					array( $this, 'render' ),
-					$this->icon_url,
-					$this->position
+				$this->page_title,
+				$this->menu_title,
+				$this->capability,
+				$this->menu_slug,
+				array( $this, 'render' ),
+				$this->icon_url,
+				$this->position
 			);
 		} elseif ( ! empty( $this->menu_slug ) ) {
 			$this->hook_suffix = add_submenu_page(
-					$this->parent_slug,
-					$this->page_title,
-					$this->menu_title,
-					$this->capability,
-					$this->menu_slug,
-					array( $this, 'render' ),
-					$this->position
+				$this->parent_slug,
+				$this->page_title,
+				$this->menu_title,
+				$this->capability,
+				$this->menu_slug,
+				array( $this, 'render' ),
+				$this->position
 			);
 		}
 	}
@@ -125,21 +128,21 @@ final class Options extends AbstractImplementation {
 	 */
 	public function register_settings() {
 		add_settings_section(
-				'general',
-				null,
-				array( $this, 'render_section' ),
-				$this->menu_slug
+			'general',
+			null,
+			array( $this, 'render_section' ),
+			$this->menu_slug
 		);
 
 		foreach ( $this->items as $item ) {
 			$sanitizer = $this->sanitizer->get_sanitizer( $item );
 
 			register_setting(
-					$this->menu_slug,
-					$item['id'],
-					array(
-							'sanitize_callback' => $sanitizer,
-					)
+				$this->menu_slug,
+				$item['id'],
+				array(
+					'sanitize_callback' => $sanitizer,
+				)
 			);
 		}
 	}
@@ -149,17 +152,17 @@ final class Options extends AbstractImplementation {
 	 */
 	public function get_data() {
 		return array(
-				'object_type' => 'options_page',
-				'type'        => $this->type,
-				'page_title'  => $this->page_title,
-				'menu_title'  => $this->menu_title,
-				'capability'  => $this->capability,
-				'parent_slug' => $this->parent_slug,
-				'menu_slug'   => $this->menu_slug,
-				'icon_url'    => $this->icon_url,
-				'position'    => $this->position,
-				'hook_suffix' => $this->hook_suffix,
-				'items'       => $this->items,
+			'object_type' => 'options_page',
+			'type'        => $this->type,
+			'page_title'  => $this->page_title,
+			'menu_title'  => $this->menu_title,
+			'capability'  => $this->capability,
+			'parent_slug' => $this->parent_slug,
+			'menu_slug'   => $this->menu_slug,
+			'icon_url'    => $this->icon_url,
+			'position'    => $this->position,
+			'hook_suffix' => $this->hook_suffix,
+			'items'       => $this->items,
 		);
 	}
 
@@ -182,10 +185,10 @@ final class Options extends AbstractImplementation {
 
 		if ( isset( $_GET['settings-updated'] ) ) {
 			add_settings_error(
-					$this->menu_slug . '_messages',
-					$this->menu_slug . '_message',
-					__( 'Settings saved', 'wpify-custom-fields' ),
-					'updated'
+				$this->menu_slug . '_messages',
+				$this->menu_slug . '_message',
+				__( 'Settings saved', 'wpify-custom-fields' ),
+				'updated'
 			);
 		}
 

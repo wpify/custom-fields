@@ -1,27 +1,22 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PT from 'prop-types';
 import { getItemComponent } from '../helpers';
 import ScreenContext from './ScreenContext';
 import EditTaxonomyRow from './EditTaxonomyRow';
+import AppContext from './AppContext';
 
-const EditTaxonomy = (props) => {
-	const { group_level = 0, wcf = {} } = props;
-	const { items = [] } = wcf;
+const EditTaxonomy = () => {
+	const data = useContext(AppContext);
+	const { items = [] } = data;
 
 	return (
 		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: EditTaxonomyRow }}>
 			{items.map((item) => {
 				const Field = getItemComponent(item);
 
-				if (Field.renderWrapper && !Field.renderWrapper(group_level)) {
-					return (
-						<Field {...item} group_level={group_level}/>
-					);
-				}
-
 				return (
-					<EditTaxonomyRow key={item.id} item={item} group_level={group_level}>
-						<Field {...item} group_level={group_level} />
+					<EditTaxonomyRow key={item.id} item={item}>
+						<Field {...item} />
 					</EditTaxonomyRow>
 				);
 			})}

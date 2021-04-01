@@ -2,6 +2,7 @@
 
 namespace WpifyCustomFields\Implementations;
 
+use WpifyCustomFields\Api;
 use WpifyCustomFields\Parser;
 use WpifyCustomFields\Sanitizer;
 
@@ -28,8 +29,9 @@ final class ProductOptions extends AbstractPostImplementation {
 	 * @param array $args
 	 * @param Parser $parser
 	 * @param Sanitizer $sanitizer
+	 * @param Api $api
 	 */
-	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer ) {
+	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer, Api $api ) {
 		/*
 		 * Possible classes: hide_if_grouped, show_if_simple, show_if_variable, show_if_grouped,
 		 * show_if_external, hide_if_external, hide_if_grouped, hide_if_virtual
@@ -51,6 +53,7 @@ final class ProductOptions extends AbstractPostImplementation {
 		$this->product_id = $args['product_id'];
 		$this->parser     = $parser;
 		$this->sanitizer  = $sanitizer;
+		$this->api        = $api;
 
 		if ( empty( $this->tab['target'] ) ) {
 			$this->tab['target'] = $this->tab['id'] . '_product_data';

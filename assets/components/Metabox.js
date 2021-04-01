@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PT from 'prop-types';
 import { getItemComponent } from '../helpers';
 import ScreenContext from './ScreenContext';
 import MetaboxRow from './MetaboxRow';
+import AppContext from './AppContext';
 
-const Metabox = (props) => {
-	const { wcf: { items = [] }, group_level } = props;
+const Metabox = () => {
+	const data = useContext(AppContext);
+	const { items = [] } = data;
 
 	return (
 		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: MetaboxRow }}>
@@ -13,10 +15,10 @@ const Metabox = (props) => {
 				const Field = getItemComponent(item);
 
 				return Field.noSection ? (
-					<Field key={item.id} {...item} group_level={group_level} />
+					<Field key={item.id} {...item} />
 				) : (
-					<MetaboxRow item={item} group_level={group_level}>
-						<Field key={item.id} {...item} group_level={group_level} />
+					<MetaboxRow item={item}>
+						<Field key={item.id} {...item} />
 					</MetaboxRow>
 				);
 			})}

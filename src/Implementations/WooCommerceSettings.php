@@ -3,6 +3,7 @@
 namespace WpifyCustomFields\Implementations;
 
 use WC_Admin_Settings;
+use WpifyCustomFields\Api;
 use WpifyCustomFields\Parser;
 use WpifyCustomFields\Sanitizer;
 
@@ -29,8 +30,9 @@ final class WooCommerceSettings extends AbstractImplementation {
 	 * @param array $args
 	 * @param Parser $parser
 	 * @param Sanitizer $sanitizer
+	 * @param Api $api
 	 */
-	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer ) {
+	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer, Api $api ) {
 		$args = wp_parse_args( $args, array(
 				'tab'     => array( 'id' => '', 'label' => null ),
 				'section' => array( 'id' => '', 'label' => null ),
@@ -42,6 +44,7 @@ final class WooCommerceSettings extends AbstractImplementation {
 		$this->items     = $this->prepare_items( $args['items'] );
 		$this->parser    = $parser;
 		$this->sanitizer = $sanitizer;
+		$this->api       = $api;
 
 		add_filter( 'woocommerce_settings_tabs_array', array( $this, 'woocommerce_settings_tabs_array' ), 30 );
 		add_filter( 'woocommerce_get_sections_' . $this->tab['id'], array( $this, 'woocommerce_get_sections' ) );
