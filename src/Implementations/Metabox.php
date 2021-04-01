@@ -3,9 +3,7 @@
 namespace WpifyCustomFields\Implementations;
 
 use WP_Post;
-use WpifyCustomFields\Api;
-use WpifyCustomFields\Parser;
-use WpifyCustomFields\Sanitizer;
+use WpifyCustomFields\WpifyCustomFields;
 
 /**
  * Class Metabox
@@ -46,11 +44,11 @@ final class Metabox extends AbstractPostImplementation {
 	 * Metabox constructor.
 	 *
 	 * @param array $args
-	 * @param Parser $parser
-	 * @param Sanitizer $sanitizer
-	 * @param Api $api
+	 * @param WpifyCustomFields $wcf
 	 */
-	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer, Api $api ) {
+	public function __construct( array $args, WpifyCustomFields $wcf ) {
+		parent::__construct( $args, $wcf );
+
 		$args = wp_parse_args( $args, array(
 			'id'            => null,
 			'title'         => null,
@@ -73,9 +71,6 @@ final class Metabox extends AbstractPostImplementation {
 		$this->post_types    = $args['post_types'];
 		$this->nonce         = $args['id'] . '_nonce';
 		$this->post_id       = $args['post_id'];
-		$this->parser        = $parser;
-		$this->sanitizer     = $sanitizer;
-		$this->api           = $api;
 
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 		add_action( 'save_post', array( $this, 'save' ) );
@@ -90,6 +85,18 @@ final class Metabox extends AbstractPostImplementation {
 				) );
 			}
 		}
+	}
+
+	/**
+	 * @return void
+	 */
+	public function set_wcf_shown() {
+		global $pagenow;
+
+		$current_screen  = get_current_screen();
+		$this->wcf_shown = ( $current_screen->base === 'post'
+		                     && in_array( $current_screen->post_type, $this->post_types )
+		                     && in_array( $pagenow, array( 'post-new.php', 'post.php' ) ) );
 	}
 
 	/**

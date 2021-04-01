@@ -12,7 +12,7 @@ const Options = () => {
 
 	return (
 		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: ProductOptionsRow }}>
-			<div className={classnames(className, 'options_group')}>
+			<div className={classnames('options_group')}>
 				{items.map((item) => {
 					const Field = getItemComponent(item);
 

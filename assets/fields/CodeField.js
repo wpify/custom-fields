@@ -11,13 +11,14 @@ const CodeField = (props) => {
 		custom_attributes,
 		className,
 		group_level = 0,
+		mode = null,
 	} = props;
 	const textarea = useRef();
 	const codemirror = useRef();
 	const [currentValue, setCurrentValue] = useState(value);
 
 	useEffect(() => {
-		const handleChange = (cm, event) => {
+		const handleChange = (cm) => {
 			const value = cm.getValue();
 			setCurrentValue(value);
 
@@ -26,7 +27,10 @@ const CodeField = (props) => {
 			}
 		};
 
-		codemirror.current = wp.codeEditor.initialize(textarea.current, window.wcf_code_editor_settings);
+		const settings = window.wcf_code_editor_settings || {};
+		const currentSettings = settings[mode] || null;
+
+		codemirror.current = wp.codeEditor.initialize(textarea.current, currentSettings);
 		codemirror.current.codemirror.on('change', handleChange);
 	}, []);
 

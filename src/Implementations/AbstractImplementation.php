@@ -5,6 +5,7 @@ namespace WpifyCustomFields\Implementations;
 use WpifyCustomFields\Api;
 use WpifyCustomFields\Parser;
 use WpifyCustomFields\Sanitizer;
+use WpifyCustomFields\WpifyCustomFields;
 
 /**
  * Class AbstractImplementation
@@ -20,7 +21,47 @@ abstract class AbstractImplementation {
 	/** @var Api */
 	protected $api;
 
-	abstract public function __construct( array $args, Parser $parser, Sanitizer $sanitizer, Api $api );
+	/** @var WpifyCustomFields */
+	protected $wcf;
+
+	/** @var bool */
+	protected $wcf_shown = false;
+
+	public function __construct( array $args, WpifyCustomFields $wcf ) {
+		$this->wcf       = $wcf;
+		$this->parser    = $wcf->get_parser();
+		$this->sanitizer = $wcf->get_sanitizer();
+		$this->api       = $wcf->get_api();
+
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+		add_action( 'current_screen', array( $this, 'set_wcf_shown' ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function admin_enqueue_scripts() {
+		if ( $this->wcf_shown ) {
+			wp_enqueue_code_editor( array() );
+
+			$this->wcf->get_assets()->enqueue_style(
+					'wpify-custom-fields.css',
+					array( 'wp-components' )
+			);
+
+			$this->wcf->get_assets()->enqueue_script(
+					'wpify-custom-fields.js',
+					array(),
+					true,
+					array(
+							'wcf_code_editor_settings' => $this->wcf->get_assets()->get_code_editor_settings(),
+							'wcf_build_url'            => $this->wcf->get_assets()->path_to_url(
+									$this->wcf->get_assets()->get_assets_path()
+							),
+					)
+			);
+		}
+	}
 
 	/**
 	 * @param string $name
@@ -102,6 +143,8 @@ abstract class AbstractImplementation {
 	 * @return mixed
 	 */
 	abstract public function get_field( $name );
+
+	abstract public function set_wcf_shown();
 
 	/**
 	 * @param array $items

@@ -3,9 +3,7 @@
 namespace WpifyCustomFields\Implementations;
 
 use WP_Term;
-use WpifyCustomFields\Api;
-use WpifyCustomFields\Parser;
-use WpifyCustomFields\Sanitizer;
+use WpifyCustomFields\WpifyCustomFields;
 
 /**
  * Class Taxonomy
@@ -25,23 +23,20 @@ final class Taxonomy extends AbstractPostImplementation {
 	 * Taxonomy constructor.
 	 *
 	 * @param array $args
-	 * @param Parser $parser
-	 * @param Sanitizer $sanitizer
-	 * @param Api $api
+	 * @param WpifyCustomFields $wcf
 	 */
-	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer, Api $api ) {
+	public function __construct( array $args, WpifyCustomFields $wcf ) {
+		parent::__construct( $args, $wcf );
+
 		$args = wp_parse_args( $args, array(
 			'taxonomy' => null,
 			'items'    => array(),
 			'term_id'  => null,
 		) );
 
-		$this->taxonomy  = $args['taxonomy'];
-		$this->items     = $this->prepare_items( $args['items'] );
-		$this->term_id   = $args['term_id'];
-		$this->parser    = $parser;
-		$this->sanitizer = $sanitizer;
-		$this->api       = $api;
+		$this->taxonomy = $args['taxonomy'];
+		$this->items    = $this->prepare_items( $args['items'] );
+		$this->term_id  = $args['term_id'];
 
 		add_action( $this->taxonomy . '_add_form_fields', array( $this, 'render_add_form' ) );
 		add_action( $this->taxonomy . '_edit_form_fields', array( $this, 'render_edit_form' ) );
@@ -56,6 +51,14 @@ final class Taxonomy extends AbstractPostImplementation {
 				'sanitize_callback' => $sanitizer,
 			) );
 		}
+	}
+
+	/**
+	 * @return void
+	 */
+	public function set_wcf_shown() {
+		$current_screen  = get_current_screen();
+		$this->wcf_shown = ( $current_screen->taxonomy === $this->taxonomy );
 	}
 
 	/**

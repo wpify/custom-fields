@@ -2,9 +2,7 @@
 
 namespace WpifyCustomFields\Implementations;
 
-use WpifyCustomFields\Api;
-use WpifyCustomFields\Parser;
-use WpifyCustomFields\Sanitizer;
+use WpifyCustomFields\WpifyCustomFields;
 
 /**
  * Class ProductOptions
@@ -27,11 +25,11 @@ final class ProductOptions extends AbstractPostImplementation {
 	 * ProductOptions constructor.
 	 *
 	 * @param array $args
-	 * @param Parser $parser
-	 * @param Sanitizer $sanitizer
-	 * @param Api $api
+	 * @param WpifyCustomFields $wcf
 	 */
-	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer, Api $api ) {
+	public function __construct( array $args, WpifyCustomFields $wcf ) {
+		parent::__construct( $args, $wcf );
+
 		/*
 		 * Possible classes: hide_if_grouped, show_if_simple, show_if_variable, show_if_grouped,
 		 * show_if_external, hide_if_external, hide_if_grouped, hide_if_virtual
@@ -51,9 +49,6 @@ final class ProductOptions extends AbstractPostImplementation {
 		$this->tab        = $args['tab'];
 		$this->items      = $this->prepare_items( $args['items'] );
 		$this->product_id = $args['product_id'];
-		$this->parser     = $parser;
-		$this->sanitizer  = $sanitizer;
-		$this->api        = $api;
 
 		if ( empty( $this->tab['target'] ) ) {
 			$this->tab['target'] = $this->tab['id'] . '_product_data';
@@ -80,6 +75,18 @@ final class ProductOptions extends AbstractPostImplementation {
 					'sanitize_callback' => $sanitizer,
 			) );
 		}
+	}
+
+	/**
+	 * @return void
+	 */
+	public function set_wcf_shown() {
+		global $pagenow;
+
+		$current_screen  = get_current_screen();
+		$this->wcf_shown = ( $current_screen->base === 'post'
+							 && $current_screen->post_type === 'product'
+							 && in_array( $pagenow, array( 'post-new.php', 'post.php' ) ) );
 	}
 
 	/**

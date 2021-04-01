@@ -3,9 +3,7 @@
 namespace WpifyCustomFields\Implementations;
 
 use WC_Admin_Settings;
-use WpifyCustomFields\Api;
-use WpifyCustomFields\Parser;
-use WpifyCustomFields\Sanitizer;
+use WpifyCustomFields\WpifyCustomFields;
 
 /**
  * Class WooCommerceSettings
@@ -28,28 +26,38 @@ final class WooCommerceSettings extends AbstractImplementation {
 	 * WooCommerceSettings constructor.
 	 *
 	 * @param array $args
-	 * @param Parser $parser
-	 * @param Sanitizer $sanitizer
-	 * @param Api $api
+	 * @param WpifyCustomFields $wcf
 	 */
-	public function __construct( array $args, Parser $parser, Sanitizer $sanitizer, Api $api ) {
+	public function __construct( array $args, WpifyCustomFields $wcf ) {
+		parent::__construct( $args, $wcf );
+
 		$args = wp_parse_args( $args, array(
 				'tab'     => array( 'id' => '', 'label' => null ),
 				'section' => array( 'id' => '', 'label' => null ),
 				'items'   => array(),
 		) );
 
-		$this->tab       = $args['tab'];
-		$this->section   = $args['section'];
-		$this->items     = $this->prepare_items( $args['items'] );
-		$this->parser    = $parser;
-		$this->sanitizer = $sanitizer;
-		$this->api       = $api;
+		$this->tab     = $args['tab'];
+		$this->section = $args['section'];
+		$this->items   = $this->prepare_items( $args['items'] );
 
 		add_filter( 'woocommerce_settings_tabs_array', array( $this, 'woocommerce_settings_tabs_array' ), 30 );
 		add_filter( 'woocommerce_get_sections_' . $this->tab['id'], array( $this, 'woocommerce_get_sections' ) );
 		add_action( 'woocommerce_settings_' . $this->tab['id'], array( $this, 'render' ), 11 );
 		add_action( 'woocommerce_settings_save_' . $this->tab['id'], array( $this, 'save' ) );
+	}
+
+	/**
+	 * @return void
+	 */
+	public function set_wcf_shown() {
+		$current_screen = get_current_screen();
+		$tab            = empty( $_GET['tab'] ) ? '' : $_GET['tab'];
+		$section        = empty( $_GET['section'] ) ? '' : $_GET['section'];
+
+		$this->wcf_shown = ( $current_screen->base === 'woocommerce_page_wc-settings'
+							 && $tab === $this->tab['id']
+							 && $section === $this->section['id'] );
 	}
 
 	/**
