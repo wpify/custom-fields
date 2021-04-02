@@ -41,7 +41,6 @@
 	background: white;
 	border: 0;
 	color: #2c3338;
-	cursor: pointer;
 	display: flex;
 	font-weight: 400;
 	margin: 0;
@@ -56,6 +55,7 @@
 
   &__title {
 	font-weight: bold;
+	cursor: pointer;
   }
 
   &__content {
@@ -70,6 +70,15 @@
 	padding: 0;
   }
 
+  &__content-item:not(:last-of-type) {
+	margin-bottom: 10px;
+  }
+
+  &__content-item-label {
+	margin-bottom: 5px;
+	display: block;
+  }
+
   &__button {
 	padding: 0;
 	background: transparent;
@@ -79,6 +88,16 @@
 	svg {
 	  display: block;
 	}
+  }
+
+  &__button--move {
+	cursor: move;
+	margin-right: 10px;
+  }
+
+  &__button--delete {
+	cursor: pointer;
+	margin-left: auto;
   }
 
   &--ghost {
@@ -93,5 +112,9 @@
 
   &--drag {
 	border: 1px solid #c3c4c7;
+  }
+
+  &--drag &__button--move {
+	cursor: grab;
   }
 }

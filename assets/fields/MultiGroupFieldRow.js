@@ -32,21 +32,29 @@ const MultiGroupFieldRow = (props) => {
 	return (
 		<div className={classnames('wcf-multi-group-row', className)}>
 			<h4 className={classnames('wcf-multi-group-row__header')}>
+				<button
+					type="button"
+					onClick={handleDelete}
+					className={classnames('wcf-multi-group-row__button wcf-multi-group-row__button--move')}
+				>
+					<svg width={10} height={10} viewBox="0 0 10 10">
+						<line stroke="#50575e" strokeWidth={2} x1={2} y1={0} x2={2} y2={10} />
+						<line stroke="#50575e" strokeWidth={2} x1={6} y1={0} x2={6} y2={10} />
+					</svg>
+				</button>
 				<span className={classnames('wcf-multi-group-row__title')} onClick={() => setCollapsed(!collapsed)}>
 					#{index + 1}: {title}
 				</span>
-				<div className={classnames('wcf-multi-group-row__buttons')}>
-					<button
-						type="button"
-						onClick={handleDelete}
-						className={classnames('wcf-multi-group-row__button wcf-multi-group-row__button--delete')}
-					>
-						<svg width={10} height={10} viewBox="0 0 10 10">
-							<line stroke="#50575e" strokeWidth={2} x1={1} y1={9} x2={9} y2={1} />
-							<line stroke="#50575e" strokeWidth={2} x1={1} y1={1} x2={9} y2={9} />
-						</svg>
-					</button>
-				</div>
+				<button
+					type="button"
+					onClick={handleDelete}
+					className={classnames('wcf-multi-group-row__button wcf-multi-group-row__button--delete')}
+				>
+					<svg width={10} height={10} viewBox="0 0 10 10">
+						<line stroke="#50575e" strokeWidth={2} x1={1} y1={9} x2={9} y2={1} />
+						<line stroke="#50575e" strokeWidth={2} x1={1} y1={1} x2={9} y2={9} />
+					</svg>
+				</button>
 			</h4>
 			<div className={classnames('wcf-multi-group-row__content', {
 				'wcf-multi-group-row__content--collapsed': collapsed,
@@ -55,15 +63,13 @@ const MultiGroupFieldRow = (props) => {
 					const Field = getItemComponent(item);
 
 					return (
-						<div key={item.id}>
+						<div key={item.id} className={classnames('wcf-multi-group-row__content-item')}>
 							{!Field.noLabel && (
-								<React.Fragment>
-									<label
-										htmlFor={htmlId(item.id)}
-										dangerouslySetInnerHTML={{ __html: item.title }}
-									/>
-									<br/>
-								</React.Fragment>
+								<label
+									className={classnames('wcf-multi-group-row__content-item-label')}
+									htmlFor={htmlId(item.id)}
+									dangerouslySetInnerHTML={{ __html: item.title }}
+								/>
 							)}
 							<Field
 								{...item}

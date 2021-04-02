@@ -5,9 +5,27 @@ import Button from '../components/Button';
 import MultiGroupFieldRow from './MultiGroupFieldRow';
 import { ReactSortable } from 'react-sortablejs';
 
+const prepareValues = (values = []) => {
+	if (Array.isArray(values)) {
+		return values.map((value, index) => {
+			value.__key = index;
+			return value;
+		});
+	}
+
+	return [];
+};
+
+const getNextKey = (values = []) => values.reduce((p, c) => Math.max(p.__key, c.__key), 0) + 1;
+
+const removeKeys = (values = []) => values.map(value => {
+	delete value.__key;
+	return value;
+});
+
 const MultiGroupField = (props) => {
 	const { group_level = 0, onChange, id, items = [], value = [], className } = props;
-	const [currentValue, setCurrentValue] = useState(Array.isArray(value) ? value : []);
+	const [currentValue, setCurrentValue] = useState(prepareValues(value));
 
 	const handleChange = (index) => (changedItem = {}) => {
 		const newValue = [...currentValue];
@@ -23,12 +41,12 @@ const MultiGroupField = (props) => {
 
 	const handleAdd = () => {
 		const newValue = [...currentValue];
-		newValue.push({});
+		newValue.push({ __key: getNextKey(currentValue) });
 		setCurrentValue(newValue);
 	};
 
 	useEffect(() => {
-		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
+		if (onChange && JSON.stringify(value) !== JSON.stringify(removeKeys(currentValue))) {
 			onChange(currentValue);
 		}
 	}, [value, currentValue]);
@@ -44,16 +62,14 @@ const MultiGroupField = (props) => {
 				list={currentValue}
 				setList={setCurrentValue}
 				animation={150}
-				handle=".wcf-multi-group-row__title"
+				handle=".wcf-multi-group-row__button--move"
 				ghostClass="wcf-multi-group-row--ghost"
 				dragClass="wcf-multi-group-row--drag"
 			>
 				{currentValue.map((itemValue, index) => {
-					const key = props.id + '_' + index;
-
 					return (
 						<MultiGroupFieldRow
-							key={key}
+							key={itemValue.__key}
 							group_level={group_level + 1}
 							onChange={handleChange(index)}
 							items={items}
