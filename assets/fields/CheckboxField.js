@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 
@@ -16,13 +16,15 @@ const CheckboxField = (props) => {
 
 	const [currentValue, setCurrentValue] = useState(Boolean(value));
 
-	const handleChange = useCallback((event) => {
-		setCurrentValue(event.target.checked);
-
-		if (onChange) {
-			onChange({ [id]: event.target.value });
+	useEffect(() => {
+		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
+			onChange(currentValue);
 		}
-	}, [id]);
+	}, [value, currentValue]);
+
+	const handleChange = (event) => {
+		setCurrentValue(event.target.checked);
+	};
 
 	return (
 		<label htmlFor={htmlId(id)} className={classnames(className)}>

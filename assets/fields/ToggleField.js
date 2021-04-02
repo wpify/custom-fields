@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 import { ToggleControl } from '@wordpress/components';
@@ -18,13 +18,15 @@ const ToggleField = (props) => {
 
 	const [currentValue, setCurrentValue] = useState(Boolean(value));
 
-	const handleChange = useCallback((checked) => {
+	const handleChange = (checked) => {
 		setCurrentValue(checked);
+	};
 
-		if (onChange) {
-			onChange({ [id]: checked });
+	useEffect(() => {
+		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
+			onChange(currentValue);
 		}
-	}, [id]);
+	}, [value, currentValue]);
 
 	return (
 		<React.Fragment>

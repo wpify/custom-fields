@@ -33,15 +33,17 @@ const SelectField = (props) => {
 		}
 	}, [options]);
 
-	const handleChange = useCallback((options) => {
+	useEffect(() => {
+		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValues)) {
+			onChange(currentValues);
+		}
+	}, [value, currentValues]);
+
+	const handleChange = (options) => {
 		const values = options.map(option => option.value);
 		setCurrentValues(values);
 		setCurrentOptions(options);
-
-		if (onChange) {
-			onChange({ [id]: values });
-		}
-	}, [id]);
+	};
 
   return (
 		<React.Fragment>

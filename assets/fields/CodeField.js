@@ -17,22 +17,23 @@ const CodeField = (props) => {
 	const codemirror = useRef();
 	const [currentValue, setCurrentValue] = useState(value);
 
+	const handleChange = (cm) => {
+		setCurrentValue(cm.getValue());
+	};
+
 	useEffect(() => {
-		const handleChange = (cm) => {
-			const value = cm.getValue();
-			setCurrentValue(value);
-
-			if (onChange) {
-				onChange(value);
-			}
-		};
-
 		const settings = window.wcf_code_editor_settings || {};
 		const currentSettings = settings[mode] || null;
 
 		codemirror.current = wp.codeEditor.initialize(textarea.current, currentSettings);
 		codemirror.current.codemirror.on('change', handleChange);
 	}, []);
+
+	useEffect(() => {
+		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
+			onChange(currentValue);
+		}
+	}, [value, currentValue]);
 
 	return (
 		<React.Fragment>

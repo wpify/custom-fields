@@ -3,10 +3,6 @@
   "description": "WPify Custom Fields",
   "type": "library",
   "license": "GPL-2.0-or-later",
-  "scripts": {
-	"phpcs": "phpcs --standard=WordPress",
-	"phpcbf": "phpcbf --standard=WordPress"
-  },
   "autoload": {
 	"psr-4": {
 	  "WpifyCustomFields\\": "src/"

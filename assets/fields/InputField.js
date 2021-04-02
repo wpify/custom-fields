@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import PT from 'prop-types';
 
 const InputField = (props) => {
@@ -17,13 +17,15 @@ const InputField = (props) => {
 
 	const [currentValue, setCurrentValue] = useState(value);
 
-	const handleChange = useCallback((event) => {
+	const handleChange = (event) => {
 		setCurrentValue(event.target.value);
+	};
 
-		if (onChange) {
-			onChange({ [id]: event.target.value });
+	useEffect(() => {
+		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
+			onChange(currentValue);
 		}
-	}, [id, setCurrentValue, onChange]);
+	}, [value, currentValue]);
 
 	const describedBy = description ? id + '-description' : null;
 
@@ -41,7 +43,7 @@ const InputField = (props) => {
 			/>
 			{suffix && ' ' + suffix}
 			{description && (
-				<p className="description" id={describedBy} dangerouslySetInnerHTML={{ __html: description }} />
+				<p className="description" id={describedBy} dangerouslySetInnerHTML={{ __html: description }}/>
 			)}
 		</React.Fragment>
 	);

@@ -1,60 +1,70 @@
-import React, { useCallback, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PT from 'prop-types';
 import classnames from 'classnames';
 import Button from '../components/Button';
 import MultiGroupFieldRow from './MultiGroupFieldRow';
+import { ReactSortable } from 'react-sortablejs';
 
 const MultiGroupField = (props) => {
-	const { group_level = 0, onChange, id, items = [], value = [] } = props;
+	const { group_level = 0, onChange, id, items = [], value = [], className } = props;
 	const [currentValue, setCurrentValue] = useState(Array.isArray(value) ? value : []);
 
-	const handleChange = useCallback((index) => (changedItem = {}) => {
+	const handleChange = (index) => (changedItem = {}) => {
 		const newValue = [...currentValue];
-		const previousItem = newValue[index];
 
 		if (changedItem === null) {
 			newValue.splice(index, 1);
 		} else {
-			newValue[index] = { ...previousItem, ...changedItem };
+			newValue[index] = changedItem;
 		}
 
 		setCurrentValue(newValue);
+	};
 
-		if (onChange) {
-			onChange(newValue);
-		}
-	}, [currentValue, onChange]);
-
-	const handleAdd = useCallback(() => {
+	const handleAdd = () => {
 		const newValue = [...currentValue];
 		newValue.push({});
 		setCurrentValue(newValue);
-	}, [currentValue]);
+	};
+
+	useEffect(() => {
+		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
+			onChange(currentValue);
+		}
+	}, [value, currentValue]);
 
 	const addEnabled = true;
 
 	return (
-		<div>
+		<div className={classnames('wcf-multi-group', className)}>
 			{group_level === 0 && (
 				<input type="hidden" id={id} name={id} value={JSON.stringify(currentValue)}/>
 			)}
-			{currentValue.map((itemValue, index) => {
-				const key = props.id + '_' + index;
+			<ReactSortable
+				list={currentValue}
+				setList={setCurrentValue}
+				animation={150}
+				handle=".wcf-multi-group-row__title"
+				ghostClass="wcf-multi-group-row--ghost"
+				dragClass="wcf-multi-group-row--drag"
+			>
+				{currentValue.map((itemValue, index) => {
+					const key = props.id + '_' + index;
 
-				return (
-					<React.Fragment key={key}>
+					return (
 						<MultiGroupFieldRow
+							key={key}
 							group_level={group_level + 1}
 							onChange={handleChange(index)}
 							items={items}
 							value={itemValue}
 							htmlId={itemId => id + '_' + index + '_' + itemId}
+							index={index}
 						/>
-						<hr />
-					</React.Fragment>
-				);
-			})}
-			<div className={classnames('buttons')}>
+					);
+				})}
+			</ReactSortable>
+			<div className={classnames('wcf-multi-group__buttons')}>
 				{addEnabled && (
 					<Button className={classnames('button-secondary')} onClick={handleAdd}>
 						Add

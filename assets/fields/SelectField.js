@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PT from 'prop-types';
 import Select from 'react-select';
 import { __ } from '@wordpress/i18n';
@@ -42,11 +42,11 @@ const SelectField = (props) => {
 		controller.current.abort();
 		controller.current = new AbortController();
 
-		fetch(`${api.url}/list`, {
+		fetch(api.url + '/list', {
 			method: 'post',
 			signal: controller.current.signal,
 			headers: {
-				'Accept': 'application/json, text/plain, */*',
+				'Accept': 'application/json',
 				'Content-Type': 'application/json',
 				'X-WP-Nonce': api.nonce
 			},
@@ -74,15 +74,17 @@ const SelectField = (props) => {
 		}
 	}, [id, value, label, show_option_none, async_list_type, currentInput]);
 
-	const handleChange = useCallback((option) => {
+	const handleChange = (option) => {
 		setCurrentValue(option.value);
+	};
 
-		if (onChange) {
-			onChange({ [id]: option.value });
+	useEffect(() => {
+		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
+			onChange(currentValue);
 		}
-	}, [id]);
+	}, [value, currentValue]);
 
-  return (
+	return (
 		<React.Fragment>
 			{group_level === 0 && (
 				<input type="hidden" name={id} value={currentValue}/>
@@ -111,14 +113,14 @@ const SelectField = (props) => {
 				}}
 			/>
 			{description && (
-				<p className="description" dangerouslySetInnerHTML={{ __html: description }} />
+				<p className="description" dangerouslySetInnerHTML={{ __html: description }}/>
 			)}
 		</React.Fragment>
-  );
+	);
 };
 
 SelectField.propTypes = {
-  className: PT.string,
+	className: PT.string,
 };
 
 export default SelectField;

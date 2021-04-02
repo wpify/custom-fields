@@ -1,5 +1,9 @@
 # WPify Custom Fields
 
-## Don't forget before commit
+## Development requirements
 
-PLEASE run `npm run build` before commit.
+* PHP 7.3+
+* Composer 2+
+* Node 14.15+
+
+# How 

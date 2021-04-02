@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PT from 'prop-types';
 import ScreenContext from '../components/ScreenContext';
 import { getItemComponent } from '../helpers';
@@ -16,18 +16,18 @@ const GroupField = (props) => {
 
 	const [currentValue, setCurrentValue] = useState(value);
 
-	const handleChange = useCallback((newValue = {}) => {
-		const newCurrentValue = {
+	const handleChange = useCallback((changedValue = {}) => {
+		setCurrentValue({
 			...currentValue,
-			...newValue,
-		};
+			...changedValue,
+		});
+	}, [currentValue]);
 
-		setCurrentValue(newCurrentValue);
-
-		if (onChange) {
-			onChange({ [id]: newCurrentValue });
+	useEffect(() => {
+		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
+			onChange(currentValue);
 		}
-	}, [currentValue, onChange, id]);
+	}, [value, currentValue]);
 
 	return (
 		<React.Fragment>
@@ -49,7 +49,7 @@ const GroupField = (props) => {
 								{...item}
 								htmlId={itemId => id + '_' + itemId}
 								group_level={group_level + 1}
-								onChange={handleChange}
+								onChange={value => handleChange({ [item.id]: value })}
 								value={currentValue[item.id]}
 							/>
 						</RowWrapper>

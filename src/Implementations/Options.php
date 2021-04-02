@@ -65,6 +65,7 @@ final class Options extends AbstractImplementation {
 				'page'        => null,
 				'icon_url'    => null,
 				'position'    => null,
+				'priority'    => 100,
 				'items'       => array(),
 		) );
 
@@ -81,11 +82,11 @@ final class Options extends AbstractImplementation {
 		$this->items       = $this->prepare_items( $args['items'] );
 
 		if ( $this->type === 'user' ) {
-			add_action( 'user_admin_menu', array( $this, 'register' ) );
+			add_action( 'user_admin_menu', array( $this, 'register' ), $args['priority'] );
 		} elseif ( $this->type === 'network' ) {
-			add_action( 'network_admin_menu', array( $this, 'register' ) );
+			add_action( 'network_admin_menu', array( $this, 'register' ), $args['priority'] );
 		} else {
-			add_action( 'admin_menu', array( $this, 'register' ) );
+			add_action( 'admin_menu', array( $this, 'register' ), $args['priority'] );
 		}
 
 		add_action( 'admin_init', array( $this, 'register_settings' ) );

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PT from 'prop-types';
 import classnames from 'classnames';
 
@@ -16,13 +16,15 @@ const TextareaField = (props) => {
 
 	const [currentValue, setCurrentValue] = useState(value);
 
-	const handleChange = useCallback((event) => {
+	const handleChange = (event) => {
 		setCurrentValue(event.target.value);
+	};
 
-		if (onChange) {
-			onChange({ [id]: event.target.value });
+	useEffect(() => {
+		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
+			onChange(currentValue);
 		}
-	}, [id, setCurrentValue, onChange]);
+	}, [value, currentValue]);
 
 	const describedBy = description ? id + '-description' : null;
 
