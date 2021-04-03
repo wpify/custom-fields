@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PT from 'prop-types';
 
-const InputField = (props) => {
+const InputField = React.forwardRef((props, ref) => {
 	const {
 		id,
 		htmlId = id => id,
@@ -39,6 +39,7 @@ const InputField = (props) => {
 				onChange={handleChange}
 				aria-describedby={describedBy}
 				className={className}
+				ref={ref}
 				{...custom_attributes}
 			/>
 			{suffix && ' ' + suffix}
@@ -47,7 +48,7 @@ const InputField = (props) => {
 			)}
 		</React.Fragment>
 	);
-};
+});
 
 InputField.propTypes = {
 	id: PT.string,

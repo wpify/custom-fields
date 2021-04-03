@@ -3,11 +3,15 @@ import PT from 'prop-types';
 import React from 'react';
 
 const OptionsRow = (props) => {
-	const { item, children, group_level = 0, className, htmlId = id => id } = props;
+	const { item, children, group_level = 0, className, htmlId = id => id, withoutWrapper = false } = props;
 
 	const label = item.title
 		? <label htmlFor={htmlId(item.id)} dangerouslySetInnerHTML={{ __html: item.title }}/>
 		: null;
+
+	if (withoutWrapper) {
+		return children;
+	}
 
 	if (group_level > 1) {
 		return (

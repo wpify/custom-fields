@@ -93,6 +93,7 @@
     "@wordpress/i18n": "^3.18.0",
     "@wordpress/icons": "^2.9.1",
     "classnames": "^2.2.6",
+    "intl-tel-input": "^17.0.12",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "17.0.1",

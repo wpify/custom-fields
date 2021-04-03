@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 
-const CheckboxField = (props) => {
+const CheckboxField = React.forwardRef((props, ref) => {
 	const {
 		id,
 		htmlId = id => id,
@@ -36,12 +36,13 @@ const CheckboxField = (props) => {
 				checked={currentValue}
 				id={htmlId(id)}
 				onChange={handleChange}
+				ref={ref}
 				{...custom_attributes}
 			/>
 			{label}
 		</label>
 	);
-};
+});
 
 CheckboxField.propTypes = {
 	className: PT.string,

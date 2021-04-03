@@ -60,7 +60,7 @@ const GroupField = (props) => {
 	);
 };
 
-GroupField.renderWrapper = (group_level = 0) => group_level > 0;
+GroupField.withoutWrapper = (group_level = 0) => group_level === 0;
 
 GroupField.propTypes = {
 	object_type: PT.string,

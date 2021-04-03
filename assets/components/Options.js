@@ -15,6 +15,10 @@ const Options = () => {
 				{items.map(item => {
 					const Field = getItemComponent(item);
 
+					if (Field.withoutWrapper && Field.withoutWrapper()) {
+						return <Field {...item} />;
+					}
+
 					return (
 						<OptionsRow key={item.id} item={item}>
 							<Field {...item}/>
