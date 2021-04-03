@@ -1,8 +1,9 @@
 import React from 'react';
 import PT from 'prop-types';
+import classnames from 'classnames';
 import Select from 'react-select';
 
-const SelectControl = ({ id, onChange, value, onInputChange, options, ...rest }) => {
+const SelectControl = ({ id, onChange, value, onInputChange, options, className, ...rest }) => {
   return (
 		<Select
 			id={id}
@@ -10,7 +11,7 @@ const SelectControl = ({ id, onChange, value, onInputChange, options, ...rest })
 			value={value}
 			onInputChange={onInputChange}
 			options={options}
-			className="wcf-select"
+			className={classnames('wcf-select', className)}
 			styles={{
 				control: (styles, { isFocused }) => ({
 					...styles,

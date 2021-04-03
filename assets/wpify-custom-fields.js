@@ -33,6 +33,8 @@ import SelectField from './fields/SelectField';
 import AppContext from './components/AppContext';
 import MultiSelectField from './fields/MultiSelectField';
 import CodeField from './fields/CodeField';
+import PostField from './fields/PostField';
+import MultiPostField from './fields/MultiPostField';
 
 const WcfApp = (props) => {
 	const { wcf = {} } = props;
@@ -84,6 +86,8 @@ const renderWcf = () => {
 	registerFieldType('select', SelectField);
 	registerFieldType('multi_select', MultiSelectField);
 	registerFieldType('code', CodeField);
+	registerFieldType('post', PostField);
+	registerFieldType('multi_post', MultiPostField);
 
 	document.querySelectorAll('.js-wcf[data-wcf]').forEach((container) => {
 		const props = parseDataset(container.dataset);

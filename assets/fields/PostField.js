@@ -3,22 +3,25 @@ import PT from 'prop-types';
 import AppContext from '../components/AppContext';
 import SearchableSelectControl from '../components/SearchableSelectControl';
 
-const SelectField = (props) => {
+const PostField = (props) => {
 	const {
 		id,
-		value,
+		value = null,
 		onChange,
 		options = [],
 		description,
-		list_type = null,
 		group_level = 0,
 		required,
 		isMulti = false,
 		className,
+		post_type = 'post',
+		query_args = [],
 	} = props;
 
 	const { api } = useContext(AppContext);
 	const [currentValue, setCurrentValue] = useState(value);
+
+	console.log(value, currentValue);
 
 	const handleChange = (value) => {
 		setCurrentValue(value);
@@ -33,20 +36,22 @@ const SelectField = (props) => {
 	return (
 		<React.Fragment>
 			{group_level === 0 && (
-				<input type="hidden" name={id} value={isMulti ? JSON.stringify(currentValue.filter(Boolean)) : currentValue} />
+				<input type="hidden" name={id} value={isMulti ? JSON.stringify(currentValue) : currentValue}/>
 			)}
 			<SearchableSelectControl
 				id={id}
 				value={value}
 				onChange={handleChange}
 				options={options}
-				list_type={list_type}
 				required={required}
 				isMulti={isMulti}
-				url={api.url + '/list'}
+				url={api.url + '/posts'}
 				nonce={api.nonce}
 				method="post"
 				className={className}
+				list_type="post"
+				post_type={post_type}
+				query_args={query_args}
 			/>
 			{description && (
 				<p className="description" dangerouslySetInnerHTML={{ __html: description }}/>
@@ -55,7 +60,7 @@ const SelectField = (props) => {
 	);
 };
 
-SelectField.propTypes = {
+PostField.propTypes = {
 	className: PT.string,
 	id: PT.string,
 	value: PT.oneOfType([PT.string, PT.number]),
@@ -68,4 +73,4 @@ SelectField.propTypes = {
 	isMulti: PT.bool,
 };
 
-export default SelectField;
+export default PostField;

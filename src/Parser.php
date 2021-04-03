@@ -9,9 +9,10 @@ namespace WpifyCustomFields;
 final class Parser {
 	/** @var string[] */
 	private $parsers = array(
-		'group'       => 'parse_group_value',
-		'multi_group' => 'parse_multi_group_value',
+		'group'        => 'parse_group_value',
+		'multi_group'  => 'parse_multi_group_value',
 		'multi_select' => 'parse_multi_select_value',
+		'multi_post'   => 'parse_multi_select_value',
 	);
 
 	/**
