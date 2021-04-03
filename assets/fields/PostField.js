@@ -8,7 +8,7 @@ const PostField = (props) => {
 		id,
 		value = null,
 		onChange,
-		options = [],
+		options,
 		description,
 		group_level = 0,
 		required,
@@ -20,8 +20,6 @@ const PostField = (props) => {
 
 	const { api } = useContext(AppContext);
 	const [currentValue, setCurrentValue] = useState(value);
-
-	console.log(value, currentValue);
 
 	const handleChange = (value) => {
 		setCurrentValue(value);

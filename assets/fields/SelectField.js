@@ -8,7 +8,7 @@ const SelectField = (props) => {
 		id,
 		value,
 		onChange,
-		options = [],
+		options,
 		description,
 		list_type = null,
 		group_level = 0,

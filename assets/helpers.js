@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { addFilter, applyFilters } from '@wordpress/hooks';
 
 export const parseDataset = (dataset) => {
@@ -54,4 +54,18 @@ export const useFetch = ({ defaultValue = null }) => {
 	}, []);
 
 	return { fetch, result };
+};
+
+export const useDelay = (callback, deps, timeout = 500) => {
+	const timer = useRef(0);
+
+	useEffect(() => {
+		window.clearTimeout(timer.current);
+
+		timer.current = window.setTimeout(callback, timeout);
+
+		return () => {
+			window.clearTimeout(timer.current);
+		};
+	}, [...deps]);
 };

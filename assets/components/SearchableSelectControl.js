@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PT from 'prop-types';
 import AppContext from './AppContext';
-import { useFetch } from '../helpers';
+import { useDelay, useFetch } from '../helpers';
 import { __ } from '@wordpress/i18n';
 import SelectControl from './SelectControl';
 
@@ -12,9 +12,7 @@ const SearchableSelectControl = (props) => {
 		id,
 		value,
 		onChange = (v) => null,
-		options = [],
-		list_type = null,
-		required,
+		options,
 		isMulti = false,
 		url,
 		nonce,
@@ -24,41 +22,19 @@ const SearchableSelectControl = (props) => {
 
 	const { api } = useContext(AppContext);
 	const [currentValue, setCurrentValue] = useState(normalizeValues(value));
-	const [selectedOptions, setSelectedOptions] = useState(normalizeValues(value));
 	const [search, setSearch] = useState('');
-	const timer = useRef();
-	const { fetch, result: currentOptions } = useFetch({ defaultValue: [] });
+	const { fetch, result: currentOptions } = useFetch({ defaultValue: options || [] });
 
-	useEffect(() => {
-		setSelectedOptions(
-			currentValue
-				.map(value => currentOptions.find(option => String(option.value) === String(value)))
-				.filter(Boolean)
-		);
-	}, [currentOptions, currentValue]);
-
-	console.log(selectedOptions);
-
-	useEffect(() => {
-		if (!required) {
-			options.unshift({ value: null, label: __('-', 'wpify-woo') });
+	useDelay(() => {
+		if (!options) {
+			const body = { ...props, current_value: currentValue.filter(Boolean), search: search };
+			fetch({ method, url, nonce, body });
 		}
-	}, [options]);
+	}, [options, search, props, api, currentValue]);
 
 	useEffect(() => {
-		if (list_type) {
-			window.clearTimeout(timer.current);
-
-			timer.current = window.setTimeout(() => {
-				const body = { ...props, current_value: currentValue.filter(Boolean), search: search };
-				fetch({ method, url, nonce, body });
-			}, 500);
-
-			return () => {
-				window.clearTimeout(timer.current);
-			};
-		}
-	}, [list_type, search, props, api, currentValue]);
+		onChange(isMulti ? currentValue : currentValue.find(Boolean));
+	}, [value, currentValue]);
 
 	const handleChange = (options) => {
 		setCurrentValue(isMulti
@@ -66,10 +42,6 @@ const SearchableSelectControl = (props) => {
 			: [String(options.value)]
 		);
 	};
-
-	useEffect(() => {
-		onChange(isMulti ? currentValue : currentValue.find(Boolean));
-	}, [value, currentValue]);
 
 	return (
 		<SelectControl
@@ -89,7 +61,6 @@ SearchableSelectControl.propTypes = {
 	value: PT.oneOfType([PT.string, PT.number]),
 	onChange: PT.func,
 	options: PT.array,
-	list_type: PT.string,
 	required: PT.bool,
 	isMulti: PT.bool,
 	url: PT.string,
