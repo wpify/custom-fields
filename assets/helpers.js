@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { addFilter, applyFilters } from '@wordpress/hooks';
 
 export const parseDataset = (dataset) => {
@@ -27,4 +27,31 @@ export const getItemComponent = (item) => {
 
 export const registerFieldType = (type, Field) => {
 	addFilter('wcf_field_' + type, 'wpify-custom-fields', Component => Field);
+};
+
+export const useFetch = ({ defaultValue = null }) => {
+	const controller = useRef(new AbortController());
+	const [result, setResult] = useState(defaultValue);
+
+	const fetch = useCallback(({ method, url, nonce, body }) => {
+		controller.current.abort();
+		controller.current = new AbortController();
+
+		window.fetch(url, {
+			method,
+			signal: controller.current.signal,
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+				'X-WP-Nonce': nonce
+			},
+			body: JSON.stringify(body),
+		}).then(response => {
+			if (response.ok) {
+				return response.json();
+			}
+		}).then(setResult);
+	}, []);
+
+	return { fetch, result };
 };

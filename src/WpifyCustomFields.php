@@ -95,6 +95,9 @@ final class WpifyCustomFields {
 		return $this->sanitizer;
 	}
 
+	/**
+	 * @return Api
+	 */
 	public function get_api(): Api {
 		return $this->api;
 	}
