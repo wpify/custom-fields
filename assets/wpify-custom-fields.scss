@@ -1,4 +1,4 @@
-@import "~intl-tel-input/build/css/intlTelInput.css";
+@import url("~intl-tel-input/build/css/intlTelInput.min.css");
 
 .wcf-select {
   input {
@@ -28,6 +28,27 @@
 	flex-flow: row wrap;
 	justify-content: flex-start;
 	margin-top: 10px;
+  }
+}
+
+.wcf-button {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+
+  svg {
+	display: block;
+  }
+
+  &--move {
+	cursor: move;
+	margin-right: 10px;
+  }
+
+  &--delete {
+	cursor: pointer;
+	margin-left: auto;
   }
 }
 
@@ -80,47 +101,46 @@
 	margin-bottom: 5px;
 	display: block;
   }
-
-  &__button {
-	padding: 0;
-	background: transparent;
-	border: 0;
-	cursor: pointer;
-
-	svg {
-	  display: block;
-	}
-  }
-
-  &__button--move {
-	cursor: move;
-	margin-right: 10px;
-  }
-
-  &__button--delete {
-	cursor: pointer;
-	margin-left: auto;
-  }
-
-  &--ghost {
-	background: rgba(255, 255, 255, 0.3);
-	border: 1px dashed #c3c4c7;
-  }
-
-  &--ghost &__header,
-  &--ghost &__content {
-	visibility: hidden;
-  }
-
-  &--drag {
-	border: 1px solid #c3c4c7;
-  }
-
-  &--drag &__button--move {
-	cursor: grab;
-  }
 }
 
 .iti__flag-container {
   z-index: 5;
+}
+
+.wcf-post-selected {
+  &__item-header {
+	display: flex;
+	flex-flow: row nowrap;
+  }
+  &__item {
+	background-color: white;
+	padding: 10px 15px;
+	margin: 5px 0;
+	border: 1px solid #c3c4c7;
+
+	p {
+	  font-size: 12px;
+	  line-height: 1.3;
+	  max-height: 34px;
+	  text-overflow: ellipsis;
+	  overflow: hidden;
+	}
+  }
+}
+
+.wcf-sortable-ghost {
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px dashed #c3c4c7;
+}
+
+.wcf-sortable-ghost * {
+  visibility: hidden;
+}
+
+.wcf-sortable-drag {
+  border: 1px solid #c3c4c7;
+}
+
+.wcf-sortable-drag .wcf-button--move {
+  cursor: grab;
 }

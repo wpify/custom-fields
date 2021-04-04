@@ -187,11 +187,21 @@ final class Options extends AbstractImplementation {
 			return;
 		}
 
+		global $wp_settings_errors;
+
+		$message = __( 'Settings saved.' );
+
+		/*
+		$same_messages = array_filter( function ( $error ) use ( $message ) {
+			return $error['message'] === $message;
+		}, $wp_settings_errors );
+		*/
+
 		if ( isset( $_GET['settings-updated'] ) ) {
 			add_settings_error(
 					$this->menu_slug . '_messages',
 					$this->menu_slug . '_message',
-					__( 'Settings saved', 'wpify-custom-fields' ),
+					__( 'Settings saved.' ),
 					'updated'
 			);
 		}

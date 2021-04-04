@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import Button from '../components/Button';
 import MultiGroupFieldRow from './MultiGroupFieldRow';
 import { ReactSortable } from 'react-sortablejs';
+import SortableControl from '../components/SortableControl';
 
 const prepareValues = (values = []) => {
 	if (Array.isArray(values)) {
@@ -58,13 +59,9 @@ const MultiGroupField = (props) => {
 			{group_level === 0 && (
 				<input type="hidden" id={id} name={id} value={JSON.stringify(currentValue)}/>
 			)}
-			<ReactSortable
+			<SortableControl
 				list={currentValue}
 				setList={setCurrentValue}
-				animation={150}
-				handle=".wcf-multi-group-row__button--move"
-				ghostClass="wcf-multi-group-row--ghost"
-				dragClass="wcf-multi-group-row--drag"
 			>
 				{currentValue.map((itemValue, index) => {
 					return (
@@ -76,10 +73,11 @@ const MultiGroupField = (props) => {
 							value={itemValue}
 							htmlId={itemId => id + '_' + index + '_' + itemId}
 							index={index}
+							length={currentValue.length}
 						/>
 					);
 				})}
-			</ReactSortable>
+			</SortableControl>
 			<div className={classnames('wcf-multi-group__buttons')}>
 				{addEnabled && (
 					<Button className={classnames('button-secondary')} onClick={handleAdd}>

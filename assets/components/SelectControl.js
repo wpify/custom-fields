@@ -3,14 +3,9 @@ import PT from 'prop-types';
 import classnames from 'classnames';
 import Select from 'react-select';
 
-const SelectControl = ({ id, onChange, value, onInputChange, options, className, ...rest }) => {
+const SelectControl = ({ className, ...rest }) => {
   return (
 		<Select
-			id={id}
-			onChange={onChange}
-			value={value}
-			onInputChange={onInputChange}
-			options={options}
 			className={classnames('wcf-select', className)}
 			styles={{
 				control: (styles, { isFocused }) => ({

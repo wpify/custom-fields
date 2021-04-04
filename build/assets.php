@@ -1,1 +1,1 @@
-<?php return array('wpify-custom-fields.js' => array('dependencies' => array('react', 'react-dom', 'wp-components', 'wp-element', 'wp-hooks', 'wp-i18n', 'wp-polyfill'), 'version' => 'aad91af56fa6e1e4bf09ecd2f70561e9'));
+<?php return array('wpify-custom-fields.js' => array('dependencies' => array('react', 'react-dom', 'wp-components', 'wp-element', 'wp-hooks', 'wp-i18n', 'wp-polyfill'), 'version' => 'fff15689c542847b6f5344516eadd8d6'));
