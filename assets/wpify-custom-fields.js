@@ -1,10 +1,8 @@
+import './wpify-custom-fields.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PT from 'prop-types';
 import { parseDataset, registerFieldType } from './helpers';
-
-import './wpify-custom-fields.scss';
-
 import TextField from './fields/TextField';
 import UrlField from './fields/UrlField';
 import EmailField from './fields/EmailField';
@@ -35,6 +33,9 @@ import MultiSelectField from './fields/MultiSelectField';
 import CodeField from './fields/CodeField';
 import PostField from './fields/PostField';
 import MultiPostField from './fields/MultiPostField';
+import AttachmentField from './fields/AttachmentField';
+import MultiAttachmentField from './fields/MultiAttachmentField';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const WcfApp = (props) => {
 	const { wcf = {} } = props;
@@ -54,7 +55,9 @@ const WcfApp = (props) => {
 
 	return (
 		<AppContext.Provider value={wcf}>
-			<Component />
+			<ErrorBoundary>
+				<Component/>
+			</ErrorBoundary>
 		</AppContext.Provider>
 	);
 };
@@ -88,6 +91,8 @@ const renderWcf = () => {
 	registerFieldType('code', CodeField);
 	registerFieldType('post', PostField);
 	registerFieldType('multi_post', MultiPostField);
+	registerFieldType('attachment', AttachmentField);
+	registerFieldType('multi_attachment', MultiAttachmentField);
 
 	document.querySelectorAll('.js-wcf[data-wcf]').forEach((container) => {
 		const props = parseDataset(container.dataset);

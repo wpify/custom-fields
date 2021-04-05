@@ -69,3 +69,8 @@ export const useDelay = (callback, deps, timeout = 500) => {
 		};
 	}, [...deps]);
 };
+
+export const useForceUpdate = () => {
+	const [value, setValue] = useState(0);
+	return () => setValue(value => value + 1);
+};

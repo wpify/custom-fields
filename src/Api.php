@@ -74,7 +74,11 @@ final class Api extends WP_REST_Controller {
 	 * @return WP_REST_Response
 	 */
 	public function get_list( WP_REST_Request $request ): WP_REST_Response {
-		$response = apply_filters( 'wcf_get_list', array(), $request->get_params() );
+		$params = wp_parse_args( $request->get_params(), array(
+			'list_type' => 'empty',
+		) );
+
+		$response = apply_filters( 'wcf_list_' . $params['list_type'], array(), $params );
 
 		return new WP_REST_Response( $response, 200 );
 	}

@@ -4,6 +4,7 @@ import { getItemComponent } from '../helpers';
 import ScreenContext from './ScreenContext';
 import MetaboxRow from './MetaboxRow';
 import AppContext from './AppContext';
+import ErrorBoundary from './ErrorBoundary';
 
 const Metabox = () => {
 	const data = useContext(AppContext);
@@ -15,10 +16,14 @@ const Metabox = () => {
 				const Field = getItemComponent(item);
 
 				return Field.noSection ? (
-					<Field key={item.id} {...item} />
+					<ErrorBoundary>
+						<Field key={item.id} {...item} />
+					</ErrorBoundary>
 				) : (
 					<MetaboxRow item={item}>
-						<Field key={item.id} {...item} />
+						<ErrorBoundary>
+							<Field key={item.id} {...item} />
+						</ErrorBoundary>
 					</MetaboxRow>
 				);
 			})}

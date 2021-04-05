@@ -5,6 +5,7 @@ import { getItemComponent } from '../helpers';
 import ScreenContext from './ScreenContext';
 import ProductOptionsRow from './ProductOptionsRow';
 import AppContext from './AppContext';
+import ErrorBoundary from './ErrorBoundary';
 
 const Options = () => {
 	const data = useContext(AppContext);
@@ -17,10 +18,14 @@ const Options = () => {
 					const Field = getItemComponent(item);
 
 					return Field.noSection ? (
-						<Field key={item.id} {...item} />
+						<ErrorBoundary>
+							<Field key={item.id} {...item} />
+						</ErrorBoundary>
 					) : (
 						<ProductOptionsRow key={item.id} item={item}>
-							<Field {...item} />
+							<ErrorBoundary>
+								<Field {...item} />
+							</ErrorBoundary>
 						</ProductOptionsRow>
 					);
 				})}

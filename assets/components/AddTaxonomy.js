@@ -4,6 +4,7 @@ import { getItemComponent } from '../helpers';
 import ScreenContext from './ScreenContext';
 import AddTaxonomyRow from './AddTaxonomyRow';
 import AppContext from './AppContext';
+import ErrorBoundary from './ErrorBoundary';
 
 const AddTaxonomy = () => {
 	const data = useContext(AppContext);
@@ -16,7 +17,9 @@ const AddTaxonomy = () => {
 
 				return (
 					<AddTaxonomyRow key={item.id} item={item}>
-						<Field {...item} />
+						<ErrorBoundary>
+							<Field {...item} />
+						</ErrorBoundary>
 					</AddTaxonomyRow>
 				);
 			})}

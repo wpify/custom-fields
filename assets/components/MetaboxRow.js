@@ -3,7 +3,6 @@ import classnames from 'classnames';
 import PT from 'prop-types';
 
 const MetaboxRow = ({ className, item, children, htmlId = id => id }) => {
-
   return (
 		<p key={item.id} className={classnames(className)}>
 			<label

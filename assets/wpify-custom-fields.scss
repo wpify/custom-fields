@@ -144,3 +144,33 @@
 .wcf-sortable-drag .wcf-button--move {
   cursor: grab;
 }
+
+.wcf-attachment {
+  display: inline-flex;
+  background-color: white;
+  padding: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  width: 350px;
+
+  &__image {
+	margin-right: 20px;
+  }
+
+  &__image img {
+	display: block;
+  }
+
+  .wcf-button--move,
+  .wcf-button--delete {
+	align-self: flex-start;
+  }
+}
+
+.wcf-error {
+  border: 1px solid #DC3232;
+  padding: 10px 20px;
+  background-color: rgba(255, 255, 255, 0.5);
+  color: #DC3232;
+  border-radius: 3px;
+}

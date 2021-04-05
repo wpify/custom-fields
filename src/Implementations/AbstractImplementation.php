@@ -43,6 +43,7 @@ abstract class AbstractImplementation {
 	public function admin_enqueue_scripts() {
 		if ( $this->wcf_shown ) {
 			wp_enqueue_code_editor( array() );
+			wp_enqueue_media();
 
 			$this->wcf->get_assets()->enqueue_style(
 					'wpify-custom-fields.css',

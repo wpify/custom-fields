@@ -4,6 +4,7 @@ import OptionsRow from './OptionsRow';
 import ScreenContext from './ScreenContext';
 import { getItemComponent } from '../helpers';
 import AppContext from './AppContext';
+import ErrorBoundary from './ErrorBoundary';
 
 const Options = () => {
 	const data = useContext(AppContext);
@@ -16,12 +17,18 @@ const Options = () => {
 					const Field = getItemComponent(item);
 
 					if (Field.withoutWrapper && Field.withoutWrapper()) {
-						return <Field {...item} />;
+						return (
+							<ErrorBoundary>
+								<Field {...item} />
+							</ErrorBoundary>
+						);
 					}
 
 					return (
 						<OptionsRow key={item.id} item={item}>
-							<Field {...item}/>
+							<ErrorBoundary>
+								<Field {...item}/>
+							</ErrorBoundary>
 						</OptionsRow>
 					);
 				})}
