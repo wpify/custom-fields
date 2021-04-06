@@ -40,7 +40,7 @@ const Attachment = (props) => {
 
 	return (
 		<div className={classnames(className, 'wcf-attachment')} key={props.id}>
-			{length > 0 && (
+			{length > 1 && (
 				<MoveButton />
 			)}
 			<div className="wcf-attachment__image">

@@ -96,25 +96,23 @@ final class WooCommerceSettings extends AbstractImplementation {
 		if ( $this->is_new_tab ) {
 			$sections = $this->get_sections();
 
-			if ( empty( $sections ) || 1 === count( $sections ) ) {
-				return;
+			if ( ! empty( $sections ) || count( $sections ) > 1 ) {
+				$array_keys = array_keys( $sections );
+				?>
+				<ul class="subsubsub">
+					<?php foreach ( $sections as $id => $label ): ?>
+						<li>
+							<a href="<?php echo admin_url( 'admin.php?page=wc-settings&tab=' . $this->tab['id'] . '&section=' . sanitize_title( $id ) ); ?>"
+							   class="<?php echo $current_section == $id ? 'current' : ''; ?>">
+								<?php echo $label; ?>
+							</a>
+							<?php echo end( $array_keys ) == $id ? '' : '|'; ?>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+				<br class="clear"/>
+				<?php
 			}
-
-			$array_keys = array_keys( $sections );
-			?>
-			<ul class="subsubsub">
-				<?php foreach ( $sections as $id => $label ): ?>
-					<li>
-						<a href="<?php echo admin_url( 'admin.php?page=wc-settings&tab=' . $this->tab['id'] . '&section=' . sanitize_title( $id ) ); ?>"
-						   class="<?php echo $current_section == $id ? 'current' : ''; ?>">
-							<?php echo $label; ?>
-						</a>
-						<?php echo end( $array_keys ) == $id ? '' : '|'; ?>
-					</li>
-				<?php endforeach; ?>
-			</ul>
-			<br class="clear"/>
-			<?php
 		}
 
 		if ( $current_section !== $this->section['id'] ) {

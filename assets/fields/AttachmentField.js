@@ -100,6 +100,7 @@ const AttachmentField = (props) => {
 							key={attachment.id}
 							attachment={attachment}
 							onDelete={handleDelete}
+							length={attachments.length}
 						/>
 					))}
 				</SortableControl>

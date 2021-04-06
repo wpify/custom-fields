@@ -40,7 +40,7 @@ final class ProductOptions extends AbstractPostImplementation {
 						'id'       => 'general',
 						'label'    => null,
 						'priority' => 100,
-						'target'   => 'general_product_data',
+						'target'   => null,
 						'class'    => array(),
 				),
 				'items'      => array(),

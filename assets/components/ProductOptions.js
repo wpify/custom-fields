@@ -7,7 +7,7 @@ import ProductOptionsRow from './ProductOptionsRow';
 import AppContext from './AppContext';
 import ErrorBoundary from './ErrorBoundary';
 
-const Options = () => {
+const ProductOptions = () => {
 	const data = useContext(AppContext);
 	const { items = [] } = data;
 
@@ -34,10 +34,9 @@ const Options = () => {
 	);
 };
 
-Options.propTypes = {
+ProductOptions.propTypes = {
 	className: PT.string,
 	wcf: PT.object,
-	group_level: PT.number,
 };
 
-export default Options;
+export default ProductOptions;
