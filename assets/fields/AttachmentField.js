@@ -35,15 +35,20 @@ const AttachmentField = (props) => {
 	const handleClose = useCallback(() => {
 		const selection = frame.current.state().get('selection');
 		const attachments = [];
+
 		selection.each(attachment => attachments.push(attachment));
 		setAttachments(attachments);
 		setCurrentValues(attachments.map(attachment => attachment.id));
 	}, []);
 
-	const handleOpen = useCallback(() => {
+	const handleOpen = () => {
 		const selection = frame.current.state().get('selection');
-		selection.add(attachments);
-	}, [attachments]);
+		currentValues.forEach(currentValue => {
+			const attachment = wp.media.attachment(parseInt(currentValue, 10));
+			attachment.fetch()
+			selection.add(attachment ? [attachment] : []);
+		});
+	};
 
 	useEffect(() => {
 		frame.current = wp.media({
@@ -67,6 +72,7 @@ const AttachmentField = (props) => {
 		}
 
 		setAttachments(attachments);
+		setCurrentValues(attachments.map(i => i.id));
 	}, []);
 
 	const handleDelete = (attributes) => {
@@ -75,10 +81,8 @@ const AttachmentField = (props) => {
 	};
 
 	const handleMove = (items) => {
-		if (!items.some(item => typeof item === 'object')) {
-			setCurrentValues(items);
-			setAttachments(attachments => items.map(item => attachments.find(a => String(a.id) === String(item))));
-		}
+		setAttachments(items);
+		setCurrentValues(items.map(i => i.id));
 	};
 
 	return (
@@ -88,7 +92,7 @@ const AttachmentField = (props) => {
 			)}
 			<div className="wcf-media-list">
 				<SortableControl
-					list={currentValues || []}
+					list={attachments || []}
 					setList={handleMove}
 				>
 					{attachments.map(attachment => (
