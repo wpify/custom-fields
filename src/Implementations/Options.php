@@ -79,7 +79,7 @@ final class Options extends AbstractImplementation {
 		$this->page        = $args['page'];
 		$this->icon_url    = $args['icon_url'];
 		$this->position    = $args['position'];
-		$this->items       = $this->prepare_items( $args['items'] );
+		$this->items       = $args['items'];
 
 		if ( $this->type === 'user' ) {
 			add_action( 'user_admin_menu', array( $this, 'register' ), $args['priority'] );
@@ -90,6 +90,23 @@ final class Options extends AbstractImplementation {
 		}
 
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
+	}
+
+	public function get_items() {
+		$items = apply_filters( 'wcf_options_items', $this->items, array(
+				'type'        => $this->type,
+				'parent_slug' => $this->parent_slug,
+				'page_title'  => $this->page_title,
+				'menu_title'  => $this->menu_title,
+				'capability'  => $this->capability,
+				'menu_slug'   => $this->menu_slug,
+				'section'     => $this->section,
+				'page'        => $this->page,
+				'icon_url'    => $this->icon_url,
+				'position'    => $this->position,
+		) );
+
+		return $this->prepare_items( $items );
 	}
 
 	/**
@@ -138,7 +155,7 @@ final class Options extends AbstractImplementation {
 				$this->menu_slug
 		);
 
-		foreach ( $this->items as $item ) {
+		foreach ( $this->get_items() as $item ) {
 			$sanitizer = $this->sanitizer->get_sanitizer( $item );
 
 			register_setting(
@@ -166,7 +183,7 @@ final class Options extends AbstractImplementation {
 				'icon_url'    => $this->icon_url,
 				'position'    => $this->position,
 				'hook_suffix' => $this->hook_suffix,
-				'items'       => $this->items,
+				'items'       => $this->get_items(),
 		);
 	}
 

@@ -35,15 +35,20 @@ final class Taxonomy extends AbstractPostImplementation {
 		) );
 
 		$this->taxonomy = $args['taxonomy'];
-		$this->items    = $this->prepare_items( $args['items'] );
+		$this->items    = $args['items'];
 		$this->term_id  = $args['term_id'];
 
 		add_action( $this->taxonomy . '_add_form_fields', array( $this, 'render_add_form' ) );
 		add_action( $this->taxonomy . '_edit_form_fields', array( $this, 'render_edit_form' ) );
 		add_action( 'created_' . $this->taxonomy, array( $this, 'save' ) );
 		add_action( 'edited_' . $this->taxonomy, array( $this, 'save' ) );
+		add_action( 'init', array( $this, 'register_meta' ) );
+	}
 
-		foreach ( $this->items as $item ) {
+	public function register_meta() {
+		$items = $this->get_items();
+
+		foreach ( $items as $item ) {
 			$sanitizer = $this->sanitizer->get_sanitizer( $item );
 
 			register_term_meta( $this->taxonomy, $item['id'], array(
@@ -51,6 +56,14 @@ final class Taxonomy extends AbstractPostImplementation {
 				'sanitize_callback' => $sanitizer,
 			) );
 		}
+	}
+
+	public function get_items() {
+		$items = apply_filters( 'wcf_taxonomy_items', $this->items, array(
+			'taxonomy' => $this->taxonomy,
+		) );
+
+		return $this->prepare_items( $items );
 	}
 
 	/**
@@ -75,7 +88,7 @@ final class Taxonomy extends AbstractPostImplementation {
 		return array(
 			'object_type' => 'taxonomy',
 			'taxonomy'    => $this->taxonomy,
-			'items'       => $this->items,
+			'items'       => $this->get_items(),
 		);
 	}
 
@@ -110,7 +123,7 @@ final class Taxonomy extends AbstractPostImplementation {
 	public function save( $term_id ) {
 		$this->set_post( $term_id );
 
-		foreach ( $this->items as $item ) {
+		foreach ( $this->get_items() as $item ) {
 			$this->set_field( $item['id'], $_POST[ $item['id'] ] );
 		}
 	}

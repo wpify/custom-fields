@@ -66,8 +66,11 @@ final class ProductOptions extends AbstractPostImplementation {
 		add_action( 'woocommerce_product_data_panels', array( $this, 'render_data_panels' ) );
 		add_action( 'woocommerce_product_options_' . $this->tab['target'], array( $this, 'render_custom_fields' ) );
 		add_action( 'woocommerce_process_product_meta', array( $this, 'save' ) );
+		add_action( 'init', array( $this, 'register_meta' ) );
+	}
 
-		foreach ( $this->items as $item ) {
+	public function register_meta() {
+		foreach ( $this->get_items() as $item ) {
 			$sanitizer = $this->sanitizer->get_sanitizer( $item );
 
 			register_post_meta( 'product', $item['id'], array(
@@ -75,6 +78,14 @@ final class ProductOptions extends AbstractPostImplementation {
 					'sanitize_callback' => $sanitizer,
 			) );
 		}
+	}
+
+	public function get_items() {
+		$items = apply_filters( 'wcf_product_options_items', $this->items, array(
+				'tab' => $this->tab,
+		) );
+
+		return $this->prepare_items( $items );
 	}
 
 	/**

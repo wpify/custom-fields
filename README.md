@@ -93,6 +93,8 @@ get_wpify_custom_fields()->add_metabox( array(
 
 That's it :)
 
+# Implementations
+
 ## How to add custom fields to post type?
 
 ![Adding a metabox to the post](docs/images/wcf-metabox.png)

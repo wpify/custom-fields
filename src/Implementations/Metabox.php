@@ -67,15 +67,23 @@ final class Metabox extends AbstractPostImplementation {
 		$this->context       = $args['context'];
 		$this->priority      = $args['priority'];
 		$this->callback_args = $args['callback_args'];
-		$this->items         = $this->prepare_items( $args['items'] );
+		$this->items         = $args['items'];
 		$this->post_types    = $args['post_types'];
 		$this->nonce         = $args['id'] . '_nonce';
 		$this->post_id       = $args['post_id'];
 
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 		add_action( 'save_post', array( $this, 'save' ) );
+		add_action( 'init', array( $this, 'register_meta' ) );
+	}
 
-		foreach ( $this->items as $item ) {
+	/**
+	 * @return void
+	 */
+	public function register_meta() {
+		$items = $this->get_items();
+
+		foreach ( $items as $item ) {
 			foreach ( $this->post_types as $post_type ) {
 				$sanitizer = $this->sanitizer->get_sanitizer( $item );
 
@@ -85,6 +93,24 @@ final class Metabox extends AbstractPostImplementation {
 				) );
 			}
 		}
+	}
+
+	/**
+	 * @return array
+	 */
+	public function get_items() {
+		$items = apply_filters( 'wcf_metabox_items', $this->items, array(
+			'id'            => $this->id,
+			'title'         => $this->title,
+			'screen'        => $this->screen,
+			'context'       => $this->context,
+			'priority'      => $this->priority,
+			'callback_args' => $this->callback_args,
+			'post_types'    => $this->post_types,
+			'post_id'       => $this->post_id,
+		) );
+
+		return $this->prepare_items( $items );
 	}
 
 	/**
@@ -145,7 +171,7 @@ final class Metabox extends AbstractPostImplementation {
 			'context'       => $this->context,
 			'priority'      => $this->priority,
 			'callback_args' => $this->callback_args,
-			'items'         => $this->items,
+			'items'         => $this->get_items(),
 			'post_types'    => $this->post_types,
 		);
 	}
@@ -189,7 +215,7 @@ final class Metabox extends AbstractPostImplementation {
 
 		$this->set_post( $post_id );
 
-		foreach ( $this->items as $item ) {
+		foreach ( $this->get_items() as $item ) {
 			$this->set_field( $item['id'], $_POST[ $item['id'] ] );
 		}
 

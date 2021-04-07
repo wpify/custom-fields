@@ -39,12 +39,21 @@ final class WooCommerceSettings extends AbstractImplementation {
 
 		$this->tab     = $args['tab'];
 		$this->section = $args['section'];
-		$this->items   = $this->prepare_items( $args['items'] );
+		$this->items   = $args['items'];
 
 		add_filter( 'woocommerce_settings_tabs_array', array( $this, 'woocommerce_settings_tabs_array' ), 30 );
 		add_filter( 'woocommerce_get_sections_' . $this->tab['id'], array( $this, 'woocommerce_get_sections' ) );
 		add_action( 'woocommerce_settings_' . $this->tab['id'], array( $this, 'render' ), 11 );
 		add_action( 'woocommerce_settings_save_' . $this->tab['id'], array( $this, 'save' ) );
+	}
+
+	public function get_items() {
+		$items = apply_filters( 'wcf_woocommerce_settings_items', $this->items, array(
+				'tab'     => $this->tab,
+				'section' => $this->section,
+		) );
+
+		return $this->prepare_items( $items );
 	}
 
 	/**
@@ -137,7 +146,7 @@ final class WooCommerceSettings extends AbstractImplementation {
 				'object_type' => 'woocommerce_settings',
 				'tab'         => $this->tab,
 				'section'     => $this->section,
-				'items'       => $this->items,
+				'items'       => $this->get_items(),
 		);
 	}
 
@@ -155,7 +164,7 @@ final class WooCommerceSettings extends AbstractImplementation {
 	 * @return void
 	 */
 	public function save() {
-		foreach ( $this->items as $item ) {
+		foreach ( $this->get_items() as $item ) {
 			if ( ! empty( $item['id'] ) ) {
 				$this->set_field( $item['id'], $_POST[ $item['id'] ] );
 			}
@@ -169,7 +178,7 @@ final class WooCommerceSettings extends AbstractImplementation {
 	 * @return bool
 	 */
 	public function set_field( $name, $value ) {
-		foreach ( $this->items as $item ) {
+		foreach ( $this->get_items() as $item ) {
 			if ( $item['id'] === $name ) {
 				$sanitizer       = $this->sanitizer->get_sanitizer( $item );
 				$sanitized_value = $sanitizer( wp_unslash( $value ) );
