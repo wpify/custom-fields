@@ -2,6 +2,7 @@
 
 namespace WpifyCustomFields;
 
+use WpifyCustomFields\Implementations\GutenbergBlock;
 use WpifyCustomFields\Implementations\Metabox;
 use WpifyCustomFields\Implementations\Options;
 use WpifyCustomFields\Implementations\ProductOptions;
@@ -79,6 +80,10 @@ final class WpifyCustomFields {
 	 */
 	public function add_woocommerce_settings( $args = array() ) {
 		return new WooCommerceSettings( $args, $this );
+	}
+
+	public function add_gutenberg_block( $args = array() ) {
+		return new GutenbergBlock( $args, $this );
 	}
 
 	/**

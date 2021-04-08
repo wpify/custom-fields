@@ -306,6 +306,75 @@ $some_custom_field_value = get_post_meta( $product_id, 'some_id_of_the_meta', tr
 
 * `get_post_meta`: https://developer.wordpress.org/reference/functions/get_post_meta/
 
+## How to generate Gutenberg block with custom fields?
+
+![Gutenberg Block](docs/images/wcf-block.png)
+
+You can easily generate blocks that will use the custom fields interface. if you want to replace default custom fields interface with your own, simply set the `editor_script` and `editor_style` attributes with handle of your registered script and style. Every registered block also have `wcf` attribute, that contains the definition of the custom fields used in the block.
+
+```php
+get_wpify_custom_fields()->add_gutenberg_block( array(
+	'name'             => null, // string
+	'title'            => null, // string
+	'category'         => 'common', // string
+	'parent'           => null, // string
+	'icon'             => null, // string
+	'description'      => null, // string
+	'keywords'         => array(), // array
+	'textdomain'       => null, // string
+	'styles'           => array(), // array
+	'supports'         => null, // array
+	'example'          => null, // array
+	'render_callback'  => null, // callable
+	'attributes'       => array(), // array
+	'uses_context'     => array(), // array
+	'provides_context' => null, // array
+	'editor_script'    => null, // string
+	'script'           => null, // string
+	'editor_style'     => null, // string
+	'style'            => null, // string
+	'items'            => array(), // array
+) );
+```
+
+**Arguments**
+
+* `name`: Required name of the block in `namespace/block-name` format.
+* `title`, `category`, `parent`, `icon`, `description`, `keywords`, `textdomain`, `styles`, `supports`, `example`, `render_callback`, `attributes`, `uses_context`, `provides_context`, `editor_script`, `script`, `editor_style` and `style` attributes are arguments described in `register_block_type` function.
+* `items`: Required array: List of the custom fields in the options.
+
+**Links**
+
+* `register_block_type`: https://developer.wordpress.org/reference/functions/register_block_type/
+
+**Example**
+
+```php
+get_wpify_custom_fields()->add_gutenberg_block( array(
+	'name'        => 'wcf/test',
+	'title'       => 'Test block',
+	'items'       => array(
+		array(
+			'type'        => 'text',
+			'title'       => 'Example text',
+			'id'          => 'some_example_text',
+			'description' => 'and example description',
+			'label'       => 'with example label',
+		),
+		array(
+			'type'        => 'text',
+			'title'       => 'Example text 2',
+			'id'          => 'some_example_text_2',
+			'description' => 'and example description',
+			'label'       => 'with example label',
+		),
+	),
+	'render_callback' => function ( $attributes ) {
+		return '<h2>' . $attributes['some_example_text'] . '</h2><p>' . $attributes['some_example_text'] . '</p>';
+	},
+) );
+```
+
 # Custom fields definition
 
 In examples above, only one custom field were shown. But you can define more than just text fields. There are many field

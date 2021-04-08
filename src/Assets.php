@@ -49,21 +49,19 @@ final class Assets {
 			return null;
 		}
 
-		if ( wp_register_script( $data['handle'], $data['src'], array_merge( $deps, $data['deps'] ), $data['ver'], $in_footer ) ) {
-			if ( ! empty( $localize ) ) {
-				foreach ( $localize as $variable => $value ) {
-					wp_add_inline_script(
-						$data['handle'],
-						'try { var ' . $variable . ' = ' . wp_json_encode($value) . '; } catch (e) { console.error(e); }',
-						'before'
-					);
-				}
+		if ( wp_register_script( $data['handle'], $data['src'], array_merge( $deps, $data['deps'] ), $data['ver'], $in_footer )
+		     && ! empty( $localize )
+		) {
+			foreach ( $localize as $variable => $value ) {
+				wp_add_inline_script(
+					$data['handle'],
+					'try { var ' . $variable . ' = ' . wp_json_encode( $value ) . '; } catch (e) { console.error(e); }',
+					'before'
+				);
 			}
-
-			return $data['handle'];
-		} else {
-			return null;
 		}
+
+		return $data['handle'];
 	}
 
 	/**
@@ -158,11 +156,9 @@ final class Assets {
 			return null;
 		}
 
-		if ( wp_register_style( $data['handle'], $data['src'], array_merge( $deps, $data['deps'] ), $data['ver'], $media ) ) {
-			return $data['handle'];
-		} else {
-			return null;
-		}
+		wp_register_style( $data['handle'], $data['src'], array_merge( $deps, $data['deps'] ), $data['ver'], $media );
+
+		return $data['handle'];
 	}
 
 	public function get_code_editor_settings() {

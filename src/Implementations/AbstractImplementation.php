@@ -53,7 +53,7 @@ abstract class AbstractImplementation {
 			$this->wcf->get_assets()->enqueue_script(
 					'wpify-custom-fields.js',
 					array(),
-					true,
+					false,
 					array(
 							'wcf_code_editor_settings' => $this->wcf->get_assets()->get_code_editor_settings(),
 							'wcf_build_url'            => $this->wcf->get_assets()->path_to_url(
@@ -105,7 +105,7 @@ abstract class AbstractImplementation {
 	 *
 	 * @return array
 	 */
-	private function fill_values( array $definition ) {
+	protected function fill_values( array $definition ) {
 		foreach ( $definition['items'] as $key => $item ) {
 			$value = $this->parse_value( $this->get_field( $item['id'] ), $item );
 
