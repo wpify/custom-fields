@@ -29,9 +29,9 @@ final class WpifyCustomFields {
 	/**
 	 * WpifyCustomFields constructor.
 	 */
-	public function __construct() {
+	public function __construct( string $wcf_url = '' ) {
 		$assets_path     = realpath( __DIR__ . '/../build' );
-		$this->assets    = new Assets( $assets_path );
+		$this->assets    = new Assets( $assets_path, $wcf_url );
 		$this->sanitizer = new Sanitizer();
 		$this->parser    = new Parser();
 		$this->api       = new Api();

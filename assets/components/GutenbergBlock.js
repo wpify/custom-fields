@@ -1,15 +1,26 @@
 import React, { useContext } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
+import ServerSideRender from '@wordpress/server-side-render';
 import { getItemComponent } from '../helpers';
 import ScreenContext from './ScreenContext';
 import ProductOptionsRow from './ProductOptionsRow';
 import AppContext from './AppContext';
 import ErrorBoundary from './ErrorBoundary';
 
-const GutenbergBlock = ({ attributes, setAttributes }) => {
+const GutenbergBlock = (props) => {
+	const { attributes, setAttributes, isSelected } = props;
 	const data = useContext(AppContext);
 	const { items = [], title } = data;
+
+	if (!isSelected) {
+		return (
+			<ServerSideRender
+				block={data.name}
+				attributes={{ ...attributes }}
+			/>
+		)
+	}
 
 	return (
 		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: ProductOptionsRow }}>

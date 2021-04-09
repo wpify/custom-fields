@@ -37,18 +37,17 @@ final class GutenbergBlock extends AbstractImplementation {
 
 		$defaults = array(
 			'name'             => null, // string
-			'title'            => null, // string
+			'title'            => '', // string
 			'category'         => 'common', // string
 			'parent'           => null, // string
 			'icon'             => null, // string
 			'description'      => null, // string
 			'keywords'         => array(), // array
-			'textdomain'       => null, // string
+			'textdomain'       => 'wpify-custom-fields', // string
 			'styles'           => array(), // array
 			'supports'         => null, // array
 			'example'          => null, // array
-			'render_callback'  => null, // callable
-			'attributes'       => array(), // array
+			'render_callback'  => array( $this, 'render_default' ), // callable
 			'uses_context'     => array(), // array
 			'provides_context' => null, // array
 			'editor_script'    => null, // string
@@ -59,6 +58,14 @@ final class GutenbergBlock extends AbstractImplementation {
 		);
 
 		$args = wp_parse_args( $args, $defaults );
+
+		if ( empty( $args['title'] ) ) {
+			$args['title'] = $args['name'];
+		}
+
+		if ( empty( $args['icon'] ) ) {
+			$args['icon'] = file_get_contents( __DIR__ . '/../../images/wpify-logo-bw.svg' );
+		}
 
 		foreach ( $defaults as $key => $value ) {
 			$this->{$key} = $args[ $key ];
@@ -71,38 +78,61 @@ final class GutenbergBlock extends AbstractImplementation {
 	 * @return void
 	 */
 	public function register_block() {
-		$args   = $this->get_args();
-		$data   = array_merge( array( 'name' => $this->name, 'attributes' => $this->get_attributes() ), $args );
-		$script = 'window.wcf_blocks=(window.wcf_blocks||[]);window.wcf_blocks.push(' . wp_json_encode( $data ) . ');';
+		$args    = $this->get_args();
+		$js_args = $this->get_args( array( 'render_callback' ) );
+		$script  = 'window.wcf_blocks=(window.wcf_blocks||{});window.wcf_blocks[\'' . $this->name . '\']=' . wp_json_encode( $js_args ) . ';';
 
 		wp_add_inline_script( $args['editor_script'], $script, 'before' );
 		register_block_type( $this->name, $args );
-
 	}
 
 	/**
 	 * @return array
 	 */
-	public function get_args() {
-		return array(
-			'title'            => $this->title,
-			'category'         => $this->category,
-			'parent'           => $this->parent,
-			'icon'             => $this->icon,
-			'description'      => $this->description,
-			'keywords'         => $this->keywords,
-			'textdomain'       => $this->textdomain,
-			'styles'           => $this->styles,
-			'supports'         => $this->supports,
-			'example'          => $this->example,
-			'render_callback'  => $this->render_callback,
-			'uses_context'     => $this->uses_context,
-			'provides_context' => $this->provides_context,
-			'editor_script'    => $this->get_editor_script(),
-			'script'           => $this->script,
-			'editor_style'     => $this->get_editor_style(),
-			'style'            => $this->style,
+	public function get_args( $exclude = array() ) {
+		$args   = array();
+		$fields = array(
+			'name',
+			'title',
+			'category',
+			'parent',
+			'icon',
+			'description',
+			'keywords',
+			'textdomain',
+			'styles',
+			'supports',
+			'example',
+			'render_callback',
+			'uses_context',
+			'provides_context',
+			'editor_script',
+			'script',
+			'editor_style',
+			'style',
+			'attributes',
+			'items',
 		);
+
+		foreach ( $fields as $field ) {
+			if ( in_array( $field, $exclude ) ) {
+				continue;
+			}
+
+			$method = 'get_' . $field;
+
+			if ( method_exists( $this, $method ) ) {
+				$args[ $field ] = $this->$method();
+				continue;
+			}
+
+			if ( property_exists( $this, $field ) ) {
+				$args[ $field ] = $this->{$field};
+				continue;
+			}
+		}
+
+		return $args;
 	}
 
 	/**
@@ -132,21 +162,14 @@ final class GutenbergBlock extends AbstractImplementation {
 	 */
 	public function get_attributes() {
 		$attributes = array();
+		$items      = $this->get_items();
 
-		foreach ( $this->get_items() as $item ) {
+		foreach ( $items as $item ) {
 			$attributes[ $item['id'] ] = array(
 				'type'    => $this->get_attribute_type( $item ),
 				'default' => $item['default'],
 			);
 		}
-
-		$attributes['wcf'] = array(
-			'type'    => 'array',
-			'default' => array_merge(
-				$this->get_args(),
-				array( 'items' => $this->get_items() ),
-			)
-		);
 
 		return $attributes;
 	}
@@ -157,7 +180,7 @@ final class GutenbergBlock extends AbstractImplementation {
 	public function get_items() {
 		$items = apply_filters( 'wcf_gutenberg_block_items', $this->items, array_merge(
 			array( 'name' => $this->name ),
-			$this->get_args(),
+			$this->get_args( array( 'attributes', 'items' ) ),
 		) );
 
 		return $this->prepare_items( $items );
@@ -216,5 +239,15 @@ final class GutenbergBlock extends AbstractImplementation {
 
 	public function set_wcf_shown() {
 		// TODO: Implement set_wcf_shown() method.
+	}
+
+	public function render_default( $attributes ) {
+		$render = '<h2>' . $this->title . '</h2>';
+
+		foreach ( $attributes as $attribute => $value ) {
+			$render .= '<p><strong>' . $attribute . '</strong>:<br><pre>' . print_r( $value, true ) . '</pre></p>';
+		}
+
+		return $render;
 	}
 }

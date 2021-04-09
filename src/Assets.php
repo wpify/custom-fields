@@ -10,6 +10,9 @@ final class Assets {
 	/** @var string */
 	private $assets_path;
 
+	/** @var string */
+	private $wcf_url;
+
 	/** @var array */
 	private $manifest = array();
 
@@ -20,8 +23,9 @@ final class Assets {
 	 *
 	 * @param $assets_path
 	 */
-	public function __construct( $assets_path ) {
+	public function __construct( $assets_path, $wcf_url = '' ) {
 		$this->assets_path = $assets_path;
+		$this->wcf_url     = $wcf_url;
 	}
 
 	/**
@@ -124,13 +128,15 @@ final class Assets {
 	 * @return string
 	 */
 	public function path_to_url( string $path = '' ) {
-		$url = str_replace(
+		if ( ! empty( $this->wcf_url ) ) {
+			return esc_url_raw( $this->wcf_url . '/build/' . basename( $path ) );
+		}
+
+		return esc_url_raw(str_replace(
 			wp_normalize_path( untrailingslashit( ABSPATH ) ),
 			site_url(),
 			wp_normalize_path( $path )
-		);
-
-		return esc_url_raw( $url );
+		));
 	}
 
 	/**

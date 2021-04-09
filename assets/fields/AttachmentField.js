@@ -15,6 +15,7 @@ const AttachmentField = (props) => {
 		group_level = 0,
 		isMulti = false,
 		attachment_type,
+		onChange,
 	} = props;
 
 	const [currentValues, setCurrentValues] = useState(
@@ -22,6 +23,8 @@ const AttachmentField = (props) => {
 			.filter(Boolean)
 			.map(v => parseInt(v, 10))
 	);
+
+	const returnValue = isMulti ? currentValues.filter(Boolean) : currentValues.find(Boolean);
 
 	const frame = useRef();
 	const [attachments, setAttachments] = useState([]);
@@ -75,6 +78,12 @@ const AttachmentField = (props) => {
 		setCurrentValues(attachments.map(i => i.id));
 	}, []);
 
+	useEffect(() => {
+		if (onChange && JSON.stringify(value) !== JSON.stringify(returnValue)) {
+			onChange(returnValue);
+		}
+	}, [value, returnValue]);
+
 	const handleDelete = (attributes) => {
 		setCurrentValues(currentValues => currentValues.filter(value => value !== attributes.id));
 		setAttachments(attachments => attachments.filter(attachment => attachment.id !== attributes.id));
@@ -88,7 +97,7 @@ const AttachmentField = (props) => {
 	return (
 		<div className={classnames(className)}>
 			{group_level === 0 && (
-				<input type="hidden" name={id} value={isMulti ? JSON.stringify(currentValues.filter(Boolean)) : currentValues}/>
+				<input type="hidden" name={id} value={returnValue}/>
 			)}
 			<div className="wcf-media-list">
 				<SortableControl

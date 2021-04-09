@@ -7,18 +7,25 @@ import GutenbergBlock from './components/GutenbergBlock';
 
 registerFieldTypes();
 
-const edit = ({ attributes, setAttributes }) => {
+const edit = (wcf) => (props) => {
 	return (
-		<AppContext.Provider value={attributes.wcf}>
+		<AppContext.Provider value={wcf}>
 			<ErrorBoundary>
-				<GutenbergBlock attributes={attributes} setAttributes={setAttributes} />
+				<GutenbergBlock {...props} />
 			</ErrorBoundary>
 		</AppContext.Provider>
 	);
 };
 
 const save = () => null;
+const blocks = (window.wcf_blocks || {});
 
-(window.wcf_blocks || []).forEach((block) => {
-	registerBlockType(block.name, { ...block, edit, save });
+Object.keys(blocks).forEach((blockName) => {
+	const block = blocks[blockName];
+
+	if (/<svg[^>]*>/gm.test(block.icon)) {
+		block.icon = <span dangerouslySetInnerHTML={{ __html: block.icon }} />
+	}
+
+	registerBlockType(block.name, { ...block, edit: edit(block), save });
 });
