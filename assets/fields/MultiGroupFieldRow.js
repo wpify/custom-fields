@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import PT from 'prop-types';
 import classnames from 'classnames';
 import { getItemComponent } from '../helpers';
@@ -14,11 +14,11 @@ const MultiGroupFieldRow = (props) => {
 		htmlId = id => id,
 		className,
 		index,
-		collapsed: defaultCollapsed = Object.values(value).length > 1,
 		length = 0,
+		collapsed = false,
+		toggleCollapsed = () => null,
 	} = props;
 
-	const [collapsed, setCollapsed] = useState(defaultCollapsed)
 	const handleDelete = () => onChange(null);
 
 	const handleChange = (changedValue) => {
@@ -36,12 +36,12 @@ const MultiGroupFieldRow = (props) => {
 		<div className={classnames('wcf-multi-group-row', className)}>
 			<h4 className={classnames('wcf-multi-group-row__header')}>
 				{length > 0 && (
-					<MoveButton />
+					<MoveButton/>
 				)}
-				<span className={classnames('wcf-multi-group-row__title')} onClick={() => setCollapsed(!collapsed)}>
+				<span className={classnames('wcf-multi-group-row__title')} onClick={() => toggleCollapsed()}>
 					#{index + 1}: {title}
 				</span>
-				<CloseButton onClick={handleDelete} />
+				<CloseButton onClick={handleDelete}/>
 			</h4>
 			<div className={classnames('wcf-multi-group-row__content', {
 				'wcf-multi-group-row__content--collapsed': collapsed,
@@ -67,7 +67,7 @@ const MultiGroupFieldRow = (props) => {
 								value={value[item.id]}
 							/>
 						</div>
-					)
+					);
 				})}
 			</div>
 		</div>
@@ -81,6 +81,10 @@ MultiGroupFieldRow.propTypes = {
 	items: PT.array,
 	value: PT.object,
 	htmlId: PT.func,
+	className: PT.string,
+	collapsed: PT.bool,
+	length: PT.number,
+	toggleCollapsed: PT.func,
 };
 
 export default MultiGroupFieldRow;

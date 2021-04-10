@@ -55,6 +55,8 @@ export const registerFieldType = (type, Field) => {
 	addFilter('wcf_field_' + type, 'wpify-custom-fields', Component => Field);
 };
 
+export const clone = value => JSON.parse(JSON.stringify(value));
+
 export const useFetch = ({ defaultValue = null }) => {
 	const controller = useRef(new AbortController());
 	const [result, setResult] = useState(defaultValue);

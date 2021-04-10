@@ -1,6 +1,6 @@
 # WPify Custom Fields
 
-This library provides custom fields for WordPress and WooCommerce via simple API. The custom fields are stored in plain metadata so that you can access them via standard WordPress functionality. The frontend is written in React.js and has no dependencies in PHP. The library also doesn't include React itself but uses react as a dependency from WordPress. Therefore, the library is small and fast but requires at least WordPress 5.2.
+This library provides custom fields for WordPress and WooCommerce via simple API. The custom fields are stored in plain metadata so that you can access them via standard WordPress functionality. The frontend is written in React.js and has no dependencies in PHP. The library also doesn't include React itself but uses react as a dependency from WordPress. Therefore, the library is small and fast but requires at least WordPress 5.3.
 
 [[_TOC_]]
 
@@ -51,7 +51,7 @@ Some fields also allow multiple values. You can also sort the values via drag&dr
 
 * PHP 7.3+ (we support only versions with security patches)
 * Google Chrome/Firefox (the library uses native input fields that only some browsers support)
-* WordPress 5.2 (the library requires React 16.8+ that was included in WordPress 5.2)
+* WordPress 5.3 (the library requires React 16.8+ that was included in WordPress 5.2 and Gutenberg editor included in WordPress 5.3)
 
 ### Development requirements
 

@@ -100,7 +100,8 @@
     "react-dom": "17.0.1",
     "react-select": "^4.3.0",
     "react-sortablejs": "^6.0.0",
-    "sortablejs": "^1.13.0"
+    "sortablejs": "^1.13.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "eslint-plugin-babel": "^5.3.1",

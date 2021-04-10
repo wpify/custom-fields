@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import PT from 'prop-types';
 import classnames from 'classnames';
+import { __ } from '@wordpress/i18n';
 import Button from '../components/Button';
 import MultiGroupFieldRow from './MultiGroupFieldRow';
-import { ReactSortable } from 'react-sortablejs';
 import SortableControl from '../components/SortableControl';
+import { clone } from '../helpers';
+import { v4 as uuid } from 'uuid';
 
 const prepareValues = (values = []) => {
 	if (Array.isArray(values)) {
-		return values.map((value, index) => {
-			value.__key = index;
+		return clone(values).map((value) => {
+			value.__key = uuid();
 			return value;
 		});
 	}
@@ -17,9 +19,7 @@ const prepareValues = (values = []) => {
 	return [];
 };
 
-const getNextKey = (values = []) => values.reduce((p, c) => Math.max(p.__key, c.__key), 0) + 1;
-
-const removeKeys = (values = []) => values.map(value => {
+const removeKeys = (values = []) => clone(values).map(value => {
 	delete value.__key;
 	return value;
 });
@@ -27,6 +27,7 @@ const removeKeys = (values = []) => values.map(value => {
 const MultiGroupField = (props) => {
 	const { group_level = 0, onChange, id, items = [], value = [], className } = props;
 	const [currentValue, setCurrentValue] = useState(prepareValues(value));
+	const [opened, setOpened] = useState(null);
 
 	const handleChange = (index) => (changedItem = {}) => {
 		const newValue = [...currentValue];
@@ -42,13 +43,13 @@ const MultiGroupField = (props) => {
 
 	const handleAdd = () => {
 		const newValue = [...currentValue];
-		newValue.push({ __key: getNextKey(currentValue) });
+		newValue.push({ __key: uuid() });
 		setCurrentValue(newValue);
 	};
 
 	useEffect(() => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(removeKeys(currentValue))) {
-			onChange(currentValue);
+			onChange(removeKeys(currentValue));
 		}
 	}, [value, currentValue]);
 
@@ -74,6 +75,8 @@ const MultiGroupField = (props) => {
 							htmlId={itemId => id + '_' + index + '_' + itemId}
 							index={index}
 							length={currentValue.length}
+							collapsed={itemValue.__key !== opened}
+							toggleCollapsed={() => setOpened(itemValue.__key === opened ? null : itemValue.__key)}
 						/>
 					);
 				})}
@@ -81,7 +84,7 @@ const MultiGroupField = (props) => {
 			<div className={classnames('wcf-multi-group__buttons')}>
 				{addEnabled && (
 					<Button className={classnames('button-secondary')} onClick={handleAdd}>
-						Add
+						{__('Add', 'wpify-custom-fields')}
 					</Button>
 				)}
 			</div>
@@ -98,6 +101,7 @@ MultiGroupField.propTypes = {
 	onChange: PT.func,
 	id: PT.string,
 	name: PT.string,
+	className: PT.string,
 };
 
 export default MultiGroupField;
