@@ -36,25 +36,25 @@ final class GutenbergBlock extends AbstractImplementation {
 		parent::__construct( $args, $wcf );
 
 		$defaults = array(
-			'name'             => null, // string
-			'title'            => '', // string
-			'category'         => 'common', // string
-			'parent'           => null, // string
-			'icon'             => null, // string
-			'description'      => null, // string
-			'keywords'         => array(), // array
-			'textdomain'       => 'wpify-custom-fields', // string
-			'styles'           => array(), // array
-			'supports'         => null, // array
-			'example'          => null, // array
-			'render_callback'  => array( $this, 'render_default' ), // callable
-			'uses_context'     => array(), // array
-			'provides_context' => null, // array
-			'editor_script'    => null, // string
-			'script'           => null, // string
-			'editor_style'     => null, // string
-			'style'            => null, // string
-			'items'            => array(), // array
+				'name'             => null, // string
+				'title'            => '', // string
+				'category'         => 'common', // string
+				'parent'           => null, // string
+				'icon'             => null, // string
+				'description'      => null, // string
+				'keywords'         => array(), // array
+				'textdomain'       => 'wpify-custom-fields', // string
+				'styles'           => array(), // array
+				'supports'         => null, // array
+				'example'          => null, // array
+				'render_callback'  => array( $this, 'render_default' ), // callable
+				'uses_context'     => array(), // array
+				'provides_context' => null, // array
+				'editor_script'    => null, // string
+				'script'           => null, // string
+				'editor_style'     => null, // string
+				'style'            => null, // string
+				'items'            => array(), // array
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -92,26 +92,26 @@ final class GutenbergBlock extends AbstractImplementation {
 	public function get_args( $exclude = array() ) {
 		$args   = array();
 		$fields = array(
-			'name',
-			'title',
-			'category',
-			'parent',
-			'icon',
-			'description',
-			'keywords',
-			'textdomain',
-			'styles',
-			'supports',
-			'example',
-			'render_callback',
-			'uses_context',
-			'provides_context',
-			'editor_script',
-			'script',
-			'editor_style',
-			'style',
-			'attributes',
-			'items',
+				'name',
+				'title',
+				'category',
+				'parent',
+				'icon',
+				'description',
+				'keywords',
+				'textdomain',
+				'styles',
+				'supports',
+				'example',
+				'render_callback',
+				'uses_context',
+				'provides_context',
+				'editor_script',
+				'script',
+				'editor_style',
+				'style',
+				'attributes',
+				'items',
 		);
 
 		foreach ( $fields as $field ) {
@@ -166,8 +166,8 @@ final class GutenbergBlock extends AbstractImplementation {
 
 		foreach ( $items as $item ) {
 			$attributes[ $item['id'] ] = array(
-				'type'    => $this->get_attribute_type( $item ),
-				'default' => $item['default'],
+					'type'    => $this->get_attribute_type( $item ),
+					'default' => $item['default'],
 			);
 		}
 
@@ -179,8 +179,8 @@ final class GutenbergBlock extends AbstractImplementation {
 	 */
 	public function get_items() {
 		$items = apply_filters( 'wcf_gutenberg_block_items', $this->items, array_merge(
-			array( 'name' => $this->name ),
-			$this->get_args( array( 'attributes', 'items' ) ),
+				array( 'name' => $this->name ),
+				$this->get_args( array( 'attributes', 'items' ) ),
 		) );
 
 		return $this->prepare_items( $items );
@@ -242,12 +242,41 @@ final class GutenbergBlock extends AbstractImplementation {
 	}
 
 	public function render_default( $attributes ) {
-		$render = '<h2>' . $this->title . '</h2>';
+		$render = '<h2>' . $this->title . ' (<code>' . $this->name . '</code>)</h2>';
 
-		foreach ( $attributes as $attribute => $value ) {
-			$render .= '<p><strong>' . $attribute . '</strong>:<br><pre>' . print_r( $value, true ) . '</pre></p>';
+		foreach ( $this->get_items() as $item ) {
+			$value  = empty( $attributes[ $item['id'] ] ) ? null : $attributes[ $item['id'] ];
+			$render .= $this->render_default_item( $item, $value );
 		}
 
 		return $render;
+	}
+
+	public function render_default_item( $item, $value ) {
+		ob_start();
+		?>
+		<div style="border-left: 1px solid black;padding-left: 10px;margin: 10px 0">
+			<strong><?php echo $item['title']; ?> (<code><?php echo $item['id']; ?></code>)</strong>
+			<br>
+			<?php if ( isset( $item['items'] ) ): ?>
+				<?php
+				if ( is_array( $value ) ) {
+					foreach ( $value as $index => $inner_value ) {
+						if ( $index > 0 ) {
+							echo '<hr>';
+						}
+
+						foreach ( $item['items'] as $inner_item ) {
+							echo $this->render_default_item( $inner_item, empty( $inner_value[ $inner_item['id'] ] ) ? null : $inner_value[ $inner_item['id'] ] );
+						}
+					}
+				}
+				?>
+			<?php else: ?>
+				<?php echo print_r( $value, true ); ?>
+			<?php endif; ?>
+		</div>
+		<?php
+		return ob_get_clean();
 	}
 }
