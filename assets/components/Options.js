@@ -16,16 +16,18 @@ const Options = () => {
 				{items.map(item => {
 					const Field = getItemComponent(item);
 
-					if (Field.withoutWrapper && Field.withoutWrapper()) {
-						return (
-							<ErrorBoundary>
-								<Field {...item} />
-							</ErrorBoundary>
-						);
+					if (!Field) {
+						return null;
 					}
 
 					return (
-						<OptionsRow key={item.id} item={item}>
+						<OptionsRow
+							key={item.id}
+							item={item}
+							withoutWrapper={Field.withoutWrapper && Field.withoutWrapper()}
+							withoutLabel={Field.noLabel}
+							withoutSection={Field.noSection}
+						>
 							<ErrorBoundary>
 								<Field {...item}/>
 							</ErrorBoundary>

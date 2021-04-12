@@ -45,6 +45,8 @@ const renderWcf = () => {
 	document.querySelectorAll('.js-wcf[data-wcf]').forEach((container) => {
 		const props = parseDataset(container.dataset);
 
+		console.log(props);
+
 		ReactDOM.render(<WcfApp {...props} />, container);
 	});
 };

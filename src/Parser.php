@@ -14,6 +14,7 @@ final class Parser {
 		'multi_select'     => 'parse_multi_select_value',
 		'multi_post'       => 'parse_multi_select_value',
 		'multi_attachment' => 'parse_multi_select_value',
+		'multi_toggle'     => 'parse_multi_select_value',
 	);
 
 	/**

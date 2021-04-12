@@ -1,8 +1,12 @@
 {
   "wpify-custom-blocks.css": "wpify-custom-blocks.css",
   "wpify-custom-blocks.js": "wpify-custom-blocks.js",
+  "wpify-custom-blocks.css.map": "wpify-custom-blocks.css.map",
+  "wpify-custom-blocks.js.map": "wpify-custom-blocks.js.map",
   "wpify-custom-fields.css": "wpify-custom-fields.css",
   "wpify-custom-fields.js": "wpify-custom-fields.js",
+  "wpify-custom-fields.css.map": "wpify-custom-fields.css.map",
+  "wpify-custom-fields.js.map": "wpify-custom-fields.js.map",
   "assets.php": "assets.php",
   "images/flags.png": "images/flags.007b2705.png",
   "images/flags@2x.png": "images/flags@2x.9d5328fb.png"

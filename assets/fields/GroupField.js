@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PT from 'prop-types';
 import ScreenContext from '../components/ScreenContext';
 import { getItemComponent } from '../helpers';
+import OptionsRow from '../components/OptionsRow';
 
 const GroupField = (props) => {
 	const {
@@ -44,6 +45,9 @@ const GroupField = (props) => {
 							item={item}
 							group_level={group_level + 1}
 							htmlId={itemId => id + '_' + itemId}
+							withoutWrapper={Field.withoutWrapper && Field.withoutWrapper()}
+							withoutLabel={Field.noLabel}
+							withoutSection={Field.noSection}
 						>
 							<Field
 								{...item}

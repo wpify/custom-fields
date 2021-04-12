@@ -3,7 +3,16 @@ import PT from 'prop-types';
 import React from 'react';
 
 const OptionsRow = (props) => {
-	const { item, children, group_level = 0, className, htmlId = id => id, withoutWrapper = false } = props;
+	const {
+		item,
+		children,
+		group_level = 0,
+		className,
+		htmlId = id => id,
+		withoutWrapper = false,
+		withoutSection = false,
+		withoutLabel = false,
+	} = props;
 
 	const label = item.title
 		? <label htmlFor={htmlId(item.id)} dangerouslySetInnerHTML={{ __html: item.title }}/>
@@ -16,16 +25,26 @@ const OptionsRow = (props) => {
 	if (group_level > 1) {
 		return (
 			<div className={classnames('form-field', className)} data-group-level={group_level}>
-				<div>{label}</div>
+				{!withoutLabel && (<div>{label}</div>)}
 				<div>{children}</div>
 			</div>
 		);
 	}
 
+	if (withoutSection) {
+		return (
+			<tr valign="top" data-group-level={group_level}>
+				<td className={classnames('forminp', 'forminp-' + item.type)} colSpan={2} style={{ paddingLeft: 0, paddingRight: 0 }}>
+					{children}
+				</td>
+			</tr>
+		)
+	}
+
 	return (
 		<tr valign="top" data-group-level={group_level}>
 			<th scope="row" className="titledesc">
-				{label}
+				{!withoutLabel && label}
 			</th>
 			<td className={classnames('forminp', 'forminp-' + item.type)}>
 				{children}
