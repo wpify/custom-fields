@@ -183,6 +183,30 @@ abstract class AbstractImplementation {
 				'tooltip_html'      => '',
 		) );
 
+		/* Compatibility with WPify Woo */
+		$type_aliases = array(
+				'multiswitch' => 'multi_toggle',
+				'switch'      => 'toggle',
+				'multiselect' => 'multi_select',
+				'colorpicker' => 'color',
+		);
+
+		foreach ($type_aliases as $alias => $correct) {
+			if ($args['type'] === $alias) {
+				$args['type'] = $correct;
+			}
+		}
+
+		if ( empty( $args['title'] ) && ! empty( $args['label'] ) ) {
+			$args['title'] = $args['label'];
+			$args['label'] = '';
+		}
+
+		if ( empty( $args['description'] ) && ! empty( $args['desc'] ) ) {
+			$args['description'] = $args['desc'];
+			$args['desc']        = '';
+		}
+
 		return $args;
 	}
 }

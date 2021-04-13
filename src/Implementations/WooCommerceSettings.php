@@ -47,15 +47,6 @@ final class WooCommerceSettings extends AbstractImplementation {
 		add_action( 'woocommerce_settings_save_' . $this->tab['id'], array( $this, 'save' ) );
 	}
 
-	public function get_items() {
-		$items = apply_filters( 'wcf_woocommerce_settings_items', $this->items, array(
-				'tab'     => $this->tab,
-				'section' => $this->section,
-		) );
-
-		return $this->prepare_items( $items );
-	}
-
 	/**
 	 * @return void
 	 */
@@ -91,6 +82,18 @@ final class WooCommerceSettings extends AbstractImplementation {
 	public function woocommerce_get_sections( $sections ) {
 		if ( ! empty( $this->section ) ) {
 			$sections[ $this->section['id'] ] = $this->section['label'];
+		}
+
+		if ( isset( $sections[''] ) ) {
+			$empty_section      = $sections[''];
+			$reordered_sections = array( '' => $empty_section );
+			unset( $sections[''] );
+
+			foreach ( $sections as $id => $label ) {
+				$reordered_sections[ $id ] = $label;
+			}
+			
+			$sections = $reordered_sections;
 		}
 
 		return $sections;
@@ -148,6 +151,15 @@ final class WooCommerceSettings extends AbstractImplementation {
 				'section'     => $this->section,
 				'items'       => $this->get_items(),
 		);
+	}
+
+	public function get_items() {
+		$items = apply_filters( 'wcf_woocommerce_settings_items', $this->items, array(
+				'tab'     => $this->tab,
+				'section' => $this->section,
+		) );
+
+		return $this->prepare_items( $items );
 	}
 
 	/**

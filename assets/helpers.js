@@ -26,6 +26,7 @@ import PostField from './fields/PostField';
 import MultiPostField from './fields/MultiPostField';
 import AttachmentField from './fields/AttachmentField';
 import MultiAttachmentField from './fields/MultiAttachmentField';
+import MultiToggleField from './fields/MultiToggleField';
 
 export const parseDataset = (dataset) => {
 	const props = { ...dataset };
@@ -130,4 +131,5 @@ export const registerFieldTypes = () => {
 	registerFieldType('multi_post', MultiPostField);
 	registerFieldType('attachment', AttachmentField);
 	registerFieldType('multi_attachment', MultiAttachmentField);
+	registerFieldType('multi_toggle', MultiToggleField);
 }
