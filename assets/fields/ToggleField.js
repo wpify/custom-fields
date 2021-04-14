@@ -14,12 +14,17 @@ const ToggleField = (props) => {
 		onChange,
 		className,
 		description,
+		disabled = false,
 	} = props;
 
 	const [currentValue, setCurrentValue] = useState(Boolean(value));
 
+	console.log(props);
+
 	const handleChange = (checked) => {
-		setCurrentValue(checked);
+		if (!disabled) {
+			setCurrentValue(checked);
+		}
 	};
 
 	useEffect(() => {
@@ -28,20 +33,29 @@ const ToggleField = (props) => {
 		}
 	}, [value, currentValue]);
 
+	const control = (
+		<ToggleControl
+			id={htmlId(id)}
+			checked={currentValue}
+			name={group_level === 0 && id}
+			onChange={handleChange}
+			label={<span dangerouslySetInnerHTML={{ __html: label }}/>}
+			className={classnames(className)}
+			disabled={disabled}
+			{...custom_attributes}
+		/>
+	);
+
 	return (
 		<React.Fragment>
 			{group_level === 0 && (
 				<input type="hidden" name={id} value={currentValue ? 1 : 0}/>
 			)}
-			<ToggleControl
-				id={htmlId(id)}
-				checked={currentValue}
-				name={group_level === 0 && id}
-				onChange={handleChange}
-				label={<span dangerouslySetInnerHTML={{ __html: label }}/>}
-				className={classnames(className)}
-				{...custom_attributes}
-			/>
+			{disabled ? (
+				<div className="wcf-toggle-disabled">
+					{control}
+				</div>
+			) : control}
 			{description && (
 				<p className="description" dangerouslySetInnerHTML={{ __html: description }} />
 			)}

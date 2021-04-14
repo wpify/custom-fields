@@ -76,7 +76,7 @@ abstract class AbstractImplementation {
 	 * @param string $object_type
 	 * @param string $tag
 	 */
-	public function render_fields( $object_type = '', $tag = 'div' ) {
+	public function render_fields( $object_type = '', $tag = 'div', $attributes = array() ) {
 		$data = $this->get_data();
 
 		if ( ! empty( $object_type ) ) {
@@ -89,10 +89,15 @@ abstract class AbstractImplementation {
 				'nonce' => $this->api->get_rest_nonce(),
 		);
 
+		$class = empty( $attributes['class'] ) ? 'js-wcf' : 'js-wcf ' . $attributes['class'];
+
 		$json = wp_json_encode( $data );
+
+		do_action( 'wcf_before_fields', $data );
 		?>
-		<<?php echo $tag ?> class="js-wcf" data-wcf="<?php echo esc_attr( $json ) ?>"></<?php echo $tag ?>>
+		<<?php echo $tag ?> class="<?php echo esc_attr( $class ); ?>" data-wcf="<?php echo esc_attr( $json ) ?>"></<?php echo $tag ?>>
 		<?php
+		do_action( 'wcf_after_fields', $data );
 	}
 
 	/**

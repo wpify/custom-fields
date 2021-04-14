@@ -52,6 +52,7 @@ const MultiToggleField = (props) => {
 					onChange={handleChange(option.value)}
 					label={<span dangerouslySetInnerHTML={{ __html: option.label }}/>}
 					className={classnames(className)}
+					disabled={option.disabled}
 					{...custom_attributes}
 				/>
 			))}
