@@ -185,26 +185,40 @@ abstract class AbstractImplementation {
 
 		/* Compatibility with WPify Woo */
 		$type_aliases = array(
-				'multiswitch' => 'multi_toggle',
-				'switch'      => 'toggle',
-				'multiselect' => 'multi_select',
-				'colorpicker' => 'color',
+				'multiswitch'     => 'multi_toggle',
+				'switch'          => 'toggle',
+				'multiselect'     => 'multi_select',
+				'colorpicker'     => 'color',
+				'react_component' => 'react',
 		);
 
-		foreach ($type_aliases as $alias => $correct) {
-			if ($args['type'] === $alias) {
+		foreach ( $type_aliases as $alias => $correct ) {
+			if ( $args['type'] === $alias ) {
 				$args['type'] = $correct;
 			}
 		}
 
-		if ( empty( $args['title'] ) && ! empty( $args['label'] ) ) {
-			$args['title'] = $args['label'];
-			$args['label'] = '';
+		$args_aliases = array(
+				'label'           => 'title',
+				'desc'            => 'description',
+				'async_list_type' => 'list_type',
+		);
+
+		foreach ( $args_aliases as $alias => $correct ) {
+			if ( empty( $args[ $correct ] ) && ! empty( $args[ $alias ] ) ) {
+				$args[ $correct ] = $args[ $alias ];
+			}
 		}
 
-		if ( empty( $args['description'] ) && ! empty( $args['desc'] ) ) {
-			$args['description'] = $args['desc'];
-			$args['desc']        = '';
+		if ( $args['type'] === 'group' && isset( $args['multi'] ) && $args['multi'] === true ) {
+			$args['type'] = 'multi_group';
+			unset( $args['multi'] );
+		}
+
+		if ( ! empty( $args['items'] ) && is_array( $args['items'] ) ) {
+			foreach ( $args['items'] as $key => $item ) {
+				$args['items'][ $key ] = $this->normalize_item( $item );
+			}
 		}
 
 		return $args;

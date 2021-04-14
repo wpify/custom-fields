@@ -43,8 +43,10 @@ const MultiGroupField = (props) => {
 
 	const handleAdd = () => {
 		const newValue = [...currentValue];
-		newValue.push({ __key: uuid() });
+		const __key = uuid();
+		newValue.push({ __key });
 		setCurrentValue(newValue);
+		setOpened(__key);
 	};
 
 	useEffect(() => {
