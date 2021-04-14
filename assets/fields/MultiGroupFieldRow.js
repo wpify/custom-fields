@@ -30,7 +30,7 @@ const MultiGroupFieldRow = (props) => {
 		onChange(newValue);
 	};
 
-	const title = items.map(item => value[item.id]).find(value => typeof value === 'string');
+	const title = items.map(item => value[item.id]).find(value => typeof value === 'string') || '';
 
 	return (
 		<div className={classnames('wcf-multi-group-row', className)}>

@@ -19,6 +19,9 @@ final class WooCommerceSettings extends AbstractImplementation {
 	/** @var array */
 	private $items;
 
+	/** @var string */
+	private $class;
+
 	/** @var bool */
 	private $is_new_tab = false;
 
@@ -34,17 +37,33 @@ final class WooCommerceSettings extends AbstractImplementation {
 		$args = wp_parse_args( $args, array(
 				'tab'     => array( 'id' => '', 'label' => null ),
 				'section' => array( 'id' => '', 'label' => null ),
+				'class'   => null,
 				'items'   => array(),
 		) );
 
 		$this->tab     = $args['tab'];
 		$this->section = $args['section'];
+		$this->class   = $args['class'];
 		$this->items   = $args['items'];
 
 		add_filter( 'woocommerce_settings_tabs_array', array( $this, 'woocommerce_settings_tabs_array' ), 30 );
 		add_filter( 'woocommerce_get_sections_' . $this->tab['id'], array( $this, 'woocommerce_get_sections' ) );
 		add_action( 'woocommerce_settings_' . $this->tab['id'], array( $this, 'render' ), 11 );
 		add_action( 'woocommerce_settings_save_' . $this->tab['id'], array( $this, 'save' ) );
+
+		/* The WCF does redirect after save, so we need
+		 * to handle showing the success message by ourselves */
+
+		$tab     = empty( $_REQUEST['tab'] ) ? '' : $_REQUEST['tab'];
+		$section = empty( $_REQUEST['section'] ) ? '' : $_REQUEST['section'];
+
+		if ( $tab === $this->tab['id']
+			 && $section === $this->section['id']
+			 && ! empty( $_REQUEST['settings-updated'] )
+			 && $_REQUEST['settings-updated'] === '1'
+		) {
+			WC_Admin_Settings::add_message( __( 'Your settings have been saved.', 'woocommerce' ) );
+		}
 	}
 
 	/**
@@ -92,7 +111,7 @@ final class WooCommerceSettings extends AbstractImplementation {
 			foreach ( $sections as $id => $label ) {
 				$reordered_sections[ $id ] = $label;
 			}
-			
+
 			$sections = $reordered_sections;
 		}
 
@@ -131,7 +150,7 @@ final class WooCommerceSettings extends AbstractImplementation {
 			return;
 		}
 
-		$this->render_fields();
+		$this->render_fields( 'woocommerce_settings', 'div', array( 'class' => $this->class ) );
 	}
 
 	/**
@@ -176,10 +195,26 @@ final class WooCommerceSettings extends AbstractImplementation {
 	 * @return void
 	 */
 	public function save() {
-		foreach ( $this->get_items() as $item ) {
-			if ( ! empty( $item['id'] ) ) {
-				$this->set_field( $item['id'], $_POST[ $item['id'] ] );
+		$tab     = empty( $_REQUEST['tab'] ) ? '' : $_REQUEST['tab'];
+		$section = empty( $_REQUEST['section'] ) ? '' : $_REQUEST['section'];
+
+		if ( $tab === $this->tab['id'] && $section === $this->section['id'] ) {
+			foreach ( $this->get_items() as $item ) {
+				if ( ! empty( $item['id'] ) ) {
+					$this->set_field( $item['id'], $_POST[ $item['id'] ] );
+				}
 			}
+
+			wp_redirect(
+					add_query_arg( array(
+							'page'             => 'wc-settings',
+							'tab'              => $this->tab['id'],
+							'section'          => $this->section['id'],
+							'settings-updated' => true,
+					), admin_url( 'admin.php' ) )
+			);
+
+			exit;
 		}
 	}
 

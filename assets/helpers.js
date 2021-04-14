@@ -1,32 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { addFilter, applyFilters } from '@wordpress/hooks';
-import TextField from './fields/TextField';
-import UrlField from './fields/UrlField';
-import EmailField from './fields/EmailField';
-import NumberField from './fields/NumberField';
-import TitleField from './fields/TitleField';
-import TelField from './fields/TelField';
-import PasswordField from './fields/PasswordField';
-import ColorField from './fields/ColorField';
-import DatetimeField from './fields/DatetimeField';
-import MonthField from './fields/MonthField';
-import DateField from './fields/DateField';
-import TimeField from './fields/TimeField';
-import WeekField from './fields/WeekField';
-import TextareaField from './fields/TextareaField';
-import HtmlField from './fields/HtmlField';
-import GroupField from './fields/GroupField';
-import MultiGroupField from './fields/MultiGroupField';
-import CheckboxField from './fields/CheckboxField';
-import ToggleField from './fields/ToggleField';
-import SelectField from './fields/SelectField';
-import MultiSelectField from './fields/MultiSelectField';
-import CodeField from './fields/CodeField';
-import PostField from './fields/PostField';
-import MultiPostField from './fields/MultiPostField';
-import AttachmentField from './fields/AttachmentField';
-import MultiAttachmentField from './fields/MultiAttachmentField';
-import MultiToggleField from './fields/MultiToggleField';
+import { fields } from './fields';
 
 export const parseDataset = (dataset) => {
 	const props = { ...dataset };
@@ -56,7 +30,48 @@ export const registerFieldType = (type, Field) => {
 	addFilter('wcf_field_' + type, 'wpify-custom-fields', Component => Field);
 };
 
+export const registerFieldTypes = () => {
+	Object.keys(fields).forEach(type => {
+		registerFieldType(type, fields[type]);
+	});
+};
+
 export const clone = value => JSON.parse(JSON.stringify(value));
+
+// source: https://stackoverflow.com/questions/35969656/how-can-i-generate-the-opposite-color-according-to-current-color
+export const invertColor = (hex, bw) => {
+	if (hex.indexOf('#') === 0) {
+		hex = hex.slice(1);
+	}
+
+	// convert 3-digit hex to 6-digits.
+	if (hex.length === 3) {
+		hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+	}
+
+	if (hex.length !== 6) {
+		return '#000000';
+	}
+
+	let r = parseInt(hex.slice(0, 2), 16);
+	let g = parseInt(hex.slice(2, 4), 16);
+	let b = parseInt(hex.slice(4, 6), 16);
+
+	if (bw) {
+		// http://stackoverflow.com/a/3943023/112731
+		return (r * 0.299 + g * 0.587 + b * 0.114) > 186
+			? '#000000'
+			: '#FFFFFF';
+	}
+
+	// invert color components
+	r = (255 - r).toString(16);
+	g = (255 - g).toString(16);
+	b = (255 - b).toString(16);
+
+	// pad each with zeros and return
+	return "#" + padZero(r) + padZero(g) + padZero(b);
+};
 
 export const useFetch = ({ defaultValue = null }) => {
 	const controller = useRef(new AbortController());
@@ -103,33 +118,3 @@ export const useForceUpdate = () => {
 	const [value, setValue] = useState(0);
 	return () => setValue(value => value + 1);
 };
-
-export const registerFieldTypes = () => {
-	registerFieldType('text', TextField);
-	registerFieldType('url', UrlField);
-	registerFieldType('email', EmailField);
-	registerFieldType('number', NumberField);
-	registerFieldType('title', TitleField);
-	registerFieldType('tel', TelField);
-	registerFieldType('password', PasswordField);
-	registerFieldType('color', ColorField);
-	registerFieldType('datetime', DatetimeField);
-	registerFieldType('month', MonthField);
-	registerFieldType('date', DateField);
-	registerFieldType('time', TimeField);
-	registerFieldType('week', WeekField);
-	registerFieldType('textarea', TextareaField);
-	registerFieldType('html', HtmlField);
-	registerFieldType('group', GroupField);
-	registerFieldType('multi_group', MultiGroupField);
-	registerFieldType('checkbox', CheckboxField);
-	registerFieldType('toggle', ToggleField);
-	registerFieldType('select', SelectField);
-	registerFieldType('multi_select', MultiSelectField);
-	registerFieldType('code', CodeField);
-	registerFieldType('post', PostField);
-	registerFieldType('multi_post', MultiPostField);
-	registerFieldType('attachment', AttachmentField);
-	registerFieldType('multi_attachment', MultiAttachmentField);
-	registerFieldType('multi_toggle', MultiToggleField);
-}

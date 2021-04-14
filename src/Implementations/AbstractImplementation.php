@@ -76,7 +76,7 @@ abstract class AbstractImplementation {
 	 * @param string $object_type
 	 * @param string $tag
 	 */
-	public function render_fields( $object_type = '', $tag = 'div' ) {
+	public function render_fields( $object_type = '', $tag = 'div', $attributes = array() ) {
 		$data = $this->get_data();
 
 		if ( ! empty( $object_type ) ) {
@@ -89,10 +89,15 @@ abstract class AbstractImplementation {
 				'nonce' => $this->api->get_rest_nonce(),
 		);
 
+		$class = empty( $attributes['class'] ) ? 'js-wcf' : 'js-wcf ' . $attributes['class'];
+
 		$json = wp_json_encode( $data );
+
+		do_action( 'wcf_before_fields', $data );
 		?>
-		<<?php echo $tag ?> class="js-wcf" data-wcf="<?php echo esc_attr( $json ) ?>"></<?php echo $tag ?>>
+		<<?php echo $tag ?> class="<?php echo esc_attr( $class ); ?>" data-wcf="<?php echo esc_attr( $json ) ?>"></<?php echo $tag ?>>
 		<?php
+		do_action( 'wcf_after_fields', $data );
 	}
 
 	/**
@@ -185,26 +190,40 @@ abstract class AbstractImplementation {
 
 		/* Compatibility with WPify Woo */
 		$type_aliases = array(
-				'multiswitch' => 'multi_toggle',
-				'switch'      => 'toggle',
-				'multiselect' => 'multi_select',
-				'colorpicker' => 'color',
+				'multiswitch'     => 'multi_toggle',
+				'switch'          => 'toggle',
+				'multiselect'     => 'multi_select',
+				'colorpicker'     => 'color',
+				'react_component' => 'react',
 		);
 
-		foreach ($type_aliases as $alias => $correct) {
-			if ($args['type'] === $alias) {
+		foreach ( $type_aliases as $alias => $correct ) {
+			if ( $args['type'] === $alias ) {
 				$args['type'] = $correct;
 			}
 		}
 
-		if ( empty( $args['title'] ) && ! empty( $args['label'] ) ) {
-			$args['title'] = $args['label'];
-			$args['label'] = '';
+		$args_aliases = array(
+				'label'           => 'title',
+				'desc'            => 'description',
+				'async_list_type' => 'list_type',
+		);
+
+		foreach ( $args_aliases as $alias => $correct ) {
+			if ( empty( $args[ $correct ] ) && ! empty( $args[ $alias ] ) ) {
+				$args[ $correct ] = $args[ $alias ];
+			}
 		}
 
-		if ( empty( $args['description'] ) && ! empty( $args['desc'] ) ) {
-			$args['description'] = $args['desc'];
-			$args['desc']        = '';
+		if ( $args['type'] === 'group' && isset( $args['multi'] ) && $args['multi'] === true ) {
+			$args['type'] = 'multi_group';
+			unset( $args['multi'] );
+		}
+
+		if ( ! empty( $args['items'] ) && is_array( $args['items'] ) ) {
+			foreach ( $args['items'] as $key => $item ) {
+				$args['items'][ $key ] = $this->normalize_item( $item );
+			}
 		}
 
 		return $args;
