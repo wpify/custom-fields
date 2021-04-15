@@ -8,7 +8,7 @@ import { __ } from '@wordpress/i18n';
 import { Icon, desktop, edit } from '@wordpress/icons';
 import { getItemComponent } from '../helpers';
 import ScreenContext from './ScreenContext';
-import ProductOptionsRow from './ProductOptionsRow';
+import GutenbergBlockRow from './GutenbergBlockRow';
 import AppContext from './AppContext';
 import ErrorBoundary from './ErrorBoundary';
 
@@ -28,7 +28,7 @@ const GutenbergBlock = (props) => {
 	}, [isSelected, view]);
 
 	return (
-		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: ProductOptionsRow }}>
+		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: GutenbergBlockRow }}>
 			<BlockControls>
 				<ToolbarGroup>
 					<ToolbarButton
@@ -75,7 +75,7 @@ const GutenbergBlock = (props) => {
 								/>
 							</ErrorBoundary>
 						) : (
-							<ProductOptionsRow key={item.id} item={item}>
+							<GutenbergBlockRow key={item.id} item={item}>
 								<ErrorBoundary>
 									<Field
 										key={item.id}
@@ -84,7 +84,7 @@ const GutenbergBlock = (props) => {
 										value={attributes[item.id]}
 									/>
 								</ErrorBoundary>
-							</ProductOptionsRow>
+							</GutenbergBlockRow>
 						);
 					})}
 				</div>

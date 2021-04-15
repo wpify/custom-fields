@@ -19,8 +19,6 @@ const ToggleField = (props) => {
 
 	const [currentValue, setCurrentValue] = useState(Boolean(value));
 
-	console.log(props);
-
 	const handleChange = (checked) => {
 		if (!disabled) {
 			setCurrentValue(checked);

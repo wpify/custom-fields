@@ -90,11 +90,14 @@ export const useFetch = ({ defaultValue = null }) => {
 				'X-WP-Nonce': nonce
 			},
 			body: JSON.stringify(body),
-		}).then(response => {
-			if (response.ok) {
-				return response.json();
-			}
-		}).then(setResult);
+		})
+			.then(response => {
+				if (response.ok) {
+					return response.json();
+				}
+			})
+			.then(setResult)
+			.catch(console.error);
 	}, []);
 
 	return { fetch, result };
