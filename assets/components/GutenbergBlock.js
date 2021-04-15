@@ -1,11 +1,11 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 import ServerSideRender from '@wordpress/server-side-render';
 import { BlockControls } from '@wordpress/block-editor';
-import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
+import { ToolbarButton, ToolbarGroup } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { Icon, desktop, edit } from '@wordpress/icons';
+import { desktop, edit, Icon } from '@wordpress/icons';
 import { getItemComponent } from '../helpers';
 import ScreenContext from './ScreenContext';
 import GutenbergBlockRow from './GutenbergBlockRow';
@@ -36,7 +36,7 @@ const GutenbergBlock = (props) => {
 						onClick={() => setView(DESKTOP_VIEW)}
 					>
 						<div className="wcf-block-toolbar-button">
-							<Icon icon={desktop} />
+							<Icon icon={desktop}/>
 							{__('View', 'wpify-custom-fields')}
 						</div>
 					</ToolbarButton>
@@ -45,7 +45,7 @@ const GutenbergBlock = (props) => {
 						onClick={() => setView(EDIT_VIEW)}
 					>
 						<div className="wcf-block-toolbar-button">
-							<Icon icon={edit} />
+							<Icon icon={edit}/>
 							{__('Edit', 'wpify-custom-fields')}
 						</div>
 					</ToolbarButton>
@@ -59,32 +59,32 @@ const GutenbergBlock = (props) => {
 			)}
 			{view === EDIT_VIEW && (
 				<div className={classnames('wcf-block')}>
-					<div className={classnames('wcf-block__title')}>
-						{title}
-					</div>
+					<ErrorBoundary>
+						<div className={classnames('wcf-block__title')} dangerouslySetInnerHTML={{ __html: title }}/>
+					</ErrorBoundary>
 					{items.map((item) => {
 						const Field = getItemComponent(item);
 
 						return Field.noSection ? (
-							<ErrorBoundary>
+							<ErrorBoundary key={item.id}>
 								<Field
-									key={item.id}
 									{...item}
 									onChange={value => setAttributes({ [item.id]: value })}
 									value={attributes[item.id]}
 								/>
 							</ErrorBoundary>
 						) : (
-							<GutenbergBlockRow key={item.id} item={item}>
-								<ErrorBoundary>
-									<Field
-										key={item.id}
-										{...item}
-										onChange={value => setAttributes({ [item.id]: value })}
-										value={attributes[item.id]}
-									/>
-								</ErrorBoundary>
-							</GutenbergBlockRow>
+							<ErrorBoundary key={item.id}>
+								<GutenbergBlockRow item={item}>
+									<ErrorBoundary>
+										<Field
+											{...item}
+											onChange={value => setAttributes({ [item.id]: value })}
+											value={attributes[item.id]}
+										/>
+									</ErrorBoundary>
+								</GutenbergBlockRow>
+							</ErrorBoundary>
 						);
 					})}
 				</div>

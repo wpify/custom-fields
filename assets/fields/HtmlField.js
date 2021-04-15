@@ -1,15 +1,18 @@
 import React from 'react';
 import PT from 'prop-types';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const HtmlField = (props) => {
 	const { className, content = '', custom_attributes = {} } = props;
 
 	return (
-		<div
-			className={className}
-			{...custom_attributes}
-			dangerouslySetInnerHTML={{ __html: content }}
-		/>
+		<ErrorBoundary>
+			<div
+				className={className}
+				{...custom_attributes}
+				dangerouslySetInnerHTML={{ __html: content }}
+			/>
+		</ErrorBoundary>
 	);
 };
 

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import PT from 'prop-types';
 import AppContext from '../components/AppContext';
 import SearchableSelectControl from '../components/SearchableSelectControl';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const SelectField = (props) => {
 	const {
@@ -35,21 +36,25 @@ const SelectField = (props) => {
 			{group_level === 0 && (
 				<input type="hidden" name={id} value={isMulti ? JSON.stringify(currentValue.filter(Boolean)) : currentValue} />
 			)}
-			<SearchableSelectControl
-				id={id}
-				value={value}
-				onChange={handleChange}
-				options={options}
-				list_type={list_type}
-				required={required}
-				isMulti={isMulti}
-				url={api.url + '/list'}
-				nonce={api.nonce}
-				method="post"
-				className={className}
-			/>
+			<ErrorBoundary>
+				<SearchableSelectControl
+					id={id}
+					value={value}
+					onChange={handleChange}
+					options={options}
+					list_type={list_type}
+					required={required}
+					isMulti={isMulti}
+					url={api.url + '/list'}
+					nonce={api.nonce}
+					method="post"
+					className={className}
+				/>
+			</ErrorBoundary>
 			{description && (
-				<p className="description" dangerouslySetInnerHTML={{ __html: description }}/>
+				<ErrorBoundary>
+					<p className="description" dangerouslySetInnerHTML={{ __html: description }}/>
+				</ErrorBoundary>
 			)}
 		</React.Fragment>
 	);

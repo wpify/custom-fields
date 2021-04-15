@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PT from 'prop-types';
 import ScreenContext from '../components/ScreenContext';
 import { getItemComponent } from '../helpers';
-import OptionsRow from '../components/OptionsRow';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const GroupField = (props) => {
 	const {
@@ -35,31 +35,36 @@ const GroupField = (props) => {
 			{group_level === 0 && (
 				<input type="hidden" id={id} name={id} value={JSON.stringify(currentValue)}/>
 			)}
-			<RootWrapper group_level={group_level + 1}>
-				{items.map((item) => {
-					const Field = getItemComponent(item);
+			<ErrorBoundary>
+				<RootWrapper group_level={group_level + 1}>
+					{items.map((item) => {
+						const Field = getItemComponent(item);
 
-					return (
-						<RowWrapper
-							key={item.id}
-							item={item}
-							group_level={group_level + 1}
-							htmlId={itemId => id + '_' + itemId}
-							withoutWrapper={Field.withoutWrapper && Field.withoutWrapper()}
-							withoutLabel={Field.noLabel}
-							withoutSection={Field.noSection}
-						>
-							<Field
-								{...item}
-								htmlId={itemId => id + '_' + itemId}
-								group_level={group_level + 1}
-								onChange={value => handleChange({ [item.id]: value })}
-								value={currentValue[item.id]}
-							/>
-						</RowWrapper>
-					);
-				})}
-			</RootWrapper>
+						return (
+							<ErrorBoundary key={item.id}>
+								<RowWrapper
+									item={item}
+									group_level={group_level + 1}
+									htmlId={itemId => id + '_' + itemId}
+									withoutWrapper={Field.withoutWrapper && Field.withoutWrapper()}
+									withoutLabel={Field.noLabel}
+									withoutSection={Field.noSection}
+								>
+									<ErrorBoundary>
+										<Field
+											{...item}
+											htmlId={itemId => id + '_' + itemId}
+											group_level={group_level + 1}
+											onChange={value => handleChange({ [item.id]: value })}
+											value={currentValue[item.id]}
+										/>
+									</ErrorBoundary>
+								</RowWrapper>
+							</ErrorBoundary>
+						);
+					})}
+				</RootWrapper>
+			</ErrorBoundary>
 		</React.Fragment>
 	);
 };

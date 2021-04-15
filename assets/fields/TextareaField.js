@@ -1,6 +1,7 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PT from 'prop-types';
 import classnames from 'classnames';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const TextareaField = (props) => {
 	const {
@@ -41,12 +42,13 @@ const TextareaField = (props) => {
 				{...custom_attributes}
 			>{currentValue}</textarea>
 			{description && (
-				<p className="description" id={describedBy} dangerouslySetInnerHTML={{ __html: description }} />
+				<ErrorBoundary>
+					<p className="description" id={describedBy} dangerouslySetInnerHTML={{ __html: description }}/>
+				</ErrorBoundary>
 			)}
 		</React.Fragment>
 	);
 };
-
 
 TextareaField.propTypes = {
 	id: PT.string,

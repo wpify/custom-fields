@@ -4,6 +4,7 @@ import { SketchPicker } from 'react-color';
 import { Popover } from '@wordpress/components';
 import Button from '../components/Button';
 import { invertColor } from '../helpers';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const ColorField = (props) => {
 	const {
@@ -38,33 +39,37 @@ const ColorField = (props) => {
 				<input type="hidden" name={id} value={currentValue}/>
 			)}
 			<span>
-				<Button
-					id={htmlId(id)}
-					style={{
-						backgroundColor: currentValue,
-						color: invertColor(currentValue, true),
-						width: '80px',
-						height: '20px',
-						justifyContent: 'center',
-						border: '3px solid #c0c0c0',
-						padding: '2px 4px',
-						lineHeight: 1,
-					}}
-					className={className}
-					onClick={() => setShowPopover(true)}
-					{...custom_attributes}
-				>{currentValue}</Button>
-				{showPopover && (
-					<Popover onClose={() => setShowPopover(false)}>
-						<SketchPicker
-							color={currentValue}
-							onChangeComplete={color => handleChange(color)}
-						/>
-					</Popover>
-				)}
+				<ErrorBoundary>
+					<Button
+						id={htmlId(id)}
+						style={{
+							backgroundColor: currentValue,
+							color: invertColor(currentValue, true),
+							width: '80px',
+							height: '20px',
+							justifyContent: 'center',
+							border: '3px solid #c0c0c0',
+							padding: '2px 4px',
+							lineHeight: 1,
+						}}
+						className={className}
+						onClick={() => setShowPopover(true)}
+						{...custom_attributes}
+					>{currentValue}</Button>
+					{showPopover && (
+						<Popover onClose={() => setShowPopover(false)}>
+							<SketchPicker
+								color={currentValue}
+								onChangeComplete={color => handleChange(color)}
+							/>
+						</Popover>
+					)}
+				</ErrorBoundary>
 			</span>
 			{description && (
-				<p className="description" id={describedBy} dangerouslySetInnerHTML={{ __html: description }}/>
+				<ErrorBoundary>
+					<p className="description" id={describedBy} dangerouslySetInnerHTML={{ __html: description }}/>
+				</ErrorBoundary>
 			)}
 		</React.Fragment>
 	);

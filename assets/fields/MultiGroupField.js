@@ -7,6 +7,7 @@ import MultiGroupFieldRow from './MultiGroupFieldRow';
 import SortableControl from '../components/SortableControl';
 import { clone } from '../helpers';
 import { v4 as uuid } from 'uuid';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const prepareValues = (values = []) => {
 	if (Array.isArray(values)) {
@@ -62,27 +63,30 @@ const MultiGroupField = (props) => {
 			{group_level === 0 && (
 				<input type="hidden" id={id} name={id} value={JSON.stringify(currentValue)}/>
 			)}
-			<SortableControl
-				list={currentValue}
-				setList={setCurrentValue}
-			>
-				{currentValue.map((itemValue, index) => {
-					return (
-						<MultiGroupFieldRow
-							key={itemValue.__key}
-							group_level={group_level + 1}
-							onChange={handleChange(index)}
-							items={items}
-							value={itemValue}
-							htmlId={itemId => id + '_' + index + '_' + itemId}
-							index={index}
-							length={currentValue.length}
-							collapsed={itemValue.__key !== opened}
-							toggleCollapsed={() => setOpened(itemValue.__key === opened ? null : itemValue.__key)}
-						/>
-					);
-				})}
-			</SortableControl>
+			<ErrorBoundary>
+				<SortableControl
+					list={currentValue}
+					setList={setCurrentValue}
+				>
+					{currentValue.map((itemValue, index) => {
+						return (
+							<ErrorBoundary key={itemValue.__key}>
+								<MultiGroupFieldRow
+									group_level={group_level + 1}
+									onChange={handleChange(index)}
+									items={items}
+									value={itemValue}
+									htmlId={itemId => id + '_' + index + '_' + itemId}
+									index={index}
+									length={currentValue.length}
+									collapsed={itemValue.__key !== opened}
+									toggleCollapsed={() => setOpened(itemValue.__key === opened ? null : itemValue.__key)}
+								/>
+							</ErrorBoundary>
+						);
+					})}
+				</SortableControl>
+			</ErrorBoundary>
 			<div className={classnames('wcf-multi-group__buttons')}>
 				{addEnabled && (
 					<Button className={classnames('button-secondary')} onClick={handleAdd}>

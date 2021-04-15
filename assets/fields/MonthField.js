@@ -2,16 +2,19 @@ import React from 'react';
 import classnames from 'classnames';
 import InputField from './InputField';
 import PT from 'prop-types';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const MonthField = (props) => {
 	const { className } = props;
 
 	return (
-		<InputField
-			{...props}
-			type="month"
-			className={classnames(className)}
-		/>
+		<ErrorBoundary>
+			<InputField
+				{...props}
+				type="month"
+				className={classnames(className)}
+			/>
+		</ErrorBoundary>
 	);
 };
 

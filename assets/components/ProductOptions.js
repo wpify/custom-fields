@@ -18,15 +18,17 @@ const ProductOptions = () => {
 					const Field = getItemComponent(item);
 
 					return Field.noSection ? (
-						<ErrorBoundary>
-							<Field key={item.id} {...item} />
+						<ErrorBoundary key={item.id}>
+							<Field {...item} />
 						</ErrorBoundary>
 					) : (
-						<ProductOptionsRow key={item.id} item={item}>
-							<ErrorBoundary>
-								<Field {...item} />
-							</ErrorBoundary>
-						</ProductOptionsRow>
+						<ErrorBoundary key={item.id}>
+							<ProductOptionsRow item={item}>
+								<ErrorBoundary>
+									<Field {...item} />
+								</ErrorBoundary>
+							</ProductOptionsRow>
+						</ErrorBoundary>
 					);
 				})}
 			</div>

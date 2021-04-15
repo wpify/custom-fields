@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PT from 'prop-types';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const InputField = React.forwardRef((props, ref) => {
 	const {
@@ -44,7 +45,9 @@ const InputField = React.forwardRef((props, ref) => {
 			/>
 			{suffix && ' ' + suffix}
 			{description && (
-				<p className="description" id={describedBy} dangerouslySetInnerHTML={{ __html: description }}/>
+				<ErrorBoundary>
+					<p className="description" id={describedBy} dangerouslySetInnerHTML={{ __html: description }}/>
+				</ErrorBoundary>
 			)}
 		</React.Fragment>
 	);

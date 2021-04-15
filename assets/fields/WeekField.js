@@ -2,16 +2,19 @@ import React from 'react';
 import PT from 'prop-types';
 import classnames from 'classnames';
 import InputField from './InputField';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const WeekField = (props) => {
 	const { className } = props;
 
 	return (
-		<InputField
-			{...props}
-			type="week"
-			className={classnames('regular-text code', className)}
-		/>
+		<ErrorBoundary>
+			<InputField
+				{...props}
+				type="week"
+				className={classnames('regular-text code', className)}
+			/>
+		</ErrorBoundary>
 	);
 };
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const CheckboxField = React.forwardRef((props, ref) => {
 	const {
@@ -39,7 +40,9 @@ const CheckboxField = React.forwardRef((props, ref) => {
 				ref={ref}
 				{...custom_attributes}
 			/>
-			{label}
+			<ErrorBoundary>
+				<span dangerouslySetInnerHTML={{ __html: label }} />
+			</ErrorBoundary>
 		</label>
 	);
 });

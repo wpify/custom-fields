@@ -1,8 +1,9 @@
 import React from 'react';
 import PT from 'prop-types';
-import { doAction, applyFilters } from '@wordpress/hooks';
+import { applyFilters, doAction } from '@wordpress/hooks';
 import Button from '../components/Button';
 import classnames from 'classnames';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const ButtonField = (props) => {
 	const {
@@ -40,9 +41,15 @@ const ButtonField = (props) => {
 				{button}
 			</Button>
 			{description && (
-				<p dangerouslySetInnerHTML={{ __html: description }}/>
+				<ErrorBoundary>
+					<p dangerouslySetInnerHTML={{ __html: description }}/>
+				</ErrorBoundary>
 			)}
-			{react_component && applyFilters(react_component, (<React.Fragment />))}
+			{react_component && (
+				<ErrorBoundary>
+					{applyFilters(react_component, (<React.Fragment/>))}
+				</ErrorBoundary>
+			)}
 		</React.Fragment>
 	);
 };

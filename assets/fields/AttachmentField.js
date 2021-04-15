@@ -6,6 +6,7 @@ import Button from '../components/Button';
 import Attachment from '../components/Attachment';
 import { useForceUpdate } from '../helpers';
 import SortableControl from '../components/SortableControl';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const AttachmentField = (props) => {
 	const {
@@ -16,6 +17,7 @@ const AttachmentField = (props) => {
 		isMulti = false,
 		attachment_type,
 		onChange,
+		description,
 	} = props;
 
 	const [currentValues, setCurrentValues] = useState(
@@ -105,18 +107,24 @@ const AttachmentField = (props) => {
 					setList={handleMove}
 				>
 					{attachments.map(attachment => (
-						<Attachment
-							key={attachment.id}
-							attachment={attachment}
-							onDelete={handleDelete}
-							length={attachments.length}
-						/>
+						<ErrorBoundary key={attachment.id}>
+							<Attachment
+								attachment={attachment}
+								onDelete={handleDelete}
+								length={attachments.length}
+							/>
+						</ErrorBoundary>
 					))}
 				</SortableControl>
 			</div>
 			<Button onClick={handleButtonClick}>
 				{__('Select media', 'wpify-custom-fields')}
 			</Button>
+			{description && (
+				<ErrorBoundary>
+					<p dangerouslySetInnerHTML={{ __html: description }}/>
+				</ErrorBoundary>
+			)}
 		</div>
 	);
 };

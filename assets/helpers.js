@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import md5 from 'md5';
 import { addFilter, applyFilters } from '@wordpress/hooks';
 import { fields } from './fields';
 
@@ -76,10 +77,18 @@ export const invertColor = (hex, bw) => {
 export const useFetch = ({ defaultValue = null }) => {
 	const controller = useRef(new AbortController());
 	const [result, setResult] = useState(defaultValue);
+	const memo = useRef({});
 
 	const fetch = useCallback(({ method, url, nonce, body }) => {
 		controller.current.abort();
 		controller.current = new AbortController();
+
+		const bodyStringified = JSON.stringify(body);
+		const bodyMD5 = md5(bodyStringified);
+
+		if (memo.current[bodyMD5]) {
+			return setResult(memo.current[bodyMD5]);
+		}
 
 		window.fetch(url, {
 			method,
@@ -89,14 +98,17 @@ export const useFetch = ({ defaultValue = null }) => {
 				'Content-Type': 'application/json',
 				'X-WP-Nonce': nonce
 			},
-			body: JSON.stringify(body),
+			body: bodyStringified,
 		})
 			.then(response => {
 				if (response.ok) {
 					return response.json();
 				}
 			})
-			.then(setResult)
+			.then(result => {
+				memo.current[bodyMD5] = result;
+				setResult(result);
+			})
 			.catch(console.error);
 	}, []);
 

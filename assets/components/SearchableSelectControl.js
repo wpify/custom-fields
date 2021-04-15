@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import PT from 'prop-types';
 import AppContext from './AppContext';
 import { useDelay, useFetch } from '../helpers';
-import { __ } from '@wordpress/i18n';
 import SelectControl from './SelectControl';
+import ErrorBoundary from './ErrorBoundary';
 
 const normalizeValues = values => Array.isArray(values) ? values.map(String) : [String(values)];
 
@@ -44,15 +44,17 @@ const SearchableSelectControl = (props) => {
 	};
 
 	return (
-		<SelectControl
-			id={id}
-			onChange={handleChange}
-			value={currentOptions.filter(option => currentValue.includes(String(option.value)))}
-			onInputChange={setSearch}
-			options={currentOptions}
-			isMulti={isMulti}
-			className={className}
-		/>
+		<ErrorBoundary>
+			<SelectControl
+				id={id}
+				onChange={handleChange}
+				value={currentOptions.filter(option => currentValue.includes(String(option.value)))}
+				onInputChange={setSearch}
+				options={currentOptions}
+				isMulti={isMulti}
+				className={className}
+			/>
+		</ErrorBoundary>
 	);
 };
 

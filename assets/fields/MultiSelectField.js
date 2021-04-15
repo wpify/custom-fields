@@ -1,9 +1,12 @@
 import React from 'react';
 import SelectField from './SelectField';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const MultiSelectField = (props) => {
 	return (
-		<SelectField {...props} isMulti/>
+		<ErrorBoundary>
+			<SelectField {...props} isMulti />
+		</ErrorBoundary>
 	);
 };
 

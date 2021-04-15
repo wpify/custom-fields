@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const CodeField = React.forwardRef((props, ref) => {
 	const {
@@ -42,6 +43,8 @@ const CodeField = React.forwardRef((props, ref) => {
 		}
 	}, [value, currentValue]);
 
+	const describedBy = description ? id + '-description' : null;
+
 	return (
 		<React.Fragment>
 			<textarea
@@ -54,6 +57,11 @@ const CodeField = React.forwardRef((props, ref) => {
 				cols={50}
 				{...custom_attributes}
 			>{currentValue}</textarea>
+			{description && (
+				<ErrorBoundary>
+					<p className="description" id={describedBy} dangerouslySetInnerHTML={{ __html: description }}/>
+				</ErrorBoundary>
+			)}
 		</React.Fragment>
 	);
 });

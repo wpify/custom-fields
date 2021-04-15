@@ -5,8 +5,8 @@ import { useDelay, useFetch } from '../helpers';
 import SelectControl from '../components/SelectControl';
 import MoveButton from '../components/MoveButton';
 import CloseButton from '../components/CloseButton';
-import { ReactSortable } from 'react-sortablejs';
 import SortableControl from '../components/SortableControl';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const PostField = (props) => {
 	const {
@@ -52,7 +52,7 @@ const PostField = (props) => {
 			return result.find(option => {
 				return String(option.value) === String(value);
 			});
-		}).filter(Boolean)
+		}).filter(Boolean);
 	}, [currentValue, result]);
 
 	const handleDelete = (id) => () => {
@@ -81,33 +81,43 @@ const PostField = (props) => {
 			{group_level === 0 && (
 				<input type="hidden" name={id} value={isMulti ? JSON.stringify(currentValue) : currentValue}/>
 			)}
-			<SelectControl
-				onInputChange={setSearch}
-				options={result.filter(option => !currentValue.includes(String(option.value)))}
-				onChange={handleAdd}
-				value={null}
-			/>
+			<ErrorBoundary>
+				<SelectControl
+					onInputChange={setSearch}
+					options={result.filter(option => !currentValue.includes(String(option.value)))}
+					onChange={handleAdd}
+					value={null}
+				/>
+			</ErrorBoundary>
 			{description && (
-				<p className="description" dangerouslySetInnerHTML={{ __html: description }}/>
+				<ErrorBoundary>
+					<p className="description" dangerouslySetInnerHTML={{ __html: description }}/>
+				</ErrorBoundary>
 			)}
 			<div className="wcf-post-selected">
-				<SortableControl
-					list={currentValue}
-					setList={handleMove}
-				>
-					{selectedOptions.map(option => (
-						<div className="wcf-post-selected__item" key={option.value}>
-							<div className="wcf-post-selected__item-header">
-								{currentValue.length > 1 && (
-									<MoveButton/>
-								)}
-								<strong dangerouslySetInnerHTML={{ __html: option.label }}/>
-								<CloseButton onClick={handleDelete(option.value)}/>
-							</div>
-							<p dangerouslySetInnerHTML={{ __html: option.excerpt }}/>
-						</div>
-					))}
-				</SortableControl>
+				<ErrorBoundary>
+					<SortableControl
+						list={currentValue}
+						setList={handleMove}
+					>
+						{selectedOptions.map(option => (
+							<ErrorBoundary key={option.value}>
+								<div className="wcf-post-selected__item">
+									<div className="wcf-post-selected__item-header">
+										{currentValue.length > 1 && (
+											<MoveButton/>
+										)}
+										<strong dangerouslySetInnerHTML={{ __html: option.label }}/>
+										<CloseButton onClick={handleDelete(option.value)}/>
+									</div>
+									<ErrorBoundary>
+										<p dangerouslySetInnerHTML={{ __html: option.excerpt }}/>
+									</ErrorBoundary>
+								</div>
+							</ErrorBoundary>
+						))}
+					</SortableControl>
+				</ErrorBoundary>
 			</div>
 		</React.Fragment>
 	);

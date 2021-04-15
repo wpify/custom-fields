@@ -1,9 +1,12 @@
 import React from 'react';
 import PostField from './PostField';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const MultiPostField = (props) => {
 	return (
-		<PostField {...props} isMulti/>
+		<ErrorBoundary>
+			<PostField {...props} isMulti />
+		</ErrorBoundary>
 	);
 };
 

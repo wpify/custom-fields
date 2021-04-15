@@ -16,11 +16,13 @@ const EditTaxonomy = () => {
 				const Field = getItemComponent(item);
 
 				return (
-					<EditTaxonomyRow key={item.id} item={item}>
-						<ErrorBoundary>
-							<Field {...item} />
-						</ErrorBoundary>
-					</EditTaxonomyRow>
+					<ErrorBoundary key={item.id}>
+						<EditTaxonomyRow item={item}>
+							<ErrorBoundary>
+								<Field {...item} />
+							</ErrorBoundary>
+						</EditTaxonomyRow>
+					</ErrorBoundary>
 				);
 			})}
 		</ScreenContext.Provider>

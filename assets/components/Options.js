@@ -21,17 +21,18 @@ const Options = () => {
 					}
 
 					return (
-						<OptionsRow
-							key={item.id}
-							item={item}
-							withoutWrapper={Field.withoutWrapper && Field.withoutWrapper()}
-							withoutLabel={Field.noLabel}
-							withoutSection={Field.noSection}
-						>
-							<ErrorBoundary>
-								<Field {...item}/>
-							</ErrorBoundary>
-						</OptionsRow>
+						<ErrorBoundary key={item.id}>
+							<OptionsRow
+								item={item}
+								withoutWrapper={Field.withoutWrapper && Field.withoutWrapper()}
+								withoutLabel={Field.noLabel}
+								withoutSection={Field.noSection}
+							>
+								<ErrorBoundary>
+									<Field {...item}/>
+								</ErrorBoundary>
+							</OptionsRow>
+						</ErrorBoundary>
 					);
 				})}
 			</OptionsRoot>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 import { ToggleControl } from '@wordpress/components';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const ToggleField = (props) => {
 	const {
@@ -32,16 +33,18 @@ const ToggleField = (props) => {
 	}, [value, currentValue]);
 
 	const control = (
-		<ToggleControl
-			id={htmlId(id)}
-			checked={currentValue}
-			name={group_level === 0 && id}
-			onChange={handleChange}
-			label={<span dangerouslySetInnerHTML={{ __html: label }}/>}
-			className={classnames(className)}
-			disabled={disabled}
-			{...custom_attributes}
-		/>
+		<ErrorBoundary>
+			<ToggleControl
+				id={htmlId(id)}
+				checked={currentValue}
+				name={group_level === 0 && id}
+				onChange={handleChange}
+				label={<span dangerouslySetInnerHTML={{ __html: label }}/>}
+				className={classnames(className)}
+				disabled={disabled}
+				{...custom_attributes}
+			/>
+		</ErrorBoundary>
 	);
 
 	return (
@@ -55,7 +58,9 @@ const ToggleField = (props) => {
 				</div>
 			) : control}
 			{description && (
-				<p className="description" dangerouslySetInnerHTML={{ __html: description }} />
+				<ErrorBoundary>
+					<p className="description" dangerouslySetInnerHTML={{ __html: description }}/>
+				</ErrorBoundary>
 			)}
 		</React.Fragment>
 	);

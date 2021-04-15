@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import PT from 'prop-types';
 import React from 'react';
+import ErrorBoundary from './ErrorBoundary';
 
 const OptionsRow = (props) => {
 	const {
@@ -15,7 +16,11 @@ const OptionsRow = (props) => {
 	} = props;
 
 	const label = item.title
-		? <label htmlFor={htmlId(item.id)} dangerouslySetInnerHTML={{ __html: item.title }}/>
+		? (
+			<ErrorBoundary>
+				<label htmlFor={htmlId(item.id)} dangerouslySetInnerHTML={{ __html: item.title }}/>
+			</ErrorBoundary>
+		)
 		: null;
 
 	if (withoutWrapper) {
@@ -26,7 +31,11 @@ const OptionsRow = (props) => {
 		return (
 			<div className={classnames('form-field', className)} data-group-level={group_level}>
 				{!withoutLabel && (<div>{label}</div>)}
-				<div>{children}</div>
+				<div>
+					<ErrorBoundary>
+						{children}
+					</ErrorBoundary>
+				</div>
 			</div>
 		);
 	}
@@ -35,7 +44,9 @@ const OptionsRow = (props) => {
 		return (
 			<tr valign="top" data-group-level={group_level}>
 				<td className={classnames('forminp', 'forminp-' + item.type)} colSpan={2} style={{ paddingLeft: 0, paddingRight: 0 }}>
-					{children}
+					<ErrorBoundary>
+						{children}
+					</ErrorBoundary>
 				</td>
 			</tr>
 		)
@@ -47,7 +58,9 @@ const OptionsRow = (props) => {
 				{!withoutLabel && label}
 			</th>
 			<td className={classnames('forminp', 'forminp-' + item.type)}>
-				{children}
+				<ErrorBoundary>
+					{children}
+				</ErrorBoundary>
 			</td>
 		</tr>
 	);

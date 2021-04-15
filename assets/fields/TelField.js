@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import InputField from './InputField';
 import PT from 'prop-types';
 import intlTelInput from 'intl-tel-input';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const TelField = (props) => {
 	const { className } = props;
@@ -17,14 +18,14 @@ const TelField = (props) => {
 	}, [inputRef.current]);
 
 	return (
-		<React.Fragment>
+		<ErrorBoundary>
 			<InputField
 				{...props}
 				ref={inputRef}
 				type="tel"
 				className={classnames('regular-text', className)}
 			/>
-		</React.Fragment>
+		</ErrorBoundary>
 	);
 };
 

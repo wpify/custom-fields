@@ -1,16 +1,21 @@
 import React from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
+import ErrorBoundary from './ErrorBoundary';
 
 const MetaboxRow = ({ className, item, children, htmlId = id => id }) => {
   return (
 		<p key={item.id} className={classnames(className)}>
-			<label
-				htmlFor={htmlId(item.id)}
-				dangerouslySetInnerHTML={{ __html: item.title }}
-			/>
+			<ErrorBoundary>
+				<label
+					htmlFor={htmlId(item.id)}
+					dangerouslySetInnerHTML={{ __html: item.title }}
+				/>
+			</ErrorBoundary>
 			<br />
-			{children}
+			<ErrorBoundary>
+				{children}
+			</ErrorBoundary>
 		</p>
 	);
 };

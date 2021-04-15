@@ -95,6 +95,7 @@
     "@wordpress/server-side-render": "^1.21.1",
     "classnames": "^2.2.6",
     "intl-tel-input": "^17.0.12",
+    "md5": "^2.3.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-color": "^2.19.3",

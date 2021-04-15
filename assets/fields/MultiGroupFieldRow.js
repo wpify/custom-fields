@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { getItemComponent } from '../helpers';
 import CloseButton from '../components/CloseButton';
 import MoveButton from '../components/MoveButton';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const MultiGroupFieldRow = (props) => {
 	const {
@@ -52,20 +53,24 @@ const MultiGroupFieldRow = (props) => {
 					return (
 						<div key={item.id} className={classnames('wcf-multi-group-row__content-item')}>
 							{!Field.noLabel && (
-								<label
-									className={classnames('wcf-multi-group-row__content-item-label')}
-									htmlFor={htmlId(item.id)}
-									dangerouslySetInnerHTML={{ __html: item.title }}
-								/>
+								<ErrorBoundary>
+									<label
+										className={classnames('wcf-multi-group-row__content-item-label')}
+										htmlFor={htmlId(item.id)}
+										dangerouslySetInnerHTML={{ __html: item.title }}
+									/>
+								</ErrorBoundary>
 							)}
-							<Field
-								{...item}
-								id={item.id}
-								htmlId={htmlId}
-								group_level={group_level}
-								onChange={value => handleChange({ [item.id]: value })}
-								value={value[item.id]}
-							/>
+							<ErrorBoundary>
+								<Field
+									{...item}
+									id={item.id}
+									htmlId={htmlId}
+									group_level={group_level}
+									onChange={value => handleChange({ [item.id]: value })}
+									value={value[item.id]}
+								/>
+							</ErrorBoundary>
 						</div>
 					);
 				})}

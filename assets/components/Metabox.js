@@ -16,15 +16,17 @@ const Metabox = () => {
 				const Field = getItemComponent(item);
 
 				return Field.noSection ? (
-					<ErrorBoundary>
-						<Field key={item.id} {...item} />
+					<ErrorBoundary key={item.id}>
+						<Field {...item} />
 					</ErrorBoundary>
 				) : (
-					<MetaboxRow item={item}>
-						<ErrorBoundary>
-							<Field key={item.id} {...item} />
-						</ErrorBoundary>
-					</MetaboxRow>
+					<ErrorBoundary key={item.id}>
+						<MetaboxRow item={item}>
+							<ErrorBoundary>
+								<Field {...item} />
+							</ErrorBoundary>
+						</MetaboxRow>
+					</ErrorBoundary>
 				);
 			})}
 		</ScreenContext.Provider>
