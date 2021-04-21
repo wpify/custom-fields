@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import PT from 'prop-types';
+import { __ } from '@wordpress/i18n';
 import AppContext from './AppContext';
 import { useDelay, useFetch } from '../helpers';
 import SelectControl from './SelectControl';
@@ -26,7 +27,7 @@ const SearchableSelectControl = (props) => {
 	const { fetch, result: currentOptions } = useFetch({ defaultValue: options || [] });
 
 	useDelay(() => {
-		if (!options) {
+		if (search !== '' || !options) {
 			const body = { ...props, current_value: currentValue.filter(Boolean), search: search };
 			fetch({ method, url, nonce, body });
 		}
@@ -53,6 +54,7 @@ const SearchableSelectControl = (props) => {
 				options={currentOptions}
 				isMulti={isMulti}
 				className={className}
+				noOptionsMessage={() => search === '' ? __('Type to search', 'wpify-custom-fields') : undefined}
 			/>
 		</ErrorBoundary>
 	);

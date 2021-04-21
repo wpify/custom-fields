@@ -35,6 +35,7 @@ SelectControl.propTypes = {
 	onChange: PT.func,
 	onInputChange: PT.func,
 	options: PT.array,
+	className: PT.string,
 };
 
 export default SelectControl;
