@@ -10,4 +10,14 @@ const MultiSelectField = (props) => {
 	);
 };
 
+MultiSelectField.getHumanTitle = (item, value) => {
+	if (Array.isArray(item.options) && Array.isArray(value)) {
+		const options = item.options.filter(i => value.includes(i.value));
+		return options.map(o => o.label).join(', ');
+	}
+
+	return value;
+};
+
+
 export default MultiSelectField;

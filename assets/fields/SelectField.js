@@ -73,4 +73,16 @@ SelectField.propTypes = {
 	isMulti: PT.bool,
 };
 
+SelectField.getHumanTitle = (item, value) => {
+	if (Array.isArray(item.options)) {
+		const option = item.options.find(i => i.value == value);
+
+		if (option) {
+			return option.label;
+		}
+	}
+
+	return value;
+};
+
 export default SelectField;
