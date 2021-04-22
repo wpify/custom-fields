@@ -19,6 +19,7 @@ const SearchableSelectControl = (props) => {
 		nonce,
 		method = 'post',
 		className,
+		list_type
 	} = props;
 
 	const { api } = useContext(AppContext);
@@ -27,11 +28,11 @@ const SearchableSelectControl = (props) => {
 	const { fetch, result: currentOptions } = useFetch({ defaultValue: options || [] });
 
 	useDelay(() => {
-		if (search !== '' || !options) {
-			const body = { ...props, current_value: currentValue.filter(Boolean), search: search };
+		if ((search !== '' || !options) && list_type) {
+			const body = { ...props, current_value: currentValue.filter(Boolean), search };
 			fetch({ method, url, nonce, body });
 		}
-	}, [options, search, props, api, currentValue]);
+	}, [options, search, props, api, currentValue, list_type]);
 
 	useEffect(() => {
 		onChange(isMulti ? currentValue : currentValue.find(Boolean));
@@ -70,7 +71,8 @@ SearchableSelectControl.propTypes = {
 	url: PT.string,
 	nonce: PT.string,
 	method: PT.string,
-	className: PT.string
+	className: PT.string,
+	list_type: PT.string,
 };
 
 export default SearchableSelectControl;
