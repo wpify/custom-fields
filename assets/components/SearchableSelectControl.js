@@ -52,7 +52,7 @@ const SearchableSelectControl = (props) => {
 				onChange={handleChange}
 				value={currentOptions.filter(option => currentValue.includes(String(option.value)))}
 				onInputChange={setSearch}
-				options={currentOptions}
+				options={currentOptions.map(o => ({ ...o, value: String(o.value) }))}
 				isMulti={isMulti}
 				className={className}
 				noOptionsMessage={() => search === '' ? __('Type to search', 'wpify-custom-fields') : undefined}
