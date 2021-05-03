@@ -14,7 +14,7 @@ const SearchableSelectControl = (props) => {
 	const {
 		id,
 		value,
-		onChange = (v) => null,
+		onChange = () => {},
 		options,
 		isMulti = false,
 		url,
@@ -32,14 +32,14 @@ const SearchableSelectControl = (props) => {
 	useDelay(() => {
 		if ((search !== '' || !options) && list_type) {
 			const body = { ...props, current_value: currentValue ? (currentValue.filter(Boolean) || []) : [], search };
-			console.log(currentValue )
+
 			fetch({ method, url, nonce, body });
 		}
 	}, [options, search, props, api, currentValue, list_type]);
 
 	useEffect(() => {
 		onChange(isMulti ? currentValue : currentValue.find(Boolean));
-	}, [value, currentValue]);
+	}, [onChange, isMulti, value, currentValue]);
 
 	const handleChange = (options) => {
 		setCurrentValue(isMulti

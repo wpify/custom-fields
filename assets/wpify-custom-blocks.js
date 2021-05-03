@@ -7,9 +7,8 @@ import GutenbergBlock from './components/GutenbergBlock';
 
 registerFieldTypes();
 
+// eslint-disable-next-line react/display-name
 const edit = (wcf) => (props) => {
-	console.log(wcf, props);
-
 	return (
 		<AppContext.Provider value={wcf}>
 			<ErrorBoundary>

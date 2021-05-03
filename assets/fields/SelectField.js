@@ -29,9 +29,7 @@ const SelectField = (props) => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
 			onChange(currentValue);
 		}
-	}, [value, currentValue]);
-
-	console.log(api, list_type, id, value, options);
+	}, [onChange, value, currentValue]);
 
 	return (
 		<React.Fragment>
@@ -77,7 +75,7 @@ SelectField.propTypes = {
 
 SelectField.getHumanTitle = (item, value) => {
 	if (Array.isArray(item.options)) {
-		const option = item.options.find(i => i.value == value);
+		const option = item.options.find(i => String(i.value) === String(value));
 
 		if (option) {
 			return option.label;
