@@ -5,6 +5,8 @@ import AppContext from './AppContext';
 import { useDelay, useFetch } from '../helpers';
 import SelectControl from './SelectControl';
 import ErrorBoundary from './ErrorBoundary';
+import Button from './Button';
+import classnames from 'classnames';
 
 const normalizeValues = values => Array.isArray(values)
 	? values.map(String)
@@ -21,7 +23,8 @@ const SearchableSelectControl = (props) => {
 		nonce,
 		method = 'post',
 		className,
-		list_type
+		list_type,
+		required,
 	} = props;
 
 	const { api } = useContext(AppContext);
@@ -60,6 +63,18 @@ const SearchableSelectControl = (props) => {
 				className={className}
 				noOptionsMessage={() => search === '' ? __('Type to search', 'wpify-custom-fields') : undefined}
 			/>
+			{!required && Boolean(currentValue.length) && !isMulti && (
+				<Button
+					className={classnames('wcf-button wcf-button--icon')}
+					style={{ marginLeft: '10px' }}
+					onClick={() => handleChange(isMulti ? [] : null)}
+				>
+					<svg viewBox="0 0 20 20" width="20" height="20">
+						<line stroke="currentColor" x1="3" y1="3" x2="17" y2="17" />
+						<line stroke="currentColor" x1="3" y1="17" x2="17" y2="3" />
+					</svg>
+				</Button>
+			)}
 		</ErrorBoundary>
 	);
 };
