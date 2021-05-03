@@ -8,7 +8,7 @@ import ErrorBoundary from './ErrorBoundary';
 
 const normalizeValues = values => Array.isArray(values)
 	? values.map(String)
-	: (values ? String(values) : []);
+	: (values ? [String(values)] : []);
 
 const SearchableSelectControl = (props) => {
 	const {
