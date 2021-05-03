@@ -8,6 +8,8 @@ import GutenbergBlock from './components/GutenbergBlock';
 registerFieldTypes();
 
 const edit = (wcf) => (props) => {
+	console.log(wcf, props);
+
 	return (
 		<AppContext.Provider value={wcf}>
 			<ErrorBoundary>

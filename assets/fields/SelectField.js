@@ -31,6 +31,8 @@ const SelectField = (props) => {
 		}
 	}, [value, currentValue]);
 
+	console.log(api, list_type, id, value, options);
+
 	return (
 		<React.Fragment>
 			{group_level === 0 && (

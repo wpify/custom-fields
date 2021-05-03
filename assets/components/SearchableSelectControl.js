@@ -6,7 +6,9 @@ import { useDelay, useFetch } from '../helpers';
 import SelectControl from './SelectControl';
 import ErrorBoundary from './ErrorBoundary';
 
-const normalizeValues = values => Array.isArray(values) ? values.map(String) : [String(values)];
+const normalizeValues = values => Array.isArray(values)
+	? values.map(String)
+	: (values ? String(values) : []);
 
 const SearchableSelectControl = (props) => {
 	const {
@@ -29,7 +31,8 @@ const SearchableSelectControl = (props) => {
 
 	useDelay(() => {
 		if ((search !== '' || !options) && list_type) {
-			const body = { ...props, current_value: currentValue.filter(Boolean), search };
+			const body = { ...props, current_value: currentValue ? (currentValue.filter(Boolean) || []) : [], search };
+			console.log(currentValue )
 			fetch({ method, url, nonce, body });
 		}
 	}, [options, search, props, api, currentValue, list_type]);
@@ -40,8 +43,8 @@ const SearchableSelectControl = (props) => {
 
 	const handleChange = (options) => {
 		setCurrentValue(isMulti
-			? options.map(option => String(option.value))
-			: [String(options.value)]
+			? (options ? options.map(option => String(option.value)) : [])
+			: (options ? [String(options.value)] : [])
 		);
 	};
 
@@ -50,9 +53,9 @@ const SearchableSelectControl = (props) => {
 			<SelectControl
 				id={id}
 				onChange={handleChange}
-				value={currentOptions.filter(option => currentValue.includes(String(option.value)))}
+				value={currentOptions && currentOptions.filter(option => currentValue.includes(String(option.value)))}
 				onInputChange={setSearch}
-				options={currentOptions.map(o => ({ ...o, value: String(o.value) }))}
+				options={currentOptions && currentOptions.map(o => ({ ...o, value: String(o.value) }))}
 				isMulti={isMulti}
 				className={className}
 				noOptionsMessage={() => search === '' ? __('Type to search', 'wpify-custom-fields') : undefined}
