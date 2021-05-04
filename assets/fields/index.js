@@ -28,6 +28,7 @@ import MultiToggleField from './MultiToggleField';
 import ButtonField from './ButtonField';
 import ReactField from './ReactField';
 import SeparatorField from './SeparatorField';
+import WysiwygField from './WysiwygField';
 
 export const fields = {
 	text: TextField,
@@ -60,4 +61,5 @@ export const fields = {
 	button: ButtonField,
 	react: ReactField,
 	separator: SeparatorField,
+	wysiwyg: WysiwygField,
 };

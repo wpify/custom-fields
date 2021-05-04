@@ -1,4 +1,9 @@
 @import url("~intl-tel-input/build/css/intlTelInput.min.css");
+@import url("~quill/dist/quill.snow.css");
+
+.wcf-wysiwyg-field {
+  background-color: white;
+}
 
 .wcf-select {
   display: inline-block;
