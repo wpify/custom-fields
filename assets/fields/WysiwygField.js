@@ -21,7 +21,7 @@ const WysiwygField = (props) => {
 	const root = useRef();
 	const initialText = useRef(currentValue);
 
-	const handleChange = (event) => {
+	const handleChange = () => {
 		setCurrentValue(root.current.querySelector('.ql-editor').innerHTML);
 	};
 
@@ -29,7 +29,7 @@ const WysiwygField = (props) => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
 			onChange(currentValue);
 		}
-	}, [value, currentValue]);
+	}, [onChange, value, currentValue]);
 
 	useEffect(() => {
 		quill.current = new Quill(root.current, {
@@ -74,7 +74,7 @@ WysiwygField.propTypes = {
 	custom_attributes: PT.object,
 	group_level: PT.number,
 	className: PT.string,
-	type: PT.oneOf(['color', 'date', 'datetime-local', 'email', 'month', 'number', 'password', 'tel', 'text', 'time', 'url', 'week']),
+	type: PT.string,
 };
 
 export default WysiwygField;

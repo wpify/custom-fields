@@ -11,6 +11,7 @@ import ScreenContext from './ScreenContext';
 import GutenbergBlockRow from './GutenbergBlockRow';
 import AppContext from './AppContext';
 import ErrorBoundary from './ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
 const DESKTOP_VIEW = 'DESKTOP_VIEW';
 const EDIT_VIEW = 'EDIT_VIEW';
@@ -65,7 +66,7 @@ const GutenbergBlock = (props) => {
 					{items.map((item) => {
 						const Field = getItemComponent(item);
 
-						return Field.noSection ? (
+						return applyFilters('wcf_field_without_section', false, item.type) ? (
 							<ErrorBoundary key={item.id}>
 								<Field
 									{...item}

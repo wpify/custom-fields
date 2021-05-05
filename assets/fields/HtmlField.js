@@ -21,7 +21,5 @@ HtmlField.propTypes = {
 	content: PT.oneOfType([PT.string, PT.element]),
 	custom_attributes: PT.object,
 };
-HtmlField.noSection = true;
-HtmlField.noLabel = true;
 
 export default HtmlField;

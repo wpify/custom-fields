@@ -6,6 +6,7 @@ import ScreenContext from './ScreenContext';
 import ProductOptionsRow from './ProductOptionsRow';
 import AppContext from './AppContext';
 import ErrorBoundary from './ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
 const ProductOptions = () => {
 	const data = useContext(AppContext);
@@ -17,7 +18,7 @@ const ProductOptions = () => {
 				{items.map((item) => {
 					const Field = getItemComponent(item);
 
-					return Field.noSection ? (
+					return applyFilters('wcf_field_without_section', false, item.type) ? (
 						<ErrorBoundary key={item.id}>
 							<Field {...item} />
 						</ErrorBoundary>

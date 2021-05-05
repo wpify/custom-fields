@@ -1,3 +1,5 @@
+__webpack_public_path__ = window.wcf_build_url;
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PT from 'prop-types';

@@ -31,7 +31,4 @@ TitleField.propTypes = {
 	custom_attributes: PT.object,
 };
 
-TitleField.noSection = true;
-TitleField.noLabel = true;
-
 export default TitleField;

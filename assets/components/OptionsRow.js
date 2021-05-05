@@ -72,6 +72,9 @@ OptionsRow.propTypes = {
 	children: PT.element,
 	className: PT.string,
 	htmlId: PT.func,
+	withoutWrapper: PT.bool,
+	withoutSection: PT.bool,
+	withoutLabel: PT.bool,
 };
 
 export default OptionsRow;

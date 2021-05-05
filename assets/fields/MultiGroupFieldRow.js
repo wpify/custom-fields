@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PT from 'prop-types';
 import classnames from 'classnames';
 import { getItemComponent } from '../helpers';
 import CloseButton from '../components/CloseButton';
 import MoveButton from '../components/MoveButton';
 import ErrorBoundary from '../components/ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
 const MultiGroupFieldRow = (props) => {
 	const {
@@ -61,7 +62,7 @@ const MultiGroupFieldRow = (props) => {
 
 					return (
 						<div key={item.id} className={classnames('wcf-multi-group-row__content-item')}>
-							{!Field.noLabel && (
+							{!applyFilters('wcf_field_without_label', false, item.type) && (
 								<ErrorBoundary>
 									<label
 										className={classnames('wcf-multi-group-row__content-item-label')}

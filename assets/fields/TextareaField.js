@@ -25,7 +25,7 @@ const TextareaField = (props) => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
 			onChange(currentValue);
 		}
-	}, [value, currentValue]);
+	}, [onChange, value, currentValue]);
 
 	const describedBy = description ? id + '-description' : null;
 
@@ -60,7 +60,7 @@ TextareaField.propTypes = {
 	custom_attributes: PT.object,
 	group_level: PT.number,
 	className: PT.string,
-	type: PT.oneOf(['color', 'date', 'datetime-local', 'email', 'month', 'number', 'password', 'tel', 'text', 'time', 'url', 'week']),
+	type: PT.string,
 };
 
 export default TextareaField;

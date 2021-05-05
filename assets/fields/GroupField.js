@@ -3,6 +3,7 @@ import PT from 'prop-types';
 import ScreenContext from '../components/ScreenContext';
 import { getItemComponent } from '../helpers';
 import ErrorBoundary from '../components/ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
 const GroupField = (props) => {
 	const {
@@ -28,7 +29,7 @@ const GroupField = (props) => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
 			onChange(currentValue);
 		}
-	}, [value, currentValue]);
+	}, [onChange, value, currentValue]);
 
 	return (
 		<React.Fragment>
@@ -46,9 +47,9 @@ const GroupField = (props) => {
 									item={item}
 									group_level={group_level + 1}
 									htmlId={itemId => id + '_' + itemId}
-									withoutWrapper={Field.withoutWrapper && Field.withoutWrapper()}
-									withoutLabel={Field.noLabel}
-									withoutSection={Field.noSection}
+									withoutWrapper={applyFilters('wcf_field_without_wrapper', false, item.type, group_level)}
+									withoutLabel={applyFilters('wcf_field_without_label', false, item.type)}
+									withoutSection={applyFilters('wcf_field_without_section', false, item.type)}
 								>
 									<ErrorBoundary>
 										<Field
@@ -68,8 +69,6 @@ const GroupField = (props) => {
 		</React.Fragment>
 	);
 };
-
-GroupField.withoutWrapper = (group_level = 0) => group_level === 0;
 
 GroupField.propTypes = {
 	object_type: PT.string,

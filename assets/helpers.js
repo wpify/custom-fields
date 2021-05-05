@@ -28,7 +28,7 @@ export const getItemComponent = (item) => {
 };
 
 export const registerFieldType = (type, Field) => {
-	addFilter('wcf_field_' + type, 'wpify-custom-fields', Component => Field);
+	addFilter('wcf_field_' + type, 'wpify-custom-fields', () => Field);
 };
 
 export const registerFieldTypes = () => {
@@ -71,7 +71,7 @@ export const invertColor = (hex, bw) => {
 	b = (255 - b).toString(16);
 
 	// pad each with zeros and return
-	return "#" + padZero(r) + padZero(g) + padZero(b);
+	return "#" + r.padStart(2, '0') + g.padStart(2, '0') + b.padStart(2, '0');
 };
 
 export const useFetch = ({ defaultValue = null }) => {
@@ -126,7 +126,7 @@ export const useDelay = (callback, deps, timeout = 500) => {
 		return () => {
 			window.clearTimeout(timer.current);
 		};
-	}, [...deps]);
+	}, [callback, timeout, ...deps]);
 };
 
 export const useForceUpdate = () => {

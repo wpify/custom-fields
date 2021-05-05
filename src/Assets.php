@@ -24,7 +24,7 @@ final class Assets {
 	 * @param $assets_path
 	 */
 	public function __construct( $assets_path, $wcf_url = '' ) {
-		$this->assets_path = $assets_path;
+		$this->assets_path = trailingslashit( $assets_path );
 		$this->wcf_url     = $wcf_url;
 	}
 
@@ -129,6 +129,10 @@ final class Assets {
 	 */
 	public function path_to_url( string $path = '' ) {
 		if ( ! empty( $this->wcf_url ) ) {
+			if ( is_dir( $path ) && basename( $path ) === 'build' ) {
+				return esc_url_raw( $this->wcf_url . '/build/' );
+			}
+
 			return esc_url_raw( $this->wcf_url . '/build/' . basename( $path ) );
 		}
 

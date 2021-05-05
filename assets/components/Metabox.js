@@ -5,6 +5,7 @@ import ScreenContext from './ScreenContext';
 import MetaboxRow from './MetaboxRow';
 import AppContext from './AppContext';
 import ErrorBoundary from './ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
 const Metabox = () => {
 	const data = useContext(AppContext);
@@ -15,7 +16,7 @@ const Metabox = () => {
 			{items.map((item) => {
 				const Field = getItemComponent(item);
 
-				return Field.noSection ? (
+				return applyFilters('wcf_field_without_section', false, item.type) ? (
 					<ErrorBoundary key={item.id}>
 						<Field {...item} />
 					</ErrorBoundary>

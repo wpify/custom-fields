@@ -1,3 +1,5 @@
+__webpack_public_path__ = window.wcf_build_url;
+
 import React from 'react';
 import { registerBlockType } from '@wordpress/blocks';
 import { registerFieldTypes } from './helpers';

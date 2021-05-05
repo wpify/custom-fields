@@ -203,17 +203,6 @@ final class Options extends AbstractImplementation {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
-
-		if ( isset( $_GET['settings-updated'] ) ) {
-			add_settings_error(
-					$this->menu_slug . '_messages',
-					$this->menu_slug . '_message',
-					__( 'Settings saved.' ),
-					'updated'
-			);
-		}
-
-		settings_errors( $this->menu_slug . '_messages' );
 		?>
 		<div class="wrap">
 			<h1><?php echo $this->page_title; ?></h1>
