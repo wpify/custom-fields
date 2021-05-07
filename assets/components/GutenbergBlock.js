@@ -56,6 +56,7 @@ const GutenbergBlock = (props) => {
 				<ServerSideRender
 					block={data.name}
 					attributes={{ ...attributes }}
+					httpMethod="POST"
 				/>
 			)}
 			{view === EDIT_VIEW && (

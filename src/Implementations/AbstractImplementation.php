@@ -56,12 +56,14 @@ abstract class AbstractImplementation {
 					false,
 					array(
 							'wcf_code_editor_settings' => $this->wcf->get_assets()->get_code_editor_settings(),
-							'wcf_build_url'            => $this->wcf->get_assets()->path_to_url(
-									$this->wcf->get_assets()->get_assets_path()
-							),
+							'wcf_build_url'            => $this->get_build_url(),
 					)
 			);
 		}
+	}
+
+	public function get_build_url() {
+		return $this->wcf->get_assets()->path_to_url( $this->wcf->get_assets()->get_assets_path() );
 	}
 
 	/**

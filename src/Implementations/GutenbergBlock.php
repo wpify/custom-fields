@@ -81,7 +81,7 @@ final class GutenbergBlock extends AbstractImplementation {
 		$args    = $this->get_args();
 		$js_args = $this->get_args( array( 'render_callback' ) );
 		$script  = 'window.wcf_blocks=(window.wcf_blocks||{});window.wcf_blocks[\'' . $this->name . '\']=' . wp_json_encode( $js_args ) . ';';
-
+		$script  .= 'window.wcf_build_url=' . wp_json_encode( $this->get_build_url() );
 		wp_add_inline_script( $args['editor_script'], $script, 'before' );
 		register_block_type( $this->name, $args );
 	}
@@ -192,6 +192,31 @@ final class GutenbergBlock extends AbstractImplementation {
 	}
 
 	/**
+	 * @param array $item
+	 *
+	 * @return string
+	 */
+	private function get_attribute_type( array $item ) {
+		switch ( $item['type'] ) {
+			case 'number':
+			case 'attachment':
+			case 'post':
+				return 'number';
+			case 'multi_attachment':
+			case 'multi_group':
+			case 'multi_post':
+			case 'multi_select':
+			case 'group':
+				return 'array';
+			case 'checkbox':
+			case 'toggle':
+				return 'boolean';
+			default:
+				return 'text';
+		}
+	}
+
+	/**
 	 * @param string $name
 	 * @param string $value
 	 *
@@ -258,30 +283,5 @@ final class GutenbergBlock extends AbstractImplementation {
 		</div>
 		<?php
 		return ob_get_clean();
-	}
-
-	/**
-	 * @param array $item
-	 *
-	 * @return string
-	 */
-	private function get_attribute_type( array $item ) {
-		switch ( $item['type'] ) {
-			case 'number':
-			case 'attachment':
-			case 'post':
-				return 'number';
-			case 'multi_attachment':
-			case 'multi_group':
-			case 'multi_post':
-			case 'multi_select':
-			case 'group':
-				return 'array';
-			case 'checkbox':
-			case 'toggle':
-				return 'boolean';
-			default:
-				return 'text';
-		}
 	}
 }
