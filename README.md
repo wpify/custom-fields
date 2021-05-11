@@ -148,7 +148,7 @@ $some_custom_field_value = get_post_meta( $post_id, 'some_id_of_the_meta', true 
 The functionality adds the meta box both on add and edit screen of taxonomy term:
 
 ```php
-get_wpify_custom_fields()->add_metabox( array(
+get_wpify_custom_fields()->add_taxonomy_options( array(
    'taxonomy' => null,
    'items'    => array(),
 ) );
@@ -633,7 +633,7 @@ add_filter( "wcf_list_{$list_type}", function ( array $list, array $args ) {
 
     return array_filter( $list, function ( $option ) use ( $search ) {
         return strpos( $option['value'], $search ) !== false
-            || strpos( $option['label'], $search ) !== false
+            || strpos( $option['label'], $search ) !== false;
     } );
 } );
 ```
