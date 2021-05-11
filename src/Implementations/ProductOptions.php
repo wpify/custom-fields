@@ -185,6 +185,10 @@ final class ProductOptions extends AbstractPostImplementation {
 		$this->set_post( $post_id );
 
 		foreach ( $this->items as $item ) {
+			if ( ! isset( $_POST[ $item['id'] ] ) ) {
+				continue;
+			}
+
 			$sanitizer = $this->sanitizer->get_sanitizer( $item );
 			$value     = $sanitizer( wp_unslash( $_POST[ $item['id'] ] ) );
 

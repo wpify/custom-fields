@@ -200,12 +200,14 @@ final class WooCommerceSettings extends AbstractImplementation {
 
 		if ( $tab === $this->tab['id'] && $section === $this->section['id'] ) {
 			foreach ( $this->get_items() as $item ) {
-				if ( ! empty( $item['id'] ) ) {
-					$sanitizer = $this->sanitizer->get_sanitizer( $item );
-					$value     = $sanitizer( wp_unslash( $_POST[ $item['id'] ] ) );
-
-					$this->set_field( $item['id'], $value );
+				if ( ! isset( $_POST[ $item['id'] ] ) ) {
+					continue;
 				}
+
+				$sanitizer = $this->sanitizer->get_sanitizer( $item );
+				$value     = $sanitizer( wp_unslash( $_POST[ $item['id'] ] ) );
+
+				$this->set_field( $item['id'], $value );
 			}
 
 			wp_redirect(

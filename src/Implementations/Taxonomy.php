@@ -124,6 +124,10 @@ final class Taxonomy extends AbstractPostImplementation {
 		$this->set_post( $term_id );
 
 		foreach ( $this->get_items() as $item ) {
+			if ( ! isset( $_POST[ $item['id'] ] ) ) {
+				continue;
+			}
+
 			$sanitizer = $this->sanitizer->get_sanitizer( $item );
 			$value     = $sanitizer( wp_unslash( $_POST[ $item['id'] ] ) );
 
