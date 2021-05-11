@@ -85,11 +85,11 @@ final class Metabox extends AbstractPostImplementation {
 
 		foreach ( $items as $item ) {
 			foreach ( $this->post_types as $post_type ) {
-				$sanitizer = $this->sanitizer->get_sanitizer( $item );
-
 				register_post_meta( $post_type, $item['id'], array(
-					'single'            => true,
-					'sanitize_callback' => $sanitizer,
+					'type'        => $this->get_item_type( $item ),
+					'description' => $item['title'],
+					'single'      => true,
+					'default'     => $item['default'] ?? null,
 				) );
 			}
 		}
@@ -216,7 +216,10 @@ final class Metabox extends AbstractPostImplementation {
 		$this->set_post( $post_id );
 
 		foreach ( $this->get_items() as $item ) {
-			$this->set_field( $item['id'], $_POST[ $item['id'] ] );
+			$sanitizer = $this->sanitizer->get_sanitizer( $item );
+			$value     = $sanitizer( wp_unslash( $_POST[ $item['id'] ] ) );
+
+			$this->set_field( $item['id'], $value );
 		}
 
 		return true;

@@ -171,7 +171,7 @@ final class GutenbergBlock extends AbstractImplementation {
 
 		foreach ( $items as $item ) {
 			$attributes[ $item['id'] ] = array(
-					'type'    => $this->get_attribute_type( $item ),
+					'type'    => $this->get_item_type( $item ),
 					'default' => $item['default'],
 			);
 		}
@@ -185,35 +185,10 @@ final class GutenbergBlock extends AbstractImplementation {
 	public function get_items() {
 		$items = apply_filters( 'wcf_gutenberg_block_items', $this->items, array_merge(
 				array( 'name' => $this->name ),
-				$this->get_args( array( 'attributes', 'items' ) ),
+				$this->get_args( array( 'attributes', 'items' ) )
 		) );
 
 		return $this->prepare_items( $items );
-	}
-
-	/**
-	 * @param array $item
-	 *
-	 * @return string
-	 */
-	private function get_attribute_type( array $item ) {
-		switch ( $item['type'] ) {
-			case 'number':
-			case 'attachment':
-			case 'post':
-				return 'number';
-			case 'multi_attachment':
-			case 'multi_group':
-			case 'multi_post':
-			case 'multi_select':
-			case 'group':
-				return 'array';
-			case 'checkbox':
-			case 'toggle':
-				return 'boolean';
-			default:
-				return 'text';
-		}
 	}
 
 	/**

@@ -71,11 +71,11 @@ final class ProductOptions extends AbstractPostImplementation {
 
 	public function register_meta() {
 		foreach ( $this->get_items() as $item ) {
-			$sanitizer = $this->sanitizer->get_sanitizer( $item );
-
 			register_post_meta( 'product', $item['id'], array(
-					'single'            => true,
-					'sanitize_callback' => $sanitizer,
+					'type'        => $this->get_item_type( $item ),
+					'description' => $item['title'],
+					'single'      => true,
+					'default'     => $item['default'] ?? null,
 			) );
 		}
 	}
@@ -185,7 +185,9 @@ final class ProductOptions extends AbstractPostImplementation {
 		$this->set_post( $post_id );
 
 		foreach ( $this->items as $item ) {
-			$value = $_POST[ $item['id'] ];
+			$sanitizer = $this->sanitizer->get_sanitizer( $item );
+			$value     = $sanitizer( wp_unslash( $_POST[ $item['id'] ] ) );
+
 			$this->set_field( $item['id'], $value );
 		}
 	}

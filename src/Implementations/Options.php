@@ -92,23 +92,6 @@ final class Options extends AbstractImplementation {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 	}
 
-	public function get_items() {
-		$items = apply_filters( 'wcf_options_items', $this->items, array(
-				'type'        => $this->type,
-				'parent_slug' => $this->parent_slug,
-				'page_title'  => $this->page_title,
-				'menu_title'  => $this->menu_title,
-				'capability'  => $this->capability,
-				'menu_slug'   => $this->menu_slug,
-				'section'     => $this->section,
-				'page'        => $this->page,
-				'icon_url'    => $this->icon_url,
-				'position'    => $this->position,
-		) );
-
-		return $this->prepare_items( $items );
-	}
-
 	/**
 	 * @return void
 	 */
@@ -156,16 +139,34 @@ final class Options extends AbstractImplementation {
 		);
 
 		foreach ( $this->get_items() as $item ) {
-			$sanitizer = $this->sanitizer->get_sanitizer( $item );
-
 			register_setting(
 					$this->menu_slug,
 					$item['id'],
 					array(
-							'sanitize_callback' => $sanitizer,
+							'type'              => $this->get_item_type( $item ),
+							'description'       => $item['title'],
+							'default'           => $item['default'] ?? null,
+							'sanitize_callback' => $this->sanitizer->get_sanitizer( $item ),
 					)
 			);
 		}
+	}
+
+	public function get_items() {
+		$items = apply_filters( 'wcf_options_items', $this->items, array(
+				'type'        => $this->type,
+				'parent_slug' => $this->parent_slug,
+				'page_title'  => $this->page_title,
+				'menu_title'  => $this->menu_title,
+				'capability'  => $this->capability,
+				'menu_slug'   => $this->menu_slug,
+				'section'     => $this->section,
+				'page'        => $this->page,
+				'icon_url'    => $this->icon_url,
+				'position'    => $this->position,
+		) );
+
+		return $this->prepare_items( $items );
 	}
 
 	/**

@@ -54,8 +54,8 @@ final class WooCommerceSettings extends AbstractImplementation {
 		/* The WCF does redirect after save, so we need
 		 * to handle showing the success message by ourselves */
 
-		$tab     = empty( $_REQUEST['tab'] ) ? '' : $_REQUEST['tab'];
-		$section = empty( $_REQUEST['section'] ) ? '' : $_REQUEST['section'];
+		$tab     = empty( $_REQUEST['tab'] ) ? '' : sanitize_title( $_REQUEST['tab'] );
+		$section = empty( $_REQUEST['section'] ) ? '' : sanitize_title( $_REQUEST['section'] );
 
 		if ( $tab === $this->tab['id']
 			 && $section === $this->section['id']
@@ -71,8 +71,8 @@ final class WooCommerceSettings extends AbstractImplementation {
 	 */
 	public function set_wcf_shown() {
 		$current_screen = get_current_screen();
-		$tab            = empty( $_GET['tab'] ) ? '' : $_GET['tab'];
-		$section        = empty( $_GET['section'] ) ? '' : $_GET['section'];
+		$tab            = empty( $_REQUEST['tab'] ) ? '' : sanitize_title( $_REQUEST['tab'] );
+		$section        = empty( $_REQUEST['section'] ) ? '' : sanitize_title( $_REQUEST['section'] );
 
 		$this->wcf_shown = ( $current_screen->base === 'woocommerce_page_wc-settings'
 							 && $tab === $this->tab['id']
@@ -195,13 +195,16 @@ final class WooCommerceSettings extends AbstractImplementation {
 	 * @return void
 	 */
 	public function save() {
-		$tab     = empty( $_REQUEST['tab'] ) ? '' : $_REQUEST['tab'];
-		$section = empty( $_REQUEST['section'] ) ? '' : $_REQUEST['section'];
+		$tab     = empty( $_REQUEST['tab'] ) ? '' : sanitize_title( $_REQUEST['tab'] );
+		$section = empty( $_REQUEST['section'] ) ? '' : sanitize_title( $_REQUEST['section'] );
 
 		if ( $tab === $this->tab['id'] && $section === $this->section['id'] ) {
 			foreach ( $this->get_items() as $item ) {
 				if ( ! empty( $item['id'] ) ) {
-					$this->set_field( $item['id'], $_POST[ $item['id'] ] );
+					$sanitizer = $this->sanitizer->get_sanitizer( $item );
+					$value     = $sanitizer( wp_unslash( $_POST[ $item['id'] ] ) );
+
+					$this->set_field( $item['id'], $value );
 				}
 			}
 
@@ -225,15 +228,6 @@ final class WooCommerceSettings extends AbstractImplementation {
 	 * @return bool
 	 */
 	public function set_field( $name, $value ) {
-		foreach ( $this->get_items() as $item ) {
-			if ( $item['id'] === $name ) {
-				$sanitizer       = $this->sanitizer->get_sanitizer( $item );
-				$sanitized_value = $sanitizer( wp_unslash( $value ) );
-
-				return update_option( $name, $sanitized_value );
-			}
-		}
-
-		return false;
+		return update_option( $name, $value );
 	}
 }

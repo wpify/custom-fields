@@ -230,4 +230,31 @@ abstract class AbstractImplementation {
 
 		return $args;
 	}
+
+	/**
+	 * @param array $item
+	 *
+	 * @return string
+	 */
+	public function get_item_type( array $item ) {
+		switch ( $item['type'] ) {
+			case 'number':
+				return 'number';
+			case 'attachment':
+			case 'post':
+				return 'integer';
+			case 'multi_attachment':
+			case 'multi_group':
+			case 'multi_post':
+			case 'multi_select':
+				return 'array';
+			case 'group':
+				return 'object';
+			case 'checkbox':
+			case 'toggle':
+				return 'boolean';
+			default:
+				return 'string';
+		}
+	}
 }

@@ -49,11 +49,11 @@ final class Taxonomy extends AbstractPostImplementation {
 		$items = $this->get_items();
 
 		foreach ( $items as $item ) {
-			$sanitizer = $this->sanitizer->get_sanitizer( $item );
-
 			register_term_meta( $this->taxonomy, $item['id'], array(
-				'single'            => true,
-				'sanitize_callback' => $sanitizer,
+				'type'        => $this->get_item_type( $item ),
+				'description' => $item['title'],
+				'single'      => true,
+				'default'     => $item['default'] ?? null,
 			) );
 		}
 	}
@@ -124,7 +124,10 @@ final class Taxonomy extends AbstractPostImplementation {
 		$this->set_post( $term_id );
 
 		foreach ( $this->get_items() as $item ) {
-			$this->set_field( $item['id'], $_POST[ $item['id'] ] );
+			$sanitizer = $this->sanitizer->get_sanitizer( $item );
+			$value     = $sanitizer( wp_unslash( $_POST[ $item['id'] ] ) );
+
+			$this->set_field( $item['id'], $value );
 		}
 	}
 
