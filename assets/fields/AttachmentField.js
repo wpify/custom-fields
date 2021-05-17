@@ -27,7 +27,6 @@ const AttachmentField = (props) => {
 	);
 
 	const returnValue = isMulti ? currentValues.filter(Boolean) : currentValues.find(Boolean);
-
 	const frame = useRef();
 	const [attachments, setAttachments] = useState([]);
 	const forceUpdate = useForceUpdate();
@@ -50,7 +49,7 @@ const AttachmentField = (props) => {
 		const selection = frame.current.state().get('selection');
 		currentValues.forEach(currentValue => {
 			const attachment = wp.media.attachment(parseInt(currentValue, 10));
-			attachment.fetch()
+			attachment.fetch();
 			selection.add(attachment ? [attachment] : []);
 		});
 	};
@@ -84,7 +83,7 @@ const AttachmentField = (props) => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(returnValue)) {
 			onChange(returnValue);
 		}
-	}, [value, returnValue]);
+	}, [value, returnValue, onChange]);
 
 	const handleDelete = (attributes) => {
 		setCurrentValues(currentValues => currentValues.filter(value => value !== attributes.id));
@@ -99,7 +98,7 @@ const AttachmentField = (props) => {
 	return (
 		<div className={classnames(className)}>
 			{group_level === 0 && (
-				<input type="hidden" name={id} value={returnValue}/>
+				<input type="hidden" name={id} value={JSON.stringify(returnValue)}/>
 			)}
 			<div className="wcf-media-list">
 				<SortableControl
@@ -131,6 +130,13 @@ const AttachmentField = (props) => {
 
 AttachmentField.propTypes = {
 	className: PT.string,
+	id: PT.string,
+	value: PT.oneOfType([PT.array, PT.string]),
+	group_level: PT.number,
+	isMulti: PT.bool,
+	attachment_type: PT.string,
+	onChange: PT.func,
+	description: PT.string,
 };
 
 export default AttachmentField;
