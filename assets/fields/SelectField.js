@@ -31,10 +31,14 @@ const SelectField = (props) => {
 		}
 	}, [onChange, value, currentValue]);
 
+	console.log(typeof currentValue, currentValue, isMulti);
+
 	return (
 		<React.Fragment>
 			{group_level === 0 && (
-				<input type="hidden" name={id} value={isMulti ? JSON.stringify(currentValue.filter(Boolean)) : currentValue} />
+				<input type="hidden" name={id} value={isMulti
+					? JSON.stringify(Array.isArray(currentValue) ? currentValue.filter(Boolean) : [])
+					: currentValue} />
 			)}
 			<ErrorBoundary>
 				<SearchableSelectControl
