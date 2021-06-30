@@ -40,7 +40,7 @@ export const registerFieldTypes = () => {
 export const clone = value => JSON.parse(JSON.stringify(value));
 
 // source: https://stackoverflow.com/questions/35969656/how-can-i-generate-the-opposite-color-according-to-current-color
-export const invertColor = (hex, bw) => {
+export const invertColor = (hex = '', bw = false) => {
 	if (hex.indexOf('#') === 0) {
 		hex = hex.slice(1);
 	}
