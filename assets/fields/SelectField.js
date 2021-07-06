@@ -31,8 +31,6 @@ const SelectField = (props) => {
 		}
 	}, [onChange, value, currentValue]);
 
-	console.log(typeof currentValue, currentValue, isMulti);
-
 	return (
 		<React.Fragment>
 			{group_level === 0 && (

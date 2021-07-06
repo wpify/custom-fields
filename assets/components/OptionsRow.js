@@ -27,7 +27,7 @@ const OptionsRow = (props) => {
 		return children;
 	}
 
-	if (group_level > 1) {
+	if (group_level > 2) {
 		return (
 			<div className={classnames('form-field', className)} data-group-level={group_level}>
 				{!withoutLabel && (<div>{label}</div>)}
