@@ -30,8 +30,8 @@ final class User extends AbstractImplementation {
 
 		add_action( 'show_user_profile', [ $this, 'render_edit_form' ] );
 		add_action( 'edit_user_profile', [ $this, 'render_edit_form' ] );
-		add_action( 'personal_options_update', [$this,'save'] );
-		add_action( 'edit_user_profile_update', [$this,'save'] );
+		add_action( 'personal_options_update', [ $this, 'save' ] );
+		add_action( 'edit_user_profile_update', [ $this, 'save' ] );
 		add_action( 'init', array( $this, 'register_meta' ) );
 	}
 
@@ -58,7 +58,7 @@ final class User extends AbstractImplementation {
 	 */
 	public function set_wcf_shown() {
 		$current_screen  = get_current_screen();
-		$this->wcf_shown = $current_screen->base === 'profile';
+		$this->wcf_shown = $current_screen->base === 'profile' || $current_screen->base === 'user-edit';
 	}
 
 	/**
