@@ -13,6 +13,7 @@ At the moment, you can add custom fields to the following locations:
 * Options page
 * WooCommerce product options
 * WooCommerce settings section
+* User options
 
 The custom fields themselves use the standard HTML inputs, so it's recommended to use Google Chrome or Firefox to use the custom fields. This allows having a small footprint and a speedy frontend for the custom fields. You have available wide variety of custom field types:
 
@@ -374,6 +375,32 @@ get_wpify_custom_fields()->add_gutenberg_block( array(
 	},
 ) );
 ```
+
+## How to add custom fields to the user?
+
+The functionality adds options to the user:
+
+```php
+get_wpify_custom_fields()->add_user_options( array(
+   'items'    => array(),
+) );
+```
+
+**Arguments**
+
+* `items`: array, required: List of the custom fields in the term.
+
+**Reading the custom fields**
+
+To read the data, you can use simply built-in functions:
+
+```php
+$some_custom_field_value = get_user_meta( $user_id, 'some_id_of_the_meta', true );
+```
+
+**Links**
+
+* `get_user_meta`: https://developer.wordpress.org/reference/functions/get_user_meta/
 
 # Custom fields definition
 
