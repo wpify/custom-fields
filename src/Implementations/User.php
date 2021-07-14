@@ -2,11 +2,11 @@
 
 namespace WpifyCustomFields\Implementations;
 
-use WP_Term;
+use WP_User;
 use WpifyCustomFields\WpifyCustomFields;
 
 /**
- * Class Taxonomy
+ * Class User
  * @package WpifyCustomFields\Implementations
  */
 final class User extends AbstractImplementation {
@@ -17,16 +17,17 @@ final class User extends AbstractImplementation {
 	private $items;
 
 	/**
-	 * Taxonomy constructor.
+	 * User constructor.
 	 *
 	 * @param array $args
 	 * @param WpifyCustomFields $wcf
 	 */
 	public function __construct( array $args, WpifyCustomFields $wcf ) {
 		parent::__construct( $args, $wcf );
-		$args          = wp_parse_args( $args, array( 'taxonomy' => null, 'items' => array(), 'user_id' => null ) );
+		$args          = wp_parse_args( $args, array( 'items' => array(), 'user_id' => null ) );
 		$this->items   = $args['items'];
 		$this->user_id = $args['user_id'];
+
 		add_action( 'show_user_profile', [ $this, 'render_edit_form' ] );
 		add_action( 'edit_user_profile', [ $this, 'render_edit_form' ] );
 		add_action( 'personal_options_update', [$this,'save'] );
@@ -75,11 +76,11 @@ final class User extends AbstractImplementation {
 	}
 
 	/**
-	 * @param WP_Term $term
+	 * @param WP_User $user
 	 */
 	public function render_edit_form( $user ) {
 		$this->set_user( $user->ID );
-		$this->render_fields( 'edit_user', 'tbody' );
+		$this->render_fields( 'edit_user' );
 	}
 
 	/**
