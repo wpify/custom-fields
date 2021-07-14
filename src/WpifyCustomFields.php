@@ -8,6 +8,7 @@ use WpifyCustomFields\Implementations\Options;
 use WpifyCustomFields\Implementations\ProductOptions;
 use WpifyCustomFields\Implementations\Taxonomy;
 use WpifyCustomFields\Implementations\WooCommerceSettings;
+use WpifyCustomFields\Implementations\User;
 
 /**
  * Class WpifyCustomFields
@@ -71,6 +72,15 @@ final class WpifyCustomFields {
 	 */
 	public function add_taxonomy_options( $args = array() ) {
 		return new Taxonomy( $args, $this );
+	}
+
+	/**
+	 * @param array $args
+	 *
+	 * @return User
+	 */
+	public function add_user_options( $args = array() ) {
+		return new User( $args, $this );
 	}
 
 	/**
