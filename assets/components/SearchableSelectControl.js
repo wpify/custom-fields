@@ -40,6 +40,8 @@ const SearchableSelectControl = (props) => {
 		}
 	}, [options, search, props, api, currentValue, list_type]);
 
+
+
 	useEffect(() => {
 		onChange(isMulti ? currentValue : currentValue.find(Boolean));
 	}, [onChange, isMulti, value, currentValue]);

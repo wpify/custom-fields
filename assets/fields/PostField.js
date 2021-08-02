@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import PT from 'prop-types';
 import AppContext from '../components/AppContext';
 import { useDelay, useFetch } from '../helpers';
@@ -35,19 +35,29 @@ const PostField = (props) => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
 			onChange(isMulti ? currentValue : currentValue.find(Boolean));
 		}
-	}, [value, currentValue]);
+	}, [onChange, isMulti, value, currentValue]);
 
 	const { fetch, result } = useFetch({ defaultValue: [] });
 
-	useDelay(() => {
-		console.log(nonce, url);
-		fetch({
-			method: 'post',
-			url: url + '/posts',
-			nonce: nonce,
-			body: { ...props, search },
-		});
-	}, [search, props, nonce, url]);
+	const timer = useRef(0);
+
+	useEffect(() => {
+		window.clearTimeout(timer.current);
+
+		timer.current = window.setTimeout(() => {
+			console.log(nonce, url);
+			fetch({
+				method: 'post',
+				url: url + '/posts',
+				nonce: nonce,
+				body: { ...props, search },
+			});
+		}, 500);
+
+		return () => {
+			window.clearTimeout(timer.current);
+		};
+	}, [fetch, search, props, nonce, url]);
 
 	const getSelectedOptions = useCallback(() => {
 		return currentValue.map(value => {
