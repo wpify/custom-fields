@@ -23,6 +23,7 @@ const PostField = (props) => {
 	} = props;
 
 	const { api } = useContext(AppContext);
+	const { nonce, url } = (api || {});
 	const [currentValue, setCurrentValue] = useState(Array.isArray(value) ? value : [value]);
 	const [search, setSearch] = useState('');
 
@@ -39,14 +40,14 @@ const PostField = (props) => {
 	const { fetch, result } = useFetch({ defaultValue: [] });
 
 	useDelay(() => {
-		console.log(api);
+		console.log(nonce, url);
 		fetch({
 			method: 'post',
-			url: api && api.url + '/posts',
-			nonce: api && api.nonce,
+			url: url + '/posts',
+			nonce: nonce,
 			body: { ...props, search },
 		});
-	}, [search, props, api]);
+	}, [search, props, nonce, url]);
 
 	const getSelectedOptions = useCallback(() => {
 		return currentValue.map(value => {
@@ -135,6 +136,8 @@ PostField.propTypes = {
 	group_level: PT.number,
 	required: PT.bool,
 	isMulti: PT.bool,
+	post_type: PT.string,
+	query_args: PT.array,
 };
 
 export default PostField;
