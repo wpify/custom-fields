@@ -1,7 +1,6 @@
-/* eslint-disable react/prop-types, no-redeclare, no-unused-vars */
+/* eslint-disable react/prop-types, no-redeclare, no-unused-vars, no-global-assign */
 /* global __webpack_public_path__ */
 
-// eslint-disable-next-line no-global-assign
 __webpack_public_path__ = window.wcf_build_url;
 
 import React from 'react';
