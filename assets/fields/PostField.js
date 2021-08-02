@@ -39,10 +39,11 @@ const PostField = (props) => {
 	const { fetch, result } = useFetch({ defaultValue: [] });
 
 	useDelay(() => {
+		console.log(api);
 		fetch({
 			method: 'post',
-			url: api.url + '/posts',
-			nonce: api.nonce,
+			url: api && api.url + '/posts',
+			nonce: api && api.nonce,
 			body: { ...props, search },
 		});
 	}, [search, props, api]);
