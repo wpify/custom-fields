@@ -1,7 +1,6 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PT from 'prop-types';
-import AppContext from '../components/AppContext';
-import { useDelay, useFetch } from '../helpers';
+import { useFetch } from '../helpers';
 import SelectControl from '../components/SelectControl';
 import MoveButton from '../components/MoveButton';
 import CloseButton from '../components/CloseButton';
@@ -15,21 +14,18 @@ const PostField = (props) => {
 		onChange,
 		description,
 		group_level = 0,
-		required,
+		//required,
 		isMulti = false,
 		className,
-		post_type = 'post',
-		query_args = [],
+		//post_type = 'post',
+		//query_args = [],
+		appContext,
 	} = props;
 
-	const { api } = useContext(AppContext);
-	const { nonce, url } = (api || {});
+	const { api } = appContext;
+
 	const [currentValue, setCurrentValue] = useState(Array.isArray(value) ? value : [value]);
 	const [search, setSearch] = useState('');
-
-	const handleChange = (value) => {
-		setCurrentValue(value);
-	};
 
 	useEffect(() => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
@@ -45,19 +41,20 @@ const PostField = (props) => {
 		window.clearTimeout(timer.current);
 
 		timer.current = window.setTimeout(() => {
-			console.log(nonce, url);
-			fetch({
-				method: 'post',
-				url: url + '/posts',
-				nonce: nonce,
-				body: { ...props, search },
-			});
+			if (api) {
+				fetch({
+					method: 'post',
+					url: api.url + '/posts',
+					nonce: api.nonce,
+					body: { ...props, search },
+				});
+			}
 		}, 500);
 
 		return () => {
 			window.clearTimeout(timer.current);
 		};
-	}, [fetch, search, props, nonce, url]);
+	}, [fetch, search, props, api]);
 
 	const getSelectedOptions = useCallback(() => {
 		return currentValue.map(value => {
@@ -99,6 +96,7 @@ const PostField = (props) => {
 					options={result.filter(option => !currentValue.includes(String(option.value)))}
 					onChange={handleAdd}
 					value={null}
+					className={className}
 				/>
 			</ErrorBoundary>
 			{description && (
@@ -148,6 +146,7 @@ PostField.propTypes = {
 	isMulti: PT.bool,
 	post_type: PT.string,
 	query_args: PT.array,
+	appContext: PT.object,
 };
 
 export default PostField;

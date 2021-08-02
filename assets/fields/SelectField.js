@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PT from 'prop-types';
-import AppContext from '../components/AppContext';
 import SearchableSelectControl from '../components/SearchableSelectControl';
 import ErrorBoundary from '../components/ErrorBoundary';
 
@@ -16,9 +15,10 @@ const SelectField = (props) => {
 		required,
 		isMulti = false,
 		className,
+		appContext,
 	} = props;
 
-	const { api } = useContext(AppContext);
+	const { api } = appContext;
 	const [currentValue, setCurrentValue] = useState(value);
 
 	const handleChange = (value) => {
@@ -51,6 +51,7 @@ const SelectField = (props) => {
 					nonce={api.nonce}
 					method="post"
 					className={className}
+					appContext={appContext}
 				/>
 			</ErrorBoundary>
 			{description && (
@@ -73,6 +74,7 @@ SelectField.propTypes = {
 	group_level: PT.number,
 	required: PT.bool,
 	isMulti: PT.bool,
+	appContext: PT.object,
 };
 
 SelectField.getHumanTitle = (item, value) => {

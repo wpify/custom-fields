@@ -29,7 +29,7 @@ const ColorField = (props) => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
 			onChange(currentValue);
 		}
-	}, [value, currentValue]);
+	}, [onChange, value, currentValue]);
 
 	const describedBy = description ? id + '-description' : null;
 
@@ -77,6 +77,13 @@ const ColorField = (props) => {
 
 ColorField.propTypes = {
 	className: PT.string,
+	id: PT.string,
+	htmlId: PT.string,
+	value: PT.string,
+	onChange: PT.func,
+	description: PT.string,
+	custom_attributes: PT.object,
+	group_level: PT.number,
 };
 
 export default ColorField;

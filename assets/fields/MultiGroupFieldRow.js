@@ -19,6 +19,7 @@ const MultiGroupFieldRow = (props) => {
 		length = 0,
 		collapsed = false,
 		toggleCollapsed = () => null,
+		appContext,
 	} = props;
 
 	const handleDelete = () => onChange(null);
@@ -79,6 +80,7 @@ const MultiGroupFieldRow = (props) => {
 									group_level={group_level}
 									onChange={value => handleChange({ [item.id]: value })}
 									value={value[item.id]}
+									appContext={appContext}
 								/>
 							</ErrorBoundary>
 						</div>
@@ -100,6 +102,7 @@ MultiGroupFieldRow.propTypes = {
 	collapsed: PT.bool,
 	length: PT.number,
 	toggleCollapsed: PT.func,
+	appContext: PT.object,
 };
 
 export default MultiGroupFieldRow;

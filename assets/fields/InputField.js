@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PT from 'prop-types';
 import ErrorBoundary from '../components/ErrorBoundary';
 
+// eslint-disable-next-line react/display-name
 const InputField = React.forwardRef((props, ref) => {
 	const {
 		id,
@@ -26,7 +27,7 @@ const InputField = React.forwardRef((props, ref) => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
 			onChange(currentValue);
 		}
-	}, [value, currentValue]);
+	}, [onChange, value, currentValue]);
 
 	const describedBy = description ? id + '-description' : null;
 

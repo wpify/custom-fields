@@ -1,15 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import OptionsRoot from './OptionsRoot';
 import OptionsRow from './OptionsRow';
 import ScreenContext from './ScreenContext';
 import { getItemComponent } from '../helpers';
-import AppContext from './AppContext';
+import PT from 'prop-types';
 import ErrorBoundary from './ErrorBoundary';
 import { applyFilters } from '@wordpress/hooks';
 
-const Options = () => {
-	const data = useContext(AppContext);
-	const { items = [] } = data;
+const Options = ({ appContext }) => {
+	const { items = [] } = appContext;
 
 	return (
 		<ScreenContext.Provider value={{ RootWrapper: OptionsRoot, RowWrapper: OptionsRow }}>
@@ -30,7 +29,7 @@ const Options = () => {
 								withoutSection={applyFilters('wcf_field_without_section', false, item.type)}
 							>
 								<ErrorBoundary>
-									<Field {...item}/>
+									<Field {...item} appContext={appContext} />
 								</ErrorBoundary>
 							</OptionsRow>
 						</ErrorBoundary>
@@ -39,6 +38,10 @@ const Options = () => {
 			</OptionsRoot>
 		</ScreenContext.Provider>
 	);
+};
+
+Options.propTypes = {
+	appContext: PT.object,
 };
 
 export default Options;

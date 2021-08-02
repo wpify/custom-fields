@@ -15,7 +15,7 @@ const ButtonField = (props) => {
 		action,
 		primary,
 		react_component,
-		description,
+		description = desc,
 		custom_attributes = {},
 	} = props;
 
@@ -58,6 +58,14 @@ ButtonField.propTypes = {
 	className: PT.string,
 	content: PT.oneOfType([PT.string, PT.element]),
 	custom_attributes: PT.object,
+	title: PT.string,
+	desc: PT.string,
+	button: PT.string,
+	url: PT.string,
+	action: PT.string,
+	primary: PT.bool,
+	react_component: PT.element,
+	description: PT.string,
 };
 
 export default ButtonField;

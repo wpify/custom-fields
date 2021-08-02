@@ -1,16 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 import { getItemComponent } from '../helpers';
 import ScreenContext from './ScreenContext';
 import ProductOptionsRow from './ProductOptionsRow';
-import AppContext from './AppContext';
 import ErrorBoundary from './ErrorBoundary';
 import { applyFilters } from '@wordpress/hooks';
 
-const ProductOptions = () => {
-	const data = useContext(AppContext);
-	const { items = [] } = data;
+const ProductOptions = ({ appContext }) => {
+	const { items = [] } = appContext;
 
 	return (
 		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: ProductOptionsRow }}>
@@ -20,13 +18,13 @@ const ProductOptions = () => {
 
 					return applyFilters('wcf_field_without_section', false, item.type) ? (
 						<ErrorBoundary key={item.id}>
-							<Field {...item} />
+							<Field {...item} appContext={appContext}/>
 						</ErrorBoundary>
 					) : (
 						<ErrorBoundary key={item.id}>
 							<ProductOptionsRow item={item}>
 								<ErrorBoundary>
-									<Field {...item} />
+									<Field {...item} appContext={appContext}/>
 								</ErrorBoundary>
 							</ProductOptionsRow>
 						</ErrorBoundary>
@@ -38,8 +36,7 @@ const ProductOptions = () => {
 };
 
 ProductOptions.propTypes = {
-	className: PT.string,
-	wcf: PT.object,
+	appContext: PT.object,
 };
 
 export default ProductOptions;

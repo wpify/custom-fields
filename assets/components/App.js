@@ -5,7 +5,6 @@ import ProductOptions from './ProductOptions';
 import AddTaxonomy from './AddTaxonomy';
 import EditTaxonomy from './EditTaxonomy';
 import Metabox from './Metabox';
-import AppContext from './AppContext';
 import ErrorBoundary from './ErrorBoundary';
 
 const App = (props) => {
@@ -25,11 +24,9 @@ const App = (props) => {
 	const Component = types[object_type] || types.default;
 
 	return (
-		<AppContext.Provider value={wcf}>
-			<ErrorBoundary>
-				<Component/>
-			</ErrorBoundary>
-		</AppContext.Provider>
+		<ErrorBoundary>
+			<Component appContext={wcf} />
+		</ErrorBoundary>
 	);
 };
 

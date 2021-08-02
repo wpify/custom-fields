@@ -11,7 +11,8 @@ const GroupField = (props) => {
 		onChange,
 		id,
 		items,
-		value = {}
+		value = {},
+		appContext,
 	} = props;
 
 	const { RootWrapper, RowWrapper } = useContext(ScreenContext);
@@ -58,6 +59,7 @@ const GroupField = (props) => {
 											group_level={group_level + 1}
 											onChange={value => handleChange({ [item.id]: value })}
 											value={currentValue[item.id]}
+											appContext={appContext}
 										/>
 									</ErrorBoundary>
 								</RowWrapper>
@@ -79,6 +81,7 @@ GroupField.propTypes = {
 	onChange: PT.func,
 	id: PT.string,
 	name: PT.string,
+	appContext: PT.object,
 };
 
 export default GroupField;

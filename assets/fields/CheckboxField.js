@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import PT from 'prop-types';
 import ErrorBoundary from '../components/ErrorBoundary';
 
+// eslint-disable-next-line react/display-name
 const CheckboxField = React.forwardRef((props, ref) => {
 	const {
 		id,
@@ -21,7 +22,7 @@ const CheckboxField = React.forwardRef((props, ref) => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
 			onChange(currentValue);
 		}
-	}, [value, currentValue]);
+	}, [onChange, value, currentValue]);
 
 	const handleChange = (event) => {
 		setCurrentValue(event.target.checked);
@@ -49,6 +50,13 @@ const CheckboxField = React.forwardRef((props, ref) => {
 
 CheckboxField.propTypes = {
 	className: PT.string,
+	id: PT.string,
+	htmlId: PT.string,
+	label: PT.string,
+	value: PT.string,
+	group_level: PT.number,
+	custom_attributes: PT.object,
+	onChange: PT.func,
 };
 
 export default CheckboxField;

@@ -17,6 +17,7 @@ const ReactField = (props) => {
 
 ReactField.propTypes = {
 	className: PT.string,
+	react_component: PT.element,
 };
 
 export default ReactField;

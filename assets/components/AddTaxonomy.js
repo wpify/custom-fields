@@ -1,14 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PT from 'prop-types';
 import { getItemComponent } from '../helpers';
 import ScreenContext from './ScreenContext';
 import AddTaxonomyRow from './AddTaxonomyRow';
-import AppContext from './AppContext';
 import ErrorBoundary from './ErrorBoundary';
 
-const AddTaxonomy = () => {
-	const data = useContext(AppContext);
-	const { items = [] } = data;
+const AddTaxonomy = ({ appContext }) => {
+	const { items = [] } = appContext;
 
 	return (
 		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: AddTaxonomyRow }}>
@@ -19,7 +17,7 @@ const AddTaxonomy = () => {
 					<ErrorBoundary key={item.id}>
 						<AddTaxonomyRow item={item}>
 							<ErrorBoundary>
-								<Field {...item} />
+								<Field {...item} appContext={appContext}/>
 							</ErrorBoundary>
 						</AddTaxonomyRow>
 					</ErrorBoundary>
@@ -31,7 +29,7 @@ const AddTaxonomy = () => {
 
 AddTaxonomy.propTypes = {
 	className: PT.string,
-	wcf: PT.object,
+	appContext: PT.object,
 };
 
 export default AddTaxonomy;

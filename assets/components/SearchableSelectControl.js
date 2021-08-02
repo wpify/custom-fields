@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PT from 'prop-types';
 import { __ } from '@wordpress/i18n';
-import AppContext from './AppContext';
 import { useDelay, useFetch } from '../helpers';
 import SelectControl from './SelectControl';
 import ErrorBoundary from './ErrorBoundary';
@@ -25,9 +24,10 @@ const SearchableSelectControl = (props) => {
 		className,
 		list_type,
 		required,
+		appContext,
 	} = props;
 
-	const { api } = useContext(AppContext);
+	const { api } = appContext;
 	const [currentValue, setCurrentValue] = useState(normalizeValues(value));
 	const [search, setSearch] = useState('');
 	const { fetch, result: currentOptions } = useFetch({ defaultValue: options || [] });
@@ -93,6 +93,7 @@ SearchableSelectControl.propTypes = {
 	method: PT.string,
 	className: PT.string,
 	list_type: PT.string,
+	appContext: PT.object,
 };
 
 export default SearchableSelectControl;

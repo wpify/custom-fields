@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
+import PT from 'prop-types';
 
 const CodeField = React.forwardRef((props, ref) => {
 	const {
@@ -35,13 +36,13 @@ const CodeField = React.forwardRef((props, ref) => {
 			codemirror.current = wp.codeEditor.initialize(textarea.current, currentSettings);
 			codemirror.current.codemirror.on('change', handleChange);
 		}
-	}, []);
+	}, [mode]);
 
 	useEffect(() => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
 			onChange(currentValue);
 		}
-	}, [value, currentValue]);
+	}, [onChange, value, currentValue]);
 
 	const describedBy = description ? id + '-description' : null;
 
@@ -65,5 +66,17 @@ const CodeField = React.forwardRef((props, ref) => {
 		</React.Fragment>
 	);
 });
+
+CodeField.propTypes = {
+	id: PT.string,
+	value: PT.string,
+	onChange: PT.func,
+	htmlId: PT.string,
+	description: PT.string,
+	custom_attributes: PT.object,
+	className: PT.string,
+	group_level: PT.number,
+	mode: PT.any,
+}
 
 export default CodeField;

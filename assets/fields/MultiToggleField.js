@@ -23,7 +23,7 @@ const MultiToggleField = (props) => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
 			onChange(currentValue);
 		}
-	}, [value, currentValue]);
+	}, [onChange, value, currentValue]);
 
 	const handleChange = id => checked => {
 		const value = [...currentValue];
@@ -67,6 +67,14 @@ const MultiToggleField = (props) => {
 
 MultiToggleField.propTypes = {
 	className: PT.string,
+	id: PT.string,
+	htmlId: PT.string,
+	value: PT.array,
+	group_level: PT.number,
+	custom_attributes: PT.object,
+	onChange: PT.func,
+	description: PT.string,
+	options: PT.array,
 };
 
 export default MultiToggleField;

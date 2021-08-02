@@ -30,7 +30,7 @@ const ToggleField = (props) => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
 			onChange(currentValue);
 		}
-	}, [value, currentValue]);
+	}, [onChange, value, currentValue]);
 
 	const control = (
 		<ErrorBoundary>
@@ -68,6 +68,15 @@ const ToggleField = (props) => {
 
 ToggleField.propTypes = {
 	className: PT.string,
+	id: PT.string,
+	htmlId: PT.string,
+	label: PT.string,
+	value: PT.string,
+	group_level: PT.number,
+	custom_attributes: PT.object,
+	onChange: PT.func,
+	description: PT.string,
+	disabled: PT.bool,
 };
 
 export default ToggleField;

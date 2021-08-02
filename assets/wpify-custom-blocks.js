@@ -1,34 +1,31 @@
+/* eslint-disable react/prop-types, no-redeclare, no-unused-vars */
+/* global __webpack_public_path__ */
+
+// eslint-disable-next-line no-global-assign
 __webpack_public_path__ = window.wcf_build_url;
 
 import React from 'react';
 import { registerBlockType } from '@wordpress/blocks';
 import { registerFieldTypes } from './helpers';
-import AppContext from './components/AppContext';
-import ErrorBoundary from './components/ErrorBoundary';
 import GutenbergBlock from './components/GutenbergBlock';
 
 registerFieldTypes();
 
-// eslint-disable-next-line react/display-name
-const edit = (wcf) => (props) => {
-	return (
-		<AppContext.Provider value={wcf}>
-			<ErrorBoundary>
-				<GutenbergBlock {...props} />
-			</ErrorBoundary>
-		</AppContext.Provider>
-	);
-};
+window.wcf_blocks = (window.wcf_blocks || {});
 
-const save = () => null;
-const blocks = (window.wcf_blocks || {});
-
-Object.keys(blocks).forEach((blockName) => {
-	const block = blocks[blockName];
+Object.keys(window.wcf_blocks).forEach((blockName) => {
+	const block = window.wcf_blocks[blockName];
 
 	if (/<svg[^>]*>/gm.test(block.icon)) {
-		block.icon = <span dangerouslySetInnerHTML={{ __html: block.icon }} />
+		block.icon = <span dangerouslySetInnerHTML={{ __html: block.icon }}/>;
 	}
 
-	registerBlockType(block.name, { ...block, edit: edit(block), save });
+	const save = () => null;
+	const edit = (props) => <GutenbergBlock appContext={block} {...props} />;
+
+	registerBlockType(block.name, {
+		...block,
+		edit,
+		save,
+	});
 });

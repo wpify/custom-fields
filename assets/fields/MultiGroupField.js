@@ -26,7 +26,7 @@ const removeKeys = (values = []) => clone(values).map(value => {
 });
 
 const MultiGroupField = (props) => {
-	const { group_level = 0, onChange, id, items = [], value = [], className } = props;
+	const { group_level = 0, onChange, id, items = [], value = [], className, appContext } = props;
 	const [currentValue, setCurrentValue] = useState(prepareValues(value));
 	const [opened, setOpened] = useState(null);
 
@@ -54,7 +54,7 @@ const MultiGroupField = (props) => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(removeKeys(currentValue))) {
 			onChange(removeKeys(currentValue));
 		}
-	}, [value, currentValue]);
+	}, [onChange, value, currentValue]);
 
 	const addEnabled = true;
 
@@ -81,6 +81,7 @@ const MultiGroupField = (props) => {
 									length={currentValue.length}
 									collapsed={itemValue.__key !== opened}
 									toggleCollapsed={() => setOpened(itemValue.__key === opened ? null : itemValue.__key)}
+									appContext={appContext}
 								/>
 							</ErrorBoundary>
 						);
@@ -101,7 +102,7 @@ const MultiGroupField = (props) => {
 MultiGroupField.propTypes = {
 	object_type: PT.string,
 	items: PT.string,
-	wcf: PT.string,
+	appContext: PT.string,
 	group_level: PT.number,
 	value: PT.any,
 	onChange: PT.func,
