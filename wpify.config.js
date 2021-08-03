@@ -1,7 +1,7 @@
 module.exports = {
-  config: {
-    build: 'build',
-    entry: {
+	config: {
+		build: 'build',
+		entry: {
 			'wpify-custom-fields': [
 				'./assets/wpify-custom-fields.js',
 				'./assets/wpify-custom-fields.scss',
@@ -10,6 +10,10 @@ module.exports = {
 				'./assets/wpify-custom-blocks.js',
 				'./assets/wpify-custom-fields.scss',
 			],
-    },
-  },
+		},
+	},
+	webpack: (webpack) => {
+		webpack.output.chunkFilename = '[name].[hash:16].js';
+		return webpack;
+	},
 };
