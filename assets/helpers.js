@@ -1,27 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import md5 from 'md5';
 import { addFilter, applyFilters } from '@wordpress/hooks';
 import { fields } from './fields';
-
-export const parseDataset = (dataset) => {
-	const props = { ...dataset };
-
-	Object.keys(props).forEach((key) => {
-		try {
-			props[key] = JSON.parse(props[key]);
-		} catch (e) {
-			if (!Number.isNaN(props[key]) && !Number.isNaN(parseFloat(props[key]))) {
-				props[key] = parseFloat(props[key]);
-			} else if (['true', 'false'].includes(props[key])) {
-				props[key] = Boolean(props[key]);
-			} else if (props[key] === 'null') {
-				props[key] = null;
-			}
-		}
-	});
-
-	return props;
-};
 
 export const getItemComponent = (item) => {
 	return applyFilters('wcf_field_' + item.type, React.Fragment, item);
@@ -115,21 +95,7 @@ export const useFetch = ({ defaultValue = null }) => {
 	return { fetch, result };
 };
 
-export const useDelay = (callback, deps, timeout = 500) => {
-	const timer = useRef(0);
-
-	useEffect(() => {
-		window.clearTimeout(timer.current);
-
-		timer.current = window.setTimeout(callback, timeout);
-
-		return () => {
-			window.clearTimeout(timer.current);
-		};
-	}, [callback, timeout, ...deps]);
-};
-
 export const useForceUpdate = () => {
-	const [value, setValue] = useState(0);
+	const [, setValue] = useState(0);
 	return () => setValue(value => value + 1);
 };

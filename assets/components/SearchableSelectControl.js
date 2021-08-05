@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PT from 'prop-types';
 import { __ } from '@wordpress/i18n';
-import { useDelay, useFetch } from '../helpers';
+import { useFetch } from '../helpers';
 import SelectControl from './SelectControl';
 import ErrorBoundary from './ErrorBoundary';
 import Button from './Button';
@@ -32,15 +32,23 @@ const SearchableSelectControl = (props) => {
 	const [search, setSearch] = useState('');
 	const { fetch, result: currentOptions } = useFetch({ defaultValue: options || [] });
 
-	useDelay(() => {
-		if ((search !== '' || !options) && list_type) {
-			const body = { ...props, current_value: currentValue ? (currentValue.filter(Boolean) || []) : [], search };
+	const timer = useRef(0);
 
-			fetch({ method, url, nonce, body });
-		}
-	}, [options, search, props, api, currentValue, list_type]);
+	useEffect(() => {
+		window.clearTimeout(timer.current);
 
+		timer.current = window.setTimeout(() => {
+			if ((search !== '' || !options) && list_type) {
+				const body = { ...props, current_value: currentValue ? (currentValue.filter(Boolean) || []) : [], search };
 
+				fetch({ method, url, nonce, body });
+			}
+		}, 500);
+
+		return () => {
+			window.clearTimeout(timer.current);
+		};
+	}, [fetch, search, props, api, options, list_type, currentValue, method, url, nonce]);
 
 	useEffect(() => {
 		onChange(isMulti ? currentValue : currentValue.find(Boolean));

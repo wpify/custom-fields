@@ -35,7 +35,10 @@ final class Assets {
 	 * @param array $localize
 	 */
 	public function enqueue_script( string $file, array $deps = array(), $in_footer = false, $localize = array() ) {
-		wp_enqueue_script( $this->register_script( $file, $deps, $in_footer, $localize ) );
+		$handle = $this->register_script( $file, $deps, $in_footer, $localize );
+		wp_enqueue_script( $handle );
+
+		return $handle;
 	}
 
 	/**

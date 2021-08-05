@@ -27,6 +27,9 @@ abstract class AbstractImplementation {
 	/** @var bool */
 	protected $wcf_shown = false;
 
+	/** @var string */
+	protected $script_handle = '';
+
 	public function __construct( array $args, WpifyCustomFields $wcf ) {
 		$this->wcf       = $wcf;
 		$this->parser    = $wcf->get_parser();
@@ -50,10 +53,10 @@ abstract class AbstractImplementation {
 					array( 'wp-components' )
 			);
 
-			$this->wcf->get_assets()->enqueue_script(
+			$this->script_handle = $this->wcf->get_assets()->enqueue_script(
 					'wpify-custom-fields.js',
 					array(),
-					false,
+					true,
 					array(
 							'wcf_code_editor_settings' => $this->wcf->get_assets()->get_code_editor_settings(),
 							'wcf_build_url'            => $this->get_build_url(),
@@ -77,8 +80,9 @@ abstract class AbstractImplementation {
 	/**
 	 * @param string $object_type
 	 * @param string $tag
+	 * @param array $attributes
 	 */
-	public function render_fields( $object_type = '', $tag = 'div', $attributes = array() ) {
+	public function render_fields( string $object_type = '', string $tag = 'div', array $attributes = array() ) {
 		$data = $this->get_data();
 
 		if ( ! empty( $object_type ) ) {
@@ -94,10 +98,12 @@ abstract class AbstractImplementation {
 		$class = empty( $attributes['class'] ) ? 'js-wcf' : 'js-wcf ' . $attributes['class'];
 
 		$json = wp_json_encode( $data );
+		$hash = 'd' . md5( $json );
 
 		do_action( 'wcf_before_fields', $data );
 		?>
-		<<?php echo $tag ?> class="<?php echo esc_attr( $class ); ?>" data-wcf="<?php echo esc_attr( $json ) ?>"></<?php echo $tag ?>>
+		<script type="text/javascript">try{window.wcf_data=(window.wcf_data||{});window.wcf_data.<?php echo $hash ?>=<?php echo $json; ?>;}catch(e){console.error(e);}</script>
+		<<?php echo $tag ?> class="<?php echo esc_attr( $class ); ?>" data-hash="<?php echo esc_attr( $hash ); ?>"></<?php echo $tag ?>>
 		<?php
 		do_action( 'wcf_after_fields', $data );
 	}

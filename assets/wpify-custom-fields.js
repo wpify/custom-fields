@@ -5,15 +5,17 @@ __webpack_public_path__ = window.wcf_build_url;
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { parseDataset, registerFieldTypes } from './helpers';
+import { registerFieldTypes } from './helpers';
 import App from './components/App';
 
 window.addEventListener('load', () => {
 	registerFieldTypes();
 
-	document.querySelectorAll('.js-wcf[data-wcf]').forEach((container) => {
-		const props = parseDataset(container.dataset);
-
-		ReactDOM.render(<App {...props} />, container);
+	document.querySelectorAll('.js-wcf[data-hash]').forEach((container) => {
+		const hash = container.dataset.hash;
+		if (hash) {
+			const wcf = (window.wcf_data||{})[hash];
+			ReactDOM.render(<App wcf={wcf} />, container);
+		}
 	});
 });
