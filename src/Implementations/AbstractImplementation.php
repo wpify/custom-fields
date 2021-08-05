@@ -49,18 +49,18 @@ abstract class AbstractImplementation {
 			wp_enqueue_media();
 
 			$this->wcf->get_assets()->enqueue_style(
-					'wpify-custom-fields.css',
-					array( 'wp-components' )
+				'wpify-custom-fields.css',
+				array( 'wp-components' )
 			);
 
 			$this->script_handle = $this->wcf->get_assets()->enqueue_script(
-					'wpify-custom-fields.js',
-					array(),
-					true,
-					array(
-							'wcf_code_editor_settings' => $this->wcf->get_assets()->get_code_editor_settings(),
-							'wcf_build_url'            => $this->get_build_url(),
-					)
+				'wpify-custom-fields.js',
+				array(),
+				true,
+				array(
+					'wcf_code_editor_settings' => $this->wcf->get_assets()->get_code_editor_settings(),
+					'wcf_build_url'            => $this->get_build_url(),
+				)
 			);
 		}
 	}
@@ -91,8 +91,8 @@ abstract class AbstractImplementation {
 
 		$data        = $this->fill_values( $data );
 		$data['api'] = array(
-				'url'   => $this->api->get_rest_url(),
-				'nonce' => $this->api->get_rest_nonce(),
+			'url'   => $this->api->get_rest_url(),
+			'nonce' => $this->api->get_rest_nonce(),
 		);
 
 		$class = empty( $attributes['class'] ) ? 'js-wcf' : 'js-wcf ' . $attributes['class'];
@@ -123,8 +123,8 @@ abstract class AbstractImplementation {
 
 			if ( ! empty( $definition['items'][ $key ]['items'] ) ) {
 				$definition['items'][ $key ]['items'] = array_map(
-						array( $this, 'normalize_item' ),
-						$definition['items'][ $key ]['items']
+					array( $this, 'normalize_item' ),
+					$definition['items'][ $key ]['items']
 				);
 			}
 
@@ -160,83 +160,6 @@ abstract class AbstractImplementation {
 	abstract public function set_wcf_shown();
 
 	/**
-	 * @param array $items
-	 *
-	 * @return array
-	 */
-	protected function prepare_items( array $items = array() ) {
-		foreach ( $items as $key => $item ) {
-			$items[ $key ] = $this->normalize_item( $item );
-		}
-
-		return array_values( array_filter( $items ) );
-	}
-
-	/**
-	 * @param array $args
-	 *
-	 * @return array
-	 */
-	private function normalize_item( array $args = array() ) {
-		$args = wp_parse_args( $args, array(
-				'type'              => '',
-				'id'                => '',
-				'title'             => '',
-				'class'             => '',
-				'css'               => '',
-				'default'           => '',
-				'desc'              => '',
-				'desc_tip'          => '',
-				'placeholder'       => '',
-				'suffix'            => '',
-				'value'             => '',
-				'custom_attributes' => array(),
-				'description'       => '',
-				'tooltip_html'      => '',
-		) );
-
-		/* Compatibility with WPify Woo */
-		$type_aliases = array(
-				'multiswitch'     => 'multi_toggle',
-				'switch'          => 'toggle',
-				'multiselect'     => 'multi_select',
-				'colorpicker'     => 'color',
-				'react_component' => 'react',
-		);
-
-		foreach ( $type_aliases as $alias => $correct ) {
-			if ( $args['type'] === $alias ) {
-				$args['type'] = $correct;
-			}
-		}
-
-		$args_aliases = array(
-				'label'           => 'title',
-				'desc'            => 'description',
-				'async_list_type' => 'list_type',
-		);
-
-		foreach ( $args_aliases as $alias => $correct ) {
-			if ( empty( $args[ $correct ] ) && ! empty( $args[ $alias ] ) ) {
-				$args[ $correct ] = $args[ $alias ];
-			}
-		}
-
-		if ( $args['type'] === 'group' && isset( $args['multi'] ) && $args['multi'] === true ) {
-			$args['type'] = 'multi_group';
-			unset( $args['multi'] );
-		}
-
-		if ( ! empty( $args['items'] ) && is_array( $args['items'] ) ) {
-			foreach ( $args['items'] as $key => $item ) {
-				$args['items'][ $key ] = $this->normalize_item( $item );
-			}
-		}
-
-		return $args;
-	}
-
-	/**
 	 * @param array $item
 	 *
 	 * @return string
@@ -261,5 +184,82 @@ abstract class AbstractImplementation {
 			default:
 				return 'string';
 		}
+	}
+
+	/**
+	 * @param array $items
+	 *
+	 * @return array
+	 */
+	protected function prepare_items( array $items = array() ) {
+		foreach ( $items as $key => $item ) {
+			$items[ $key ] = $this->normalize_item( $item );
+		}
+
+		return array_values( array_filter( $items ) );
+	}
+
+	/**
+	 * @param array $args
+	 *
+	 * @return array
+	 */
+	private function normalize_item( array $args = array() ) {
+		$args = wp_parse_args( $args, array(
+			'type'              => '',
+			'id'                => '',
+			'title'             => '',
+			'class'             => '',
+			'css'               => '',
+			'default'           => '',
+			'desc'              => '',
+			'desc_tip'          => '',
+			'placeholder'       => '',
+			'suffix'            => '',
+			'value'             => '',
+			'custom_attributes' => array(),
+			'description'       => '',
+			'tooltip_html'      => '',
+		) );
+
+		/* Compatibility with WPify Woo */
+		$type_aliases = array(
+			'multiswitch'     => 'multi_toggle',
+			'switch'          => 'toggle',
+			'multiselect'     => 'multi_select',
+			'colorpicker'     => 'color',
+			'react_component' => 'react',
+		);
+
+		foreach ( $type_aliases as $alias => $correct ) {
+			if ( $args['type'] === $alias ) {
+				$args['type'] = $correct;
+			}
+		}
+
+		$args_aliases = array(
+			'label'           => 'title',
+			'desc'            => 'description',
+			'async_list_type' => 'list_type',
+		);
+
+		foreach ( $args_aliases as $alias => $correct ) {
+			if ( empty( $args[ $correct ] ) && ! empty( $args[ $alias ] ) ) {
+				$args[ $correct ] = $args[ $alias ];
+			}
+		}
+
+		if ( $args['type'] === 'group' && isset( $args['multi'] ) && $args['multi'] === true ) {
+			$args['type'] = 'multi_group';
+			unset( $args['multi'] );
+		}
+
+		if ( ! empty( $args['items'] ) && is_array( $args['items'] ) ) {
+			foreach ( $args['items'] as $key => $item ) {
+				$args['items'][ $key ] = $this->normalize_item( $item );
+			}
+		}
+
+		return $args;
 	}
 }
