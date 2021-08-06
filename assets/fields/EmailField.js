@@ -4,7 +4,7 @@ import InputField from './InputField';
 import PT from 'prop-types';
 import ErrorBoundary from '../components/ErrorBoundary';
 
-const UrlField = (props) => {
+const EmailField = (props) => {
 	const { className } = props;
 
 	return (
@@ -18,8 +18,8 @@ const UrlField = (props) => {
 	);
 };
 
-UrlField.propTypes = {
+EmailField.propTypes = {
 	className: PT.string,
 };
 
-export default UrlField;
+export default EmailField;

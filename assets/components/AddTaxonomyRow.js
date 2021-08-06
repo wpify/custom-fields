@@ -3,7 +3,8 @@ import classnames from 'classnames';
 import PT from 'prop-types';
 import ErrorBoundary from './ErrorBoundary';
 
-const AddTaxonomyRow = ({ className, item, children, htmlId = id => id }) => {
+const AddTaxonomyRow = (props) => {
+	const { className, item, children, htmlId = id => id } = props;
   return (
 		<div key={item.id} className={classnames('form-field', className)}>
 			<ErrorBoundary>

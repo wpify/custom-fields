@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PT from 'prop-types';
 import classnames from 'classnames';
 import { getItemComponent } from '../helpers';
@@ -24,14 +24,16 @@ const MultiGroupFieldRow = (props) => {
 
 	const handleDelete = () => onChange(null);
 
-	const handleChange = (changedValue) => {
+	const handleChange = useCallback((changedValue) => {
 		const newValue = {
 			...value,
 			...changedValue,
 		};
 
-		onChange(newValue);
-	};
+		if (JSON.stringify(newValue) !== JSON.stringify(value)) {
+			onChange(newValue);
+		}
+	}, [onChange, value]);
 
 	const title = items.map(item => {
 		const innerValue = value[item.id];

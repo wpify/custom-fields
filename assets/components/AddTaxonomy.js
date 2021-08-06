@@ -5,7 +5,8 @@ import ScreenContext from './ScreenContext';
 import AddTaxonomyRow from './AddTaxonomyRow';
 import ErrorBoundary from './ErrorBoundary';
 
-const AddTaxonomy = ({ appContext }) => {
+const AddTaxonomy = (props) => {
+	const { appContext } = props;
 	const { items = [] } = appContext;
 
 	return (

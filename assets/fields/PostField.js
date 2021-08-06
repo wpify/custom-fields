@@ -14,16 +14,16 @@ const PostField = (props) => {
 		onChange,
 		description,
 		group_level = 0,
-		//required,
+		required,
 		isMulti = false,
 		className,
-		//post_type = 'post',
-		//query_args = [],
+		post_type = 'post',
+		query_args = [],
 		appContext,
 	} = props;
 
-	const { api } = appContext;
-
+	const { api = {} } = appContext;
+	const { url, nonce } = api;
 	const [currentValue, setCurrentValue] = useState(Array.isArray(value) ? value : [value]);
 	const [search, setSearch] = useState('');
 
@@ -31,7 +31,7 @@ const PostField = (props) => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
 			onChange(isMulti ? currentValue : currentValue.find(Boolean));
 		}
-	}, [onChange, isMulti, value, currentValue]);
+	}, [isMulti, value, currentValue, onChange]);
 
 	const { fetch, result } = useFetch({ defaultValue: [] });
 
@@ -41,12 +41,22 @@ const PostField = (props) => {
 		window.clearTimeout(timer.current);
 
 		timer.current = window.setTimeout(() => {
-			if (api) {
+			if (url && nonce) {
 				fetch({
 					method: 'post',
-					url: api.url + '/posts',
-					nonce: api.nonce,
-					body: { ...props, search },
+					url: url + '/posts',
+					nonce: nonce,
+					body: {
+						id,
+						value,
+						description,
+						group_level,
+						required,
+						isMulti,
+						post_type,
+						query_args,
+						search
+					},
 				});
 			}
 		}, 500);
@@ -54,7 +64,7 @@ const PostField = (props) => {
 		return () => {
 			window.clearTimeout(timer.current);
 		};
-	}, [fetch, search, props, api]);
+	}, [url, nonce, id, value, description, group_level, required, isMulti, post_type, query_args, search, fetch]);
 
 	const getSelectedOptions = useCallback(() => {
 		return currentValue.map(value => {

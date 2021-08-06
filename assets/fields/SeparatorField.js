@@ -1,9 +1,9 @@
 import React from 'react';
 
 const SeparatorField = () => {
-    return (
-        <hr/>
-    );
+	return (
+		<hr/>
+	);
 };
 
 export default SeparatorField;

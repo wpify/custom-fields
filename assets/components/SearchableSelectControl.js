@@ -24,22 +24,33 @@ const SearchableSelectControl = (props) => {
 		className,
 		list_type,
 		required,
-		appContext,
 	} = props;
 
-	const { api } = appContext;
 	const [currentValue, setCurrentValue] = useState(normalizeValues(value));
 	const [search, setSearch] = useState('');
 	const { fetch, result: currentOptions } = useFetch({ defaultValue: options || [] });
 
-	const timer = useRef(0);
+	const timer = useRef(null);
 
 	useEffect(() => {
 		window.clearTimeout(timer.current);
 
 		timer.current = window.setTimeout(() => {
 			if ((search !== '' || !options) && list_type) {
-				const body = { ...props, current_value: currentValue ? (currentValue.filter(Boolean) || []) : [], search };
+				const body = {
+					id,
+					value,
+					options,
+					isMulti,
+					url,
+					nonce,
+					method,
+					className,
+					list_type,
+					required,
+					current_value: currentValue ? currentValue.filter(Boolean) : [],
+					search
+				};
 
 				fetch({ method, url, nonce, body });
 			}
@@ -48,7 +59,7 @@ const SearchableSelectControl = (props) => {
 		return () => {
 			window.clearTimeout(timer.current);
 		};
-	}, [fetch, search, props, api, options, list_type, currentValue, method, url, nonce]);
+	}, [search, url, nonce, id, options, list_type, value, isMulti, method, className, required, currentValue, fetch]);
 
 	useEffect(() => {
 		onChange(isMulti ? currentValue : currentValue.find(Boolean));
@@ -80,8 +91,8 @@ const SearchableSelectControl = (props) => {
 					onClick={() => handleChange(isMulti ? [] : null)}
 				>
 					<svg viewBox="0 0 20 20" width="20" height="20">
-						<line stroke="currentColor" x1="3" y1="3" x2="17" y2="17" />
-						<line stroke="currentColor" x1="3" y1="17" x2="17" y2="3" />
+						<line stroke="currentColor" x1="3" y1="3" x2="17" y2="17"/>
+						<line stroke="currentColor" x1="3" y1="17" x2="17" y2="3"/>
 					</svg>
 				</Button>
 			)}

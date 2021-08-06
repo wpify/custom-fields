@@ -7,7 +7,9 @@ import ErrorBoundary from './ErrorBoundary';
 import { getItemComponent } from '../helpers';
 import { applyFilters } from '@wordpress/hooks';
 
-const EditGutenbergBlock = ({ appContext, attributes, setAttributes }) => {
+const EditGutenbergBlock = (props) => {
+	const { appContext, attributes, setAttributes } = props;
+
 	const { items = [], title } = appContext;
 
 	return (

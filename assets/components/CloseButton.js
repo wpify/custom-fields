@@ -2,7 +2,8 @@ import React from 'react';
 import PT from 'prop-types';
 import classnames from 'classnames';
 
-const CloseButton = ({ className, ...rest }) => {
+const CloseButton = (props) => {
+	const { className, ...rest } = props;
   return (
 		<button
 			type="button"

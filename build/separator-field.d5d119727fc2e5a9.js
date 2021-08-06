@@ -1,1 +1,0 @@
-(window.webpackJsonp_wpify_custom_fields=window.webpackJsonp_wpify_custom_fields||[]).push([[23],{297:function(e,n,t){"use strict";t.r(n);var c=t(0);t(1),n.default=function(){return Object(c.createElement)("hr",null)}}}]);
