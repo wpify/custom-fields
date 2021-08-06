@@ -35,8 +35,6 @@ const GroupField = (props) => {
 		}
 	}, [value, currentValue, onChange]);
 
-	console.log(value);
-
 	return (
 		<React.Fragment>
 			{group_level === 0 && (
