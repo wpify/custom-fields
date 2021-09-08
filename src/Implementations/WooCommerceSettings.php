@@ -1,13 +1,13 @@
 <?php
 
-namespace WpifyCustomFields\Implementations;
+namespace Wpify\CustomFields\Implementations;
 
 use WC_Admin_Settings;
-use WpifyCustomFields\WpifyCustomFields;
+use Wpify\CustomFields\CustomFields;
 
 /**
  * Class WooCommerceSettings
- * @package WpifyCustomFields\Implementations
+ * @package CustomFields\Implementations
  */
 final class WooCommerceSettings extends AbstractImplementation {
 	/** @var array */
@@ -29,9 +29,9 @@ final class WooCommerceSettings extends AbstractImplementation {
 	 * WooCommerceSettings constructor.
 	 *
 	 * @param array $args
-	 * @param WpifyCustomFields $wcf
+	 * @param CustomFields $wcf
 	 */
-	public function __construct( array $args, WpifyCustomFields $wcf ) {
+	public function __construct( array $args, CustomFields $wcf ) {
 		parent::__construct( $args, $wcf );
 
 		$args = wp_parse_args( $args, array(

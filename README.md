@@ -75,7 +75,7 @@ The following example shows you how to add custom fields to a page and read the 
 3. Create a new metabox with some text field:
 
 ```php
-get_wpify_custom_fields()->add_metabox( array(
+wpify_custom_fields()->create_metabox( array(
    // Metabox title
    'title'      => 'Hello custom fields',
    // Array of post types that will have the custom fields
@@ -104,7 +104,7 @@ The example above shows the minimalistic example of how to add a metabox. Let's 
 In snippet above, you can see all the options with their default values:
 
 ```php
-get_wpify_custom_fields()->add_metabox( array(
+wpify_custom_fields()->create_metabox( array(
    'id'            => null,
    'title'         => null,
    'screen'        => null,
@@ -149,7 +149,7 @@ $some_custom_field_value = get_post_meta( $post_id, 'some_id_of_the_meta', true 
 The functionality adds the meta box both on add and edit screen of taxonomy term:
 
 ```php
-get_wpify_custom_fields()->add_taxonomy_options( array(
+wpify_custom_fields()->create_taxonomy_options( array(
    'taxonomy' => null,
    'items'    => array(),
 ) );
@@ -180,7 +180,7 @@ With this library, you can create options pages with ease on the top or second l
 function `add_menu_page` or `add_submenu_page` under the hood.
 
 ```php
-get_wpify_custom_fields()->add_options_page( array(
+wpify_custom_fields()->create_options_page( array(
    'type'        => 'normal',
    'parent_slug' => null,
    'page_title'  => '',
@@ -241,7 +241,7 @@ If you want to easily add the settings tab or section to the WooCommerce → Set
 following piece of code:
 
 ```php
-get_wpify_custom_fields()->add_woocommerce_settings( array(
+wpify_custom_fields()->create_woocommerce_settings( array(
    'tab'     => array( 'id' => '', 'label' => null ),
    'section' => array( 'id' => '', 'label' => null ),
    'items'   => array(),
@@ -273,7 +273,7 @@ $some_custom_field_value = get_option( 'some_id_of_the_option' );
 Product options is a great place where to put the custom fields. You can define it as follows:
 
 ```php
-get_wpify_custom_fields()->add_woocommerce_settings( array(
+wpify_custom_fields()->create_woocommerce_settings( array(
    'tab'        => array(
       'id'       => 'general',
       'label'    => null,
@@ -314,7 +314,7 @@ $some_custom_field_value = get_post_meta( $product_id, 'some_id_of_the_meta', tr
 You can easily generate blocks that will use the custom fields interface. if you want to replace default custom fields interface with your own, simply set the `editor_script` and `editor_style` attributes with handle of your registered script and style. Every registered block also have `wcf` attribute, that contains the definition of the custom fields used in the block.
 
 ```php
-get_wpify_custom_fields()->add_gutenberg_block( array(
+wpify_custom_fields()->create_gutenberg_block( array(
 	'name'             => null, // string
 	'title'            => null, // string
 	'category'         => 'common', // string
@@ -351,7 +351,7 @@ get_wpify_custom_fields()->add_gutenberg_block( array(
 **Example**
 
 ```php
-get_wpify_custom_fields()->add_gutenberg_block( array(
+wpify_custom_fields()->create_gutenberg_block( array(
 	'name'        => 'wcf/test',
 	'title'       => 'Test block',
 	'items'       => array(
@@ -381,7 +381,7 @@ get_wpify_custom_fields()->add_gutenberg_block( array(
 The functionality adds options to the user:
 
 ```php
-get_wpify_custom_fields()->add_user_options( array(
+wpify_custom_fields()->create_user_options( array(
    'items'    => array(),
 ) );
 ```
@@ -419,7 +419,7 @@ $some_item = array(
 );
 
 // Some dummy usage, use `add_*` methods listed above.
-get_wpify_custom_fields()->add_some_custom_field_implementation( array(
+wpify_custom_fields()->add_some_custom_field_implementation( array(
    // some options
    'items'    => array( $some_item ),
 ) );
@@ -484,7 +484,7 @@ get_wpify_custom_fields()->add_some_custom_field_implementation( array(
 Group field doesn't have any visual representation, but groups fields into one field. Here is an example of defining the group field in options page:
 
 ```php
-get_wpify_custom_fields()->add_options_page( array(
+wpify_custom_fields()->create_options_page( array(
    'id'          => 'example_options_page',
    'page_title'  => 'Hello custom fields',
    'menu_title'  => 'Hello WCF',
@@ -538,7 +538,7 @@ The groups can also be nested to get much more complicated data structures than 
 If we change the field type in example above to `multi_group`, we'll get a different result:
 
 ```php
-get_wpify_custom_fields()->add_options_page( array(
+wpify_custom_fields()->create_options_page( array(
    'id'          => 'example_options_page',
    'page_title'  => 'Hello custom fields',
    'menu_title'  => 'Hello WCF',

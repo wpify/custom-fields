@@ -1,13 +1,13 @@
 <?php
 
-namespace WpifyCustomFields\Implementations;
+namespace Wpify\CustomFields\Implementations;
 
 use WP_User;
-use WpifyCustomFields\WpifyCustomFields;
+use Wpify\CustomFields\CustomFields;
 
 /**
  * Class User
- * @package WpifyCustomFields\Implementations
+ * @package CustomFields\Implementations
  */
 final class User extends AbstractImplementation {
 	/** @var int */
@@ -20,9 +20,9 @@ final class User extends AbstractImplementation {
 	 * User constructor.
 	 *
 	 * @param array $args
-	 * @param WpifyCustomFields $wcf
+	 * @param CustomFields $wcf
 	 */
-	public function __construct( array $args, WpifyCustomFields $wcf ) {
+	public function __construct( array $args, CustomFields $wcf ) {
 		parent::__construct( $args, $wcf );
 		$args          = wp_parse_args( $args, array( 'items' => array(), 'user_id' => null ) );
 		$this->items   = $args['items'];

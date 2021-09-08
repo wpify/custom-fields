@@ -1,10 +1,10 @@
 <?php
 
-namespace WpifyCustomFields;
+namespace Wpify\CustomFields;
 
 /**
  * Class Assets
- * @package WpifyCustomFields
+ * @package CustomFields
  */
 final class Assets {
 	/** @var string */

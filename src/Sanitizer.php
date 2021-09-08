@@ -1,10 +1,10 @@
 <?php
 
-namespace WpifyCustomFields;
+namespace Wpify\CustomFields;
 
 /**
  * Class Sanitizer
- * @package WpifyCustomFields
+ * @package CustomFields
  */
 final class Sanitizer {
 	/** @var string[] */

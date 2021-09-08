@@ -1,12 +1,12 @@
 <?php
 
-namespace WpifyCustomFields\Implementations;
+namespace Wpify\CustomFields\Implementations;
 
-use WpifyCustomFields\WpifyCustomFields;
+use Wpify\CustomFields\CustomFields;
 
 /**
  * Class ProductOptions
- * @package WpifyCustomFields\Implementations
+ * @package CustomFields\Implementations
  */
 final class ProductOptions extends AbstractPostImplementation {
 	/** @var int */
@@ -25,9 +25,9 @@ final class ProductOptions extends AbstractPostImplementation {
 	 * ProductOptions constructor.
 	 *
 	 * @param array $args
-	 * @param WpifyCustomFields $wcf
+	 * @param CustomFields $wcf
 	 */
-	public function __construct( array $args, WpifyCustomFields $wcf ) {
+	public function __construct( array $args, CustomFields $wcf ) {
 		parent::__construct( $args, $wcf );
 
 		/*

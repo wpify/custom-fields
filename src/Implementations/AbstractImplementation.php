@@ -1,15 +1,15 @@
 <?php
 
-namespace WpifyCustomFields\Implementations;
+namespace Wpify\CustomFields\Implementations;
 
-use WpifyCustomFields\Api;
-use WpifyCustomFields\Parser;
-use WpifyCustomFields\Sanitizer;
-use WpifyCustomFields\WpifyCustomFields;
+use Wpify\CustomFields\Api;
+use Wpify\CustomFields\Parser;
+use Wpify\CustomFields\Sanitizer;
+use Wpify\CustomFields\CustomFields;
 
 /**
  * Class AbstractImplementation
- * @package WpifyCustomFields\Implementations
+ * @package CustomFields\Implementations
  */
 abstract class AbstractImplementation {
 	/** @var Parser */
@@ -21,7 +21,7 @@ abstract class AbstractImplementation {
 	/** @var Api */
 	protected $api;
 
-	/** @var WpifyCustomFields */
+	/** @var CustomFields */
 	protected $wcf;
 
 	/** @var bool */
@@ -30,7 +30,7 @@ abstract class AbstractImplementation {
 	/** @var string */
 	protected $script_handle = '';
 
-	public function __construct( array $args, WpifyCustomFields $wcf ) {
+	public function __construct( array $args, CustomFields $wcf ) {
 		$this->wcf       = $wcf;
 		$this->parser    = $wcf->get_parser();
 		$this->sanitizer = $wcf->get_sanitizer();

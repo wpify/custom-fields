@@ -1,8 +1,8 @@
 <?php
 
-namespace WpifyCustomFields\Implementations;
+namespace Wpify\CustomFields\Implementations;
 
-use WpifyCustomFields\WpifyCustomFields;
+use Wpify\CustomFields\CustomFields;
 
 final class GutenbergBlock extends AbstractImplementation {
 	private $name;
@@ -30,9 +30,9 @@ final class GutenbergBlock extends AbstractImplementation {
 	 * GutenbergBlock constructor.
 	 *
 	 * @param array $args
-	 * @param WpifyCustomFields $wcf
+	 * @param CustomFields $wcf
 	 */
-	public function __construct( array $args, WpifyCustomFields $wcf ) {
+	public function __construct( array $args, CustomFields $wcf ) {
 		parent::__construct( $args, $wcf );
 
 		$defaults = array(

@@ -1,6 +1,6 @@
 <?php
 
-namespace WpifyCustomFields;
+namespace Wpify\CustomFields;
 
 use WP_Post;
 use WP_REST_Controller;

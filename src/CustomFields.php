@@ -1,20 +1,20 @@
 <?php
 
-namespace WpifyCustomFields;
+namespace Wpify\CustomFields;
 
-use WpifyCustomFields\Implementations\GutenbergBlock;
-use WpifyCustomFields\Implementations\Metabox;
-use WpifyCustomFields\Implementations\Options;
-use WpifyCustomFields\Implementations\ProductOptions;
-use WpifyCustomFields\Implementations\Taxonomy;
-use WpifyCustomFields\Implementations\WooCommerceSettings;
-use WpifyCustomFields\Implementations\User;
+use Wpify\CustomFields\Implementations\GutenbergBlock;
+use Wpify\CustomFields\Implementations\Metabox;
+use Wpify\CustomFields\Implementations\Options;
+use Wpify\CustomFields\Implementations\ProductOptions;
+use Wpify\CustomFields\Implementations\Taxonomy;
+use Wpify\CustomFields\Implementations\User;
+use Wpify\CustomFields\Implementations\WooCommerceSettings;
 
 /**
- * Class WpifyCustomFields
- * @package WpifyCustomFields
+ * Class CustomFields
+ * @package CustomFields
  */
-final class WpifyCustomFields {
+final class CustomFields {
 	/** @var Assets */
 	private $assets;
 
@@ -28,7 +28,7 @@ final class WpifyCustomFields {
 	private $api;
 
 	/**
-	 * WpifyCustomFields constructor.
+	 * CustomFields constructor.
 	 */
 	public function __construct( string $wcf_url = '' ) {
 		$assets_path     = realpath( __DIR__ . '/../build' );
@@ -43,7 +43,7 @@ final class WpifyCustomFields {
 	 *
 	 * @return Options
 	 */
-	public function add_options_page( $args = array() ) {
+	public function create_options_page( $args = array() ) {
 		return new Options( $args, $this );
 	}
 
@@ -52,7 +52,7 @@ final class WpifyCustomFields {
 	 *
 	 * @return Metabox
 	 */
-	public function add_metabox( $args = array() ) {
+	public function create_metabox( $args = array() ) {
 		return new Metabox( $args, $this );
 	}
 
@@ -61,7 +61,7 @@ final class WpifyCustomFields {
 	 *
 	 * @return ProductOptions
 	 */
-	public function add_product_options( $args = array() ) {
+	public function create_product_options( $args = array() ) {
 		return new ProductOptions( $args, $this );
 	}
 
@@ -70,7 +70,7 @@ final class WpifyCustomFields {
 	 *
 	 * @return Taxonomy
 	 */
-	public function add_taxonomy_options( $args = array() ) {
+	public function create_taxonomy_options( $args = array() ) {
 		return new Taxonomy( $args, $this );
 	}
 
@@ -79,7 +79,7 @@ final class WpifyCustomFields {
 	 *
 	 * @return User
 	 */
-	public function add_user_options( $args = array() ) {
+	public function create_user_options( $args = array() ) {
 		return new User( $args, $this );
 	}
 
@@ -88,11 +88,16 @@ final class WpifyCustomFields {
 	 *
 	 * @return WooCommerceSettings
 	 */
-	public function add_woocommerce_settings( $args = array() ) {
+	public function create_woocommerce_settings( $args = array() ) {
 		return new WooCommerceSettings( $args, $this );
 	}
 
-	public function add_gutenberg_block( $args = array() ) {
+	/**
+	 * @param array $args
+	 *
+	 * @return GutenbergBlock
+	 */
+	public function create_gutenberg_block( $args = array() ) {
 		return new GutenbergBlock( $args, $this );
 	}
 

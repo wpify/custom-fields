@@ -1,10 +1,10 @@
 <?php
 
-namespace WpifyCustomFields;
+namespace Wpify\CustomFields;
 
 /**
  * Class Parser
- * @package WpifyCustomFields
+ * @package CustomFields
  */
 final class Parser {
 	/** @var string[] */

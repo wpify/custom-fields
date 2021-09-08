@@ -1,12 +1,12 @@
 <?php
 
-namespace WpifyCustomFields\Implementations;
+namespace Wpify\CustomFields\Implementations;
 
-use WpifyCustomFields\WpifyCustomFields;
+use Wpify\CustomFields\CustomFields;
 
 /**
  * Class Options
- * @package WpifyCustomFields\Implementations
+ * @package CustomFields\Implementations
  */
 final class Options extends AbstractImplementation {
 	/** @var string */
@@ -49,9 +49,9 @@ final class Options extends AbstractImplementation {
 	 * Options constructor.
 	 *
 	 * @param array $args
-	 * @param WpifyCustomFields $wcf
+	 * @param CustomFields $wcf
 	 */
-	public function __construct( array $args, WpifyCustomFields $wcf ) {
+	public function __construct( array $args, CustomFields $wcf ) {
 		parent::__construct( $args, $wcf );
 
 		$args = wp_parse_args( $args, array(

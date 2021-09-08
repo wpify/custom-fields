@@ -1,10 +1,10 @@
 <?php
 
-namespace WpifyCustomFields\Implementations;
+namespace Wpify\CustomFields\Implementations;
 
 /**
  * Class AbstractPostImplementation
- * @package WpifyCustomFields\Implementations
+ * @package CustomFields\Implementations
  */
 abstract class AbstractPostImplementation extends AbstractImplementation {
 	/**

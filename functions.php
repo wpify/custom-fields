@@ -1,18 +1,18 @@
 <?php
 
-use WpifyCustomFields\WpifyCustomFields;
+use Wpify\CustomFields\CustomFields;
 
-if ( ! function_exists( 'get_wpify_custom_fields' ) ) {
+if ( ! function_exists( 'wpify_custom_fields' ) ) {
 	/**
 	 * Gets an instance of the WCF plugin
 	 *
-	 * @return WpifyCustomFields
+	 * @return CustomFields
 	 */
-	function get_wpify_custom_fields(): WpifyCustomFields {
+	function wpify_custom_fields(): CustomFields {
 		static $plugin;
 
 		if ( empty( $plugin ) ) {
-			$plugin = new WpifyCustomFields();
+			$plugin = new CustomFields();
 		}
 
 		return $plugin;
