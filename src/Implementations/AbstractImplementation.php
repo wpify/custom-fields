@@ -222,8 +222,6 @@ abstract class AbstractImplementation {
 			'tooltip_html'      => '',
 		) );
 
-		$args['id'] = str_replace( '-', '_', sanitize_title( $args['id'] ) );
-
 		/* Compatibility with WPify Woo */
 		$type_aliases = array(
 			'multiswitch'     => 'multi_toggle',
