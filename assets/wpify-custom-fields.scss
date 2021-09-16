@@ -117,6 +117,19 @@
   }
 }
 
+.woocommerce_options_panel {
+  .wcf-multi-group-row {
+	&__content-item-label {
+	  float: none;
+	  margin: 0;
+	}
+
+	&__content-item input {
+	  float: none !important;
+	}
+  }
+}
+
 .iti__flag-container {
   z-index: 5;
 }

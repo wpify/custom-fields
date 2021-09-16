@@ -24,7 +24,7 @@ const PostField = (props) => {
 
 	const { api = {} } = appContext;
 	const { url, nonce } = api;
-	const [currentValue, setCurrentValue] = useState(Array.isArray(value) ? value : [value]);
+	const [currentValue, setCurrentValue] = useState((Array.isArray(value) ? value : [value]).filter(Boolean));
 	const [search, setSearch] = useState('');
 
 	useEffect(() => {
@@ -68,9 +68,11 @@ const PostField = (props) => {
 
 	const getSelectedOptions = useCallback(() => {
 		return currentValue.map(value => {
-			return result.find(option => {
-				return String(option.value) === String(value);
-			});
+			return result && Array.isArray(result)
+				? result.find(option => {
+					return String(option.value) === String(value);
+				})
+				: [];
 		}).filter(Boolean);
 	}, [currentValue, result]);
 
@@ -103,7 +105,7 @@ const PostField = (props) => {
 			<ErrorBoundary>
 				<SelectControl
 					onInputChange={setSearch}
-					options={result.filter(option => !currentValue.includes(String(option.value)))}
+					options={result && Array.isArray(result) ? result.filter(option => !currentValue.includes(String(option.value))) : []}
 					onChange={handleAdd}
 					value={null}
 					className={className}
