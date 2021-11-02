@@ -623,7 +623,7 @@ Allows selecting posts from a particular post type. If you want more granular co
  */
 add_filter( 'wcf_get_posts_args', function ( array $query_args, array $args ) {
    return $query_args;
-} );
+}, 10, 2 );
 ```
 
 **Additional attributes**
@@ -662,7 +662,7 @@ add_filter( "wcf_list_{$list_type}", function ( array $list, array $args ) {
         return strpos( $option['value'], $search ) !== false
             || strpos( $option['label'], $search ) !== false;
     } );
-} );
+}, 10, 2 );
 ```
 
 ## Phone number field type `tel`
