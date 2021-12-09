@@ -105,8 +105,6 @@
     "react-color": "^2.19.3",
     "react-dom": "^16.13.1",
     "react-select": "^4.3.0",
-    "react-sortablejs": "^6.0.0",
-    "sortablejs": "^1.13.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
