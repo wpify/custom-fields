@@ -88,10 +88,10 @@ const AttachmentField = (props) => {
 	}, []);
 
 	useEffect(() => {
-		if (onChange && JSON.stringify(value) !== JSON.stringify(returnValue)) {
+		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValues)) {
 			onChange(returnValue);
 		}
-	}, [value, returnValue, onChange]);
+	}, [value, returnValue, currentValues, onChange]);
 
 	const handleDelete = (attributes) => {
 		setCurrentValues(currentValues => currentValues.filter(value => value !== attributes.id));
@@ -103,28 +103,39 @@ const AttachmentField = (props) => {
 			{group_level === 0 && (
 				<input type="hidden" name={id} value={JSON.stringify(returnValue)}/>
 			)}
-			<div className="wcf-media-list">
-				<SortableControl
-					items={currentValues.map(String)}
-					setItems={(currentValues) => setCurrentValues(currentValues.map(v => parseInt(v, 10)))}
-					renderItem={(id) => {
-						const attachment = attachments.find(a => a.id === parseInt(id, 10));
+			{isMulti && currentValues.length > 1 ? (
+				<div className="wcf-media-list">
+					<SortableControl
+						items={currentValues.map(String)}
+						setItems={(currentValues) => setCurrentValues(currentValues.map(v => parseInt(v, 10)))}
+						renderItem={(id) => {
+							const attachment = attachments.find(a => a.id === parseInt(id, 10));
 
-						return attachment ? (
-							<ErrorBoundary key={id}>
-								<Attachment
-									attachment={attachment}
-									onDelete={handleDelete}
-									length={attachments.length}
-								/>
-							</ErrorBoundary>
-						) : null;
-					}}
-				/>
+							return attachment ? (
+								<ErrorBoundary key={id}>
+									<Attachment
+										attachment={attachment}
+										onDelete={handleDelete}
+										length={attachments.length}
+									/>
+								</ErrorBoundary>
+							) : null;
+						}}
+					/>
+				</div>
+			) : attachments.find(Boolean) ? (
+				<ErrorBoundary>
+					<Attachment
+						attachment={attachments.find(Boolean)}
+						onDelete={handleDelete}
+					/>
+				</ErrorBoundary>
+			) : null}
+			<div className="wcf-media-buttons">
+				<Button onClick={handleButtonClick}>
+					{__('Select media', 'wpify-custom-fields')}
+				</Button>
 			</div>
-			<Button onClick={handleButtonClick}>
-				{__('Select media', 'wpify-custom-fields')}
-			</Button>
 			{description && (
 				<ErrorBoundary>
 					<p dangerouslySetInnerHTML={{ __html: description }}/>
@@ -137,7 +148,7 @@ const AttachmentField = (props) => {
 AttachmentField.propTypes = {
 	className: PT.string,
 	id: PT.string,
-	value: PT.oneOfType([PT.array, PT.string]),
+	value: PT.any,
 	group_level: PT.number,
 	isMulti: PT.bool,
 	attachment_type: PT.string,
