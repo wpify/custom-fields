@@ -12,6 +12,7 @@ const EDIT_VIEW = 'EDIT_VIEW';
 
 const GutenbergBlock = (props) => {
 	const { appContext, attributes, isSelected } = props;
+	const [ initialValue ] = useState(attributes);
 
 	const [view, setView] = useState(DESKTOP_VIEW);
 
@@ -20,6 +21,8 @@ const GutenbergBlock = (props) => {
 			setView(DESKTOP_VIEW);
 		}
 	}, [isSelected, view]);
+
+	console.log(initialValue);
 
 	return (
 		<React.Fragment>
@@ -47,6 +50,7 @@ const GutenbergBlock = (props) => {
 			</BlockControls>
 			{view === DESKTOP_VIEW && (
 				<ServerSideRender
+					className="wcf-server-side-rendered"
 					block={appContext.name}
 					attributes={{ ...attributes }}
 					httpMethod="POST"

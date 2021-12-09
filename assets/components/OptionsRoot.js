@@ -27,7 +27,7 @@ const OptionsRoot = (props) => {
 
 OptionsRoot.propTypes = {
 	className: PT.string,
-	children: PT.element,
+	children: PT.node,
 	group_level: PT.number,
 };
 

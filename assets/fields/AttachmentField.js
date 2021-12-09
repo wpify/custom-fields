@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 import { __ } from '@wordpress/i18n';
@@ -7,11 +7,11 @@ import Attachment from '../components/Attachment';
 import { useForceUpdate } from '../helpers';
 import SortableControl from '../components/SortableControl';
 import ErrorBoundary from '../components/ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
 const AttachmentField = (props) => {
 	const {
 		id,
-		value,
 		className,
 		group_level = 0,
 		isMulti = false,
@@ -20,11 +20,19 @@ const AttachmentField = (props) => {
 		description,
 	} = props;
 
-	const [currentValues, setCurrentValues] = useState(
-		(Array.isArray(value) ? value : [value])
-			.filter(Boolean)
-			.map(v => parseInt(v, 10))
-	);
+	const value = useMemo(() => {
+		let adjusted = props.value;
+
+		if (props.generator) {
+			adjusted = applyFilters('wcf_generator_' + props.generator, adjusted, props);
+		}
+
+		adjusted = Array.isArray(adjusted) ? adjusted : [adjusted];
+
+		return adjusted.filter(Boolean).map(v => parseInt(v, 10));
+	}, [props]);
+
+	const [currentValues, setCurrentValues] = useState(value);
 
 	const returnValue = isMulti ? currentValues.filter(Boolean) : currentValues.find(Boolean);
 	const frame = useRef();
@@ -90,11 +98,6 @@ const AttachmentField = (props) => {
 		setAttachments(attachments => attachments.filter(attachment => attachment.id !== attributes.id));
 	};
 
-	const handleMove = (items) => {
-		setAttachments(items);
-		setCurrentValues(items.map(i => i.id));
-	};
-
 	return (
 		<div className={classnames(className)}>
 			{group_level === 0 && (
@@ -102,19 +105,22 @@ const AttachmentField = (props) => {
 			)}
 			<div className="wcf-media-list">
 				<SortableControl
-					list={attachments || []}
-					setList={handleMove}
-				>
-					{attachments.map(attachment => (
-						<ErrorBoundary key={attachment.id}>
-							<Attachment
-								attachment={attachment}
-								onDelete={handleDelete}
-								length={attachments.length}
-							/>
-						</ErrorBoundary>
-					))}
-				</SortableControl>
+					items={currentValues.map(String)}
+					setItems={(currentValues) => setCurrentValues(currentValues.map(v => parseInt(v, 10)))}
+					renderItem={(id) => {
+						const attachment = attachments.find(a => a.id === parseInt(id, 10));
+
+						return attachment ? (
+							<ErrorBoundary key={id}>
+								<Attachment
+									attachment={attachment}
+									onDelete={handleDelete}
+									length={attachments.length}
+								/>
+							</ErrorBoundary>
+						) : null;
+					}}
+				/>
 			</div>
 			<Button onClick={handleButtonClick}>
 				{__('Select media', 'wpify-custom-fields')}
@@ -137,6 +143,7 @@ AttachmentField.propTypes = {
 	attachment_type: PT.string,
 	onChange: PT.func,
 	description: PT.string,
+	generator: PT.string,
 };
 
 export default AttachmentField;

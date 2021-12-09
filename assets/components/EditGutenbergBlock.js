@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 import ScreenContext from './ScreenContext';
@@ -9,8 +9,12 @@ import { applyFilters } from '@wordpress/hooks';
 
 const EditGutenbergBlock = (props) => {
 	const { appContext, attributes, setAttributes } = props;
-
+	const [initialAttributes] = useState(attributes);
 	const { items = [], title } = appContext;
+
+	const handleChange = (item) => (value) => {
+		setAttributes(applyFilters('wcf_set_block_attribute', { [item.id]: value }, item, attributes, initialAttributes));
+	};
 
 	return (
 		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: GutenbergBlockRow }}>
@@ -24,7 +28,7 @@ const EditGutenbergBlock = (props) => {
 						<ErrorBoundary key={item.id}>
 							<Field
 								{...item}
-								onChange={value => setAttributes({ [item.id]: value })}
+								onChange={handleChange(item)}
 								value={attributes[item.id]}
 								appContext={appContext}
 							/>
@@ -35,7 +39,7 @@ const EditGutenbergBlock = (props) => {
 								<ErrorBoundary>
 									<Field
 										{...item}
-										onChange={value => setAttributes({ [item.id]: value })}
+										onChange={handleChange(item)}
 										value={attributes[item.id]}
 										appContext={appContext}
 									/>

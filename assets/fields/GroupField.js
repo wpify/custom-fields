@@ -1,8 +1,9 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import PT from 'prop-types';
 import ScreenContext from '../components/ScreenContext';
 import ErrorBoundary from '../components/ErrorBoundary';
 import GroupFieldRow from './GroupFieldRow';
+import { applyFilters } from '@wordpress/hooks';
 
 const GroupField = (props) => {
 	const {
@@ -10,9 +11,16 @@ const GroupField = (props) => {
 		onChange,
 		id,
 		items,
-		value = {},
 		appContext,
 	} = props;
+
+	const value = useMemo(() => {
+		if (props.generator) {
+			return applyFilters('wcf_generator_' + props.generator, props.value || {}, props);
+		}
+
+		return props.value;
+	}, [props]);
 
 	const { RootWrapper } = useContext(ScreenContext);
 
@@ -60,7 +68,7 @@ const GroupField = (props) => {
 
 GroupField.propTypes = {
 	object_type: PT.string,
-	items: PT.string,
+	items: PT.array,
 	wcf: PT.string,
 	group_level: PT.number,
 	value: PT.any,
@@ -68,6 +76,7 @@ GroupField.propTypes = {
 	id: PT.string,
 	name: PT.string,
 	appContext: PT.object,
+	generator: PT.string,
 };
 
 export default GroupField;

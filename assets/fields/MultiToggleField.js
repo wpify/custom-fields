@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 import { ToggleControl } from '@wordpress/components';
 import ErrorBoundary from '../components/ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
 const MultiToggleField = (props) => {
 	const {
 		id,
 		htmlId = id => id,
-		value = [],
 		group_level = 0,
 		custom_attributes = {},
 		onChange,
@@ -16,6 +16,15 @@ const MultiToggleField = (props) => {
 		description,
 		options = [],
 	} = props;
+
+	const value = useMemo(() => {
+		if (props.generator) {
+			return applyFilters('wcf_generator_' + props.generator, props.value || [], props);
+		}
+
+		return props.value;
+	}, [props]);
+
 
 	const [currentValue, setCurrentValue] = useState(Array.isArray(value) ? value : []);
 
@@ -75,6 +84,7 @@ MultiToggleField.propTypes = {
 	onChange: PT.func,
 	description: PT.string,
 	options: PT.array,
+	generator: PT.string,
 };
 
 export default MultiToggleField;

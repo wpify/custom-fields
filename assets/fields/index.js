@@ -2,6 +2,7 @@
 
 import React, { Fragment, lazy, Suspense } from 'react';
 import { addFilter } from '@wordpress/hooks';
+import { v4 as uuidv4 } from 'uuid';
 
 const TextField = lazy(() => import(/* webpackChunkName: "text-field" */ './TextField'));
 const UrlField = lazy(() => import(/* webpackChunkName: "url-field" */ './UrlField'));
@@ -18,6 +19,7 @@ const TimeField = lazy(() => import(/* webpackChunkName: "time-field" */ './Time
 const WeekField = lazy(() => import(/* webpackChunkName: "week-field" */ './WeekField'));
 const TextareaField = lazy(() => import(/* webpackChunkName: "textarea-field" */ './TextareaField'));
 const HtmlField = lazy(() => import(/* webpackChunkName: "html-field" */ './HtmlField'));
+const HiddenField = lazy(() => import(/* webpackChunkName: "hidden-field" */ './HiddenField'));
 const GroupField = lazy(() => import(/* webpackChunkName: "group-field" */ './GroupField'));
 const MultiGroupField = lazy(() => import(/* webpackChunkName: "multi-group-field" */ './MultiGroupField'));
 const CheckboxField = lazy(() => import(/* webpackChunkName: "checkbox-field" */ './CheckboxField'));
@@ -71,6 +73,13 @@ addFilter(
 	}
 );
 
+addFilter(
+	'wcf_generator_uuid',
+	'wpify-custom-fields',
+	(value) => value || uuidv4()
+);
+
+
 // eslint-disable-next-line react/display-name
 const getComponent = Component => props => (
 	<Suspense fallback={<Fragment/>}>
@@ -94,6 +103,7 @@ export const fields = {
 	week: getComponent(WeekField),
 	textarea: getComponent(TextareaField),
 	html: getComponent(HtmlField),
+	hidden: getComponent(HiddenField),
 	group: getComponent(GroupField),
 	multi_group: getComponent(MultiGroupField),
 	checkbox: getComponent(CheckboxField),

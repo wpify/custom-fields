@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
 import PT from 'prop-types';
+import { applyFilters } from '@wordpress/hooks';
 
 const CodeField = React.forwardRef((props, ref) => {
 	const {
 		id,
-		value,
 		onChange,
 		htmlId = id => id,
 		description,
@@ -15,6 +15,14 @@ const CodeField = React.forwardRef((props, ref) => {
 		group_level = 0,
 		mode = null,
 	} = props;
+
+	const value = useMemo(() => {
+		if (props.generator) {
+			return applyFilters('wcf_generator_' + props.generator, props.value, props);
+		}
+
+		return props.value;
+	}, [props]);
 
 	const textarea = useRef();
 	const codemirror = useRef();
@@ -77,6 +85,7 @@ CodeField.propTypes = {
 	className: PT.string,
 	group_level: PT.number,
 	mode: PT.any,
+	generator: PT.string,
 }
 
 export default CodeField;

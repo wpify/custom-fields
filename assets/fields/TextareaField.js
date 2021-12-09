@@ -1,19 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PT from 'prop-types';
 import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
 const TextareaField = (props) => {
 	const {
 		id,
 		htmlId = id => id,
-		value,
 		onChange,
 		description,
 		custom_attributes,
 		className,
 		group_level = 0,
 	} = props;
+
+	const value = useMemo(() => {
+		if (props.generator) {
+			return applyFilters('wcf_generator_' + props.generator, props.value, props);
+		}
+
+		return props.value;
+	}, [props]);
 
 	const [currentValue, setCurrentValue] = useState(value);
 
@@ -61,6 +69,7 @@ TextareaField.propTypes = {
 	group_level: PT.number,
 	className: PT.string,
 	type: PT.string,
+	generator: PT.string,
 };
 
 export default TextareaField;

@@ -31,6 +31,10 @@
 }
 
 .wcf-multi-group {
+  &__items {
+	position: relative;
+  }
+
   &__buttons {
 	display: flex;
 	flex-flow: row wrap;
@@ -52,6 +56,13 @@
   &--move {
 	cursor: move;
 	margin-right: 10px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	display: flex;
+	align-items: center;
+	padding: 1rem;
   }
 
   &--delete {
@@ -117,6 +128,15 @@
   }
 }
 
+.wcf-sortable-item .wcf-multi-group-row {
+  padding-left: 40px;
+
+  &__header,
+  &__content {
+	padding-left: 0;
+  }
+}
+
 .woocommerce_options_panel {
   .wcf-multi-group-row {
 	&__content-item-label {
@@ -154,31 +174,27 @@
 	  overflow: hidden;
 	}
   }
+
+  .wcf-sortable-item &__item {
+	padding-left: 40px;
+  }
 }
 
-.wcf-sortable-ghost {
-  background: rgba(255, 255, 255, 0.3);
-  border: 1px dashed #c3c4c7;
-}
-
-.wcf-sortable-ghost * {
-  visibility: hidden;
-}
-
-.wcf-sortable-drag {
-  border: 1px solid #c3c4c7;
-}
-
-.wcf-sortable-drag .wcf-button--move {
+.wcf-sortable-item[faded=true] .wcf-button--move {
   cursor: grab;
+}
+
+.wcf-media-list {
+  gap: 10px;
+  display: flex;
+  flex-flow: row wrap;
+  margin-bottom: 10px;
 }
 
 .wcf-attachment {
   display: inline-flex;
   background-color: white;
   padding: 10px;
-  margin-bottom: 10px;
-  margin-right: 10px;
   width: 350px;
 
   &__image {
@@ -195,6 +211,10 @@
   }
 }
 
+.wcf-sortable-item .wcf-attachment {
+  padding-left: 40px;
+}
+
 .wcf-error {
   border: 1px solid #DC3232;
   padding: 10px 20px;
@@ -205,7 +225,7 @@
 
 .wcf-block {
   border: 1px solid rgba(0, 0, 0, 0.25);
-  padding: 10px 15px;
+  padding: 30px 15px 10px 15px;
   position: relative;
   border-radius: 3px;
 
@@ -226,6 +246,18 @@
 
   .form-field label {
 	display: block;
+  }
+
+  .wfc-block-field {
+	margin-bottom: 10px;
+
+	&--hidden {
+	  display: none;
+	}
+
+	label {
+	  display: block;
+	}
   }
 }
 

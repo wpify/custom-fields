@@ -3,7 +3,6 @@ import PT from 'prop-types';
 import classnames from 'classnames';
 import { getItemComponent } from '../helpers';
 import CloseButton from '../components/CloseButton';
-import MoveButton from '../components/MoveButton';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { applyFilters } from '@wordpress/hooks';
 
@@ -16,7 +15,6 @@ const MultiGroupFieldRow = (props) => {
 		htmlId = id => id,
 		className,
 		index,
-		length = 0,
 		collapsed = false,
 		toggleCollapsed = () => null,
 		appContext,
@@ -49,9 +47,6 @@ const MultiGroupFieldRow = (props) => {
 	return (
 		<div className={classnames('wcf-multi-group-row', className)}>
 			<h4 className={classnames('wcf-multi-group-row__header')}>
-				{length > 0 && (
-					<MoveButton/>
-				)}
 				<span className={classnames('wcf-multi-group-row__title')} onClick={() => toggleCollapsed()}>
 					#{index + 1}: {title}
 				</span>

@@ -1,22 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PT from 'prop-types';
 import { SketchPicker } from 'react-color';
 import { Popover } from '@wordpress/components';
 import Button from '../components/Button';
 import { invertColor } from '../helpers';
 import ErrorBoundary from '../components/ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
 const ColorField = (props) => {
 	const {
 		id,
 		htmlId = id => id,
-		value,
 		onChange,
 		description,
 		custom_attributes = {},
 		className,
 		group_level = 0,
 	} = props;
+
+	const value = useMemo(() => {
+		if (props.generator) {
+			return applyFilters('wcf_generator_' + props.generator, props.value, props);
+		}
+
+		return props.value;
+	}, [props]);
 
 	const [currentValue, setCurrentValue] = useState(value);
 	const [showPopover, setShowPopover] = useState(false);
@@ -84,6 +92,7 @@ ColorField.propTypes = {
 	description: PT.string,
 	custom_attributes: PT.object,
 	group_level: PT.number,
+	generator: PT.string,
 };
 
 export default ColorField;

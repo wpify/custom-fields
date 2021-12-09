@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 import { ToggleControl } from '@wordpress/components';
 import ErrorBoundary from '../components/ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
 const ToggleField = (props) => {
 	const {
 		id,
 		htmlId = id => id,
 		label,
-		value,
 		group_level = 0,
 		custom_attributes = {},
 		onChange,
@@ -18,7 +18,15 @@ const ToggleField = (props) => {
 		disabled = false,
 	} = props;
 
-	const [currentValue, setCurrentValue] = useState(Boolean(value));
+	const value = useMemo(() => {
+		if (props.generator) {
+			return applyFilters('wcf_generator_' + props.generator, props.value, props);
+		}
+
+		return Boolean(props.value);
+	}, [props]);
+
+	const [currentValue, setCurrentValue] = useState(value);
 
 	const handleChange = (checked) => {
 		if (!disabled) {
@@ -77,6 +85,7 @@ ToggleField.propTypes = {
 	onChange: PT.func,
 	description: PT.string,
 	disabled: PT.bool,
+	generator: PT.string,
 };
 
 export default ToggleField;

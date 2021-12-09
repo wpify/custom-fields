@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import PT from 'prop-types';
 import { useFetch } from '../helpers';
 import SelectControl from '../components/SelectControl';
@@ -6,11 +6,11 @@ import MoveButton from '../components/MoveButton';
 import CloseButton from '../components/CloseButton';
 import SortableControl from '../components/SortableControl';
 import ErrorBoundary from '../components/ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
 const PostField = (props) => {
 	const {
 		id,
-		value = null,
 		onChange,
 		description,
 		group_level = 0,
@@ -22,9 +22,19 @@ const PostField = (props) => {
 		appContext,
 	} = props;
 
+	const value = useMemo(() => {
+		const arr = (Array.isArray(props.value) ? props.value : [props.value]).filter(Boolean).map(v => parseInt(v, 10));
+
+		if (props.generator) {
+			return applyFilters('wcf_generator_' + props.generator, arr, props);
+		}
+
+		return arr;
+	}, [props]);
+
 	const { api = {} } = appContext;
 	const { url, nonce } = api;
-	const [currentValue, setCurrentValue] = useState((Array.isArray(value) ? value : [value]).filter(Boolean));
+	const [currentValue, setCurrentValue] = useState(value);
 	const [search, setSearch] = useState('');
 
 	useEffect(() => {
@@ -80,12 +90,6 @@ const PostField = (props) => {
 		setCurrentValue(currentValue.filter(value => String(value) !== String(id)));
 	};
 
-	const handleMove = (items) => {
-		if (!items.some(item => typeof item === 'object')) {
-			setCurrentValue(items);
-		}
-	};
-
 	const handleAdd = (item) => {
 		if (isMulti) {
 			const newValues = [...currentValue, item.value];
@@ -119,26 +123,29 @@ const PostField = (props) => {
 			<div className="wcf-post-selected">
 				<ErrorBoundary>
 					<SortableControl
-						list={currentValue}
-						setList={handleMove}
-					>
-						{selectedOptions.map(option => (
-							<ErrorBoundary key={option.value}>
-								<div className="wcf-post-selected__item">
-									<div className="wcf-post-selected__item-header">
-										{currentValue.length > 1 && (
-											<MoveButton/>
-										)}
-										<strong dangerouslySetInnerHTML={{ __html: option.label }}/>
-										<CloseButton onClick={handleDelete(option.value)}/>
+						items={currentValue.map(String)}
+						setItems={(items) => setCurrentValue(items.map(v => parseInt(v)))}
+						renderItem={(value) => {
+							const option = selectedOptions.find(o => o.value.toString() === value.toString());
+
+							return option ? (
+								<ErrorBoundary key={option.value}>
+									<div className="wcf-post-selected__item">
+										<div className="wcf-post-selected__item-header">
+											{currentValue.length > 1 && (
+												<MoveButton/>
+											)}
+											<strong dangerouslySetInnerHTML={{ __html: option.label }}/>
+											<CloseButton onClick={handleDelete(option.value)}/>
+										</div>
+										<ErrorBoundary>
+											<p dangerouslySetInnerHTML={{ __html: option.excerpt }}/>
+										</ErrorBoundary>
 									</div>
-									<ErrorBoundary>
-										<p dangerouslySetInnerHTML={{ __html: option.excerpt }}/>
-									</ErrorBoundary>
-								</div>
-							</ErrorBoundary>
-						))}
-					</SortableControl>
+								</ErrorBoundary>
+							) : null;
+						}}
+					/>
 				</ErrorBoundary>
 			</div>
 		</React.Fragment>
@@ -148,7 +155,7 @@ const PostField = (props) => {
 PostField.propTypes = {
 	className: PT.string,
 	id: PT.string,
-	value: PT.oneOfType([PT.string, PT.number]),
+	value: PT.oneOfType([PT.string, PT.number, PT.array]),
 	onChange: PT.func,
 	options: PT.array,
 	description: PT.oneOfType([PT.string, PT.element]),
@@ -159,6 +166,7 @@ PostField.propTypes = {
 	post_type: PT.string,
 	query_args: PT.array,
 	appContext: PT.object,
+	generator: PT.string,
 };
 
 export default PostField;

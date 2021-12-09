@@ -1,20 +1,28 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import PT from 'prop-types';
 import classnames from 'classnames';
 import Quill from 'quill';
 import ErrorBoundary from '../components/ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
 const WysiwygField = (props) => {
 	const {
 		id,
 		htmlId = id => id,
-		value,
 		onChange,
 		description,
 		custom_attributes,
 		className,
 		group_level = 0,
 	} = props;
+
+	const value = useMemo(() => {
+		if (props.generator) {
+			return applyFilters('wcf_generator_' + props.generator, props.value, props);
+		}
+
+		return props.value;
+	}, [props]);
 
 	const [currentValue, setCurrentValue] = useState(value);
 	const quill = useRef();
@@ -71,10 +79,11 @@ WysiwygField.propTypes = {
 	onChange: PT.func,
 	description: PT.oneOfType([PT.string, PT.element]),
 	suffix: PT.oneOfType([PT.string, PT.element]),
-	custom_attributes: PT.object,
+	custom_attributes: PT.any,
 	group_level: PT.number,
 	className: PT.string,
 	type: PT.string,
+	generator: PT.string,
 };
 
 export default WysiwygField;

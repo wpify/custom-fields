@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PT from 'prop-types';
 import SearchableSelectControl from '../components/SearchableSelectControl';
 import ErrorBoundary from '../components/ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
 const SelectField = (props) => {
 	const {
 		id,
-		value,
 		onChange,
 		options,
 		description,
@@ -17,6 +17,14 @@ const SelectField = (props) => {
 		className,
 		appContext,
 	} = props;
+
+	const value = useMemo(() => {
+		if (props.generator) {
+			return applyFilters('wcf_generator_' + props.generator, props.value, props);
+		}
+
+		return props.value;
+	}, [props]);
 
 	const { api } = appContext;
 	const [currentValue, setCurrentValue] = useState(value);
@@ -75,6 +83,7 @@ SelectField.propTypes = {
 	required: PT.bool,
 	isMulti: PT.bool,
 	appContext: PT.object,
+	generator: PT.string,
 };
 
 SelectField.getHumanTitle = (item, value) => {

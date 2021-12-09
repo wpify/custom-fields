@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PT from 'prop-types';
 import classnames from 'classnames';
 import { __ } from '@wordpress/i18n';
@@ -8,6 +8,7 @@ import SortableControl from '../components/SortableControl';
 import { clone } from '../helpers';
 import { v4 as uuid } from 'uuid';
 import ErrorBoundary from '../components/ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
 const prepareValues = (values = []) => {
 	if (Array.isArray(values)) {
@@ -22,12 +23,21 @@ const prepareValues = (values = []) => {
 
 const removeKeys = (values = []) => clone(values).map(value => {
 	delete value.__key;
+	delete value.chosen;
+	delete value.selected;
 	return value;
 });
 
 const MultiGroupField = (props) => {
-	const { group_level = 0, onChange, id, items = [], value = [], className, appContext } = props;
-	const [currentValue, setCurrentValue] = useState(prepareValues(value));
+	const { group_level = 0, onChange, id, items = [], className, appContext } = props;
+	const value = useMemo(() => {
+		if (props.generator) {
+			return applyFilters('wcf_generator_' + props.generator, prepareValues(props.value || []), props);
+		}
+
+		return prepareValues(props.value || []);
+	}, [props]);
+	const [currentValue, setCurrentValue] = useState(value);
 	const [opened, setOpened] = useState(null);
 
 	const handleChange = (index) => (changedItem = {}) => {
@@ -51,42 +61,47 @@ const MultiGroupField = (props) => {
 	};
 
 	useEffect(() => {
-		if (onChange && JSON.stringify(value) !== JSON.stringify(removeKeys(currentValue))) {
+		if (onChange && JSON.stringify(removeKeys(value)) !== JSON.stringify(removeKeys(currentValue))) {
 			onChange(removeKeys(currentValue));
 		}
 	}, [onChange, value, currentValue]);
 
 	const addEnabled = true;
 
+	const keys = currentValue.map(v => v.__key);
+	const setKeys = (keys) => {
+		if (JSON.stringify(currentValue.map(v => v.__key)) !== JSON.stringify(keys)) {
+			setCurrentValue(keys.map(k => currentValue.find(v => v.__key === k)).filter(Boolean));
+		}
+	};
+
 	return (
 		<div className={classnames('wcf-multi-group', className)}>
 			{group_level === 0 && (
-				<input type="hidden" id={id} name={id} value={JSON.stringify(currentValue)}/>
+				<input type="hidden" id={id} name={id} value={JSON.stringify(removeKeys(currentValue))}/>
 			)}
 			<ErrorBoundary>
 				<SortableControl
-					list={currentValue}
-					setList={setCurrentValue}
-				>
-					{currentValue.map((itemValue, index) => {
-						return (
-							<ErrorBoundary key={itemValue.__key}>
-								<MultiGroupFieldRow
-									group_level={group_level + 1}
-									onChange={handleChange(index)}
-									items={items}
-									value={itemValue}
-									htmlId={itemId => id + '_' + index + '_' + itemId}
-									index={index}
-									length={currentValue.length}
-									collapsed={itemValue.__key !== opened}
-									toggleCollapsed={() => setOpened(itemValue.__key === opened ? null : itemValue.__key)}
-									appContext={appContext}
-								/>
-							</ErrorBoundary>
-						);
-					})}
-				</SortableControl>
+					className="wcf-multi-group__items"
+					items={keys}
+					setItems={setKeys}
+					renderItem={(key, index) => (
+						<ErrorBoundary key={key}>
+							<MultiGroupFieldRow
+								group_level={group_level + 1}
+								onChange={handleChange(index)}
+								items={items}
+								value={currentValue.find(v => v.__key === key)}
+								htmlId={itemId => id + '_' + index + '_' + itemId}
+								index={index}
+								length={currentValue.length}
+								collapsed={key !== opened}
+								toggleCollapsed={() => setOpened(key === opened ? null : key)}
+								appContext={appContext}
+							/>
+						</ErrorBoundary>
+					)}
+				/>
 			</ErrorBoundary>
 			<div className={classnames('wcf-multi-group__buttons')}>
 				{addEnabled && (
@@ -101,14 +116,15 @@ const MultiGroupField = (props) => {
 
 MultiGroupField.propTypes = {
 	object_type: PT.string,
-	items: PT.string,
-	appContext: PT.string,
+	items: PT.array,
+	appContext: PT.object,
 	group_level: PT.number,
 	value: PT.any,
 	onChange: PT.func,
 	id: PT.string,
 	name: PT.string,
 	className: PT.string,
+	generator: PT.string,
 };
 
 export default MultiGroupField;

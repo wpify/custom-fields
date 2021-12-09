@@ -46,7 +46,7 @@ GroupFieldRow.propTypes = {
 	group_level: PT.number,
 	id: PT.string,
 	appContext: PT.object,
-	value: PT.object,
+	value: PT.any,
 	onChange: PT.func,
 };
 
