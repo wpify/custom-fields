@@ -19,7 +19,7 @@ const GroupField = (props) => {
 			return applyFilters('wcf_generator_' + props.generator, props.value || {}, props);
 		}
 
-		return props.value;
+		return props.value || {};
 	}, [props]);
 
 	const { RootWrapper } = useContext(ScreenContext);

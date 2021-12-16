@@ -7,6 +7,8 @@ import ErrorBoundary from './ErrorBoundary';
 import { getItemComponent } from '../helpers';
 import { applyFilters } from '@wordpress/hooks';
 
+const RootWrapper = (props) => (<div {...props} />);
+
 const EditGutenbergBlock = (props) => {
 	const { appContext, attributes, setAttributes } = props;
 	const [initialAttributes] = useState(attributes);
@@ -17,7 +19,7 @@ const EditGutenbergBlock = (props) => {
 	};
 
 	return (
-		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: GutenbergBlockRow }}>
+		<ScreenContext.Provider value={{ RootWrapper, RowWrapper: GutenbergBlockRow }}>
 			<div className={classnames('wcf-block')}>
 				<ErrorBoundary>
 					<div className={classnames('wcf-block__title')} dangerouslySetInnerHTML={{ __html: title }}/>

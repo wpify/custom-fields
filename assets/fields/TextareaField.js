@@ -47,8 +47,9 @@ const TextareaField = (props) => {
 				className={classnames('large-text', className)}
 				rows={10}
 				cols={50}
+				value={currentValue}
 				{...custom_attributes}
-			>{currentValue}</textarea>
+			/>
 			{description && (
 				<ErrorBoundary>
 					<p className="description" id={describedBy} dangerouslySetInnerHTML={{ __html: description }}/>
@@ -65,7 +66,7 @@ TextareaField.propTypes = {
 	onChange: PT.func,
 	description: PT.oneOfType([PT.string, PT.element]),
 	suffix: PT.oneOfType([PT.string, PT.element]),
-	custom_attributes: PT.object,
+	custom_attributes: PT.any,
 	group_level: PT.number,
 	className: PT.string,
 	type: PT.string,
