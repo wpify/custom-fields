@@ -640,6 +640,7 @@ The select field can accept options asynchronously from API (recommended) or inl
 **Additional attributes**
 * `list_type` if you use asynchronous option list from API.
 * `options` if you use the inline list of options.
+* `options_callback` callback that returns options.
 * You can also use any other attribute. Those attributes will be passed to the `wcf_list_{$list_type}` filter.
 
 ### Asynchronous options list

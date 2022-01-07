@@ -89,22 +89,35 @@ abstract class AbstractImplementation {
 			$data['object_type'] = $object_type;
 		}
 
-		$data        = $this->fill_values( $data );
-		$data['api'] = array(
+		$data          = $this->fill_values( $data );
+		$data['items'] = $this->fill_selects( $data['items'] );
+		$data['api']   = array(
 			'url'   => $this->api->get_rest_url(),
 			'nonce' => $this->api->get_rest_nonce(),
 		);
 
 		$class = empty( $attributes['class'] ) ? 'js-wcf' : 'js-wcf ' . $attributes['class'];
-
-		$json = wp_json_encode( $data );
-		$hash = 'd' . md5( $json );
+		$json  = wp_json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+		$hash  = 'd' . md5( $json );
 
 		do_action( 'wcf_before_fields', $data );
 		$script = 'try{window.wcf_data=(window.wcf_data||{});window.wcf_data.' . $hash . '=' . $json . ';}catch(e){console.error(e);}';
 		echo '<script type="text/javascript">' . $script . '</script>';
 		echo '<' . $tag . ' class="' . esc_attr( $class ) . '" data-hash="' . esc_attr( $hash ) . '"></' . $tag . '>';
 		do_action( 'wcf_after_fields', $data );
+	}
+
+	public function fill_selects( $items ) {
+		foreach ( $items as $key => $item ) {
+			if ( in_array( $item['type'], array( 'select', 'multi_select' ) ) && is_callable( $item['options_callback'] ) ) {
+				$callback                 = $item['options_callback'];
+				$items[ $key ]['options'] = $callback( $item );
+			} elseif ( ! empty( $item['items'] ) ) {
+				$items[ $key ]['items'] = $this->fill_selects( $item['items'] );
+			}
+		}
+
+		return $items;
 	}
 
 	/**

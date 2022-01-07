@@ -66,10 +66,11 @@ const SearchableSelectControl = (props) => {
 	}, [onChange, isMulti, value, currentValue]);
 
 	const handleChange = (options) => {
-		setCurrentValue(isMulti
-			? (options ? options.map(option => String(option.value)) : [])
-			: (options ? [String(options.value)] : [])
-		);
+		if (isMulti) {
+			setCurrentValue(options ? options.map(option => String(option.value)) : []);
+		} else {
+			setCurrentValue(options ? [String(options.value)] : []);
+		}
 	};
 
 	return (
@@ -82,20 +83,9 @@ const SearchableSelectControl = (props) => {
 				options={currentOptions && currentOptions.map(o => ({ ...o, value: String(o.value) }))}
 				isMulti={isMulti}
 				className={className}
+				isClearable={!required}
 				noOptionsMessage={() => search === '' ? __('Type to search', 'wpify-custom-fields') : undefined}
 			/>
-			{!required && Boolean(currentValue.length) && !isMulti && (
-				<Button
-					className={classnames('wcf-button wcf-button--icon')}
-					style={{ marginLeft: '10px' }}
-					onClick={() => handleChange(isMulti ? [] : null)}
-				>
-					<svg viewBox="0 0 20 20" width="20" height="20">
-						<line stroke="currentColor" x1="3" y1="3" x2="17" y2="17"/>
-						<line stroke="currentColor" x1="3" y1="17" x2="17" y2="3"/>
-					</svg>
-				</Button>
-			)}
 		</ErrorBoundary>
 	);
 };
