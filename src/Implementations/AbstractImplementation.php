@@ -112,6 +112,19 @@ abstract class AbstractImplementation {
 			if ( in_array( $item['type'], array( 'select', 'multi_select' ) ) && is_callable( $item['options_callback'] ) ) {
 				$callback                 = $item['options_callback'];
 				$items[ $key ]['options'] = $callback( $item );
+			} elseif ( in_array( $item['type'], array( 'post', 'multi_post' ) ) ) {
+				$items[ $key ]['options'] = array_map( function ( $post ) {
+					return array(
+						'label'   => $post->post_title,
+						'value'   => $post->ID,
+						'excerpt' => $post->post_excerpt,
+					);
+				}, get_posts( array(
+					'numberposts' => - 1,
+					'post_type'   => $item['post_type'] ?? 'post',
+					'include'     => $item['value'],
+					'orderby'     => 'post__in',
+				) ) );
 			} elseif ( ! empty( $item['items'] ) ) {
 				$items[ $key ]['items'] = $this->fill_selects( $item['items'] );
 			}

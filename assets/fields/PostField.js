@@ -20,6 +20,7 @@ const PostField = (props) => {
 		post_type = 'post',
 		query_args = [],
 		appContext,
+		options = [],
 	} = props;
 
 	const value = useMemo(() => {
@@ -43,33 +44,35 @@ const PostField = (props) => {
 		}
 	}, [isMulti, value, currentValue, onChange]);
 
-	const { fetch, result } = useFetch({ defaultValue: [] });
+	const { fetch, result } = useFetch({ defaultValue: options });
 
 	const timer = useRef(0);
 
 	useEffect(() => {
-		window.clearTimeout(timer.current);
+		if (search !== '') {
+			window.clearTimeout(timer.current);
 
-		timer.current = window.setTimeout(() => {
-			if (url && nonce) {
-				fetch({
-					method: 'post',
-					url: url + '/posts',
-					nonce: nonce,
-					body: {
-						id,
-						value,
-						description,
-						group_level,
-						required,
-						isMulti,
-						post_type,
-						query_args,
-						search
-					},
-				});
-			}
-		}, 500);
+			timer.current = window.setTimeout(() => {
+				if (url && nonce) {
+					fetch({
+						method: 'post',
+						url: url + '/posts',
+						nonce: nonce,
+						body: {
+							id,
+							value,
+							description,
+							group_level,
+							required,
+							isMulti,
+							post_type,
+							query_args,
+							search
+						},
+					});
+				}
+			}, 500);
+		}
 
 		return () => {
 			window.clearTimeout(timer.current);
@@ -120,34 +123,36 @@ const PostField = (props) => {
 					<p className="description" dangerouslySetInnerHTML={{ __html: description }}/>
 				</ErrorBoundary>
 			)}
-			<div className="wcf-post-selected">
-				<ErrorBoundary>
-					<SortableControl
-						items={currentValue.map(String)}
-						setItems={(items) => setCurrentValue(items.map(v => parseInt(v)))}
-						renderItem={(value) => {
-							const option = selectedOptions.find(o => o.value.toString() === value.toString());
+			{currentValue && currentValue.length > 0 && (
+				<div className="wcf-post-selected">
+					<ErrorBoundary>
+						<SortableControl
+							items={currentValue.map(String)}
+							setItems={(items) => setCurrentValue(items.map(v => parseInt(v)))}
+							renderItem={(value) => {
+								const option = selectedOptions.find(o => o.value.toString() === value.toString());
 
-							return option ? (
-								<ErrorBoundary key={option.value}>
-									<div className="wcf-post-selected__item">
-										<div className="wcf-post-selected__item-header">
-											{currentValue.length > 1 && (
-												<MoveButton/>
-											)}
-											<strong dangerouslySetInnerHTML={{ __html: option.label }}/>
-											<CloseButton onClick={handleDelete(option.value)}/>
+								return option ? (
+									<ErrorBoundary key={option.value}>
+										<div className="wcf-post-selected__item">
+											<div className="wcf-post-selected__item-header">
+												{currentValue.length > 1 && (
+													<MoveButton/>
+												)}
+												<strong dangerouslySetInnerHTML={{ __html: option.label }}/>
+												<CloseButton onClick={handleDelete(option.value)}/>
+											</div>
+											<ErrorBoundary>
+												<p dangerouslySetInnerHTML={{ __html: option.excerpt }}/>
+											</ErrorBoundary>
 										</div>
-										<ErrorBoundary>
-											<p dangerouslySetInnerHTML={{ __html: option.excerpt }}/>
-										</ErrorBoundary>
-									</div>
-								</ErrorBoundary>
-							) : null;
-						}}
-					/>
-				</ErrorBoundary>
-			</div>
+									</ErrorBoundary>
+								) : null;
+							}}
+						/>
+					</ErrorBoundary>
+				</div>
+			)}
 		</React.Fragment>
 	);
 };
