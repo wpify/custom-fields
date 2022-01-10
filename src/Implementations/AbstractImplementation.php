@@ -109,7 +109,7 @@ abstract class AbstractImplementation {
 
 	public function fill_selects( $items ) {
 		foreach ( $items as $key => $item ) {
-			if ( in_array( $item['type'], array( 'select', 'multi_select' ) ) && is_callable( $item['options_callback'] ) ) {
+			if ( in_array( $item['type'], array( 'select', 'multi_select' ) ) && ! empty( $item['options_callback'] ) && is_callable( $item['options_callback'] ) ) {
 				$callback                 = $item['options_callback'];
 				$items[ $key ]['options'] = $callback( $item );
 			} elseif ( in_array( $item['type'], array( 'post', 'multi_post' ) ) ) {
