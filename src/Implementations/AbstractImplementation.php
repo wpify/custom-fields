@@ -97,7 +97,7 @@ abstract class AbstractImplementation {
 		);
 
 		$class = empty( $attributes['class'] ) ? 'js-wcf' : 'js-wcf ' . $attributes['class'];
-		$json  = wp_json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+		$json  = wp_json_encode( $data, JSON_UNESCAPED_UNICODE );
 		$hash  = 'd' . md5( $json );
 
 		do_action( 'wcf_before_fields', $data );

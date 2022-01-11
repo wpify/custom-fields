@@ -80,7 +80,7 @@ final class GutenbergBlock extends AbstractImplementation {
 	public function register_block() {
 		$args    = $this->get_args();
 		$js_args = $this->get_args( array( 'render_callback' ) );
-		$script  = 'window.wcf_blocks=(window.wcf_blocks||{});window.wcf_blocks[\'' . $this->name . '\']=' . wp_json_encode( $js_args, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . ';';
+		$script  = 'window.wcf_blocks=(window.wcf_blocks||{});window.wcf_blocks[\'' . $this->name . '\']=' . wp_json_encode( $js_args, JSON_UNESCAPED_UNICODE ) . ';';
 		$script  .= 'window.wcf_build_url=' . wp_json_encode( $this->get_build_url() ) . ';';
 		register_block_type( $this->name, $args );
 		wp_add_inline_script( $args['editor_script'], $script, 'before' );

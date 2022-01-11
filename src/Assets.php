@@ -62,7 +62,7 @@ final class Assets {
 			foreach ( $localize as $variable => $value ) {
 				wp_add_inline_script(
 					$data['handle'],
-					'try { var ' . $variable . ' = ' . wp_json_encode( $value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '; } catch (e) { console.error(e); }',
+					'try { var ' . $variable . ' = ' . wp_json_encode( $value, JSON_UNESCAPED_UNICODE ) . '; } catch (e) { console.error(e); }',
 					'before'
 				);
 			}
