@@ -104,7 +104,8 @@ final class Api extends WP_REST_Controller {
 		$current_posts = ! empty( $params['current_value'] ) ? get_posts( array(
 			'post_type'      => $query_args['post_type'],
 			'include'        => $params['current_value'],
-			'posts_per_page' => - 1,
+			'posts_per_page' => -1,
+			'post_status'    => 'any',
 		) ) : array();
 
 		$query_args['exclude'] = array_map( function ( WP_Post $post ) {

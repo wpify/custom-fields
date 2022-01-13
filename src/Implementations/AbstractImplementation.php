@@ -120,10 +120,11 @@ abstract class AbstractImplementation {
 						'excerpt' => $post->post_excerpt,
 					);
 				}, get_posts( array(
-					'numberposts' => - 1,
+					'numberposts' => -1,
 					'post_type'   => $item['post_type'] ?? 'post',
 					'include'     => $item['value'],
 					'orderby'     => 'post__in',
+					'post_status' => 'any',
 				) ) );
 			} elseif ( ! empty( $item['items'] ) ) {
 				$items[ $key ]['items'] = $this->fill_selects( $item['items'] );
