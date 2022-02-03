@@ -16,6 +16,6 @@
     "ext-json": "*"
   },
   "require-dev": {
-	"symfony/var-dumper": "v6.0.0"
+	"symfony/var-dumper": "v6.0.3"
   }
 }

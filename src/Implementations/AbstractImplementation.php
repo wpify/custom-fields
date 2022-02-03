@@ -45,9 +45,18 @@ abstract class AbstractImplementation {
 	 */
 	public function admin_enqueue_scripts() {
 		if ( $this->wcf_shown ) {
+			// Enqueue all dependencies needed for TinyMCE editor
+			wp_enqueue_script( 'wp-block-library' );
+			wp_tinymce_inline_scripts();
+
+			// Enqueue all dependencees needed for code editor
+			wp_enqueue_editor();
 			wp_enqueue_code_editor( array() );
+
+			// Enqueue dependencies needed for media library
 			wp_enqueue_media();
 
+			// Enqueue dependencies for WPify Custom Fields
 			$this->wcf->get_assets()->enqueue_style(
 				'wpify-custom-fields.css',
 				array( 'wp-components' )
@@ -55,7 +64,7 @@ abstract class AbstractImplementation {
 
 			$this->script_handle = $this->wcf->get_assets()->enqueue_script(
 				'wpify-custom-fields.js',
-				array(),
+				array( 'wp-tinymce' ),
 				true,
 				array(
 					'wcf_code_editor_settings' => $this->wcf->get_assets()->get_code_editor_settings(),
@@ -120,7 +129,7 @@ abstract class AbstractImplementation {
 						'excerpt' => $post->post_excerpt,
 					);
 				}, get_posts( array(
-					'numberposts' => -1,
+					'numberposts' => - 1,
 					'post_type'   => $item['post_type'] ?? 'post',
 					'include'     => $item['value'],
 					'orderby'     => 'post__in',
@@ -262,6 +271,18 @@ abstract class AbstractImplementation {
 			if ( $args['type'] === $alias ) {
 				$args['type'] = $correct;
 			}
+		}
+
+		if ( in_array( $args['type'], array( 'number', 'post', 'attachment' ) ) ) {
+			$args['default'] = 0;
+		}
+
+		if ( in_array( $args['type'], array( 'group', 'multi_group', 'multi_post', 'multi_attachment', 'multi_toggle', 'multi_select' ) ) ) {
+			$args['default'] = array();
+		}
+
+		if ( in_array( $args['type'], array( 'toggle', 'checkbox' ) ) ) {
+			$args['default'] = false;
 		}
 
 		$args_aliases = array(

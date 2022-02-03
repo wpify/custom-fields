@@ -33,6 +33,8 @@ final class Assets {
 	 * @param array $deps
 	 * @param false $in_footer
 	 * @param array $localize
+	 *
+	 * @return mixed|null
 	 */
 	public function enqueue_script( string $file, array $deps = array(), $in_footer = false, $localize = array() ) {
 		$handle = $this->register_script( $file, $deps, $in_footer, $localize );
@@ -56,7 +58,7 @@ final class Assets {
 			return null;
 		}
 
-		if ( wp_register_script( $data['handle'], $data['src'], array_merge( $deps, $data['deps'] ), $data['ver'], $in_footer )
+		if ( wp_register_script( $data['handle'], $data['src'], array_merge( $deps, $data['dependencies'] ), $data['version'], $in_footer )
 		     && ! empty( $localize )
 		) {
 			foreach ( $localize as $variable => $value ) {
@@ -77,52 +79,22 @@ final class Assets {
 	 * @return mixed
 	 */
 	private function get_file( $file ) {
-		$manifest = $this->get_manifest();
+		$asset_path = trailingslashit( $this->assets_path ) . preg_replace( "/\.\S+$/", '.asset.php', $file );
+		$path       = trailingslashit( $this->assets_path ) . $file;
+		$pathinfo   = pathinfo( $path );
+		$manifest   = file_exists( $asset_path )
+			? require $asset_path
+			: array( 'dependencies' => array(), 'version' => null );
 
-		if ( ! empty( $manifest[ $file ] ) ) {
-			return $manifest[ $file ];
+		if ( $pathinfo['extension'] === 'css' ) {
+			$manifest['dependencies'] = array();
 		}
 
-		return null;
-	}
+		$manifest['path']   = $path;
+		$manifest['src']    = $this->path_to_url( $path );
+		$manifest['handle'] = 'wcf-' . $pathinfo['filename'] . '-' . $pathinfo['extension'];
 
-	/**
-	 * @return array
-	 */
-	private function get_manifest() {
-		if ( empty( $this->manifest ) && file_exists( $this->assets_path . '/assets-manifest.json' ) ) {
-			$deps = array();
-
-			if ( file_exists( $this->assets_path . '/assets.php' ) ) {
-				// phpcs:ignore
-				$deps = require $this->assets_path . '/assets.php';
-			}
-
-			$data = file_get_contents( $this->assets_path . '/assets-manifest.json' );
-			$json = json_decode( $data, true );
-
-			foreach ( $json as $key => $filename ) {
-				$path     = $this->assets_path . '/' . $filename;
-				$pathinfo = pathinfo( $path );
-				$item     = array(
-					'path'   => $path,
-					'src'    => $this->path_to_url( $path ),
-					'handle' => 'wcf-' . $pathinfo['filename'] . '-' . $pathinfo['extension'],
-				);
-
-				if ( ! empty( $deps[ $key ] ) ) {
-					$item['deps'] = $deps[ $key ]['dependencies'];
-					$item['ver']  = $deps[ $key ]['version'];
-				} else {
-					$item['deps'] = array();
-					$item['ver']  = null;
-				}
-
-				$this->manifest[ $key ] = $item;
-			}
-		}
-
-		return $this->manifest;
+		return $manifest;
 	}
 
 	/**
@@ -139,11 +111,11 @@ final class Assets {
 			return esc_url_raw( $this->wcf_url . '/build/' . basename( $path ) );
 		}
 
-		return esc_url_raw(str_replace(
+		return esc_url_raw( str_replace(
 			wp_normalize_path( untrailingslashit( ABSPATH ) ),
 			site_url(),
 			wp_normalize_path( $path )
-		));
+		) );
 	}
 
 	/**
@@ -169,7 +141,7 @@ final class Assets {
 			return null;
 		}
 
-		wp_register_style( $data['handle'], $data['src'], array_merge( $deps, $data['deps'] ), $data['ver'], $media );
+		wp_register_style( $data['handle'], $data['src'], array_merge( $deps, $data['dependencies'] ), $data['version'], $media );
 
 		return $data['handle'];
 	}
