@@ -35,10 +35,10 @@ const ToggleField = (props) => {
 	};
 
 	useEffect(() => {
-		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
+		if (onChange) {
 			onChange(currentValue);
 		}
-	}, [onChange, value, currentValue]);
+	}, [onChange, currentValue]);
 
 	const control = (
 		<ErrorBoundary>

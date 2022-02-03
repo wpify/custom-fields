@@ -273,15 +273,15 @@ abstract class AbstractImplementation {
 			}
 		}
 
-		if ( in_array( $args['type'], array( 'number', 'post', 'attachment' ) ) ) {
+		if ( in_array( $args['type'], array( 'number', 'post', 'attachment' ) ) && empty( $args['default'] ) ) {
 			$args['default'] = 0;
 		}
 
-		if ( in_array( $args['type'], array( 'group', 'multi_group', 'multi_post', 'multi_attachment', 'multi_toggle', 'multi_select' ) ) ) {
+		if ( in_array( $args['type'], array( 'group', 'multi_group', 'multi_post', 'multi_attachment', 'multi_toggle', 'multi_select' ) ) && empty( $args['default'] ) ) {
 			$args['default'] = array();
 		}
 
-		if ( in_array( $args['type'], array( 'toggle', 'checkbox' ) ) ) {
+		if ( in_array( $args['type'], array( 'toggle', 'checkbox' ) ) && empty( $args['default'] ) ) {
 			$args['default'] = false;
 		}
 
@@ -305,6 +305,12 @@ abstract class AbstractImplementation {
 		if ( ! empty( $args['items'] ) && is_array( $args['items'] ) ) {
 			foreach ( $args['items'] as $key => $item ) {
 				$args['items'][ $key ] = $this->normalize_item( $item );
+			}
+		}
+
+		if ( $args['type'] === 'group' && empty( $args['default'] ) ) {
+			foreach ( $args['items'] as $item ) {
+				$args['default'][ $item['id'] ] = $item['default'];
 			}
 		}
 
