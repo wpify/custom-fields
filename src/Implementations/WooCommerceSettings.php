@@ -3,6 +3,7 @@
 namespace Wpify\CustomFields\Implementations;
 
 use WC_Admin_Settings;
+use WP_Screen;
 use Wpify\CustomFields\CustomFields;
 
 /**
@@ -69,10 +70,9 @@ final class WooCommerceSettings extends AbstractImplementation {
 	/**
 	 * @return void
 	 */
-	public function set_wcf_shown() {
-		$current_screen = get_current_screen();
-		$tab            = empty( $_REQUEST['tab'] ) ? '' : sanitize_title( $_REQUEST['tab'] );
-		$section        = empty( $_REQUEST['section'] ) ? '' : sanitize_title( $_REQUEST['section'] );
+	public function set_wcf_shown( WP_Screen $current_screen ) {
+		$tab     = empty( $_REQUEST['tab'] ) ? '' : sanitize_title( $_REQUEST['tab'] );
+		$section = empty( $_REQUEST['section'] ) ? '' : sanitize_title( $_REQUEST['section'] );
 
 		$this->wcf_shown = ( $current_screen->base === 'woocommerce_page_wc-settings'
 							 && $tab === $this->tab['id']

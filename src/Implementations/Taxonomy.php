@@ -2,6 +2,7 @@
 
 namespace Wpify\CustomFields\Implementations;
 
+use WP_Screen;
 use WP_Term;
 use Wpify\CustomFields\CustomFields;
 
@@ -29,9 +30,10 @@ final class Taxonomy extends AbstractPostImplementation {
 		parent::__construct( $args, $wcf );
 
 		$args = wp_parse_args( $args, array(
-			'taxonomy' => null,
-			'items'    => array(),
-			'term_id'  => null,
+			'taxonomy'      => null,
+			'items'         => array(),
+			'term_id'       => null,
+			'init_priority' => 10,
 		) );
 
 		$this->taxonomy = $args['taxonomy'];
@@ -42,7 +44,7 @@ final class Taxonomy extends AbstractPostImplementation {
 		add_action( $this->taxonomy . '_edit_form_fields', array( $this, 'render_edit_form' ) );
 		add_action( 'created_' . $this->taxonomy, array( $this, 'save' ) );
 		add_action( 'edited_' . $this->taxonomy, array( $this, 'save' ) );
-		add_action( 'init', array( $this, 'register_meta' ) );
+		add_action( 'init', array( $this, 'register_meta' ), $args['init_priority'] );
 	}
 
 	public function register_meta() {
@@ -69,8 +71,7 @@ final class Taxonomy extends AbstractPostImplementation {
 	/**
 	 * @return void
 	 */
-	public function set_wcf_shown() {
-		$current_screen  = get_current_screen();
+	public function set_wcf_shown( WP_Screen $current_screen ) {
 		$this->wcf_shown = ( $current_screen->taxonomy === $this->taxonomy );
 	}
 

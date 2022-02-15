@@ -2,6 +2,7 @@
 
 namespace Wpify\CustomFields\Implementations;
 
+use WP_Screen;
 use Wpify\CustomFields\Api;
 use Wpify\CustomFields\Parser;
 use Wpify\CustomFields\Sanitizer;
@@ -193,7 +194,7 @@ abstract class AbstractImplementation {
 	 */
 	abstract public function get_field( $name );
 
-	abstract public function set_wcf_shown();
+	abstract public function set_wcf_shown( WP_Screen $current_screen );
 
 	/**
 	 * @param array $item

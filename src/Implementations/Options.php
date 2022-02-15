@@ -2,6 +2,7 @@
 
 namespace Wpify\CustomFields\Implementations;
 
+use WP_Screen;
 use Wpify\CustomFields\CustomFields;
 
 /**
@@ -55,18 +56,19 @@ final class Options extends AbstractImplementation {
 		parent::__construct( $args, $wcf );
 
 		$args = wp_parse_args( $args, array(
-				'type'        => 'normal',
-				'parent_slug' => null,
-				'page_title'  => '',
-				'menu_title'  => '',
-				'capability'  => 'manage_options',
-				'menu_slug'   => null,
-				'section'     => null,
-				'page'        => null,
-				'icon_url'    => null,
-				'position'    => null,
-				'priority'    => 100,
-				'items'       => array(),
+				'type'          => 'normal',
+				'parent_slug'   => null,
+				'page_title'    => '',
+				'menu_title'    => '',
+				'capability'    => 'manage_options',
+				'menu_slug'     => null,
+				'section'       => null,
+				'page'          => null,
+				'icon_url'      => null,
+				'position'      => null,
+				'priority'      => 100,
+				'init_priority' => 10,
+				'items'         => array(),
 		) );
 
 		$this->type        = in_array( $args['type'], array( 'normal', 'user', 'network' ) ) ? $args['type'] : 'normal';
@@ -89,7 +91,7 @@ final class Options extends AbstractImplementation {
 			add_action( 'admin_menu', array( $this, 'register' ), $args['priority'] );
 		}
 
-		add_action( 'admin_init', array( $this, 'register_settings' ) );
+		add_action( 'admin_init', array( $this, 'register_settings' ), $args['init_priority'] );
 	}
 
 	/**
@@ -122,8 +124,7 @@ final class Options extends AbstractImplementation {
 	/**
 	 * @return void
 	 */
-	public function set_wcf_shown() {
-		$current_screen  = get_current_screen();
+	public function set_wcf_shown( WP_Screen $current_screen ) {
 		$this->wcf_shown = ( $this->hook_suffix === $current_screen->base );
 	}
 

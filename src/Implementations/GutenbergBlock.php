@@ -3,6 +3,7 @@
 namespace Wpify\CustomFields\Implementations;
 
 use Wpify\CustomFields\CustomFields;
+use WP_Screen;
 
 final class GutenbergBlock extends AbstractImplementation {
 	private $name;
@@ -55,6 +56,7 @@ final class GutenbergBlock extends AbstractImplementation {
 				'editor_style'     => null, // string
 				'style'            => null, // string
 				'items'            => array(), // array
+				'init_priority'    => 10,
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -68,10 +70,12 @@ final class GutenbergBlock extends AbstractImplementation {
 		}
 
 		foreach ( $defaults as $key => $value ) {
-			$this->{$key} = $args[ $key ];
+			if ( ! in_array( $key, array( 'init_priority' ) ) ) {
+				$this->{$key} = $args[ $key ];
+			}
 		}
 
-		add_action( 'init', array( $this, 'register_block' ) );
+		add_action( 'init', array( $this, 'register_block' ), $defaults['init_priority'] );
 	}
 
 	/**
@@ -219,8 +223,13 @@ final class GutenbergBlock extends AbstractImplementation {
 		// TODO: Implement get_field() method.
 	}
 
-	public function set_wcf_shown() {
-		// TODO: Implement set_wcf_shown() method.
+	/**
+	 * @param WP_Screen $current_screen
+	 *
+	 * @return bool
+	 */
+	public function set_wcf_shown( WP_Screen $current_screen ) {
+		return $current_screen->parent_base === 'edit';
 	}
 
 	public function render_default( $attributes ) {

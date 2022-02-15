@@ -3,6 +3,7 @@
 namespace Wpify\CustomFields\Implementations;
 
 use WP_Post;
+use WP_Screen;
 use Wpify\CustomFields\CustomFields;
 
 /**
@@ -59,6 +60,7 @@ final class Metabox extends AbstractPostImplementation {
 			'items'         => array(),
 			'post_types'    => array(),
 			'post_id'       => null,
+			'init_priority' => 10,
 		) );
 
 		$this->id            = $args['id'];
@@ -74,7 +76,7 @@ final class Metabox extends AbstractPostImplementation {
 
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 		add_action( 'save_post', array( $this, 'save' ) );
-		add_action( 'init', array( $this, 'register_meta' ) );
+		add_action( 'init', array( $this, 'register_meta' ), $args['init_priority'] );
 	}
 
 	/**
@@ -116,10 +118,9 @@ final class Metabox extends AbstractPostImplementation {
 	/**
 	 * @return void
 	 */
-	public function set_wcf_shown() {
+	public function set_wcf_shown( WP_Screen $current_screen ) {
 		global $pagenow;
 
-		$current_screen  = get_current_screen();
 		$this->wcf_shown = ( $current_screen->base === 'post'
 		                     && in_array( $current_screen->post_type, $this->post_types )
 		                     && in_array( $pagenow, array( 'post-new.php', 'post.php' ) ) );

@@ -22,14 +22,13 @@ const WysiwygField = (props) => {
 			return applyFilters('wcf_generator_' + props.generator, props.value, props);
 		}
 
-		return props.value;
+		return props.value || '';
 	}, [props]);
 
 	const [currentValue, setCurrentValue] = useState(value);
 
 	useEffect(() => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
-			console.log(currentValue);
 			onChange(currentValue);
 		}
 	}, [onChange, value, currentValue]);

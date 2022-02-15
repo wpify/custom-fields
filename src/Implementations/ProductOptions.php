@@ -2,6 +2,7 @@
 
 namespace Wpify\CustomFields\Implementations;
 
+use WP_Screen;
 use Wpify\CustomFields\CustomFields;
 
 /**
@@ -35,15 +36,16 @@ final class ProductOptions extends AbstractPostImplementation {
 		 * show_if_external, hide_if_external, hide_if_grouped, hide_if_virtual
 		 */
 		$args = wp_parse_args( $args, array(
-				'product_id' => null,
-				'tab'        => array(
+				'product_id'    => null,
+				'tab'           => array(
 						'id'       => 'general',
 						'label'    => null,
 						'priority' => 100,
 						'target'   => null,
 						'class'    => array(),
 				),
-				'items'      => array(),
+				'items'         => array(),
+				'init_priority' => 10,
 		) );
 
 		$this->tab        = $args['tab'];
@@ -66,7 +68,7 @@ final class ProductOptions extends AbstractPostImplementation {
 		add_action( 'woocommerce_product_data_panels', array( $this, 'render_data_panels' ) );
 		add_action( 'woocommerce_product_options_' . $this->tab['target'], array( $this, 'render_custom_fields' ) );
 		add_action( 'woocommerce_process_product_meta', array( $this, 'save' ) );
-		add_action( 'init', array( $this, 'register_meta' ) );
+		add_action( 'init', array( $this, 'register_meta' ), $args['init_priority'] );
 	}
 
 	public function register_meta() {
@@ -91,10 +93,9 @@ final class ProductOptions extends AbstractPostImplementation {
 	/**
 	 * @return void
 	 */
-	public function set_wcf_shown() {
+	public function set_wcf_shown( WP_Screen $current_screen ) {
 		global $pagenow;
 
-		$current_screen  = get_current_screen();
 		$this->wcf_shown = ( $current_screen->base === 'post'
 							 && $current_screen->post_type === 'product'
 							 && in_array( $pagenow, array( 'post-new.php', 'post.php' ) ) );

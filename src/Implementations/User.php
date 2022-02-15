@@ -2,6 +2,7 @@
 
 namespace Wpify\CustomFields\Implementations;
 
+use WP_Screen;
 use WP_User;
 use Wpify\CustomFields\CustomFields;
 
@@ -24,19 +25,24 @@ final class User extends AbstractImplementation {
 	 */
 	public function __construct( array $args, CustomFields $wcf ) {
 		parent::__construct( $args, $wcf );
-		$args          = wp_parse_args( $args, array( 'items' => array(), 'user_id' => null ) );
+		$args          = wp_parse_args( $args, array(
+			'items'         => array(),
+			'user_id'       => null,
+			'init_priority' => 10,
+		) );
 		$this->items   = $args['items'];
 		$this->user_id = $args['user_id'];
 
-		add_action( 'show_user_profile', [ $this, 'render_edit_form' ] );
-		add_action( 'edit_user_profile', [ $this, 'render_edit_form' ] );
-		add_action( 'personal_options_update', [ $this, 'save' ] );
-		add_action( 'edit_user_profile_update', [ $this, 'save' ] );
-		add_action( 'init', array( $this, 'register_meta' ) );
+		add_action( 'show_user_profile', array( $this, 'render_edit_form' ) );
+		add_action( 'edit_user_profile', array( $this, 'render_edit_form' ) );
+		add_action( 'personal_options_update', array( $this, 'save' ) );
+		add_action( 'edit_user_profile_update', array( $this, 'save' ) );
+		add_action( 'init', array( $this, 'register_meta' ), $args['init_priority'] );
 	}
 
 	public function register_meta() {
 		$items = $this->get_items();
+
 		foreach ( $items as $item ) {
 			register_meta( 'user', $item['id'], array(
 				'type'        => $this->get_item_type( $item ),
@@ -56,8 +62,7 @@ final class User extends AbstractImplementation {
 	/**
 	 * @return void
 	 */
-	public function set_wcf_shown() {
-		$current_screen  = get_current_screen();
+	public function set_wcf_shown( WP_Screen $current_screen ) {
 		$this->wcf_shown = $current_screen->base === 'profile' || $current_screen->base === 'user-edit';
 	}
 
