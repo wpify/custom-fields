@@ -214,6 +214,7 @@ abstract class AbstractImplementation {
 			case 'multi_select':
 				return 'array';
 			case 'group':
+			case 'link':
 				return 'object';
 			case 'checkbox':
 			case 'toggle':
@@ -278,7 +279,7 @@ abstract class AbstractImplementation {
 			$args['default'] = 0;
 		}
 
-		if ( in_array( $args['type'], array( 'group', 'multi_group', 'multi_post', 'multi_attachment', 'multi_toggle', 'multi_select' ) ) && empty( $args['default'] ) ) {
+		if ( in_array( $args['type'], array( 'group', 'multi_group', 'multi_post', 'multi_attachment', 'multi_toggle', 'multi_select', 'link' ) ) && empty( $args['default'] ) ) {
 			$args['default'] = array();
 		}
 
