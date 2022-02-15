@@ -26,6 +26,7 @@ The custom fields themselves use the standard HTML inputs, so it's recommended t
 * E-mail `email`
 * Group `group`: To save multiple custom fields in one object.
 * HTML `html`: To print some piece of HTML in the settings.
+* Link `link`
 * Month `month`
 * Number `number`
 * Password `password`
@@ -596,6 +597,10 @@ As you can see, you can add a new group with any fields inside it, move the grou
 **Additional attributes**
 
 * `content`: String with HTML to render.
+
+## Link field type `link`
+
+Feld that returns an array `array( 'url' => '', 'label' => '', 'target' => null )`
 
 ## Month field type `month`
 

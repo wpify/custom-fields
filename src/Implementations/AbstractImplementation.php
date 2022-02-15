@@ -127,7 +127,7 @@ abstract class AbstractImplementation {
 					return array(
 						'label'   => $post->post_title,
 						'value'   => $post->ID,
-						'excerpt' => $post->post_excerpt,
+						'excerpt' => get_the_excerpt( $post ),
 					);
 				}, get_posts( array(
 					'numberposts' => - 1,

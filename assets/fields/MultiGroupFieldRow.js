@@ -46,12 +46,12 @@ const MultiGroupFieldRow = (props) => {
 
 	return (
 		<div className={classnames('wcf-multi-group-row', className)}>
-			<h4 className={classnames('wcf-multi-group-row__header')}>
+			<div className={classnames('wcf-multi-group-row__header')}>
 				<span className={classnames('wcf-multi-group-row__title')} onClick={() => toggleCollapsed()}>
 					#{index + 1}: {title}
 				</span>
 				<CloseButton onClick={handleDelete}/>
-			</h4>
+			</div>
 			<div className={classnames('wcf-multi-group-row__content', {
 				'wcf-multi-group-row__content--collapsed': collapsed,
 			})}>

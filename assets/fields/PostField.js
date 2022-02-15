@@ -142,9 +142,11 @@ const PostField = (props) => {
 												<strong dangerouslySetInnerHTML={{ __html: option.label }}/>
 												<CloseButton onClick={handleDelete(option.value)}/>
 											</div>
-											<ErrorBoundary>
-												<p dangerouslySetInnerHTML={{ __html: option.excerpt }}/>
-											</ErrorBoundary>
+											{option.excerpt && (
+												<ErrorBoundary>
+													<p dangerouslySetInnerHTML={{ __html: option.excerpt }}/>
+												</ErrorBoundary>
+											)}
 										</div>
 									</ErrorBoundary>
 								) : null;

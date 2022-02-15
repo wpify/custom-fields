@@ -10,6 +10,7 @@ final class Sanitizer {
 	/** @var string[] */
 	private $sanitizers = array(
 		'group'    => 'sanitize_group_value',
+		'link'     => 'sanitize_group_value',
 		'text'     => 'sanitize_text_field',
 		'email'    => 'sanitize_email',
 		'color'    => 'sanitize_hex_color',
