@@ -13,8 +13,6 @@ const EDIT_VIEW = 'EDIT_VIEW';
 const GutenbergBlock = (props) => {
 	const { appContext, attributes, isSelected } = props;
 
-	console.log(attributes);
-
 	const [view, setView] = useState(DESKTOP_VIEW);
 
 	useEffect(() => {
