@@ -5,6 +5,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { Icon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
+import SelectControl from '../components/SelectControl';
 
 // eslint-disable-next-line react/display-name
 const LinkField = React.forwardRef((props, ref) => {
@@ -17,6 +18,11 @@ const LinkField = React.forwardRef((props, ref) => {
 		custom_attributes = {},
 		group_level = 0,
 		className,
+		post_type,
+		post_type_name,
+		query_args = {},
+		appContext,
+		options,
 	} = props;
 
 	const defaultValue = { label: '', url: '', target: null };
@@ -41,10 +47,16 @@ const LinkField = React.forwardRef((props, ref) => {
 		return val;
 	}, [props]);
 
+	const otherArgs = useMemo(() => {
+		return {
+			post_type,
+			query_args,
+			type: 'post',
+		};
+	}, [post_type, query_args]);
+
 	const [currentValue, setCurrentValue] = useState(value);
-
-	const filled = Boolean(currentValue.url) || Boolean(currentValue.label) || Boolean(currentValue.target);
-
+	const [selectedOptions, setSelectedOptions] = useState([]);
 	const [isOpen, setIsOpen] = useState(false);
 
 	const toggleOpen = (forceOpen) => {
@@ -72,15 +84,25 @@ const LinkField = React.forwardRef((props, ref) => {
 		return () => {
 			document.removeEventListener('click', handleHide);
 			document.removeEventListener('keyup', handleHide);
-		}
+		};
 	}, [isOpen, toggleOpen]);
+
+	useEffect(() => {
+		if (selectedOptions?.length > 0) {
+			const option = selectedOptions.find(Boolean);
+
+			if (currentValue.url !== option?.permalink) {
+				setCurrentValue({ ...currentValue, url: option?.permalink });
+			}
+		}
+	}, [selectedOptions, currentValue, setCurrentValue]);
 
 	const div = useRef();
 
 	const describedBy = description ? id + '-description' : null;
 
 	const handleChange = (key) => (event) => {
-		let newValue = { label: '', url: '', target: null };
+		let newValue = { label: '', url: '', target: null, post: null };
 
 		if (Object(currentValue) === currentValue) {
 			newValue = { ...currentValue };
@@ -88,6 +110,8 @@ const LinkField = React.forwardRef((props, ref) => {
 
 		if (key === 'target') {
 			newValue[key] = event.target.checked ? '_blank' : null;
+		} else if (key === 'post') {
+			newValue[key] = event;
 		} else {
 			newValue[key] = event.target.value;
 		}
@@ -116,15 +140,31 @@ const LinkField = React.forwardRef((props, ref) => {
 								className={classnames('components-text-control__input')}
 							/>
 						</label>
-						<label className="wcf-link__form-item">
-							<span>{__('URL', 'wpify-custom-fields')}</span>
-							<input
-								type="url"
-								value={currentValue.url}
-								onChange={handleChange('url')}
-								className={classnames('components-text-control__input')}
-							/>
-						</label>
+						{post_type ? (
+							<label className="wcf-link__form-item">
+								<span>{post_type_name}</span>
+								<SelectControl
+									id={id}
+									onChange={handleChange('post')}
+									required
+									api={appContext.api}
+									value={currentValue.post}
+									otherArgs={otherArgs}
+									defaultOptions={options}
+									setOptions={setSelectedOptions}
+								/>
+							</label>
+						) : (
+							<label className="wcf-link__form-item">
+								<span>{__('URL', 'wpify-custom-fields')}</span>
+								<input
+									type="url"
+									value={currentValue.url}
+									onChange={handleChange('url')}
+									className={classnames('components-text-control__input')}
+								/>
+							</label>
+						)}
 						<label className="wcf-link__form-item">
 							<input
 								type="checkbox"
@@ -152,10 +192,10 @@ const LinkField = React.forwardRef((props, ref) => {
 							(<span className="wcf-link__url">{currentValue.url}</span>)
 						)}
 						{currentValue.target === '_blank' && (
-							<Icon icon={'external'} />
+							<Icon icon={'external'}/>
 						)}
 						{(!Boolean(currentValue.label) && !Boolean(currentValue.url)) && (
-							<Icon icon={'insert'} />
+							<Icon icon={'insert'}/>
 						)}
 					</div>
 				)}

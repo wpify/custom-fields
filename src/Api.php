@@ -10,11 +10,17 @@ use WP_REST_Server;
 
 final class Api extends WP_REST_Controller {
 	protected $rest_base = 'wcf';
+	/**
+	 * @var CustomFields
+	 */
+	private $wcf;
 
 	/**
 	 * Api constructor.
 	 */
-	public function __construct() {
+	public function __construct( CustomFields $wcf ) {
+		$this->wcf = $wcf;
+
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 	}
 
@@ -41,24 +47,37 @@ final class Api extends WP_REST_Controller {
 				},
 			)
 		) );
+
+		register_rest_route( $this->get_namespace(), '/options', array(
+			array(
+				'methods'             => WP_REST_Server::ALLMETHODS,
+				'callback'            => array( $this, 'get_options' ),
+				'permission_callback' => function () {
+					return current_user_can( 'read' );
+				},
+			)
+		) );
 	}
 
 	/**
-	 * @param int $version
-	 *
 	 * @return string
 	 */
-	private function get_namespace( $version = 1 ): string {
-		return $this->rest_base . '/v' . $version;
+	private function get_namespace(): string {
+		return $this->rest_base . '/' . substr( md5( __FILE__ ), 0, 10 );
 	}
 
 	/**
-	 * @param int $version
-	 *
 	 * @return string
 	 */
-	public function get_rest_url( $version = 1 ): string {
-		return rest_url( $this->get_namespace( $version ) );
+	public function get_rest_url(): string {
+		return rest_url( $this->get_namespace() );
+	}
+
+	/**
+	 * @return string
+	 */
+	public function get_rest_path(): string {
+		return '/' . $this->get_namespace();
 	}
 
 	/**
@@ -104,7 +123,7 @@ final class Api extends WP_REST_Controller {
 		$current_posts = ! empty( $params['current_value'] ) ? get_posts( array(
 			'post_type'      => $query_args['post_type'],
 			'include'        => $params['current_value'],
-			'posts_per_page' => -1,
+			'posts_per_page' => - 1,
 			'post_status'    => 'any',
 		) ) : array();
 
@@ -137,5 +156,43 @@ final class Api extends WP_REST_Controller {
 			'excerpt'   => get_the_excerpt( $post ),
 			'thumbnail' => get_the_post_thumbnail_url( $post ),
 		);
+	}
+
+	public function register_fields_options() {
+		foreach ( $this->wcf->registered as $registered ) {
+			$data = $registered->get_data();
+			$registered->fill_selects( $data['items'] );
+		}
+	}
+
+	public function get_options( WP_REST_Request $request ): WP_REST_Response {
+		$this->register_fields_options();
+
+		$args     = $request->get_params();
+		$callback = $this->wcf->get_api_callback( $args['options'] );
+		$items    = array();
+
+		if ( is_callable( $callback ) ) {
+			$items = $callback( $args );
+
+			if ( empty( $args['search'] )
+			     && ! empty( $args['value'] )
+			     && ( empty( $args['type'] ) || ! in_array( $args['type'], array( 'post', 'multi_post' ) ) )
+			) {
+				$default_args          = $args;
+				$default_args['value'] = array();
+				$set_values            = array_map( function ( $option ) {
+					return $option['value'];
+				}, $items );
+
+				foreach ( $callback( $default_args ) as $default_option ) {
+					if ( ! in_array( $default_option['value'], $set_values ) ) {
+						$items[] = $default_option;
+					}
+				}
+			}
+		}
+
+		return rest_ensure_response( array_values( $items ) );
 	}
 }

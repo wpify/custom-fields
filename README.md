@@ -600,7 +600,11 @@ As you can see, you can add a new group with any fields inside it, move the grou
 
 ## Link field type `link`
 
-Feld that returns an array `array( 'url' => '', 'label' => '', 'target' => null )`
+Field that returns an array `array( 'url' => '', 'label' => '', 'target' => null, 'post' => null )`
+
+**Additional attributes**
+
+* `post_type`: Name of the post type you want to link to.
 
 ## Month field type `month`
 
@@ -619,22 +623,13 @@ Feld that returns an array `array( 'url' => '', 'label' => '', 'target' => null 
 ![Post field](docs/images/wcf-post-type.png)
 ![Post field](docs/images/wcf-post-2-type.png)
 
-Allows selecting posts from a particular post type. If you want more granular control over the posts that are shown in the select box, you can use the filter `wcf_get_posts_args`:
-
-```php
-/***
- * @var array $query_args Query arguments used in get_posts function
- * @var array $args Arguments passed to the field type 
- */
-add_filter( 'wcf_get_posts_args', function ( array $query_args, array $args ) {
-   return $query_args;
-}, 10, 2 );
-```
+Allows selecting posts from a particular post type.
 
 **Additional attributes**
 
 * string `post_type`
-* You can also use any other attribute. Those attributes will be passed to the `wcf_get_posts_args` filter.
+* array `query_args`
+* bool `async`
 
 ## Select field type `select`, `multi_select`
 
@@ -643,33 +638,8 @@ add_filter( 'wcf_get_posts_args', function ( array $query_args, array $args ) {
 The select field can accept options asynchronously from API (recommended) or inline from `option` attribute. Each option must be an associative array with `label` and `value` keys.
 
 **Additional attributes**
-* `list_type` if you use asynchronous option list from API.
-* `options` if you use the inline list of options.
-* `options_callback` callback that returns options.
-* You can also use any other attribute. Those attributes will be passed to the `wcf_list_{$list_type}` filter.
-
-### Asynchronous options list
-
-To define an asynchronous options list, you have first to define unique `list_type`. Then you can add a filter that will return the actual list. Arguments `$args` also contains the current phrase that the user typed into a select field.
-
-```php
-/***
- * @var array $list List of the options
- * @var array $args Arguments passed to the field type 
- */
-add_filter( "wcf_list_{$list_type}", function ( array $list, array $args ) {
-    $search = $args['search'];
-    $list = array(
-        array( 'label' => 'Option 1', 'value' => 1 ),
-        array( 'label' => 'Option 2', 'value' => 2 ),
-    );
-
-    return array_filter( $list, function ( $option ) use ( $search ) {
-        return strpos( $option['value'], $search ) !== false
-            || strpos( $option['label'], $search ) !== false;
-    } );
-}, 10, 2 );
-```
+* `options` List of options or callback that return list of options with keys `value` and `label`.
+* `async` If true, the options list will be loaded asynchronously.
 
 ## Phone number field type `tel`
 

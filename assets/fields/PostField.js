@@ -1,15 +1,48 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PT from 'prop-types';
-import { useFetch } from '../helpers';
-import SelectControl from '../components/SelectControl';
-import MoveButton from '../components/MoveButton';
-import CloseButton from '../components/CloseButton';
-import SortableControl from '../components/SortableControl';
+import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { applyFilters } from '@wordpress/hooks';
+import SelectControl from '../components/SelectControl';
+import SortableControl from '../components/SortableControl';
+import MoveButton from '../components/MoveButton';
+import CloseButton from '../components/CloseButton';
+
+const SelectedOption = ({ selectedOptions, value, handleDelete }) => {
+	const option = selectedOptions.find(o => String(o.value) === String(value));
+
+	return option ? (
+		<ErrorBoundary key={option.value}>
+			<div
+				className={classnames('wcf-post-selected__item', {
+					'wcf-post-selected__item--with-image': !!option.thumbnail,
+				})}
+			>
+				{option.thumbnail && (
+					<div className="wcf-post-selected__item-image">
+						<img src={option.thumbnail} width={100} height={100} alt=""/>
+					</div>
+				)}
+				<div className="wcf-post-selected__item-header">
+					{selectedOptions.length > 1 && (
+						<MoveButton/>
+					)}
+					<strong dangerouslySetInnerHTML={{ __html: option.label }}/>
+					<CloseButton onClick={handleDelete(option.value)}/>
+				</div>
+				{option.excerpt && (
+					<div className="wcf-post-selected__item-description">
+						<p dangerouslySetInnerHTML={{ __html: option.excerpt }}/>
+					</div>
+				)}
+			</div>
+		</ErrorBoundary>
+	) : null;
+};
 
 const PostField = (props) => {
 	const {
+		type,
 		id,
 		onChange,
 		description,
@@ -17,77 +50,40 @@ const PostField = (props) => {
 		required,
 		isMulti = false,
 		className,
-		post_type = 'post',
-		query_args = [],
 		appContext,
-		options = [],
+		options,
+		post_type,
+		query_args = {},
 	} = props;
 
 	const value = useMemo(() => {
-		const arr = (Array.isArray(props.value) ? props.value : [props.value]).filter(Boolean).map(v => parseInt(v, 10));
-
 		if (props.generator) {
-			return applyFilters('wcf_generator_' + props.generator, arr, props);
+			return applyFilters('wcf_generator_' + props.generator, props.value, props);
 		}
 
-		return arr;
+		if (Array.isArray(props.value)) {
+			return props.value;
+		}
+
+		return [props.value];
 	}, [props]);
 
-	const { api = {} } = appContext;
-	const { url, nonce } = api;
+	const otherArgs = useMemo(() => {
+		return {
+			post_type,
+			query_args,
+			type,
+		};
+	}, [post_type, query_args, type]);
+
 	const [currentValue, setCurrentValue] = useState(value);
-	const [search, setSearch] = useState('');
+	const [selectedOptions, setSelectedOptions] = useState([]);
 
 	useEffect(() => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
 			onChange(isMulti ? currentValue : currentValue.find(Boolean));
 		}
-	}, [isMulti, value, currentValue, onChange]);
-
-	const { fetch, result } = useFetch({ defaultValue: options });
-
-	const timer = useRef(0);
-
-	useEffect(() => {
-		if (search !== '') {
-			window.clearTimeout(timer.current);
-
-			timer.current = window.setTimeout(() => {
-				if (url && nonce) {
-					fetch({
-						method: 'post',
-						url: url + '/posts',
-						nonce: nonce,
-						body: {
-							id,
-							value,
-							description,
-							group_level,
-							required,
-							isMulti,
-							post_type,
-							query_args,
-							search
-						},
-					});
-				}
-			}, 500);
-		}
-
-		return () => {
-			window.clearTimeout(timer.current);
-		};
-	}, [url, nonce, id, value, description, group_level, required, isMulti, post_type, query_args, search, fetch]);
-
-	const getSelectedOptions = useCallback(() => {
-		return currentValue.map(value => {
-			return result && Array.isArray(result)
-				? result.find(option => {
-					return String(option.value) === String(value);
-				})
-				: [];
-		}).filter(Boolean);
-	}, [currentValue, result]);
+	}, [onChange, value, currentValue]);
 
 	const handleDelete = (id) => () => {
 		setCurrentValue(currentValue.filter(value => String(value) !== String(id)));
@@ -95,85 +91,95 @@ const PostField = (props) => {
 
 	const handleAdd = (item) => {
 		if (isMulti) {
-			const newValues = [...currentValue, item.value];
+			const newValues = [...currentValue, item];
 			setCurrentValue([...new Set(newValues.map(value => String(value)))]);
 		} else {
-			setCurrentValue([item.value]);
+			setCurrentValue([item]);
 		}
 	};
 
-	const selectedOptions = getSelectedOptions();
-
 	return (
-		<React.Fragment>
+		<ErrorBoundary>
 			{group_level === 0 && (
-				<input type="hidden" name={id} value={isMulti ? JSON.stringify(currentValue) : currentValue}/>
+				<input type="hidden" name={id} value={isMulti
+					? JSON.stringify(Array.isArray(currentValue) ? currentValue.filter(Boolean) : [])
+					: currentValue}/>
 			)}
-			<ErrorBoundary>
-				<SelectControl
-					onInputChange={setSearch}
-					options={result && Array.isArray(result) ? result.filter(option => !currentValue.includes(String(option.value))) : []}
-					onChange={handleAdd}
-					value={null}
-					className={className}
-				/>
-			</ErrorBoundary>
+			<SelectControl
+				id={id}
+				onChange={handleAdd}
+				required={required}
+				isMulti={isMulti}
+				className={className}
+				api={appContext.api}
+				value={currentValue}
+				defaultOptions={options}
+				setOptions={setSelectedOptions}
+				showSelected={false}
+				otherArgs={otherArgs}
+			/>
+
 			{description && (
 				<ErrorBoundary>
 					<p className="description" dangerouslySetInnerHTML={{ __html: description }}/>
 				</ErrorBoundary>
 			)}
-			{currentValue && currentValue.length > 0 && (
-				<div className="wcf-post-selected">
-					<ErrorBoundary>
-						<SortableControl
-							items={currentValue.map(String)}
-							setItems={(items) => setCurrentValue(items.map(v => parseInt(v)))}
-							renderItem={(value) => {
-								const option = selectedOptions.find(o => o.value.toString() === value.toString());
 
-								return option ? (
-									<ErrorBoundary key={option.value}>
-										<div className="wcf-post-selected__item">
-											<div className="wcf-post-selected__item-header">
-												{currentValue.length > 1 && (
-													<MoveButton/>
-												)}
-												<strong dangerouslySetInnerHTML={{ __html: option.label }}/>
-												<CloseButton onClick={handleDelete(option.value)}/>
-											</div>
-											{option.excerpt && (
-												<ErrorBoundary>
-													<p dangerouslySetInnerHTML={{ __html: option.excerpt }}/>
-												</ErrorBoundary>
-											)}
-										</div>
-									</ErrorBoundary>
-								) : null;
-							}}
-						/>
-					</ErrorBoundary>
-				</div>
-			)}
-		</React.Fragment>
+			<div className="wcf-post-selected">
+				{selectedOptions.length > 1 ? (
+					<SortableControl
+						items={currentValue.map(o => String(o))}
+						setItems={(items) => setCurrentValue(items.map(v => parseInt(v)))}
+						renderItem={(value) => (
+							<SelectedOption
+								selectedOptions={selectedOptions}
+								value={value}
+								handleDelete={handleDelete}
+							/>
+						)}
+					/>
+				) : (
+					<>
+						{currentValue.map((value) => (
+							<SelectedOption
+								selectedOptions={selectedOptions}
+								value={value}
+								handleDelete={handleDelete}
+								key={value}
+							/>
+						))}
+					</>
+				)}
+			</div>
+		</ErrorBoundary>
 	);
 };
 
 PostField.propTypes = {
 	className: PT.string,
 	id: PT.string,
-	value: PT.oneOfType([PT.string, PT.number, PT.array]),
+	value: PT.oneOfType([PT.string, PT.number]),
 	onChange: PT.func,
 	options: PT.array,
 	description: PT.oneOfType([PT.string, PT.element]),
-	list_type: PT.string,
 	group_level: PT.number,
 	required: PT.bool,
 	isMulti: PT.bool,
-	post_type: PT.string,
-	query_args: PT.array,
 	appContext: PT.object,
 	generator: PT.string,
+	async: PT.bool,
+};
+
+PostField.getHumanTitle = (item, value) => {
+	if (Array.isArray(item.options)) {
+		const option = item.options.find(i => String(i.value) === String(value));
+
+		if (option) {
+			return option.label;
+		}
+	}
+
+	return value;
 };
 
 export default PostField;

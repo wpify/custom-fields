@@ -34,8 +34,6 @@ final class GutenbergBlock extends AbstractImplementation {
 	 * @param CustomFields $wcf
 	 */
 	public function __construct( array $args, CustomFields $wcf ) {
-		parent::__construct( $args, $wcf );
-
 		$defaults = array(
 				'name'             => null, // string
 				'title'            => '', // string
@@ -68,6 +66,8 @@ final class GutenbergBlock extends AbstractImplementation {
 		if ( empty( $args['icon'] ) ) {
 			$args['icon'] = file_get_contents( __DIR__ . '/../../images/wpify-logo-bw.svg' );
 		}
+
+		parent::__construct( $args, $wcf );
 
 		foreach ( $defaults as $key => $value ) {
 			if ( ! in_array( $key, array( 'init_priority' ) ) ) {
@@ -129,18 +129,15 @@ final class GutenbergBlock extends AbstractImplementation {
 
 			if ( method_exists( $this, $method ) ) {
 				$args[ $field ] = $this->$method();
-				continue;
-			}
-
-			if ( property_exists( $this, $field ) ) {
+			} elseif ( property_exists( $this, $field ) ) {
 				$args[ $field ] = $this->{$field};
-				continue;
 			}
 		}
 
 		$args['api'] = array(
 				'url'   => $this->api->get_rest_url(),
 				'nonce' => $this->api->get_rest_nonce(),
+				'path'  => $this->api->get_rest_path(),
 		);
 
 		return $args;

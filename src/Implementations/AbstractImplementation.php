@@ -2,6 +2,7 @@
 
 namespace Wpify\CustomFields\Implementations;
 
+use WP_Query;
 use WP_Screen;
 use Wpify\CustomFields\Api;
 use Wpify\CustomFields\Parser;
@@ -13,6 +14,9 @@ use Wpify\CustomFields\CustomFields;
  * @package CustomFields\Implementations
  */
 abstract class AbstractImplementation {
+	/** @var string */
+	protected $implementation_id;
+
 	/** @var Parser */
 	protected $parser;
 
@@ -32,10 +36,11 @@ abstract class AbstractImplementation {
 	protected $script_handle = '';
 
 	public function __construct( array $args, CustomFields $wcf ) {
-		$this->wcf       = $wcf;
-		$this->parser    = $wcf->get_parser();
-		$this->sanitizer = $wcf->get_sanitizer();
-		$this->api       = $wcf->get_api();
+		$this->wcf               = $wcf;
+		$this->parser            = $wcf->get_parser();
+		$this->sanitizer         = $wcf->get_sanitizer();
+		$this->api               = $wcf->get_api();
+		$this->implementation_id = $this->unique_id( $args );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'current_screen', array( $this, 'set_wcf_shown' ) );
@@ -104,6 +109,7 @@ abstract class AbstractImplementation {
 		$data['api']   = array(
 			'url'   => $this->api->get_rest_url(),
 			'nonce' => $this->api->get_rest_nonce(),
+			'path'  => $this->api->get_rest_path(),
 		);
 
 		$class = empty( $attributes['class'] ) ? 'js-wcf' : 'js-wcf ' . $attributes['class'];
@@ -117,31 +123,146 @@ abstract class AbstractImplementation {
 		do_action( 'wcf_after_fields', $data );
 	}
 
-	public function fill_selects( $items ) {
+	public function query_posts( $args ) {
+		$query = new WP_Query( $args );
+		$posts = array();
+
+		while ( $query->have_posts() ) {
+			$query->the_post();
+			global $post;
+			$posts[] = $post;
+		}
+
+		wp_reset_postdata();
+
+		return $posts;
+	}
+
+	public function get_post_options( $args = null ) {
+		if ( is_string( $args['value'] ) ) {
+			$args['value'] = json_decode( $args['value'] );
+		}
+
+		if ( ! is_array( $args['value'] ) ) {
+			$args['value'] = array( $args['value'] );
+		}
+
+		$args['value']      = array_filter( $args['value'] );
+		$args['query_args'] = $args['query_args'] ?? array();
+
+		$query_args = wp_parse_args( $args['query_args'], array(
+			'numberposts'         => empty( $args['search'] ) ? 100 : - 1,
+			'post_type'           => $args['post_type'] ?? 'post',
+			'ignore_sticky_posts' => true,
+		) );
+
+		if ( ! empty( $args['search'] ) ) {
+			$query_args['s'] = $args['search'];
+		} elseif ( ! empty( $args['value'] ) ) {
+			$query_args['post__in'] = $args['value'];
+			$query_args['orderby']  = 'post__in';
+		}
+
+		$posts    = $this->query_posts( $query_args );
+		$post_ids = array_map( function ( $post ) {
+			return $post->ID;
+		}, $posts );
+
+		$args['post__not_in'] = array_map( function ( $post ) {
+			return $post->ID;
+		}, $posts );
+
+		unset( $query_args['post__in'] );
+		unset( $query_args['orderby'] );
+		unset( $query_args['s'] );
+
+		foreach ( $this->query_posts( $query_args ) as $post ) {
+			if ( ! in_array( $post->ID, $post_ids ) ) {
+				$posts[] = $post;
+			}
+		}
+
+		return array_map( function ( $post ) {
+			return array(
+				'value'     => $post->ID,
+				'label'     => get_the_title( $post ) . ' (ID ' . $post->ID . ')',
+				'excerpt'   => get_the_excerpt( $post ),
+				'thumbnail' => get_the_post_thumbnail_url( $post ),
+				'permalink' => get_permalink( $post ),
+			);
+		}, $posts );
+	}
+
+	public function fill_selects( $items, $prefix = null ) {
 		foreach ( $items as $key => $item ) {
-			if ( in_array( $item['type'], array( 'select', 'multi_select' ) ) && ! empty( $item['options_callback'] ) && is_callable( $item['options_callback'] ) ) {
-				$callback                 = $item['options_callback'];
-				$items[ $key ]['options'] = $callback( $item );
-			} elseif ( in_array( $item['type'], array( 'post', 'multi_post' ) ) ) {
-				$items[ $key ]['options'] = array_map( function ( $post ) {
-					return array(
-						'label'   => $post->post_title,
-						'value'   => $post->ID,
-						'excerpt' => get_the_excerpt( $post ),
-					);
-				}, get_posts( array(
-					'numberposts' => - 1,
-					'post_type'   => $item['post_type'] ?? 'post',
-					'include'     => $item['value'],
-					'orderby'     => 'post__in',
-					'post_status' => 'any',
-				) ) );
-			} elseif ( ! empty( $item['items'] ) ) {
-				$items[ $key ]['items'] = $this->fill_selects( $item['items'] );
+			if ( in_array( $item['type'], array( 'post', 'multi_post', 'link' ) ) && empty( $item['options'] ) ) {
+				$items[ $key ]['options'] = array( $this, 'get_post_options' );
+			}
+
+			$id = ( $prefix ?? $this->implementation_id ) . ':' . $item['id'];
+
+			if ( isset( $items[ $key ]['options'] ) && is_callable( $items[ $key ]['options'] ) ) {
+				$callback = $items[ $key ]['options'];
+
+				if ( ! empty( $item['async'] ) ) {
+					$items[ $key ]['options'] = $id;
+					$this->wcf->set_api_callback( $items[ $key ]['options'], $callback );
+				} else {
+					$items[ $key ]['options'] = $callback( $item );
+				}
+			} elseif ( isset( $items[ $key ]['options'] ) && is_array( $items[ $key ]['options'] ) && ! empty( $item['async'] ) ) {
+				$items[ $key ]['options'] = $id;
+				$this->wcf->set_api_callback( $items[ $key ]['options'], function ( $args ) use ( $item ) {
+					if ( ! empty( $args['search'] ) ) {
+						return array_filter( $item['options'], function ( $option ) use ( $args ) {
+							return $this->search_in_string( $option['label'] ?? '', $args['search'] )
+							       || $this->search_in_string( $option['value'] ?? '', $args['search'] )
+							       || $this->search_in_string( $option['excerpt'] ?? '', $args['search'] );
+						} );
+					}
+
+					return $item['options'];
+				} );
+			}
+
+			if ( ! empty( $item['items'] ) ) {
+				$items[ $key ]['items'] = $this->fill_selects( $item['items'], $id );
 			}
 		}
 
 		return $items;
+	}
+
+	/**
+	 * @param $input
+	 *
+	 * @return array
+	 */
+	public function normalize_for_search( $input = '' ): array {
+		return explode( ' ', trim( preg_replace( '/\s+/m', ' ', strtolower( remove_accents( strval( $input ) ) ) ) ) );
+	}
+
+	public function search_in_string( $haystack, $needle ) {
+		$haystack = $this->normalize_for_search( $haystack );
+		$needle   = $this->normalize_for_search( $needle );
+
+		$matched = array_map( function ( $needle_word ) use ( $haystack ) {
+			foreach ( $haystack as $haystack_word ) {
+				if ( strpos( $haystack_word, $needle_word ) !== false ) {
+					return true;
+				}
+			}
+
+			return false;
+		}, $needle );
+
+		foreach ( $matched as $is_matched ) {
+			if ( ! $is_matched ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -287,6 +408,12 @@ abstract class AbstractImplementation {
 			$args['default'] = false;
 		}
 
+		if ( $args['type'] === 'link' && ! empty( $args['post_type'] ) ) {
+			$args['async'] = $args['async'] ?? true;
+			$post_type = get_post_type_object( $args['post_type'] );
+			$args['post_type_name'] = $post_type->labels->singular_name;
+		}
+
 		$args_aliases = array(
 			'label'           => 'title',
 			'desc'            => 'description',
@@ -317,5 +444,21 @@ abstract class AbstractImplementation {
 		}
 
 		return $args;
+	}
+
+	public function unique_id( $data, $prefix = '' ): string {
+		unset( $data['items'] );
+		unset( $data['render_callback'] );
+
+		ob_start();
+		var_dump( $data, $prefix );
+
+		return md5( ob_get_clean() );
+	}
+
+	public function register_selects() {
+		$data = $this->get_data();
+
+		$this->fill_selects( $data['items'] );
 	}
 }

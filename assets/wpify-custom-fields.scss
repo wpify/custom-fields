@@ -6,22 +6,49 @@
 
 .wcf-select {
   display: inline-block;
-  min-width: 350px;
-  z-index: 2;
+  min-width: 300px;
 
-  input {
+  & &__control {
+	padding: 2px 4px;
 	min-height: 0;
+	border-radius: 2px;
+  }
+
+  & &__input-container {
+	margin: 0;
+	padding: 0;
+  }
+
+  & &__input {
 	padding: 0;
 	border: 0;
 	line-height: 1;
+	min-height: 1rem;
   }
 
-  input:focus {
+  & &__input:focus {
 	box-shadow: none;
   }
 
-  svg {
-	margin: -4px;
+  & &__indicator {
+	padding: 2px;
+  }
+
+  & &__indicator-separator {
+	margin: 2px 0;
+  }
+
+  & &__value-container {
+	padding: 0;
+	gap: 4px;
+  }
+
+  & &__multi-value {
+	margin: 0;
+  }
+
+  & &__menu {
+	z-index: 1000;
   }
 }
 
@@ -57,13 +84,14 @@
 	cursor: move;
 	margin-right: 10px;
 	position: absolute;
-	top: 0;
-	left: 0;
-	bottom: 0;
+	top: 0.5rem;
+	left: 0.5rem;
 	display: flex;
 	align-items: flex-start;
-	padding: 1rem;
+	padding: 0.5rem;
 	margin-top: 0.35rem;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.75);
   }
 
   &--delete {
@@ -159,18 +187,16 @@
 }
 
 .wcf-post-selected {
-  &__item-header {
-	display: flex;
-	flex-flow: row nowrap;
-	font-size: 1rem;
-	line-height: 1;
-  }
-
   &__item {
 	background-color: white;
 	padding: 1rem 1.5rem;
 	margin: 5px 0;
 	border: 1px solid #c3c4c7;
+	display: grid;
+	grid-template-areas:
+  		"header"
+		"description";
+	gap: 0 1rem;
 
 	p {
 	  font-size: 12px;
@@ -181,8 +207,41 @@
 	}
   }
 
+  &__item--with-image {
+	grid-template:
+  		"image header"
+		"image description";
+  }
+
+  &__item-header {
+	display: flex;
+	flex-flow: row nowrap;
+	font-size: 1rem;
+	line-height: 1;
+	grid-area: header;
+	align-self: flex-start;
+  }
+
+  &__item-description {
+	grid-area: description;
+  }
+
+  &__item-image {
+	grid-area: image;
+	margin: -1rem 0 -1rem -1.5rem;
+
+	img {
+	  display: block;
+	  object-fit: cover;
+	}
+  }
+
   .wcf-sortable-item &__item {
 	padding-left: 40px;
+  }
+
+  .wcf-sortable-item &__item--with-image {
+	padding-left: 1.5rem;
   }
 }
 
@@ -314,6 +373,7 @@
 
   .mce-tinymce {
 	box-shadow: none;
+	display: block !important;
   }
 
   div.mce-toolbar-grp {
@@ -332,7 +392,7 @@
 	padding: 0.5rem 1rem;
 	background: white;
 
-	span {
+	span:not(.wcf-select__indicator-separator) {
 	  min-width: 5em;
 	}
 
@@ -351,7 +411,7 @@
 	display: flex;
 	flex-flow: row wrap;
 	align-items: center;
-	justify-content: start;
+	justify-content: flex-start;
 	gap: 0.25rem;
 	cursor: pointer;
 	text-decoration: underline;
