@@ -24,7 +24,7 @@ const EditGutenbergBlock = (props) => {
 				<ErrorBoundary>
 					<div className={classnames('wcf-block__title')} dangerouslySetInnerHTML={{ __html: title }}/>
 				</ErrorBoundary>
-				{items.map((item) => {
+				{items.filter(item => item.position !== 'inspector').map((item) => {
 					const Field = getItemComponent(item);
 					return applyFilters('wcf_field_without_section', false, item.type) ? (
 						<ErrorBoundary key={item.id}>

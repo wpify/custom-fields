@@ -345,6 +345,10 @@ wpify_custom_fields()->create_gutenberg_block( array(
 * `title`, `category`, `parent`, `icon`, `description`, `keywords`, `textdomain`, `styles`, `supports`, `example`, `render_callback`, `attributes`, `uses_context`, `provides_context`, `editor_script`, `script`, `editor_style` and `style` attributes are arguments described in `register_block_type` function.
 * `items`: Required array: List of the custom fields in the options.
 
+**Move attributes to sidebar**
+
+If you want to move the particular attribute of the block to the sidebar, add an option to item `'position' => 'inspector'`.
+
 **Links**
 
 * `register_block_type`: https://developer.wordpress.org/reference/functions/register_block_type/
@@ -369,6 +373,7 @@ wpify_custom_fields()->create_gutenberg_block( array(
 			'id'          => 'some_example_text_2',
 			'description' => 'and example description',
 			'label'       => 'with example label',
+			'position'    => 'inspector',
 		),
 	),
 	'render_callback' => function ( $attributes ) {

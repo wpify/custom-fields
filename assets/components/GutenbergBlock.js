@@ -6,6 +6,7 @@ import { ToolbarButton, ToolbarGroup } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { desktop, edit, Icon } from '@wordpress/icons';
 import EditGutenbergBlock from './EditGutenbergBlock';
+import InspectorGutenbergBlock from './InspectorGutenbergBlock';
 
 const DESKTOP_VIEW = 'DESKTOP_VIEW';
 const EDIT_VIEW = 'EDIT_VIEW';
@@ -21,30 +22,37 @@ const GutenbergBlock = (props) => {
 		}
 	}, [isSelected, view]);
 
+	console.log(attributes, appContext);
+
+	const showViewSwitch = appContext.items.filter(item => item.position !== 'inspector').length > 0;
+	const showInspector = appContext.items.filter(item => item.position === 'inspector').length > 0;
+
 	return (
 		<React.Fragment>
-			<BlockControls>
-				<ToolbarGroup>
-					<ToolbarButton
-						isActive={view === DESKTOP_VIEW}
-						onClick={() => setView(DESKTOP_VIEW)}
-					>
-						<div className="wcf-block-toolbar-button">
-							<Icon icon={desktop}/>
-							{__('View', 'wpify-custom-fields')}
-						</div>
-					</ToolbarButton>
-					<ToolbarButton
-						isActive={view === EDIT_VIEW}
-						onClick={() => setView(EDIT_VIEW)}
-					>
-						<div className="wcf-block-toolbar-button">
-							<Icon icon={edit}/>
-							{__('Edit', 'wpify-custom-fields')}
-						</div>
-					</ToolbarButton>
-				</ToolbarGroup>
-			</BlockControls>
+			{showViewSwitch && (
+				<BlockControls>
+					<ToolbarGroup>
+						<ToolbarButton
+							isActive={view === DESKTOP_VIEW}
+							onClick={() => setView(DESKTOP_VIEW)}
+						>
+							<div className="wcf-block-toolbar-button">
+								<Icon icon={desktop}/>
+								{__('View', 'wpify-custom-fields')}
+							</div>
+						</ToolbarButton>
+						<ToolbarButton
+							isActive={view === EDIT_VIEW}
+							onClick={() => setView(EDIT_VIEW)}
+						>
+							<div className="wcf-block-toolbar-button">
+								<Icon icon={edit}/>
+								{__('Edit', 'wpify-custom-fields')}
+							</div>
+						</ToolbarButton>
+					</ToolbarGroup>
+				</BlockControls>
+			)}
 			{view === DESKTOP_VIEW && (
 				<ServerSideRender
 					className="wcf-server-side-rendered"
@@ -55,6 +63,9 @@ const GutenbergBlock = (props) => {
 			)}
 			{view === EDIT_VIEW && (
 				<EditGutenbergBlock {...props} />
+			)}
+			{showInspector && (
+				<InspectorGutenbergBlock {...props} />
 			)}
 		</React.Fragment>
 	);

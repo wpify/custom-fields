@@ -152,7 +152,7 @@ abstract class AbstractImplementation {
 
 		$query_args = wp_parse_args( $args['query_args'], array(
 			'numberposts'         => empty( $args['search'] ) ? 100 : - 1,
-			'post_type'           => $args['post_type'] ?? 'post',
+			'post_type'           => $args['post_type'] ?? array( 'post' ),
 			'ignore_sticky_posts' => true,
 		) );
 
@@ -408,10 +408,21 @@ abstract class AbstractImplementation {
 			$args['default'] = false;
 		}
 
-		if ( $args['type'] === 'link' && ! empty( $args['post_type'] ) ) {
+		if ( ! empty( $args['post_type'] ) ) {
 			$args['async'] = $args['async'] ?? true;
-			$post_type = get_post_type_object( $args['post_type'] );
-			$args['post_type_name'] = $post_type->labels->singular_name;
+
+			if ( is_string( $args['post_type'] ) ) {
+				$args['post_type'] = array( $args['post_type'] );
+			}
+
+			$post_type_names = array();
+
+			foreach ( $args['post_type'] as $post_type ) {
+				$post_type         = get_post_type_object( $post_type );
+				$post_type_names[] = $post_type->labels->singular_name;
+			}
+
+			$args['post_type_name'] = join( ', ', $post_type_names );
 		}
 
 		$args_aliases = array(
