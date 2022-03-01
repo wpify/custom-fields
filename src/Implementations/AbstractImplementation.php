@@ -419,7 +419,9 @@ abstract class AbstractImplementation {
 
 			foreach ( $args['post_type'] as $post_type ) {
 				$post_type         = get_post_type_object( $post_type );
-				$post_type_names[] = $post_type->labels->singular_name;
+				$post_type_names[] = empty( $post_type->labels->singular_name )
+					? __( 'Item', 'wpify-custom-fields' )
+					: $post_type->labels->singular_name;
 			}
 
 			$args['post_type_name'] = join( ', ', $post_type_names );
