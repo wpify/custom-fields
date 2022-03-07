@@ -57,7 +57,7 @@ abstract class AbstractImplementation {
 
 			// Enqueue all dependencees needed for code editor
 			wp_enqueue_editor();
-			wp_enqueue_code_editor( array() );
+			wp_enqueue_code_editor( array( 'type' => 'text/html' ) );
 
 			// Enqueue dependencies needed for media library
 			wp_enqueue_media();

@@ -422,6 +422,9 @@ $some_item = array(
    'suffix'            => '',
    'custom_attributes' => array(),
    'description'       => '',
+   'display'           => function ( $item, $context ) {
+        return true;
+   },
 );
 
 // Some dummy usage, use `add_*` methods listed above.
@@ -440,6 +443,7 @@ wpify_custom_fields()->add_some_custom_field_implementation( array(
 * `suffix`: Text behind the field.
 * `custom_attributes`: array of custom attributes you want to add to the field.
 * `description`: Description that will be shown below the field.
+* `display`: Callback function or boolean value that indicates wheter the item is shown.
 
 ## Attachment field type `attachment`, `multi_attachment`
 

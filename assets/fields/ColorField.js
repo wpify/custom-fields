@@ -6,6 +6,7 @@ import Button from '../components/Button';
 import { invertColor } from '../helpers';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { applyFilters } from '@wordpress/hooks';
+import CloseButton from '../components/CloseButton';
 
 const ColorField = (props) => {
 	const {
@@ -30,7 +31,12 @@ const ColorField = (props) => {
 	const [showPopover, setShowPopover] = useState(false);
 
 	const handleChange = (color) => {
-		setCurrentValue(color.hex);
+		console.log(color);
+		if (color.rgb.a < 1) {
+			setCurrentValue(`rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a})`);
+		} else {
+			setCurrentValue(color.hex);
+		}
 	};
 
 	useEffect(() => {
@@ -53,7 +59,7 @@ const ColorField = (props) => {
 						style={{
 							backgroundColor: currentValue,
 							color: invertColor(currentValue, true),
-							width: '80px',
+							width: '150px',
 							height: '20px',
 							justifyContent: 'center',
 							border: '3px solid #c0c0c0',
@@ -71,6 +77,9 @@ const ColorField = (props) => {
 								onChangeComplete={color => handleChange(color)}
 							/>
 						</Popover>
+					)}
+					{currentValue && (
+						<CloseButton className="wcf-color-clear" onClick={() => setCurrentValue('')} />
 					)}
 				</ErrorBoundary>
 			</span>

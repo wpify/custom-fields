@@ -13,7 +13,7 @@ final class Sanitizer {
 		'link'     => 'sanitize_group_value',
 		'text'     => 'sanitize_text_field',
 		'email'    => 'sanitize_email',
-		'color'    => 'sanitize_hex_color',
+		'color'    => 'sanitize_text_field',
 		'textarea' => 'sanitize_textarea_field',
 		'tel'      => 'sanitize_text_field',
 		'date'     => 'sanitize_text_field',
