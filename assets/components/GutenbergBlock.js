@@ -22,8 +22,6 @@ const GutenbergBlock = (props) => {
 		}
 	}, [isSelected, view]);
 
-	console.log(attributes, appContext);
-
 	const showViewSwitch = appContext.items.filter(item => item.position !== 'inspector').length > 0;
 	const showInspector = appContext.items.filter(item => item.position === 'inspector').length > 0;
 

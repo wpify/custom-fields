@@ -139,6 +139,10 @@ abstract class AbstractImplementation {
 	}
 
 	public function get_post_options( $args = null ) {
+		if ( empty( $args['value'] ) ) {
+			return array();
+		}
+
 		if ( is_string( $args['value'] ) ) {
 			$args['value'] = json_decode( $args['value'] );
 		}
@@ -280,10 +284,10 @@ abstract class AbstractImplementation {
 			$value = $this->parse_value( $this->get_field( $item['id'] ), $item );
 
 			if ( ! empty( $definition['items'][ $key ]['items'] ) ) {
-				$definition['items'][ $key ]['items'] = array_map(
+				$definition['items'][ $key ]['items'] = array_filter( array_map(
 					array( $this, 'normalize_item' ),
 					$definition['items'][ $key ]['items']
-				);
+				) );
 			}
 
 			if ( empty( $value ) ) {
@@ -448,12 +452,30 @@ abstract class AbstractImplementation {
 			foreach ( $args['items'] as $key => $item ) {
 				$args['items'][ $key ] = $this->normalize_item( $item );
 			}
+
+			$args['items'] = array_values( array_filter( $args['items'] ) );
 		}
 
-		if ( $args['type'] === 'group' && empty( $args['default'] ) ) {
+		if ( $args['type'] === 'group' ) {
+			$default = empty( $args['default'] ) ? array() : $args['default'];
+
 			foreach ( $args['items'] as $item ) {
-				$args['default'][ $item['id'] ] = $item['default'];
+				$item_id                     = $item['id'];
+				$args['default'][ $item_id ] = $default;
 			}
+		}
+
+		if (
+			(
+				isset( $args['display'] )
+				&& is_callable( $args['display'] )
+				&& $args['display']( $args, $this ) === false
+			) || (
+				isset( $args['display'] )
+				&& $args['display'] === false
+			)
+		) {
+			return null;
 		}
 
 		return $args;
@@ -462,6 +484,7 @@ abstract class AbstractImplementation {
 	public function unique_id( $data, $prefix = '' ): string {
 		unset( $data['items'] );
 		unset( $data['render_callback'] );
+		unset( $data['display'] );
 
 		ob_start();
 		var_dump( $data, $prefix );

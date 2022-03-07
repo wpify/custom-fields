@@ -170,7 +170,7 @@ final class GutenbergBlock extends AbstractImplementation {
 	 */
 	public function get_attributes() {
 		$attributes = array();
-		$items      = $this->get_items();
+		$items      = array_values( array_filter( $this->get_items() ) );
 
 		foreach ( $items as $item ) {
 			$attributes[ $item['id'] ] = array(

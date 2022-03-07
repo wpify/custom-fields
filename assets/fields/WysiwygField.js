@@ -137,4 +137,8 @@ WysiwygField.propTypes = {
 	generator: PT.string,
 };
 
+WysiwygField.getHumanTitle = (item, innerValue) => {
+	return innerValue?.replace(/<[^>]+>/gm, '').replace(/\s+/gm, ' ');
+}
+
 export default WysiwygField;
