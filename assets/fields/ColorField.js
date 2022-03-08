@@ -31,7 +31,6 @@ const ColorField = (props) => {
 	const [showPopover, setShowPopover] = useState(false);
 
 	const handleChange = (color) => {
-		console.log(color);
 		if (color.rgb.a < 1) {
 			setCurrentValue(`rgba(${color.rgb.r},${color.rgb.g},${color.rgb.b},${color.rgb.a})`);
 		} else {
