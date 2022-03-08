@@ -35,6 +35,7 @@ const WysiwygField = (props) => {
 
 	const clientId = useRef(uuid());
 	const tinymce = useRef();
+	const editArea = useRef();
 
 	const setup = (editor) => {
 		tinymce.current = editor;
@@ -90,6 +91,20 @@ const WysiwygField = (props) => {
 		}
 	}, []);
 
+	useEffect(() => {
+		const handleSelectAll = (event) => {
+			if (event.code === 'KeyA' && (event.metaKey || event.ctrlKey)) {
+				event.stopPropagation();
+			}
+		};
+
+		editArea.current.addEventListener('keydown', handleSelectAll);
+
+		return () => {
+			editArea.current.removeEventListener('keydown', handleSelectAll);
+		}
+	}, []);
+
 	const describedBy = description ? id + '-description' : null;
 
 	return (
@@ -111,8 +126,8 @@ const WysiwygField = (props) => {
 					key="editor"
 					id={`editor-${clientId.current}`}
 					className="wp-block-freeform block-library-rich-text__tinymce"
+					ref={editArea}
 				/>
-				<div id={`editor-${clientId.current}`}/>
 			</div>
 			{description && (
 				<ErrorBoundary>
