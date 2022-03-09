@@ -3,6 +3,27 @@ import PT from 'prop-types';
 import Select from 'react-select/async';
 import classnames from 'classnames';
 import { useOptions, normalizeString } from '../helpers';
+import { htmlDecode } from '../helpers';
+
+const Option = (props) => {
+	const { children, innerProps, getStyles } = props;
+
+	return (
+		<div {...innerProps} style={getStyles('option', props)}>
+			{typeof children === 'string' ? htmlDecode(children) : children}
+		</div>
+	)
+};
+
+const SingleValue = (props) => {
+	const { children, innerProps, getStyles } = props;
+
+	return (
+		<div {...innerProps} style={getStyles('singleValue', props)}>
+			{typeof children === 'string' ? htmlDecode(children) : children}
+		</div>
+	)
+};
 
 const SelectControl = (props) => {
 	const {
@@ -61,7 +82,7 @@ const SelectControl = (props) => {
 		}
 	};
 
-	const loadOptions = (inputValue, callback) => callback(options);
+	const loadOptions = (inputValue, callback) => callback(options.map(o => ({ ...o, label: htmlDecode(o.label) })));
 
 	const handleChange = (value) => {
 		onChange(optionToValue(value));
@@ -102,6 +123,7 @@ const SelectControl = (props) => {
 			filterOption={handleFilter}
 			className={classnames('wcf-select', className)}
 			classNamePrefix="wcf-select"
+			components={{ Option, SingleValue }}
 		/>
 	);
 };

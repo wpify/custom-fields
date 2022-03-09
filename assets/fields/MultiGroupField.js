@@ -23,13 +23,21 @@ const prepareValues = (values = []) => {
 
 const removeKeys = (values = []) => clone(values).map(value => {
 	delete value.__key;
-	delete value.chosen;
-	delete value.selected;
+
 	return value;
 });
 
 const MultiGroupField = (props) => {
-	const { group_level = 0, onChange, id, items = [], className, appContext } = props;
+	const {
+		group_level = 0,
+		onChange,
+		id,
+		items = [],
+		className,
+		appContext,
+		buttons = {},
+	} = props;
+
 	const value = useMemo(() => {
 		if (props.generator) {
 			return applyFilters('wcf_generator_' + props.generator, prepareValues(props.value || []), props);
@@ -51,6 +59,14 @@ const MultiGroupField = (props) => {
 
 		setCurrentValue(newValue);
 	};
+
+	const handleDuplicate = (index) => (currentItem = {}) => {
+		const newValue = [...currentValue];
+		const duplicated = clone(currentItem);
+		duplicated.__key = uuid();
+		newValue.splice(index, 0, duplicated);
+		setCurrentValue(newValue);
+	}
 
 	const handleAdd = () => {
 		const newValue = [...currentValue];
@@ -88,8 +104,10 @@ const MultiGroupField = (props) => {
 					renderItem={(key, index) => (
 						<ErrorBoundary key={key}>
 							<MultiGroupFieldRow
+								buttons={buttons}
 								group_level={group_level + 1}
 								onChange={handleChange(index)}
+								onDuplicate={handleDuplicate(index)}
 								items={items}
 								value={currentValue.find(v => v.__key === key)}
 								htmlId={itemId => id + '_' + index + '_' + itemId}
@@ -106,7 +124,7 @@ const MultiGroupField = (props) => {
 			<div className={classnames('wcf-multi-group__buttons')}>
 				{addEnabled && (
 					<Button className={classnames('button-secondary')} onClick={handleAdd}>
-						{__('Add', 'wpify-custom-fields')}
+						{buttons.add || __('Add', 'wpify-custom-fields')}
 					</Button>
 				)}
 			</div>

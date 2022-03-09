@@ -5,11 +5,14 @@ import { getItemComponent } from '../helpers';
 import CloseButton from '../components/CloseButton';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { applyFilters } from '@wordpress/hooks';
+import { __ } from '@wordpress/i18n';
+import CloneButton from '../components/CloneButton';
 
 const MultiGroupFieldRow = (props) => {
 	const {
 		group_level,
 		onChange,
+		onDuplicate,
 		items = [],
 		value,
 		htmlId = id => id,
@@ -18,9 +21,12 @@ const MultiGroupFieldRow = (props) => {
 		collapsed = false,
 		toggleCollapsed = () => null,
 		appContext,
+		buttons = {},
 	} = props;
 
-	const handleDelete = () => onChange(null);
+	const handleDelete = useCallback(() => onChange(null), [onChange]);
+
+	const handleDuplicate = useCallback(() => onDuplicate(value), [onDuplicate, value]);
 
 	const handleChange = useCallback((changedValue) => {
 		const newValue = {
@@ -50,7 +56,16 @@ const MultiGroupFieldRow = (props) => {
 				<span className={classnames('wcf-multi-group-row__title')} onClick={() => toggleCollapsed()}>
 					#{index + 1}: {title}
 				</span>
-				<CloseButton onClick={handleDelete}/>
+				<div className={classnames('wcf-multi-group-row__buttons')}>
+					<CloneButton
+						onClick={handleDuplicate}
+						title={buttons.duplicate || __('Duplicate', 'wpify-custom-fields')}
+					/>
+					<CloseButton
+						onClick={handleDelete}
+						title={buttons.remove || __('Remove', 'wpify-custom-fields')}
+					/>
+				</div>
 			</div>
 			<div className={classnames('wcf-multi-group-row__content', {
 				'wcf-multi-group-row__content--collapsed': collapsed,

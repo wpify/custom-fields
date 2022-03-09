@@ -114,6 +114,7 @@ const LinkField = React.forwardRef((props, ref) => {
 			newValue[key] = event;
 		} else {
 			newValue[key] = event.target.value;
+			newValue['post'] = null;
 		}
 
 		setCurrentValue(newValue);
@@ -121,7 +122,7 @@ const LinkField = React.forwardRef((props, ref) => {
 
 	return (
 		<div ref={ref}>
-			<div className={classnames('wcf-link', { 'wcf-link--open': isOpen })} ref={div}>
+			<div className={classnames('wcf-link', className, { 'wcf-link--open': isOpen })} ref={div}>
 				<input
 					type="hidden"
 					name={group_level === 0 ? id : null}
@@ -140,7 +141,7 @@ const LinkField = React.forwardRef((props, ref) => {
 								className={classnames('components-text-control__input')}
 							/>
 						</label>
-						{post_type ? (
+						{post_type && (
 							<label className="wcf-link__form-item">
 								<span>{post_type_name}</span>
 								<SelectControl
@@ -154,17 +155,16 @@ const LinkField = React.forwardRef((props, ref) => {
 									setOptions={setSelectedOptions}
 								/>
 							</label>
-						) : (
-							<label className="wcf-link__form-item">
-								<span>{__('URL', 'wpify-custom-fields')}</span>
-								<input
-									type="url"
-									value={currentValue.url}
-									onChange={handleChange('url')}
-									className={classnames('components-text-control__input')}
-								/>
-							</label>
 						)}
+						<label className="wcf-link__form-item">
+							<span>{__('URL', 'wpify-custom-fields')}</span>
+							<input
+								type="url"
+								value={currentValue.url}
+								onChange={handleChange('url')}
+								className={classnames('components-text-control__input')}
+							/>
+						</label>
 						<label className="wcf-link__form-item">
 							<input
 								type="checkbox"
@@ -224,5 +224,10 @@ LinkField.propTypes = {
 	type: PT.oneOf(['color', 'date', 'datetime-local', 'email', 'month', 'number', 'password', 'tel', 'text', 'time', 'url', 'week', 'hidden']),
 	generator: PT.string,
 };
+
+
+LinkField.getHumanTitle = (item, innerValue) => {
+	return innerValue?.label + ' (' + innerValue?.url + ')';
+}
 
 export default LinkField;

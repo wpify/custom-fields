@@ -98,7 +98,10 @@
 
   &--delete {
 	cursor: pointer;
-	margin-left: auto;
+  }
+
+  &--clone {
+	margin-right: 0.5rem;
   }
 
   &--icon {
