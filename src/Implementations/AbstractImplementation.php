@@ -155,13 +155,14 @@ abstract class AbstractImplementation {
 		$args['query_args'] = $args['query_args'] ?? array();
 
 		$query_args = wp_parse_args( $args['query_args'], array(
-			'numberposts'         => empty( $args['search'] ) ? 100 : - 1,
+			'posts_per_page'      => empty( $args['search'] ) ? 100 : - 1,
 			'post_type'           => $args['post_type'] ?? array( 'post' ),
 			'ignore_sticky_posts' => true,
 		) );
 
 		if ( ! empty( $args['search'] ) ) {
-			$query_args['s'] = $args['search'];
+			$query_args['s']       = $args['search'];
+			$query_args['orderby'] = 'relevance';
 		} elseif ( ! empty( $args['value'] ) ) {
 			$query_args['post__in'] = $args['value'];
 			$query_args['orderby']  = 'post__in';
