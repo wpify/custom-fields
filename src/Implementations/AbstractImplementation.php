@@ -140,7 +140,7 @@ abstract class AbstractImplementation {
 
 	public function get_post_options( $args = null ) {
 		if ( empty( $args['value'] ) ) {
-			return array();
+			$args['value'] = array();
 		}
 
 		if ( is_string( $args['value'] ) ) {

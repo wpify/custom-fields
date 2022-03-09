@@ -101,7 +101,7 @@ const WysiwygField = (props) => {
 		editArea.current.addEventListener('keydown', handleSelectAll);
 
 		return () => {
-			editArea.current.removeEventListener('keydown', handleSelectAll);
+			editArea.current?.removeEventListener('keydown', handleSelectAll);
 		}
 	}, []);
 

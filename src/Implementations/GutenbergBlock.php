@@ -196,6 +196,15 @@ final class GutenbergBlock extends AbstractImplementation {
 
 	/**
 	 * @param string $name
+	 *
+	 * @return mixed
+	 */
+	public function get_field( $name ) {
+		// TODO: Implement get_field() method.
+	}
+
+	/**
+	 * @param string $name
 	 * @param string $value
 	 *
 	 * @return mixed
@@ -208,16 +217,26 @@ final class GutenbergBlock extends AbstractImplementation {
 	 * @return array
 	 */
 	public function get_data() {
-		// TODO: Implement get_data() method.
-	}
-
-	/**
-	 * @param string $name
-	 *
-	 * @return mixed
-	 */
-	public function get_field( $name ) {
-		// TODO: Implement get_field() method.
+		return array(
+			'name'             => $this->name,
+			'title'            => $this->title,
+			'category'         => $this->category,
+			'parent'           => $this->parent,
+			'icon'             => $this->icon,
+			'description'      => $this->description,
+			'keywords'         => $this->keywords,
+			'textdomain'       => $this->textdomain,
+			'styles'           => $this->styles,
+			'supports'         => $this->supports,
+			'example'          => $this->example,
+			'uses_context'     => $this->uses_context,
+			'provides_context' => $this->provides_context,
+			'editor_script'    => $this->editor_script,
+			'script'           => $this->script,
+			'editor_style'     => $this->editor_style,
+			'style'            => $this->style,
+			'items'            => $this->get_items(),
+		);
 	}
 
 	/**
