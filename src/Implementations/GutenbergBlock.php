@@ -148,7 +148,16 @@ final class GutenbergBlock extends AbstractImplementation {
 	 */
 	public function get_editor_script() {
 		if ( empty( $this->editor_script ) ) {
-			return $this->wcf->get_assets()->register_script( 'wpify-custom-blocks.js' );
+			return $this->wcf->get_assets()->register_script(
+					'wpify-custom-blocks.js',
+					array( 'wp-tinymce' ),
+					true,
+					array(
+							'wcf_code_editor_settings' => $this->wcf->get_assets()->get_code_editor_settings(),
+							'wcf_build_url'            => $this->get_build_url(),
+							'wcf_date'                 => array( 'date_format' => get_option( 'date_format' ), 'time_format' => get_option( 'time_format' ) ),
+					)
+			);
 		}
 
 		return null;
@@ -218,24 +227,24 @@ final class GutenbergBlock extends AbstractImplementation {
 	 */
 	public function get_data() {
 		return array(
-			'name'             => $this->name,
-			'title'            => $this->title,
-			'category'         => $this->category,
-			'parent'           => $this->parent,
-			'icon'             => $this->icon,
-			'description'      => $this->description,
-			'keywords'         => $this->keywords,
-			'textdomain'       => $this->textdomain,
-			'styles'           => $this->styles,
-			'supports'         => $this->supports,
-			'example'          => $this->example,
-			'uses_context'     => $this->uses_context,
-			'provides_context' => $this->provides_context,
-			'editor_script'    => $this->editor_script,
-			'script'           => $this->script,
-			'editor_style'     => $this->editor_style,
-			'style'            => $this->style,
-			'items'            => $this->get_items(),
+				'name'             => $this->name,
+				'title'            => $this->title,
+				'category'         => $this->category,
+				'parent'           => $this->parent,
+				'icon'             => $this->icon,
+				'description'      => $this->description,
+				'keywords'         => $this->keywords,
+				'textdomain'       => $this->textdomain,
+				'styles'           => $this->styles,
+				'supports'         => $this->supports,
+				'example'          => $this->example,
+				'uses_context'     => $this->uses_context,
+				'provides_context' => $this->provides_context,
+				'editor_script'    => $this->editor_script,
+				'script'           => $this->script,
+				'editor_style'     => $this->editor_style,
+				'style'            => $this->style,
+				'items'            => $this->get_items(),
 		);
 	}
 

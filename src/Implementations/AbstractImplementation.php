@@ -75,6 +75,7 @@ abstract class AbstractImplementation {
 				array(
 					'wcf_code_editor_settings' => $this->wcf->get_assets()->get_code_editor_settings(),
 					'wcf_build_url'            => $this->get_build_url(),
+					'wcf_date'                 => array( 'date_format' => get_option( 'date_format' ), 'time_format' => get_option( 'time_format' ) ),
 				)
 			);
 		}
