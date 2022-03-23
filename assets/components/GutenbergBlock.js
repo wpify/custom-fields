@@ -7,6 +7,9 @@ import { __ } from '@wordpress/i18n';
 import { desktop, edit, Icon } from '@wordpress/icons';
 import EditGutenbergBlock from './EditGutenbergBlock';
 import InspectorGutenbergBlock from './InspectorGutenbergBlock';
+import GutenbergRootWrapper from './GutenbergRootWrapper';
+import GutenbergBlockRow from './GutenbergBlockRow';
+import ScreenContext from './ScreenContext';
 
 const DESKTOP_VIEW = 'DESKTOP_VIEW';
 const EDIT_VIEW = 'EDIT_VIEW';
@@ -26,7 +29,7 @@ const GutenbergBlock = (props) => {
 	const showInspector = appContext.items.filter(item => item.position === 'inspector').length > 0;
 
 	return (
-		<React.Fragment>
+		<ScreenContext.Provider value={{ RootWrapper: GutenbergRootWrapper, RowWrapper: GutenbergBlockRow }}>
 			{showViewSwitch && (
 				<BlockControls>
 					<ToolbarGroup>
@@ -65,7 +68,7 @@ const GutenbergBlock = (props) => {
 			{showInspector && (
 				<InspectorGutenbergBlock {...props} />
 			)}
-		</React.Fragment>
+		</ScreenContext.Provider>
 	);
 };
 

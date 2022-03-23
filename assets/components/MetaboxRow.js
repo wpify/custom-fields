@@ -5,7 +5,7 @@ import ErrorBoundary from './ErrorBoundary';
 
 const MetaboxRow = ({ className, item, children, htmlId = id => id }) => {
   return (
-		<p key={item.id} className={classnames(className)}>
+		<div key={item.id} className={classnames('wcf-metabox-row', className)}>
 			<ErrorBoundary>
 				<label
 					htmlFor={htmlId(item.id)}
@@ -16,7 +16,7 @@ const MetaboxRow = ({ className, item, children, htmlId = id => id }) => {
 			<ErrorBoundary>
 				{children}
 			</ErrorBoundary>
-		</p>
+		</div>
 	);
 };
 

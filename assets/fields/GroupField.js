@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useMemo, useState } from 're
 import PT from 'prop-types';
 import ScreenContext from '../components/ScreenContext';
 import ErrorBoundary from '../components/ErrorBoundary';
-import GroupFieldRow from './GroupFieldRow';
+import GroupFieldRow from './GroupFieldRow.js';
 import { applyFilters } from '@wordpress/hooks';
 
 const GroupField = (props) => {
@@ -49,16 +49,21 @@ const GroupField = (props) => {
 				<input type="hidden" id={id} name={id} value={JSON.stringify(currentValue)}/>
 			)}
 			<ErrorBoundary>
+				{console.log('props', props)}
 				<RootWrapper group_level={group_level + 1}>
+					{console.log('items', items)}
 					{items.map((item) => (
-						<GroupFieldRow
-							key={item.id}
-							item={item}
-							group_level={group_level}
-							appContext={appContext}
-							onChange={handleChange}
-							value={value[item.id]}
-						/>
+						<>
+							{console.log('item', item, value[item.id], typeof RootWrapper, typeof GroupFieldRow)}
+							<GroupFieldRow
+								key={item.id}
+								item={item}
+								group_level={group_level}
+								appContext={appContext}
+								onChange={handleChange}
+								value={value[item.id]}
+							/>
+						</>
 					))}
 				</RootWrapper>
 			</ErrorBoundary>

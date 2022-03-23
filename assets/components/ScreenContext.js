@@ -1,8 +1,20 @@
 import React from 'react';
 
 const ScreenContext = React.createContext({
-	RootWrapper: () => null,
-	RowWrapper: () => null,
+	RootWrapper: ({ key, children }) => {
+		return (
+			<React.Fragment key={key}>
+				{children}
+			</React.Fragment>
+		);
+	},
+	RowWrapper: ({ key, children }) => {
+		return (
+			<React.Fragment key={key}>
+				{children}
+			</React.Fragment>
+		);
+	},
 });
 
 ScreenContext.displayName = 'ScreenContext';
