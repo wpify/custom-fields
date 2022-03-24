@@ -7,8 +7,6 @@ import { getItemComponent } from '../helpers';
 import ScreenContext from '../components/ScreenContext';
 
 const GroupFieldRow = (props) => {
-	console.log('GroupFieldRow', props);
-
 	const { item, group_level, appContext, onChange, className, value } = props;
 	const { id } = item;
 	const { RowWrapper } = useContext(ScreenContext);
@@ -41,6 +39,8 @@ const GroupFieldRow = (props) => {
 		</RowWrapper>
 	);
 };
+
+GroupFieldRow.displayName = 'GroupFieldRow';
 
 GroupFieldRow.propTypes = {
 	className: PT.string,
