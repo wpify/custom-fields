@@ -36,7 +36,12 @@ const MultiGroupField = (props) => {
 		className,
 		appContext,
 		buttons = {},
+		disable_buttons = [],
+		min,
+		max,
 	} = props;
+
+	const [disabledButtons, setDisabledButtons] = useState(disable_buttons);
 
 	const value = useMemo(() => {
 		if (props.generator) {
@@ -64,6 +69,14 @@ const MultiGroupField = (props) => {
 		const newValue = [...currentValue];
 		const duplicated = clone(currentItem);
 		duplicated.__key = uuid();
+
+		for (let i = 0; i < items.length; i++) {
+			const item = items[i];
+			if (item.generator?.length > 0) {
+				delete duplicated[item.id];
+			}
+		}
+
 		newValue.splice(index, 0, duplicated);
 		setCurrentValue(newValue);
 	}
@@ -82,7 +95,21 @@ const MultiGroupField = (props) => {
 		}
 	}, [onChange, value, currentValue]);
 
-	const addEnabled = true;
+	useEffect(() => {
+		if (currentValue.length < min && min > 0) {
+			for (let i = currentValue.length; i <= min; i++) {
+				handleAdd();
+			}
+		}
+
+		if (min > 0 && max >= min) {
+			if (currentValue.length < max && disabledButtons.find(c => c === 'add' || c === 'duplicate')) {
+				setDisabledButtons(disabledButtons.filter(c => c !== 'add' || c !== 'duplicate'));
+			} else if (currentValue.length >= max && !disabledButtons.find(c => c === 'add' || c === 'duplicate')) {
+				setDisabledButtons([...disabledButtons, 'add', 'duplicate']);
+			}
+		}
+	}, [currentValue, min, max]);
 
 	const keys = currentValue.map(v => v.__key);
 	const setKeys = (keys) => {
@@ -101,6 +128,7 @@ const MultiGroupField = (props) => {
 					className="wcf-multi-group__items"
 					items={keys}
 					setItems={setKeys}
+					allowSort={!disabledButtons.includes('move')}
 					renderItem={(key, index) => (
 						<ErrorBoundary key={key}>
 							<MultiGroupFieldRow
@@ -116,13 +144,14 @@ const MultiGroupField = (props) => {
 								collapsed={key !== opened}
 								toggleCollapsed={() => setOpened(key === opened ? null : key)}
 								appContext={appContext}
+								disabled_buttons={disabledButtons}
 							/>
 						</ErrorBoundary>
 					)}
 				/>
 			</ErrorBoundary>
 			<div className={classnames('wcf-multi-group__buttons')}>
-				{addEnabled && (
+				{!disabledButtons.includes('add') && (
 					<Button className={classnames('button-secondary')} onClick={handleAdd}>
 						{buttons.add || __('Add', 'wpify-custom-fields')}
 					</Button>

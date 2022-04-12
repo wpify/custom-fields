@@ -22,6 +22,7 @@ const MultiGroupFieldRow = (props) => {
 		toggleCollapsed = () => null,
 		appContext,
 		buttons = {},
+		disabled_buttons = [],
 	} = props;
 
 	const handleDelete = useCallback(() => onChange(null), [onChange]);
@@ -57,14 +58,18 @@ const MultiGroupFieldRow = (props) => {
 					#{index + 1}: {title}
 				</span>
 				<div className={classnames('wcf-multi-group-row__buttons')}>
-					<CloneButton
-						onClick={handleDuplicate}
-						title={buttons.duplicate || __('Duplicate', 'wpify-custom-fields')}
-					/>
-					<CloseButton
-						onClick={handleDelete}
-						title={buttons.remove || __('Remove', 'wpify-custom-fields')}
-					/>
+					{!disabled_buttons.includes('duplicate') && (
+						<CloneButton
+							onClick={handleDuplicate}
+							title={buttons.duplicate || __('Duplicate', 'wpify-custom-fields')}
+						/>
+					)}
+					{!disabled_buttons.includes('delete') && (
+						<CloseButton
+							onClick={handleDelete}
+							title={buttons.delete || __('Remove', 'wpify-custom-fields')}
+						/>
+					)}
 				</div>
 			</div>
 			<div className={classnames('wcf-multi-group-row__content', {

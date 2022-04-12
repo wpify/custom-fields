@@ -112,7 +112,7 @@ const WysiwygField = (props) => {
 			<input
 				type="hidden"
 				id={htmlId(id)}
-				name={group_level === 0 && id}
+				name={group_level === 0 ? id : null}
 				value={currentValue}
 				{...custom_attributes}
 			/>

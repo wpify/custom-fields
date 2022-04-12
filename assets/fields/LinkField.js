@@ -221,7 +221,7 @@ LinkField.propTypes = {
 	custom_attributes: PT.oneOfType([PT.object, PT.array]),
 	group_level: PT.number,
 	className: PT.string,
-	type: PT.oneOf(['color', 'date', 'datetime-local', 'email', 'month', 'number', 'password', 'tel', 'text', 'time', 'url', 'week', 'hidden']),
+	type: PT.oneOf(['link']),
 	generator: PT.string,
 };
 

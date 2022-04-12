@@ -17,7 +17,7 @@ import {
 import SortableItem from './SortableItem';
 
 const SortableControl = (props) => {
-	const { items, setItems, renderItem } = props;
+	const { items, setItems, renderItem, allowSort } = props;
 
 	const sensors = useSensors(
 		useSensor(PointerSensor),
@@ -36,6 +36,18 @@ const SortableControl = (props) => {
 			setItems(arrayMove(items, oldIndex, newIndex));
 		}
 	};
+
+	if (!allowSort) {
+		return (
+			<ErrorBoundary>
+				{items.map((item, index) => (
+					<React.Fragment key={item} id={item} index={index}>
+						{renderItem(item, index)}
+					</React.Fragment>
+				))}
+			</ErrorBoundary>
+		);
+	}
 
 	return Array.isArray(items) ? (
 		<ErrorBoundary>
