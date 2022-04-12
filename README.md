@@ -598,6 +598,9 @@ As you can see, you can add a new group with any fields inside it, move the grou
 **Additional attributes**
 
 * `items`: Array that holds the inner fields of the group.
+* `min`: int, minimum number of items.
+* `max`: int, maximum number of items.
+* `disabled_buttons`: array, buttons that are disabled for multigroup (add|remove|duplicate|move).
 
 ## HTML field type `html`
 
