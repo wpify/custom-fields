@@ -18,11 +18,13 @@ const WysiwygField = (props) => {
 	} = props;
 
 	const value = useMemo(() => {
+		const value = String(props.value);
+
 		if (props.generator) {
-			return applyFilters('wcf_generator_' + props.generator, props.value, props);
+			return applyFilters('wcf_generator_' + props.generator, value, props);
 		}
 
-		return props.value || '';
+		return value;
 	}, [props]);
 
 	const [currentValue, setCurrentValue] = useState(value);
