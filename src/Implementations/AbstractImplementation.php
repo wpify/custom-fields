@@ -205,7 +205,11 @@ abstract class AbstractImplementation {
 				$items[ $key ]['options'] = array( $this, 'get_post_options' );
 			}
 
-			$id = ( $prefix ?? $this->implementation_id ) . ':' . $item['id'];
+			if ( ! empty( $item['list_id'] ) ) {
+				$id = ( $prefix ?? $this->implementation_id ) . ':' . $item['list_id'];
+			} else {
+				$id = ( $prefix ?? $this->implementation_id ) . ':' . $item['id'];
+			}
 
 			if ( isset( $items[ $key ]['options'] ) && is_callable( $items[ $key ]['options'] ) ) {
 				$callback = $items[ $key ]['options'];

@@ -15,6 +15,8 @@ const SelectField = (props) => {
 		className,
 		appContext,
 		options,
+		list_id,
+		async,
 	} = props;
 
 	const value = useMemo(() => {
@@ -49,6 +51,8 @@ const SelectField = (props) => {
 				api={appContext.api}
 				value={currentValue}
 				defaultOptions={options}
+				listId={list_id}
+				async={async}
 			/>
 			{description && (
 				<ErrorBoundary>

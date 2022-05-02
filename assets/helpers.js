@@ -146,7 +146,7 @@ export const useOptions = (api, args) => {
 
   useDebounce(() => {
     setSearch(args.search);
-  }, 250, [args.search]);
+  }, 500, [args.search]);
 
   if (Array.isArray(args.options)) {
     return {
@@ -165,18 +165,30 @@ export const useOptions = (api, args) => {
       method: 'POST',
     }, fetcher);
 
+    const loadOptions = (inputValue, callback) => {
+      return callback(
+        data?.map(o => ({ ...o, label: htmlDecode(o.label) }))
+      );
+    }
+
     return {
       data,
       isLoading: !error && !data,
-      isError: error
+      isError: error,
+      loadOptions
     };
   } else {
+    const loadOptions = (inputValue, callback) => {
+      return callback([]);
+    }
+
     return {
       api,
       args,
       data: [],
       isLoading: false,
       isError: true,
+      loadOptions,
     };
   }
 };

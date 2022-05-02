@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import PT from 'prop-types';
-import Select from 'react-select/async';
+import Select from 'react-select';
 import classnames from 'classnames';
 import { useOptions, normalizeString } from '../helpers';
 import { htmlDecode } from '../helpers';
@@ -38,13 +38,15 @@ const SelectControl = (props) => {
 		setOptions,
 		showSelected = true,
 		otherArgs,
+		listId,
+		async,
 	} = props;
 
 	const [inputValue, setInputValue] = useState('');
 	const [optionsCache, setOptionsCache] = useState([]);
-	const [optionsArgs, setOptionsArgs] = useState({ options: defaultOptions, search: inputValue, value, ...otherArgs });
+	const [optionsArgs, setOptionsArgs] = useState({ options: defaultOptions, search: inputValue, listId, value, ...otherArgs });
 	const response = useOptions(api, optionsArgs);
-	const { isLoading, data: options } = response;
+	const { isLoading, data: options, loadOptions } = response;
 
 	useEffect(() => {
 		const cachedIds = optionsCache.map(o => String(o.value));
@@ -59,8 +61,8 @@ const SelectControl = (props) => {
 	}, [options]);
 
 	useEffect(() => {
-		setOptionsArgs({ options: defaultOptions, search: inputValue, value, ...otherArgs });
-	}, [defaultOptions, inputValue, value, props, otherArgs]);
+		setOptionsArgs({ options: defaultOptions, search: inputValue, value, listId, ...otherArgs });
+	}, [defaultOptions, inputValue, value, props, listId, otherArgs]);
 
 	const valueOptions = useMemo(() => {
 		const values = (Array.isArray(value) ? value : [value]).map(String);
@@ -81,8 +83,6 @@ const SelectControl = (props) => {
 			return option?.value || '';
 		}
 	};
-
-	const loadOptions = (inputValue, callback) => callback(options.map(o => ({ ...o, label: htmlDecode(o.label) })));
 
 	const handleChange = (value) => {
 		onChange(optionToValue(value));
@@ -115,8 +115,7 @@ const SelectControl = (props) => {
 			isClearable={!required}
 			isSearchable
 			cacheOptions
-			defaultOptions={options}
-			loadOptions={loadOptions}
+			options={options}
 			value={showSelected && valueOptions}
 			onChange={handleChange}
 			onInputChange={handleInputChange}

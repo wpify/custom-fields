@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import PT from 'prop-types';
 import ServerSideRender from '@wordpress/server-side-render';
 import { BlockControls } from '@wordpress/block-editor';
@@ -16,7 +16,6 @@ const EDIT_VIEW = 'EDIT_VIEW';
 
 const GutenbergBlock = (props) => {
 	const { appContext, attributes, isSelected } = props;
-
 	const [view, setView] = useState(DESKTOP_VIEW);
 
 	useEffect(() => {
