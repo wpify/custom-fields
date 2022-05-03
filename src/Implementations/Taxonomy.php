@@ -20,10 +20,13 @@ final class Taxonomy extends AbstractPostImplementation {
 	/** @var array */
 	private $items;
 
+	/** @var callable */
+	private $display;
+
 	/**
 	 * Taxonomy constructor.
 	 *
-	 * @param array $args
+	 * @param array        $args
 	 * @param CustomFields $wcf
 	 */
 	public function __construct( array $args, CustomFields $wcf ) {
@@ -34,11 +37,22 @@ final class Taxonomy extends AbstractPostImplementation {
 			'items'         => array(),
 			'term_id'       => null,
 			'init_priority' => 10,
+			'display'       => function () {
+				return true;
+			},
 		) );
 
 		$this->taxonomy = $args['taxonomy'];
 		$this->items    = $args['items'];
 		$this->term_id  = $args['term_id'];
+
+		if ( is_callable( $args['display'] ) ) {
+			$this->display = $args['display'];
+		} else {
+			$this->display = function () use ( $args ) {
+				return $args['display'];
+			};
+		}
 
 		add_action( $this->taxonomy . '_add_form_fields', array( $this, 'render_add_form' ) );
 		add_action( $this->taxonomy . '_edit_form_fields', array( $this, 'render_edit_form' ) );
@@ -79,6 +93,12 @@ final class Taxonomy extends AbstractPostImplementation {
 	 * @return void
 	 */
 	public function render_add_form() {
+		$display_callback = $this->display;
+
+		if ( ! boolval( $display_callback() ) ) {
+			return;
+		}
+
 		$this->render_fields( 'add_taxonomy' );
 	}
 
@@ -97,6 +117,12 @@ final class Taxonomy extends AbstractPostImplementation {
 	 * @param WP_Term $term
 	 */
 	public function render_edit_form( WP_Term $term ) {
+		$display_callback = $this->display;
+
+		if ( ! boolval( $display_callback() ) ) {
+			return;
+		}
+
 		$this->set_post( $term->term_id );
 		$this->render_fields( 'edit_taxonomy', 'tbody' );
 

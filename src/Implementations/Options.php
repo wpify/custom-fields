@@ -46,10 +46,13 @@ final class Options extends AbstractImplementation {
 	/** @var array */
 	private $items;
 
+	/** @var callable */
+	private $display;
+
 	/**
 	 * Options constructor.
 	 *
-	 * @param array $args
+	 * @param array        $args
 	 * @param CustomFields $wcf
 	 */
 	public function __construct( array $args, CustomFields $wcf ) {
@@ -69,6 +72,9 @@ final class Options extends AbstractImplementation {
 				'priority'      => 100,
 				'init_priority' => 10,
 				'items'         => array(),
+				'display'       => function () {
+					return true;
+				},
 		) );
 
 		$this->type        = in_array( $args['type'], array( 'normal', 'user', 'network' ) ) ? $args['type'] : 'normal';
@@ -82,6 +88,14 @@ final class Options extends AbstractImplementation {
 		$this->icon_url    = $args['icon_url'];
 		$this->position    = $args['position'];
 		$this->items       = $args['items'];
+
+		if ( is_callable( $args['display'] ) ) {
+			$this->display = $args['display'];
+		} else {
+			$this->display = function () use ( $args ) {
+				return $args['display'];
+			};
+		}
 
 		if ( $this->type === 'user' ) {
 			add_action( 'user_admin_menu', array( $this, 'register' ), $args['priority'] );
@@ -98,6 +112,12 @@ final class Options extends AbstractImplementation {
 	 * @return void
 	 */
 	public function register() {
+		$display_callback = $this->display;
+
+		if ( ! boolval( $display_callback() ) ) {
+			return;
+		}
+
 		if ( empty( $this->parent_slug ) ) {
 			$this->hook_suffix = add_menu_page(
 					$this->page_title,
@@ -132,6 +152,12 @@ final class Options extends AbstractImplementation {
 	 * @return void
 	 */
 	public function register_settings() {
+		$display_callback = $this->display;
+
+		if ( ! boolval( $display_callback() ) ) {
+			return;
+		}
+
 		add_settings_section(
 				'general',
 				null,

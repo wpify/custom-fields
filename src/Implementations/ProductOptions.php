@@ -22,10 +22,13 @@ final class ProductOptions extends AbstractPostImplementation {
 	/** @var bool */
 	private $is_new_tab = false;
 
+	/** @var callable */
+	private $display;
+
 	/**
 	 * ProductOptions constructor.
 	 *
-	 * @param array $args
+	 * @param array        $args
 	 * @param CustomFields $wcf
 	 */
 	public function __construct( array $args, CustomFields $wcf ) {
@@ -46,7 +49,18 @@ final class ProductOptions extends AbstractPostImplementation {
 				),
 				'items'         => array(),
 				'init_priority' => 10,
+				'display'       => function () {
+					return true;
+				},
 		) );
+
+		if ( is_callable( $args['display'] ) ) {
+			$this->display = $args['display'];
+		} else {
+			$this->display = function () use ( $args ) {
+				return $args['display'];
+			};
+		}
 
 		$this->tab        = $args['tab'];
 		$this->items      = $this->prepare_items( $args['items'] );
@@ -133,6 +147,12 @@ final class ProductOptions extends AbstractPostImplementation {
 	 * @return void
 	 */
 	public function render_data_panels() {
+		$display_callback = $this->display;
+
+		if ( ! boolval( $display_callback() ) ) {
+			return;
+		}
+
 		if ( $this->is_new_tab ) {
 			?>
 			<div id="<?php echo esc_attr( $this->tab['target'] ) ?>" class="panel woocommerce_options_panel">
@@ -146,6 +166,12 @@ final class ProductOptions extends AbstractPostImplementation {
 	 * @return void
 	 */
 	public function render_custom_fields() {
+		$display_callback = $this->display;
+
+		if ( ! boolval( $display_callback() ) ) {
+			return;
+		}
+
 		global $post;
 
 		$this->set_post( $post->ID );

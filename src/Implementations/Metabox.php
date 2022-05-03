@@ -41,10 +41,13 @@ final class Metabox extends AbstractPostImplementation {
 	/** @var number */
 	private $post_id;
 
+	/** @var callable */
+	private $display;
+
 	/**
 	 * Metabox constructor.
 	 *
-	 * @param array $args
+	 * @param array        $args
 	 * @param CustomFields $wcf
 	 */
 	public function __construct( array $args, CustomFields $wcf ) {
@@ -61,6 +64,9 @@ final class Metabox extends AbstractPostImplementation {
 			'post_types'    => array(),
 			'post_id'       => null,
 			'init_priority' => 10,
+			'display'       => function () {
+				return true;
+			},
 		) );
 
 		$this->id            = $args['id'];
@@ -73,6 +79,14 @@ final class Metabox extends AbstractPostImplementation {
 		$this->post_types    = $args['post_types'];
 		$this->nonce         = $args['id'] . '_nonce';
 		$this->post_id       = $args['post_id'];
+
+		if ( is_callable( $args['display'] ) ) {
+			$this->display = $args['display'];
+		} else {
+			$this->display = function () use ( $args ) {
+				return $args['display'];
+			};
+		}
 
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 		add_action( 'save_post', array( $this, 'save' ) );
@@ -130,6 +144,12 @@ final class Metabox extends AbstractPostImplementation {
 	 * @param string $post_type
 	 */
 	public function add_meta_box( $post_type ) {
+		$display_callback = $this->display;
+
+		if ( ! boolval( $display_callback() ) ) {
+			return;
+		}
+
 		if ( in_array( $post_type, $this->post_types ) ) {
 			add_meta_box(
 				$this->id,

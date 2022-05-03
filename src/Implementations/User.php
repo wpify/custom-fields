@@ -17,6 +17,9 @@ final class User extends AbstractImplementation {
 	/** @var array */
 	private $items;
 
+	/** @var callable */
+	private $display;
+
 	/**
 	 * User constructor.
 	 *
@@ -29,9 +32,21 @@ final class User extends AbstractImplementation {
 			'items'         => array(),
 			'user_id'       => null,
 			'init_priority' => 10,
+			'display' => function () {
+				return true;
+			},
 		) );
+
 		$this->items   = $args['items'];
 		$this->user_id = $args['user_id'];
+
+		if ( is_callable( $args['display'] ) ) {
+			$this->display = $args['display'];
+		} else {
+			$this->display = function () use ( $args ) {
+				return $args['display'];
+			};
+		}
 
 		add_action( 'show_user_profile', array( $this, 'render_edit_form' ) );
 		add_action( 'edit_user_profile', array( $this, 'render_edit_form' ) );
@@ -84,6 +99,12 @@ final class User extends AbstractImplementation {
 	 * @param WP_User $user
 	 */
 	public function render_edit_form( $user ) {
+		$display_callback = $this->display;
+
+		if ( ! boolval( $display_callback() ) ) {
+			return;
+		}
+
 		$this->set_user( $user->ID );
 		$this->render_fields( 'edit_user' );
 	}

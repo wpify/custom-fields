@@ -27,10 +27,13 @@ final class GutenbergBlock extends AbstractImplementation {
 	private $style;
 	private $items;
 
+	/** @var callable */
+	private $display;
+
 	/**
 	 * GutenbergBlock constructor.
 	 *
-	 * @param array $args
+	 * @param array        $args
 	 * @param CustomFields $wcf
 	 */
 	public function __construct( array $args, CustomFields $wcf ) {
@@ -55,6 +58,9 @@ final class GutenbergBlock extends AbstractImplementation {
 				'style'            => null, // string
 				'items'            => array(), // array
 				'init_priority'    => 10,
+				'display'          => function () {
+					return true;
+				},
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -75,6 +81,14 @@ final class GutenbergBlock extends AbstractImplementation {
 			}
 		}
 
+		if ( is_callable( $args['display'] ) ) {
+			$this->display = $args['display'];
+		} else {
+			$this->display = function () use ( $args ) {
+				return $args['display'];
+			};
+		}
+
 		add_action( 'init', array( $this, 'register_block' ), $defaults['init_priority'] );
 	}
 
@@ -82,6 +96,12 @@ final class GutenbergBlock extends AbstractImplementation {
 	 * @return void
 	 */
 	public function register_block() {
+		$display_callback = $this->display;
+
+		if ( ! boolval( $display_callback() ) ) {
+			return;
+		}
+
 		$args             = $this->get_args();
 		$js_args          = $this->get_args( array( 'render_callback' ) );
 		$js_args['items'] = $this->fill_selects( $js_args['items'] );

@@ -114,6 +114,10 @@ wpify_custom_fields()->create_metabox( array(
    'callback_args' => null,
    'items'         => array(),
    'post_types'    => array(),
+   'display'       => function() {
+	  // Conditional display
+	  return true;
+   },
 ) );
 ```
 
@@ -153,6 +157,10 @@ The functionality adds the meta box both on add and edit screen of taxonomy term
 wpify_custom_fields()->create_taxonomy_options( array(
    'taxonomy' => null,
    'items'    => array(),
+   'display'  => function() {
+	  // Conditional display
+	  return true;
+   },
 ) );
 ```
 
@@ -191,6 +199,10 @@ wpify_custom_fields()->create_options_page( array(
    'icon_url'    => null,
    'position'    => null,
    'items'       => array(),
+   'display'     => function() {
+	  // Conditional display
+	  return true;
+   },
 ) );
 ```
 
@@ -246,6 +258,10 @@ wpify_custom_fields()->create_woocommerce_settings( array(
    'tab'     => array( 'id' => '', 'label' => null ),
    'section' => array( 'id' => '', 'label' => null ),
    'items'   => array(),
+   'display' => function() {
+	  // Conditional display
+	  return true;
+   },
 ) );
 ```
 
@@ -281,6 +297,10 @@ wpify_custom_fields()->create_woocommerce_settings( array(
       'priority' => 100,
       'class'    => array(),
    ),
+   'display'    => function() {
+	  // Conditional display
+	  return true;
+   },
    'items'   => array(),
 ) );
 ```
@@ -336,6 +356,10 @@ wpify_custom_fields()->create_gutenberg_block( array(
 	'editor_style'     => null, // string
 	'style'            => null, // string
 	'items'            => array(), // array
+    'display'          => function() {
+	  // Conditional display
+	  return true;
+   },
 ) );
 ```
 

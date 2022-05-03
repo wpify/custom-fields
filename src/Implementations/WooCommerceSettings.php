@@ -26,10 +26,13 @@ final class WooCommerceSettings extends AbstractImplementation {
 	/** @var bool */
 	private $is_new_tab = false;
 
+	/** @var callable */
+	private $display;
+
 	/**
 	 * WooCommerceSettings constructor.
 	 *
-	 * @param array $args
+	 * @param array        $args
 	 * @param CustomFields $wcf
 	 */
 	public function __construct( array $args, CustomFields $wcf ) {
@@ -40,12 +43,23 @@ final class WooCommerceSettings extends AbstractImplementation {
 				'section' => array( 'id' => '', 'label' => null ),
 				'class'   => null,
 				'items'   => array(),
+				'display' => function () {
+					return true;
+				},
 		) );
 
 		$this->tab     = $args['tab'];
 		$this->section = $args['section'];
 		$this->class   = $args['class'];
 		$this->items   = $args['items'];
+
+		if ( is_callable( $args['display'] ) ) {
+			$this->display = $args['display'];
+		} else {
+			$this->display = function () use ( $args ) {
+				return $args['display'];
+			};
+		}
 
 		add_filter( 'woocommerce_settings_tabs_array', array( $this, 'woocommerce_settings_tabs_array' ), 30 );
 		add_filter( 'woocommerce_get_sections_' . $this->tab['id'], array( $this, 'woocommerce_get_sections' ) );
@@ -85,6 +99,12 @@ final class WooCommerceSettings extends AbstractImplementation {
 	 * @return mixed
 	 */
 	public function woocommerce_settings_tabs_array( $tabs ) {
+		$display_callback = $this->display;
+
+		if ( ! boolval( $display_callback() ) ) {
+			return $tabs;
+		}
+
 		if ( empty( $tabs[ $this->tab['id'] ] ) ) {
 			$tabs[ $this->tab['id'] ] = $this->tab['label'];
 			$this->is_new_tab         = true;
@@ -99,6 +119,12 @@ final class WooCommerceSettings extends AbstractImplementation {
 	 * @return mixed
 	 */
 	public function woocommerce_get_sections( $sections ) {
+		$display_callback = $this->display;
+
+		if ( ! boolval( $display_callback() ) ) {
+			return $sections;
+		}
+
 		if ( ! empty( $this->section ) ) {
 			$sections[ $this->section['id'] ] = $this->section['label'];
 		}
@@ -123,6 +149,12 @@ final class WooCommerceSettings extends AbstractImplementation {
 	 */
 	public function render() {
 		global $current_section;
+
+		$display_callback = $this->display;
+
+		if ( ! boolval( $display_callback() ) ) {
+			return;
+		}
 
 		if ( $this->is_new_tab ) {
 			$sections = $this->get_sections();

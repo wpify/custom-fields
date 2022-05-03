@@ -462,7 +462,7 @@ abstract class AbstractImplementation {
 			$args['items'] = array_values( array_filter( $args['items'] ) );
 		}
 
-		if ( $args['type'] === 'group' ) {
+		if ( 'group' === $args['type'] ) {
 			$default = empty( $args['default'] ) ? array() : $args['default'];
 
 			foreach ( $args['items'] as $item ) {
