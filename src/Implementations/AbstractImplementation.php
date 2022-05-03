@@ -467,7 +467,7 @@ abstract class AbstractImplementation {
 
 			foreach ( $args['items'] as $item ) {
 				$item_id                     = $item['id'];
-				$args['default'][ $item_id ] = $default;
+				$args['default'][ $item_id ] = $item['default'] ?? $default[ $item_id ] ?? '';
 			}
 		}
 

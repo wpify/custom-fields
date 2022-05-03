@@ -4,16 +4,24 @@ import PT from 'prop-types';
 import ErrorBoundary from './ErrorBoundary';
 
 const ProductOptionsRow = ({ className, children, item, htmlId = id => id }) => {
-  return (
-		<p className={classnames('form-field', className)}>
-			<ErrorBoundary>
-				<label htmlFor={htmlId(item.id)} dangerouslySetInnerHTML={{ __html: item.title }} />
-			</ErrorBoundary>
+	if (item.title.trim().length === 0) {
+		return (
 			<ErrorBoundary>
 				{children}
 			</ErrorBoundary>
-		</p>
-  );
+		);
+	} else {
+		return (
+			<p className={classnames('form-field', className)}>
+				<ErrorBoundary>
+					<label htmlFor={htmlId(item.id)} dangerouslySetInnerHTML={{ __html: item.title }} />
+				</ErrorBoundary>
+				<ErrorBoundary>
+					{children}
+				</ErrorBoundary>
+			</p>
+		);
+	}
 };
 
 ProductOptionsRow.propTypes = {
