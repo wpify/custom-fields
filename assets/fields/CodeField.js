@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
 import PT from 'prop-types';
 import { applyFilters } from '@wordpress/hooks';
+import { castString } from '../helpers';
 
 const CodeField = React.forwardRef((props, ref) => {
 	const {
@@ -18,10 +19,10 @@ const CodeField = React.forwardRef((props, ref) => {
 
 	const value = useMemo(() => {
 		if (props.generator) {
-			return applyFilters('wcf_generator_' + props.generator, props.value, props);
+			return castString(applyFilters('wcf_generator_' + props.generator, props.value, props));
 		}
 
-		return props.value;
+		return castString(props.value);
 	}, [props]);
 
 	const textarea = useRef();

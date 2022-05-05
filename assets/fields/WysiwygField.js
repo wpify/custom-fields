@@ -5,6 +5,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { v4 as uuid } from 'uuid';
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
+import { castString } from '../helpers';
 
 const WysiwygField = (props) => {
 	const {
@@ -18,13 +19,13 @@ const WysiwygField = (props) => {
 	} = props;
 
 	const value = useMemo(() => {
-		const value = String(props.value);
+		const value = castString(props.value);
 
 		if (props.generator) {
-			return applyFilters('wcf_generator_' + props.generator, value, props);
+			return castString(applyFilters('wcf_generator_' + props.generator, value, props));
 		}
 
-		return value;
+		return castString(value);
 	}, [props]);
 
 	const [currentValue, setCurrentValue] = useState(value);
@@ -48,11 +49,11 @@ const WysiwygField = (props) => {
 		tinymce.current.on('init', () => tinymce.current.fire('focus'));
 		tinymce.current.on('blur', () => false);
 
-		tinymce.current.addButton( 'wp_add_media', {
-			tooltip: __( 'Insert Media' ),
+		tinymce.current.addButton('wp_add_media', {
+			tooltip: __('Insert Media'),
 			icon: 'dashicon dashicons-admin-media',
 			cmd: 'WP_Medialib',
-		} );
+		});
 	};
 
 	useEffect(() => {
@@ -90,7 +91,7 @@ const WysiwygField = (props) => {
 
 		return () => {
 			window.clearInterval(timer.current);
-		}
+		};
 	}, []);
 
 	useEffect(() => {
@@ -104,7 +105,7 @@ const WysiwygField = (props) => {
 
 		return () => {
 			editArea.current?.removeEventListener('keydown', handleSelectAll);
-		}
+		};
 	}, []);
 
 	const describedBy = description ? id + '-description' : null;
@@ -156,6 +157,6 @@ WysiwygField.propTypes = {
 
 WysiwygField.getHumanTitle = (item, innerValue) => {
 	return innerValue?.replace(/<[^>]+>/gm, '').replace(/\s+/gm, ' ');
-}
+};
 
 export default WysiwygField;

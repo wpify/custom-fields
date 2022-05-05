@@ -3,6 +3,7 @@ import PT from 'prop-types';
 import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { applyFilters } from '@wordpress/hooks';
+import { castString } from '../helpers';
 
 const TextareaField = (props) => {
 	const {
@@ -16,11 +17,11 @@ const TextareaField = (props) => {
 	} = props;
 
 	const value = useMemo(() => {
-		if (props.generator) {
+		if (castString(props.generator)) {
 			return applyFilters('wcf_generator_' + props.generator, props.value, props);
 		}
 
-		return props.value;
+		return castString(props.value);
 	}, [props]);
 
 	const [currentValue, setCurrentValue] = useState(value);

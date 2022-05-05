@@ -7,6 +7,7 @@ import { invertColor } from '../helpers';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { applyFilters } from '@wordpress/hooks';
 import CloseButton from '../components/CloseButton';
+import { castString } from '../helpers';
 
 const ColorField = (props) => {
 	const {
@@ -20,11 +21,11 @@ const ColorField = (props) => {
 	} = props;
 
 	const value = useMemo(() => {
-		if (props.generator) {
+		if (castString(props.generator)) {
 			return applyFilters('wcf_generator_' + props.generator, props.value, props);
 		}
 
-		return props.value;
+		return castString(props.value);
 	}, [props]);
 
 	const [currentValue, setCurrentValue] = useState(value);
