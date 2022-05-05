@@ -169,6 +169,6 @@ final class Taxonomy extends AbstractPostImplementation {
 	 * @return bool|int|\WP_Error
 	 */
 	public function set_field( $name, $value ) {
-		return update_term_meta( $this->term_id, $name, $value );
+		return update_term_meta( $this->term_id, $name, wp_slash( $value ) );
 	}
 }

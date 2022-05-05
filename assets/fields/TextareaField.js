@@ -41,7 +41,7 @@ const TextareaField = (props) => {
 		<React.Fragment>
 			<textarea
 				id={htmlId(id)}
-				name={group_level === 0 && id}
+				name={group_level === 0 ? id : null}
 				onChange={handleChange}
 				aria-describedby={description && describedBy}
 				className={classnames('large-text', className)}

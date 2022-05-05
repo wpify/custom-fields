@@ -147,6 +147,6 @@ final class User extends AbstractImplementation {
 	 * @return bool|int|\WP_Error
 	 */
 	public function set_field( $name, $value ) {
-		return update_user_meta( $this->user_id, $name, $value );
+		return update_user_meta( $this->user_id, $name, wp_slash( $value ) );
 	}
 }

@@ -257,6 +257,6 @@ final class Metabox extends AbstractPostImplementation {
 	 * @return bool|int
 	 */
 	public function set_field( $name, $value ) {
-		return update_post_meta( $this->post_id, $name, $value );
+		return update_post_meta( $this->post_id, $name, wp_slash( $value ) );
 	}
 }

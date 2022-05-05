@@ -230,6 +230,6 @@ final class ProductOptions extends AbstractPostImplementation {
 	 * @return bool|int
 	 */
 	public function set_field( $name, $value ) {
-		return update_post_meta( $this->product_id, $name, $value );
+		return update_post_meta( $this->product_id, $name, wp_slash( $value ) );
 	}
 }

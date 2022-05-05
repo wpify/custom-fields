@@ -206,3 +206,16 @@ export const htmlDecode = (input) => {
 	const doc = new DOMParser().parseFromString(input, 'text/html');
 	return doc.documentElement.textContent;
 }
+
+export const cast = (val, type) => {
+	switch (type) {
+		case 'string':
+			return String(val || '');
+		case 'number':
+			return Number(val || 0);
+		case 'boolean':
+			return Boolean(val || false);
+		default:
+			return val;
+	}
+};
