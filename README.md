@@ -757,3 +757,33 @@ addFilter('wcf_field_' + type, 'my-plugin-slug', Component => MyCustomField);
 3. Register the parser and sanitizer (if needed)
 
 See the code in `src/Parser.php` and `src/Sanitizer.php` for filters.
+
+# Bedrock support
+
+If you use Bedrock, the custom fields by default won't work, because the vendor folder is outside of the docroot and assets needed for WCF are in the vendor folder. The solution to this is move the WCF to the document root. To enable that, require "mnsami/composer-custom-directory-installer" that enables installation particular packages to another location:
+
+`composer require mnsami/composer-custom-directory-installer`
+
+After that, you can specify location in your `composer.json`
+
+```json
+{
+  ...
+  "extra": {
+    "installer-paths": {
+      ... 
+      "web/app/vendor/{$vendor}/{$name}": [
+        "wpify/custom-fields"
+      ]
+    },
+    ...
+  }
+  ...
+}
+```
+
+Run `composer update` and WCF is installed in `web/app/vendor/wpify/custom-fields` folder. You can then inicialize WCF as follows:
+
+```php
+$custom_fields = new CustomFields( content_url( '/app/vendor/wpify/custom-fields' ) );
+```
