@@ -713,6 +713,12 @@ The select field can accept options asynchronously from API (recommended) or inl
 
 ![Week field](docs/images/wcf-week-type.png)
 
+## WYSIWYG fields type `wysiwyg`
+
+This field gives you the TinyMCE editor, that enables you edit the HTML visualy!
+
+![WYSIWYG field](docs/images/wcf-wysiwyg-type.png)
+
 # Extending the field types
 
 You can extend the custom field types with your own:
