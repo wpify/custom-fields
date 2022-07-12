@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import PT from 'prop-types';
 import Select from 'react-select';
 import classnames from 'classnames';
@@ -46,7 +46,17 @@ const SelectControl = (props) => {
 	const [optionsCache, setOptionsCache] = useState([]);
 	const [optionsArgs, setOptionsArgs] = useState({ options: defaultOptions, search: inputValue, listId, value, ...otherArgs });
 	const response = useOptions(api, optionsArgs);
-	const { isLoading, data: options, loadOptions } = response;
+	const { isLoading, data: options } = response;
+	const portal = useRef();
+
+	useEffect(() => {
+		portal.current = document.createElement('div');
+		document.body.appendChild(portal.current);
+
+		return () => {
+			document.body.removeChild(portal.current);
+		}
+	}, []);
 
 	useEffect(() => {
 		const cachedIds = optionsCache.map(o => String(o.value));
@@ -123,6 +133,7 @@ const SelectControl = (props) => {
 			className={classnames('wcf-select', className)}
 			classNamePrefix="wcf-select"
 			components={{ Option, SingleValue }}
+			menuPortalTarget={portal.current}
 		/>
 	);
 };
