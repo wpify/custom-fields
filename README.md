@@ -290,18 +290,19 @@ $some_custom_field_value = get_option( 'some_id_of_the_option' );
 Product options is a great place where to put the custom fields. You can define it as follows:
 
 ```php
-wpify_custom_fields()->create_woocommerce_settings( array(
-   'tab'        => array(
+wpify_custom_fields()->create_product_options( array(
+   'tab'          => array(
       'id'       => 'general',
       'label'    => null,
       'priority' => 100,
       'class'    => array(),
    ),
-   'display'    => function() {
+   'init_priority' => 10,
+   'display'       => function() {
 	  // Conditional display
 	  return true;
    },
-   'items'   => array(),
+   'items'         => array(),
 ) );
 ```
 
