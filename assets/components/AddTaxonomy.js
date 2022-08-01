@@ -6,7 +6,7 @@ import AddTaxonomyRow from './AddTaxonomyRow';
 import ErrorBoundary from './ErrorBoundary';
 
 const AddTaxonomy = (props) => {
-	const { appContext } = props;
+	const { appContext, handleChange } = props;
 	const { items = [] } = appContext;
 
 	return (
@@ -18,7 +18,11 @@ const AddTaxonomy = (props) => {
 					<ErrorBoundary key={item.id}>
 						<AddTaxonomyRow item={item}>
 							<ErrorBoundary>
-								<Field {...item} appContext={appContext}/>
+								<Field
+									{...item}
+									onChange={handleChange(item)}
+									appContext={appContext}
+								/>
 							</ErrorBoundary>
 						</AddTaxonomyRow>
 					</ErrorBoundary>

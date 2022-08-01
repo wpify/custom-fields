@@ -7,7 +7,7 @@ import PT from 'prop-types';
 import ErrorBoundary from './ErrorBoundary';
 import { applyFilters } from '@wordpress/hooks';
 
-const Options = ({ appContext }) => {
+const Options = ({ appContext, handleChange }) => {
 	const { items = [] } = appContext;
 
 	return (
@@ -29,7 +29,11 @@ const Options = ({ appContext }) => {
 								withoutSection={applyFilters('wcf_field_without_section', false, item.type)}
 							>
 								<ErrorBoundary>
-									<Field {...item} appContext={appContext} />
+									<Field
+										{...item}
+										appContext={appContext}
+										onChange={handleChange(item)}
+									/>
 								</ErrorBoundary>
 							</OptionsRow>
 						</ErrorBoundary>

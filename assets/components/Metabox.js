@@ -6,7 +6,7 @@ import MetaboxRow from './MetaboxRow';
 import ErrorBoundary from './ErrorBoundary';
 import { applyFilters } from '@wordpress/hooks';
 
-const Metabox = ({ appContext }) => {
+const Metabox = ({ appContext, handleChange }) => {
 	const { items = [] } = appContext;
 
 	return (
@@ -22,7 +22,11 @@ const Metabox = ({ appContext }) => {
 					<ErrorBoundary key={item.id}>
 						<MetaboxRow item={item}>
 							<ErrorBoundary>
-								<Field {...item} appContext={appContext}/>
+								<Field
+									{...item}
+									onChange={handleChange(item)}
+									appContext={appContext}
+								/>
 							</ErrorBoundary>
 						</MetaboxRow>
 					</ErrorBoundary>

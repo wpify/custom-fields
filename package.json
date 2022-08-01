@@ -36,7 +36,8 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-	"@wordpress/icons": "^8.1.0",
+    "@wordpress/hooks": "^3.14.0",
+    "@wordpress/icons": "^8.1.0",
     "@wordpress/scripts": "^22.3.0",
     "browser-sync": "^2.27.9",
     "browser-sync-webpack-plugin": "^2.3.0",

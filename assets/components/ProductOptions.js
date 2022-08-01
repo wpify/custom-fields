@@ -7,7 +7,7 @@ import ProductOptionsRow from './ProductOptionsRow';
 import ErrorBoundary from './ErrorBoundary';
 import { applyFilters } from '@wordpress/hooks';
 
-const ProductOptions = ({ appContext }) => {
+const ProductOptions = ({ appContext, handleChange }) => {
 	const { items = [] } = appContext;
 
 	return (
@@ -24,7 +24,11 @@ const ProductOptions = ({ appContext }) => {
 						<ErrorBoundary key={item.id}>
 							<ProductOptionsRow item={item}>
 								<ErrorBoundary>
-									<Field {...item} appContext={appContext}/>
+									<Field
+										{...item}
+										onChange={handleChange(item)}
+										appContext={appContext}
+									/>
 								</ErrorBoundary>
 							</ProductOptionsRow>
 						</ErrorBoundary>

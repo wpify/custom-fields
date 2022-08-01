@@ -794,3 +794,47 @@ Run `composer update` and WCF is installed in `web/app/vendor/wpify/custom-field
 ```php
 $custom_fields = new CustomFields( content_url( '/app/vendor/wpify/custom-fields' ) );
 ```
+
+# Advanced usage - conditional custom fields
+
+You can customize custom fields based on data. Let's say when the user selects the white colour, you want to show background color field. That's possible thanks to filters on frontend, you can define the following in your javascript:
+
+```javascript
+import { addFilter } from '@wordpress/hooks';
+
+addFilter('wcf_definition', 'my-plugin-test', (wcf, data) => {
+  // Define when to apply filters wery carefully, if you don't want to mess with bugs!
+  if (wcf.object_type === 'options_page' && wcf.menu_slug === 'some-test-menu-slug') {
+		// Remove the an conditional field if present.
+		const newItems = wcf.items.filter(i => i.id !== 'some_background_color');
+
+		// If some_color is white, insert the conditional field after field ID "some_color".
+		if (data.some_color === '#ffffff') {
+      		// Find an index of "some_color" field.
+			const index = newItems.map(i => i.id).indexOf('some_color');
+
+      		// Insert new field after "some_color" field.
+			newItems.splice(index + 1, 0, {
+				id: 'some_background_color',
+				title: 'Background color',
+				type: 'color',
+				value: data.some_background_color || '',
+			});
+		}
+
+		// Return new WCF definition.
+		return {
+			...wcf,
+			items: newItems,
+		};
+  }
+  
+  // By default, return the original WCF definition.
+  return wcf;
+});
+```
+
+This approach has some caveats:
+
+* You cannot define conditional fields in multi group field type. The new items will apply to all groups in multi group.
+* If you define conditions in gutenberg blocks, you need to define all attributes, or it won't be saved.
