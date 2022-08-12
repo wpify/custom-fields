@@ -25,6 +25,7 @@ const LinkField = React.forwardRef((props, ref) => {
 		options,
 	} = props;
 
+	const div = useRef();
 	const defaultValue = { label: '', url: '', target: null };
 
 	const value = useMemo(() => {
@@ -71,18 +72,18 @@ const LinkField = React.forwardRef((props, ref) => {
 
 	useEffect(() => {
 		const handleHide = (event) => {
-			if (!event.path.includes(div.current) || event.key === 'Escape') {
+			if (event.key === 'Escape') {
 				toggleOpen(false);
 			}
 		};
 
 		if (isOpen) {
-			document.addEventListener('click', handleHide);
+			//document.addEventListener('click', handleHide); // selects are at the end of the body, so it won't work
 			document.addEventListener('keyup', handleHide);
 		}
 
 		return () => {
-			document.removeEventListener('click', handleHide);
+			//document.removeEventListener('click', handleHide); // selects are at the end of the body, so it won't work
 			document.removeEventListener('keyup', handleHide);
 		};
 	}, [isOpen, toggleOpen]);
@@ -97,8 +98,6 @@ const LinkField = React.forwardRef((props, ref) => {
 		}
 	}, [selectedOptions, currentValue, setCurrentValue]);
 
-	const div = useRef();
-
 	const describedBy = description ? id + '-description' : null;
 
 	const handleChange = (key) => (event) => {
@@ -112,9 +111,12 @@ const LinkField = React.forwardRef((props, ref) => {
 			newValue[key] = event.target.checked ? '_blank' : null;
 		} else if (key === 'post') {
 			newValue[key] = event;
-		} else {
+			newValue['url'] = null;
+		} else if (key === 'url') {
 			newValue[key] = event.target.value;
 			newValue['post'] = null;
+		} else {
+			newValue[key] = event.target.value;
 		}
 
 		setCurrentValue(newValue);
