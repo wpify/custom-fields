@@ -28,12 +28,15 @@ assets:
     - eval $(ssh-agent -s)
     - echo "$PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
+    - cat "$PRIVATE_KEY" >> ~/.ssh/id_rsa
     - ssh-keyscan -t rsa "${GIT_URL}" >> ~/.ssh/known_hosts
+    - chmod 700 ~/.ssh
+    - chmod 600 ~/.ssh/id_rsa
     - chmod 644 ~/.ssh/known_hosts
     - git config --global user.email "${GIT_EMAIL}"
     - git config --global user.name "${GIT_NAME}"
     - ls -la /root/.ssh
+    - echo $GIT_SSH_COMMAND
 
 deploy_master:
   stage: deploy
