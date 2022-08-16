@@ -42,7 +42,7 @@ deploy_master:
     message=$(git log -1 --pretty=%B)
 
     # Replace origin
-    git remote rm origin && git remote add origin $GIT_SSH
+    git remote rm origin && git remote add origin "${GIT_SSH}"
 
     # Remove /build/ from .gitignore file
     sed -i '/\/build\//d' ./.gitignore
@@ -57,7 +57,8 @@ deploy_master:
       echo "commiting"
       git commit -m "$message"
       echo "pushing"
-      git push origin HEAD:$CI_COMMIT_REF_NAME
+      echo "git push --force origin HEAD:$CI_COMMIT_REF_NAME"
+      git push --force origin HEAD:$CI_COMMIT_REF_NAME
     fi
   only:
     - master
