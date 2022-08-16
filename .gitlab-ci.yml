@@ -38,10 +38,19 @@ deploy_master:
   needs:
     - assets
   script: |
+    # Extract latest commit message
     message=$(git log -1 --pretty=%B)
+
+    # Replace origin
     git remote rm origin && git remote add origin $GIT_SSH
+
+    # Remove /build/ from .gitignore file
+    sed -i '/\/build\//d' ./.gitignore
+
+    # Get current status
     git status --porcelain
 
+    # If anything changed, commit that to the origin
     if ! git diff-index --quiet HEAD --; then
       git add .
       git commit -m "$message"
