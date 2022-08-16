@@ -1,5 +1,6 @@
 variables:
   PRIVATE_KEY: $WPIFY_PRIVATE_KEY
+  PUBLIC_KEY: $WPIFY_PUBLIC_KEY
   GIT_URL: gitlab.com
   GIT_SSH: git@gitlab.com:wpify/custom-fields.git
   GIT_NAME: Daniel Mejta
@@ -32,14 +33,17 @@ assets:
     - echo "$PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - echo "$PRIVATE_KEY" >> ~/.ssh/id_rsa
+    - echo "$PUBLIC_KEY"  >> ~/.ssh/id_rsa.pub
     - ssh-keyscan -t rsa "${GIT_URL}" >> ~/.ssh/known_hosts
     - chmod 700 ~/.ssh
     - chmod 600 ~/.ssh/id_rsa
+    - chmod 644 ~/.ssh/id_rsa.pub
     - chmod 644 ~/.ssh/known_hosts
     - git config --global user.email "${GIT_EMAIL}"
     - git config --global user.name "${GIT_NAME}"
     - ls -la /root/.ssh
     - which git
+    - which ssh
 
 deploy_master:
   stage: deploy
