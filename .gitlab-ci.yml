@@ -1,11 +1,9 @@
 variables:
-  PRIVATE_KEY: $WPIFY_PRIVATE_KEY
-  PUBLIC_KEY: $WPIFY_PUBLIC_KEY
   GIT_URL: gitlab.com
-  GIT_SSH: git@gitlab.com:wpify/custom-fields.git
+  GIT_REPO: wpify/custom-fields
   GIT_NAME: Daniel Mejta
   GIT_EMAIL: daniel@mejta.net
-  DEPLOY_PATH: /root/custom-fields
+  CLONE_PATH: /root/custom-fields
 
 include:
   - project: 'wpify/gitlab-ci-templates'
@@ -41,20 +39,12 @@ assets:
     - chmod 644 ~/.ssh/known_hosts
     - git config --global user.email "${GIT_EMAIL}"
     - git config --global user.name "${GIT_NAME}"
-    - ls -la /root/.ssh
-    - which git
-    - which ssh
+    - git clone "git@$GIT_URL/$GIT_REPO.git" "$CLONE_PATH"
 
 deploy_master:
   stage: deploy
   extends: .git
   script: |
-    echo $GIT_SSH_COMMAND
-
-    ls -la /root/.ssh
-    # clone target repository
-    git clone "${GIT_SSH}" "${DEPLOY_PATH}"
-
     # extract latest message
     message=$(git log -1 --pretty=%B)
 
@@ -62,10 +52,7 @@ deploy_master:
     sed -i '/\/build\//d' ./.gitignore
 
     # copy changes to deploy path
-    rsync -a --delete --exclude '.git' $CI_PROJECT_DIR/ $DEPLOY_PATH/
-
-    # go to the target repository folder
-    cd $DEPLOY_PATH
+    rsync -a --delete --exclude '.git' $CI_PROJECT_DIR/ $CLONE_PATH/
 
     # Get current status
     git status --porcelain
@@ -90,11 +77,8 @@ deploy_tag:
     # get the tag
     tag=$(git describe --tags)
 
-    # clone target repository
-    git clone "${GIT_SSH}" "${DEPLOY_PATH}"
-
     # go to target repository
-    cd $DEPLOY_PATH
+    cd $CLONE_PATH
 
     # create and push the tag
     git tag "$tag"
