@@ -19,7 +19,7 @@ assets:
     paths:
       - $CI_PROJECT_DIR/build
     expire_in: 1 week
-  when: never
+  when: manual
 
 .git:
   image: alpine:latest
@@ -42,8 +42,6 @@ assets:
 deploy_master:
   stage: deploy
   extends: .git
-  needs:
-    - assets
   script: |
     ls -la /root/.ssh
     # clone target repository
