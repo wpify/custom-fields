@@ -23,6 +23,8 @@ assets:
 
 .git:
   image: alpine:latest
+  variables:
+    GIT_SSH_COMMAND: /usr/bin/ssh -i ~/.ssh/id_rsa
   before_script:
     - apk update
     - apk add openssh-client bash git rsync
@@ -37,13 +39,14 @@ assets:
     - git config --global user.email "${GIT_EMAIL}"
     - git config --global user.name "${GIT_NAME}"
     - ls -la /root/.ssh
-    - GIT_SSH_COMMAND="/usr/bin/ssh -i ~/.ssh/id_rsa"
-    - echo $GIT_SSH_COMMAND
+    - which git
 
 deploy_master:
   stage: deploy
   extends: .git
   script: |
+    echo $GIT_SSH_COMMAND
+
     ls -la /root/.ssh
     # clone target repository
     git clone "${GIT_SSH}" "${DEPLOY_PATH}"
