@@ -22,6 +22,7 @@ assets:
 .git:
   image: alpine:latest
   before_script:
+    - pwd
     - apk update
     - apk add openssh-client bash gawk git
     - eval $(ssh-agent -s)
