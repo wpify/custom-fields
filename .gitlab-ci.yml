@@ -19,6 +19,7 @@ assets:
     paths:
       - $CI_PROJECT_DIR/build
     expire_in: 1 week
+  when: never
 
 .git:
   image: alpine:latest
@@ -28,7 +29,7 @@ assets:
     - eval $(ssh-agent -s)
     - echo "$PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
-    - cat "$PRIVATE_KEY" >> ~/.ssh/id_rsa
+    - echo "$PRIVATE_KEY" >> ~/.ssh/id_rsa
     - ssh-keyscan -t rsa "${GIT_URL}" >> ~/.ssh/known_hosts
     - chmod 700 ~/.ssh
     - chmod 600 ~/.ssh/id_rsa
