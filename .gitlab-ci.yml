@@ -49,13 +49,9 @@ deploy_master:
 
     # If anything changed, commit that to the origin
     if ! git diff-index --quiet HEAD --; then
-      echo "adding"
       git add .
-      echo "commiting"
       git commit -m "$message"
-      echo "pushing"
-      echo "git push --force origin:$CI_COMMIT_REF_NAME"
-      git push --force origin:$CI_COMMIT_REF_NAME
+      git push --force origin HEAD:$CI_COMMIT_REF_NAME
     fi
   only:
     - master
