@@ -23,7 +23,6 @@ assets:
 .git:
   image: alpine:latest
   before_script:
-    - pwd
     - apk update
     - apk add openssh-client bash git rsync
     - eval $(ssh-agent -s)
@@ -31,8 +30,10 @@ assets:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - ssh-keyscan -t rsa "${GIT_URL}" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
     - git config --global user.email "${GIT_EMAIL}"
     - git config --global user.name "${GIT_NAME}"
+    - ls -la /root/.ssh
 
 deploy_master:
   stage: deploy
