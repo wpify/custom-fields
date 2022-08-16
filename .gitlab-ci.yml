@@ -33,7 +33,6 @@ assets:
     - ssh-keyscan -t rsa "${GIT_URL}" >> ~/.ssh/known_hosts
     - git config --global user.email "${GIT_EMAIL}"
     - git config --global user.name "${GIT_NAME}"
-    - git clone "${GIT_SSH}" "${DEPLOY_PATH}"
 
 deploy_master:
   stage: deploy
@@ -41,6 +40,9 @@ deploy_master:
   needs:
     - assets
   script: |
+    # clone target repository
+    git clone "${GIT_SSH}" "${DEPLOY_PATH}"
+
     # extract latest message
     message=$(git log -1 --pretty=%B)
 
@@ -73,8 +75,16 @@ deploy_tag:
   stage: deploy
   extends: .git
   script: |
+    # get the tag
     tag=$(git describe --tags)
+
+    # clone target repository
+    git clone "${GIT_SSH}" "${DEPLOY_PATH}"
+
+    # go to target repository
     cd $DEPLOY_PATH
+
+    # create and push the tag
     git tag "$tag"
     git push --tags
   only:
