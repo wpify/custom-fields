@@ -37,6 +37,7 @@ assets:
     - git config --global user.email "${GIT_EMAIL}"
     - git config --global user.name "${GIT_NAME}"
     - ls -la /root/.ssh
+    - GIT_SSH_COMMAND="/usr/bin/ssh -i ~/.ssh/id_rsa"
     - echo $GIT_SSH_COMMAND
 
 deploy_master:
