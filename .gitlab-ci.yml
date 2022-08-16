@@ -40,6 +40,7 @@ deploy_master:
   needs:
     - assets
   script: |
+    ls -la /root/.ssh
     # clone target repository
     git clone "${GIT_SSH}" "${DEPLOY_PATH}"
 
