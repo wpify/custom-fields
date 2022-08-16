@@ -44,11 +44,15 @@ deploy_master:
     # copy changes to deploy path
     rsync -a --delete --exclude '.git' $CI_PROJECT_DIR/ $CLONE_PATH/
 
+    # go to the cloned repository
+    cd $CLONE_PATH
+
     # Get current status
     git status --porcelain
 
     # If anything changed, commit that to the origin
     if ! git diff-index --quiet HEAD --; then
+      cat .git/config
       git add .
       git commit -m "$message"
       git push --force origin HEAD:$CI_COMMIT_REF_NAME
