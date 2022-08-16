@@ -18,7 +18,6 @@ assets:
     paths:
       - $CI_PROJECT_DIR/build
     expire_in: 1 week
-  when: manual
 
 .git:
   image: alpine:latest
@@ -34,6 +33,8 @@ assets:
 deploy_master:
   stage: deploy
   extends: .git
+  needs:
+    - assets
   script: |
     # extract latest message
     message=$(git log -1 --pretty=%B)
@@ -50,13 +51,10 @@ deploy_master:
     # Get current status
     git status --porcelain
 
-    # If anything changed, commit that to the origin
-    if ! git diff-index --quiet HEAD --; then
-      cat .git/config
-      git add .
-      git commit -m "$message"
-      git push --force origin HEAD:$CI_COMMIT_REF_NAME
-    fi
+    # Commit and push changes
+    git add .
+    git commit -am "$message"
+    git push --force origin HEAD:$CI_COMMIT_REF_NAME
   only:
     - master
 
