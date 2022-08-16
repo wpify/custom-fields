@@ -24,6 +24,8 @@ assets:
     - git config --global user.email "${GIT_EMAIL}"
     - git config --global user.name "${GIT_NAME}"
     - git clone "https://$GIT_USER:$GIT_ACCESS_TOKEN@$GIT_URL/$GIT_REPO.git" "$CLONE_PATH"
+  only:
+    - master
 
 deploy_master:
   stage: deploy
@@ -57,14 +59,11 @@ deploy_tag:
   stage: deploy
   extends: .git
   script: |
-    # get the tag
-    tag=$(git describe --tags)
-
-    # go to target repository
+    # go to cloned repository
     cd $CLONE_PATH
 
     # create and push the tag
-    git tag "$tag"
+    git tag "$CI_COMMIT_REF_NAME"
     git push --tags
   only:
     - tags
