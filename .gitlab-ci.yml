@@ -1,5 +1,6 @@
 variables:
   PRIVATE_KEY: $WPIFY_PRIVATE_KEY
+  GIT_URL: gitlab.com
   GIT_SSH: git@gitlab.com:wpify/custom-fields.git
   GIT_NAME: Daniel Mejta
   GIT_EMAIL: daniel@mejta.net
@@ -27,7 +28,7 @@ assets:
     - echo "$PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - ssh-keyscan -t rsa "$CI_SERVER_HOST" >> ~/.ssh/known_hosts
+    - ssh-keyscan -t rsa "GIT_URL" >> ~/.ssh/known_hosts
     - git config --global user.email "${GIT_EMAIL}"
     - git config --global user.name "${GIT_NAME}"
 
