@@ -33,7 +33,7 @@ assets:
     - ssh-keyscan -t rsa "${GIT_URL}" >> ~/.ssh/known_hosts
     - git config --global user.email "${GIT_EMAIL}"
     - git config --global user.name "${GIT_NAME}"
-    - git clone $GIT_SSH $DEPLOY_PATH
+    - git clone "${GIT_SSH}" "${DEPLOY_PATH}"
 
 deploy_master:
   stage: deploy
