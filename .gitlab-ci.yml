@@ -42,7 +42,7 @@ deploy_master:
     message=$(git log -1 --pretty=%B)
 
     # Replace origin
-    git remote rm origin && git remote add origin "${GIT_SSH}"
+    git remote rm origin && git remote add origin $GIT_SSH
 
     # Remove /build/ from .gitignore file
     sed -i '/\/build\//d' ./.gitignore
