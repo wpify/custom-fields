@@ -4,6 +4,7 @@ variables:
   GIT_SSH: git@gitlab.com:wpify/custom-fields.git
   GIT_NAME: Daniel Mejta
   GIT_EMAIL: daniel@mejta.net
+  DEPLOY_PATH: /root/custom-fields
 
 include:
   - project: 'wpify/gitlab-ci-templates'
@@ -24,7 +25,7 @@ assets:
   before_script:
     - pwd
     - apk update
-    - apk add openssh-client bash gawk git
+    - apk add openssh-client bash git rsync
     - eval $(ssh-agent -s)
     - echo "$PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
@@ -32,6 +33,7 @@ assets:
     - ssh-keyscan -t rsa "${GIT_URL}" >> ~/.ssh/known_hosts
     - git config --global user.email "${GIT_EMAIL}"
     - git config --global user.name "${GIT_NAME}"
+    - git clone $GIT_SSH $DEPLOY_PATH
 
 deploy_master:
   stage: deploy
@@ -39,14 +41,17 @@ deploy_master:
   needs:
     - assets
   script: |
-    # Extract latest commit message
+    # extract latest message
     message=$(git log -1 --pretty=%B)
 
-    # Replace origin
-    git remote rm origin && git remote add origin $GIT_SSH
-
-    # Remove /build/ from .gitignore file
+    # remove /build/ from .gitignore file
     sed -i '/\/build\//d' ./.gitignore
+
+    # copy changes to deploy path
+    rsync -a --delete --exclude '.git' $CI_PROJECT_DIR/ $DEPLOY_PATH/
+
+    # go to the target repository folder
+    cd $DEPLOY_PATH
 
     # Get current status
     git status --porcelain
@@ -58,8 +63,8 @@ deploy_master:
       echo "commiting"
       git commit -m "$message"
       echo "pushing"
-      echo "git push --force origin HEAD:$CI_COMMIT_REF_NAME"
-      git push --force origin HEAD:$CI_COMMIT_REF_NAME
+      echo "git push --force origin:$CI_COMMIT_REF_NAME"
+      git push --force origin:$CI_COMMIT_REF_NAME
     fi
   only:
     - master
@@ -69,7 +74,7 @@ deploy_tag:
   extends: .git
   script: |
     tag=$(git describe --tags)
-    git remote rm origin && git remote add origin $GIT_SSH
+    cd $DEPLOY_PATH
     git tag "$tag"
     git push --tags
   only:
