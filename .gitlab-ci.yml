@@ -26,20 +26,10 @@ assets:
     GIT_SSH_COMMAND: /usr/bin/ssh -i ~/.ssh/id_rsa
   before_script:
     - apk update
-    - apk add openssh-client bash git rsync
-    - eval $(ssh-agent -s)
-    - echo "$PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - echo "$PRIVATE_KEY" >> ~/.ssh/id_rsa
-    - echo "$PUBLIC_KEY"  >> ~/.ssh/id_rsa.pub
-    - ssh-keyscan -t rsa "${GIT_URL}" >> ~/.ssh/known_hosts
-    - chmod 700 ~/.ssh
-    - chmod 600 ~/.ssh/id_rsa
-    - chmod 644 ~/.ssh/id_rsa.pub
-    - chmod 644 ~/.ssh/known_hosts
+    - apk add bash git rsync
     - git config --global user.email "${GIT_EMAIL}"
     - git config --global user.name "${GIT_NAME}"
-    - git clone "git@$GIT_URL/$GIT_REPO.git" "$CLONE_PATH"
+    - git clone "https://$GIT_USER:$GIT_ACCESS_TOKEN@$GIT_URL/$GIT_REPO.git" "$CLONE_PATH"
 
 deploy_master:
   stage: deploy
