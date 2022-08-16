@@ -1,0 +1,61 @@
+variables:
+  PRIVATE_KEY: $WPIFY_PRIVATE_KEY
+  GIT_SSH: git@gitlab.com:wpify/custom-fields.git
+  GIT_NAME: Daniel Mejta
+  GIT_EMAIL: daniel@mejta.net
+
+include:
+  - project: 'wpify/gitlab-ci-templates'
+    ref: master
+    file:
+      - 'jobs/nvm.yml'
+
+assets:
+  stage: .pre
+  extends: .nvm
+  artifacts:
+    paths:
+      - $CI_PROJECT_DIR/build
+    expire_in: 1 week
+
+.git:
+  image: alpine:latest
+  before_script:
+    - apk update
+    - apk add openssh-client bash gawk git
+    - eval $(ssh-agent -s)
+    - echo "$PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -t rsa "$CI_SERVER_HOST" >> ~/.ssh/known_hosts
+    - git config --global user.email "${GIT_EMAIL}"
+    - git config --global user.name "${GIT_NAME}"
+
+deploy_master:
+  stage: deploy
+  extends: .git
+  needs:
+    - assets
+  script: |
+    message=$(git log -1 --pretty=%B)
+    git remote rm origin && git remote add origin $GIT_SSH
+    git status --porcelain
+
+    if ! git diff-index --quiet HEAD --; then
+      git add .
+      git commit -m "$message"
+      git push origin HEAD:$CI_COMMIT_REF_NAME
+    fi
+  only:
+    - master
+
+deploy_tag:
+  stage: deploy
+  extends: .git
+  script: |
+    tag=$(git describe --tags)
+    git remote rm origin && git remote add origin $GIT_SSH
+    git tag "$tag"
+    git push --tags
+  only:
+    - tags

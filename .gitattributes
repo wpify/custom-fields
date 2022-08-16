@@ -3,6 +3,7 @@ assets            export-ignore
 .eslintignore     export-ignore
 .nvmrc            export-ignore
 .stylelintignore  export-ignore
+.gitlab-ci.yml    export-ignore
 package.json      export-ignore
 package-lock.json export-ignore
 wpify.config.js   export-ignore

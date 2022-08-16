@@ -292,7 +292,7 @@ final class GutenbergBlock extends AbstractImplementation {
 		ob_start();
 		?>
 		<div style="border-left:1px solid black;padding-left:10px;margin:10px 0;font-size:12px;">
-			<strong><?php echo $item['title']; ?> (<code><?php echo $item['id']; ?></code>)</strong>
+			<strong><?php echo esc_html( $item['title'] ); ?> (<code><?php echo esc_html( $item['id'] ); ?></code>)</strong>
 			<br>
 			<?php if ( isset( $item['items'] ) ): ?>
 				<?php
