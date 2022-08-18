@@ -23,6 +23,7 @@ const MultiGroupFieldRow = (props) => {
 		appContext,
 		buttons = {},
 		disabled_buttons = [],
+		group_title,
 	} = props;
 
 	const handleDelete = useCallback(() => onChange(null), [onChange]);
@@ -40,7 +41,7 @@ const MultiGroupFieldRow = (props) => {
 		}
 	}, [onChange, value]);
 
-	const title = items.map(item => {
+	const getItemTitle = (item) => {
 		const innerValue = value[item.id];
 		const Field = getItemComponent(item);
 
@@ -49,7 +50,13 @@ const MultiGroupFieldRow = (props) => {
 		}
 
 		return innerValue;
-	}).find(value => typeof value === 'string') || '';
+	};
+
+	const title = [...items]
+		.sort((a, b) => a.id === group_title ? -1 : 0)
+		.map(getItemTitle)
+		.filter(value => !!(typeof value === 'string' ? value.trim : value))
+		.find(value => typeof value === 'string') || '';
 
 	return (
 		<div className={classnames('wcf-multi-group-row', className)}>

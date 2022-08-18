@@ -32,6 +32,7 @@ const MultiGroupField = (props) => {
 		group_level = 0,
 		onChange,
 		id,
+		description,
 		items = [],
 		className,
 		appContext,
@@ -39,6 +40,7 @@ const MultiGroupField = (props) => {
 		disable_buttons = [],
 		min,
 		max,
+		group_title,
 	} = props;
 
 	const [disabledButtons, setDisabledButtons] = useState(disable_buttons);
@@ -123,6 +125,9 @@ const MultiGroupField = (props) => {
 			{group_level === 0 && (
 				<input type="hidden" id={id} name={id} value={JSON.stringify(removeKeys(currentValue))}/>
 			)}
+			{description && (
+				<p>{description}</p>
+			)}
 			<ErrorBoundary>
 				<SortableControl
 					className="wcf-multi-group__items"
@@ -145,6 +150,7 @@ const MultiGroupField = (props) => {
 								toggleCollapsed={() => setOpened(key === opened ? null : key)}
 								appContext={appContext}
 								disabled_buttons={disabledButtons}
+								group_title={group_title}
 							/>
 						</ErrorBoundary>
 					)}
