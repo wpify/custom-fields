@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 import CloseButton from './CloseButton';
@@ -38,6 +38,10 @@ const Attachment = (props) => {
 		maxHeight: 50,
 	});
 
+	const handleDelete = useCallback(() => {
+		onDelete(attachment);
+	}, [onDelete, attachment]);
+
 	return (
 		<div className={classnames(className, 'wcf-attachment')} key={props.id}>
 			{length > 1 && (
@@ -45,9 +49,9 @@ const Attachment = (props) => {
 			)}
 			<div className="wcf-attachment__image">
 				{image ? (
-					<img src={image.url} width={image.width} height={image.height}/>
+					<img src={image.url} width={image.width} height={image.height} alt={attributes.title} />
 				) : (
-					<img src={attributes.icon} width={48} height={64} alt={attributes.title}/>
+					<img src={attributes.icon} width={48} height={64} alt={attributes.title} />
 				)}
 			</div>
 			<div className="wcf-attachment__description">
@@ -60,7 +64,7 @@ const Attachment = (props) => {
 				[<a href={attributes.url} target="_blank">{attributes.filename}</a>, {attributes.filesizeHumanReadable}]
 			</div>
 			{onDelete && (
-				<CloseButton onClick={() => onDelete(attachment)} />
+				<CloseButton onClick={handleDelete} />
 			)}
 		</div>
 	);

@@ -1,5 +1,5 @@
 import PT from 'prop-types';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import Options from './Options';
 import ProductOptions from './ProductOptions';
 import AddTaxonomy from './AddTaxonomy';
@@ -9,8 +9,18 @@ import ErrorBoundary from './ErrorBoundary';
 import { applyFilters } from '@wordpress/hooks';
 
 const App = (props) => {
-	const [wcf, setWcf] = useState(props.wcf);
-	const [data, setData] = useState(Object.fromEntries(wcf.items.map(i => [i.id, i.value])));
+	const originalWcf = props.wcf;
+	const [data, setData] = useState(Object.fromEntries(originalWcf.items.map(i => [i.id, i.value])));
+
+	const wcf = useMemo(() => {
+		const newWcf = applyFilters('wcf_definition', originalWcf, data);
+
+		if (JSON.stringify(newWcf) !== JSON.stringify(originalWcf)) {
+			return newWcf;
+		}
+
+		return originalWcf;
+	}, [applyFilters, originalWcf, data]);
 
 	const handleChange = useCallback((item) => (value) => {
 		setData((data) => {
@@ -26,18 +36,6 @@ const App = (props) => {
 			return data;
 		});
 	}, [setData]);
-
-	useEffect(() => {
-		setWcf((wcf) => {
-			const newWcf = applyFilters('wcf_definition', wcf, data);
-
-			if (JSON.stringify(newWcf) !== JSON.stringify(wcf)) {
-				return newWcf;
-			}
-
-			return wcf;
-		});
-	}, [data]);
 
 	const { object_type } = wcf;
 
