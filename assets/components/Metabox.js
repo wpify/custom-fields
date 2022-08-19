@@ -5,12 +5,13 @@ import ScreenContext from './ScreenContext';
 import MetaboxRow from './MetaboxRow';
 import ErrorBoundary from './ErrorBoundary';
 import { applyFilters } from '@wordpress/hooks';
+import RootWrapper from './RootWrapper';
 
 const Metabox = ({ appContext, handleChange }) => {
 	const { items = [] } = appContext;
 
 	return (
-		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: MetaboxRow }}>
+		<ScreenContext.Provider value={{ RootWrapper, RowWrapper: MetaboxRow }}>
 			{items.map((item) => {
 				const Field = getItemComponent(item);
 

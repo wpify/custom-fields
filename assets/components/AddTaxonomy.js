@@ -4,13 +4,14 @@ import { getItemComponent } from '../helpers';
 import ScreenContext from './ScreenContext';
 import AddTaxonomyRow from './AddTaxonomyRow';
 import ErrorBoundary from './ErrorBoundary';
+import RootWrapper from './RootWrapper';
 
 const AddTaxonomy = (props) => {
 	const { appContext, handleChange } = props;
 	const { items = [] } = appContext;
 
 	return (
-		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: AddTaxonomyRow }}>
+		<ScreenContext.Provider value={{ RootWrapper, RowWrapper: AddTaxonomyRow }}>
 			{items.map(item => {
 				const Field = getItemComponent(item);
 

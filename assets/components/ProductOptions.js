@@ -6,12 +6,13 @@ import ScreenContext from './ScreenContext';
 import ProductOptionsRow from './ProductOptionsRow';
 import ErrorBoundary from './ErrorBoundary';
 import { applyFilters } from '@wordpress/hooks';
+import RootWrapper from './RootWrapper';
 
 const ProductOptions = ({ appContext, handleChange }) => {
 	const { items = [] } = appContext;
 
 	return (
-		<ScreenContext.Provider value={{ RootWrapper: React.Fragment, RowWrapper: ProductOptionsRow }}>
+		<ScreenContext.Provider value={{ RootWrapper, RowWrapper: ProductOptionsRow }}>
 			<div className={classnames('options_group')}>
 				{items.map((item) => {
 					const Field = getItemComponent(item);
