@@ -6,7 +6,8 @@ include:
 
 assets:
   stage: .pre
-  extends: .nvm
+  extends: .node
+  image: node:14
   artifacts:
     paths:
       - $CI_PROJECT_DIR/build
