@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 import GutenbergBlockRow from './GutenbergBlockRow';
@@ -9,20 +9,19 @@ import { applyFilters } from '@wordpress/hooks';
 const EditGutenbergBlock = (props) => {
 	const { appContext, attributes, setAttributes } = props;
 	const [initialAttributes] = useState(attributes);
-	const [wcf, setWcf] = useState(appContext);
+	const originalWcf = appContext;
+
+	const wcf = useMemo(() => {
+		const newWcf = applyFilters('wcf_definition', originalWcf, attributes);
+
+		if (JSON.stringify(newWcf) !== JSON.stringify(originalWcf)) {
+			return newWcf;
+		}
+
+		return originalWcf;
+	}, [applyFilters, originalWcf, attributes]);
+
 	const { items = [], title } = wcf;
-
-	useEffect(() => {
-		setWcf((wcf) => {
-			const newWcf = applyFilters('wcf_definition', { ...wcf, object_type: 'block' }, attributes);
-
-			if (JSON.stringify(newWcf) !== JSON.stringify(wcf)) {
-				return newWcf;
-			}
-
-			return wcf;
-		});
-	}, [attributes]);
 
 	const handleChange = (item) => (value) => {
 		setAttributes(applyFilters('wcf_set_block_attribute', { [item.id]: value }, item, attributes, initialAttributes));
