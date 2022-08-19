@@ -2,7 +2,7 @@ include:
   - project: 'wpify/gitlab-ci-templates'
     ref: master
     file:
-      - 'jobs/nvm.yml'
+      - 'jobs/node.yml'
 
 assets:
   stage: .pre
