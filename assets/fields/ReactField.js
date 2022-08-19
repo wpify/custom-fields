@@ -9,7 +9,7 @@ const ReactField = (props) => {
 	return react_component
 		? (
 			<ErrorBoundary>
-				{applyFilters(react_component, <React.Fragment/>, props)}
+				{applyFilters(react_component, <div />, props)}
 			</ErrorBoundary>
 		)
 		: null;

@@ -5,8 +5,10 @@ import { fields } from './fields';
 import apiFetch from '@wordpress/api-fetch';
 import useSWRImmutable from 'swr/immutable';
 
+const DivComponent = props => <div {...props} />
+
 export const getItemComponent = (item) => {
-	return applyFilters('wcf_field_' + item.type, React.Fragment, item);
+	return applyFilters('wcf_field_' + item.type, DivComponent, item);
 };
 
 export const registerFieldType = (type, Field) => {

@@ -47,7 +47,7 @@ const ButtonField = (props) => {
 			)}
 			{react_component && (
 				<ErrorBoundary>
-					{applyFilters(react_component, (<React.Fragment/>))}
+					{applyFilters(react_component, (<div />))}
 				</ErrorBoundary>
 			)}
 		</React.Fragment>

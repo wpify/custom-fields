@@ -41,9 +41,9 @@ const SortableControl = (props) => {
 		return (
 			<ErrorBoundary>
 				{items.map((item, index) => (
-					<React.Fragment key={item} id={item} index={index}>
+					<div key={item} id={item} index={index}>
 						{renderItem(item, index)}
-					</React.Fragment>
+					</div>
 				))}
 			</ErrorBoundary>
 		);
