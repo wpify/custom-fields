@@ -88,6 +88,6 @@ final class Sanitizer {
 	 * @return mixed|void
 	 */
 	public function get_sanitizer( $item ) {
-		return apply_filters( 'wcf_sanitize_' . $item['type'] . '_value_callback', array( $this, 'no_sanitizer' ) );
+		return apply_filters( 'wcf_sanitize_' . $item['type'] . '_value_callback', 'sanitize_text_field' );
 	}
 }

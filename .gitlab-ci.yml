@@ -7,7 +7,7 @@ include:
 assets:
   stage: .pre
   extends: .node
-  image: node:14
+  image: node:16
   artifacts:
     paths:
       - $CI_PROJECT_DIR/build
