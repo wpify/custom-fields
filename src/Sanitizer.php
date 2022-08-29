@@ -24,6 +24,7 @@ final class Sanitizer {
 		'time'     => 'sanitize_text_field',
 		'url'      => 'esc_url_raw',
 		'week'     => 'sanitize_text_field',
+		'code'     => 'sanitize_code_field',
 	);
 
 	/**
@@ -41,15 +42,6 @@ final class Sanitizer {
 				return $callable;
 			} );
 		}
-	}
-
-	/**
-	 * @param $value
-	 *
-	 * @return mixed
-	 */
-	public function no_sanitizer( $value ) {
-		return $value;
 	}
 
 	/**
@@ -80,6 +72,10 @@ final class Sanitizer {
 		}
 
 		return null;
+	}
+
+	public function sanitize_code_field( $value ) {
+		return $value;
 	}
 
 	/**
