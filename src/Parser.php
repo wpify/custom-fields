@@ -111,6 +111,10 @@ final class Parser {
 	 * @return mixed|void
 	 */
 	public function get_parser( $item ) {
+		if ( empty( $item['type'] ) ) {
+			return array( $this, 'no_parser' );
+		}
+		
 		return apply_filters( 'wcf_parse_' . $item['type'] . '_value_callback', array( $this, 'no_parser' ) );
 	}
 }
