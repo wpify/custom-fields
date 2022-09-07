@@ -25,6 +25,7 @@ final class Sanitizer {
 		'url'      => 'esc_url_raw',
 		'week'     => 'sanitize_text_field',
 		'code'     => 'sanitize_code_field',
+		'wysiwyg'  => 'sanitize_code_field',
 	);
 
 	/**
