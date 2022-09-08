@@ -1,9 +1,9 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import PT, { instanceOf } from 'prop-types';
+import React, { useCallback, useContext, useEffect } from 'react';
+import PT  from 'prop-types';
 import ScreenContext from '../components/ScreenContext';
 import ErrorBoundary from '../components/ErrorBoundary';
 import GroupFieldRow from '../components/GroupFieldRow.js';
-import { applyFilters } from '@wordpress/hooks';
+import { useNormalizedValue } from '../helpers';
 
 const GroupField = (props) => {
 	const {
@@ -14,17 +14,9 @@ const GroupField = (props) => {
 		appContext,
 	} = props;
 
-	const value = useMemo(() => {
-		if (props.generator) {
-			return applyFilters('wcf_generator_' + props.generator, props.value || {}, props);
-		}
-
-		return props.value || {};
-	}, [props]);
+	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
 
 	const { RootWrapper } = useContext(ScreenContext);
-
-	const [currentValue, setCurrentValue] = useState(value);
 
 	const handleChange = useCallback((changedValue = {}) => {
 		const newValue = {

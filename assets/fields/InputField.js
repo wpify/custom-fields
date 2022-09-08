@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import PT from 'prop-types';
 import ErrorBoundary from '../components/ErrorBoundary';
-import { applyFilters } from '@wordpress/hooks';
 import classnames from 'classnames';
-import { castString } from '../helpers';
+import { useNormalizedValue } from '../helpers';
 
 // eslint-disable-next-line react/display-name
 const InputField = React.forwardRef((props, ref) => {
@@ -19,15 +18,7 @@ const InputField = React.forwardRef((props, ref) => {
 		type,
 	} = props;
 
-	const value = useMemo(() => {
-		if (castString(props.generator)) {
-			return applyFilters('wcf_generator_' + props.generator, props.value, props);
-		}
-
-		return castString(props.value);
-	}, [props]);
-
-	const [currentValue, setCurrentValue] = useState(value);
+	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
 
 	const handleChange = (event) => {
 		setCurrentValue(event.target.value);

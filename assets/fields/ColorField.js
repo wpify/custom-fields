@@ -3,11 +3,9 @@ import PT from 'prop-types';
 import { SketchPicker } from 'react-color';
 import { Popover } from '@wordpress/components';
 import Button from '../components/Button';
-import { invertColor } from '../helpers';
+import { invertColor, useNormalizedValue } from '../helpers';
 import ErrorBoundary from '../components/ErrorBoundary';
-import { applyFilters } from '@wordpress/hooks';
 import CloseButton from '../components/CloseButton';
-import { castString } from '../helpers';
 
 const ColorField = (props) => {
 	const {
@@ -20,15 +18,7 @@ const ColorField = (props) => {
 		group_level = 0,
 	} = props;
 
-	const value = useMemo(() => {
-		if (castString(props.generator)) {
-			return applyFilters('wcf_generator_' + props.generator, props.value, props);
-		}
-
-		return castString(props.value);
-	}, [props]);
-
-	const [currentValue, setCurrentValue] = useState(value);
+	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
 	const [showPopover, setShowPopover] = useState(false);
 
 	const handleChange = (color) => {

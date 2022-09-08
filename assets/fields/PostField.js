@@ -2,11 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import PT from 'prop-types';
 import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
-import { applyFilters } from '@wordpress/hooks';
 import SelectControl from '../components/SelectControl';
 import SortableControl from '../components/SortableControl';
 import MoveButton from '../components/MoveButton';
 import CloseButton from '../components/CloseButton';
+import { useNormalizedValue } from '../helpers';
 
 const SelectedOption = ({ selectedOptions, value, handleDelete }) => {
 	const option = selectedOptions.find(o => String(o.value) === String(value));
@@ -56,17 +56,7 @@ const PostField = (props) => {
 		query_args = {},
 	} = props;
 
-	const value = useMemo(() => {
-		if (props.generator) {
-			return applyFilters('wcf_generator_' + props.generator, props.value, props);
-		}
-
-		if (Array.isArray(props.value)) {
-			return props.value;
-		}
-
-		return [props.value];
-	}, [props]);
+	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
 
 	const otherArgs = useMemo(() => {
 		return {
@@ -76,7 +66,6 @@ const PostField = (props) => {
 		};
 	}, [post_type, query_args, type]);
 
-	const [currentValue, setCurrentValue] = useState(value);
 	const [selectedOptions, setSelectedOptions] = useState([]);
 
 	useEffect(() => {

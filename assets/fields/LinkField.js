@@ -6,6 +6,7 @@ import { Icon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import SelectControl from '../components/SelectControl';
+import { useNormalizedValue, valueOrDefault } from '../helpers';
 
 // eslint-disable-next-line react/display-name
 const LinkField = React.forwardRef((props, ref) => {
@@ -25,28 +26,9 @@ const LinkField = React.forwardRef((props, ref) => {
 		options,
 	} = props;
 
+	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
+
 	const div = useRef();
-	const defaultValue = { label: '', url: '', target: null };
-
-	const value = useMemo(() => {
-		if (props.generator) {
-			return applyFilters('wcf_generator_' + props.generator, props.value, props);
-		}
-
-		if (Object(props.value) !== props.value) {
-			return { ...defaultValue };
-		}
-
-		const val = { ...props.value };
-
-		for (const valueKey in defaultValue.value) {
-			if (!props[valueKey]) {
-				val[valueKey] = defaultValue.value;
-			}
-		}
-
-		return val;
-	}, [props]);
 
 	const otherArgs = useMemo(() => {
 		return {
@@ -56,7 +38,6 @@ const LinkField = React.forwardRef((props, ref) => {
 		};
 	}, [post_type, query_args]);
 
-	const [currentValue, setCurrentValue] = useState(value);
 	const [selectedOptions, setSelectedOptions] = useState([]);
 	const [isOpen, setIsOpen] = useState(false);
 

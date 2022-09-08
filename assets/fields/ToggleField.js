@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 import { ToggleControl } from '@wordpress/components';
 import ErrorBoundary from '../components/ErrorBoundary';
-import { applyFilters } from '@wordpress/hooks';
+import { useNormalizedValue } from '../helpers';
 
 const ToggleField = (props) => {
 	const {
@@ -18,21 +18,13 @@ const ToggleField = (props) => {
 		disabled = false,
 	} = props;
 
-	const value = useMemo(() => {
-		if (props.generator) {
-			return applyFilters('wcf_generator_' + props.generator, props.value, props);
-		}
+	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
 
-		return Boolean(props.value);
-	}, [props]);
-
-	const [currentValue, setCurrentValue] = useState(value);
-
-	const handleChange = (checked) => {
+	const handleChange = useCallback((checked) => {
 		if (!disabled) {
 			setCurrentValue(checked);
 		}
-	};
+	}, [disabled, setCurrentValue]);
 
 	useEffect(() => {
 		if (onChange) {

@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect } from 'react';
 import PT from 'prop-types';
 import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
-import { applyFilters } from '@wordpress/hooks';
-import { castString } from '../helpers';
+import { useNormalizedValue } from '../helpers';
 
 const TextareaField = (props) => {
 	const {
@@ -16,15 +15,7 @@ const TextareaField = (props) => {
 		group_level = 0,
 	} = props;
 
-	const value = useMemo(() => {
-		if (castString(props.generator)) {
-			return applyFilters('wcf_generator_' + props.generator, props.value, props);
-		}
-
-		return castString(props.value);
-	}, [props]);
-
-	const [currentValue, setCurrentValue] = useState(value);
+	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
 
 	const handleChange = (event) => {
 		setCurrentValue(event.target.value);

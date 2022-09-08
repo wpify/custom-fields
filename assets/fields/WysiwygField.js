@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PT from 'prop-types';
 import ErrorBoundary from '../components/ErrorBoundary';
-import { applyFilters } from '@wordpress/hooks';
 import { v4 as uuid } from 'uuid';
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
-import { castString } from '../helpers';
+import { useNormalizedValue } from '../helpers';
 
 const WysiwygField = (props) => {
 	const {
@@ -18,17 +17,7 @@ const WysiwygField = (props) => {
 		group_level = 0,
 	} = props;
 
-	const value = useMemo(() => {
-		const value = castString(props.value);
-
-		if (props.generator) {
-			return castString(applyFilters('wcf_generator_' + props.generator, value, props));
-		}
-
-		return castString(value);
-	}, [props]);
-
-	const [currentValue, setCurrentValue] = useState(value);
+	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
 
 	useEffect(() => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {

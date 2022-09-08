@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useCallback, useMemo, useState } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 import intlTelInput from 'intl-tel-input';
 import ErrorBoundary from '../components/ErrorBoundary';
-import { applyFilters } from '@wordpress/hooks';
-import { castString } from '../helpers';
+import { useNormalizedValue } from '../helpers';
 
 // eslint-disable-next-line react/display-name
 const TelField = (props) => {
@@ -19,6 +18,8 @@ const TelField = (props) => {
 		className,
 	} = props;
 
+	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
+
 	const inputRef = useRef();
 	const itiRef = useRef();
 
@@ -28,16 +29,6 @@ const TelField = (props) => {
 			utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.11/js/utils.min.js',
 		});
 	}, []);
-
-	const value = useMemo(() => {
-		if (castString(props.generator)) {
-			return applyFilters('wcf_generator_' + props.generator, props.value, props);
-		}
-
-		return castString(props.value);
-	}, [props]);
-
-	const [currentValue, setCurrentValue] = useState(value);
 
 	const handleChange = useCallback((event) => {
 		setCurrentValue(itiRef.current.getNumber());

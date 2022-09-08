@@ -1,9 +1,10 @@
-import React, { useCallback, useRef, useState, useEffect } from 'react';
+import React, { useCallback, useRef, useState, useEffect, useMemo } from 'react';
 import md5 from 'md5';
 import { addFilter, applyFilters } from '@wordpress/hooks';
 import { fields } from './fields';
 import apiFetch from '@wordpress/api-fetch';
 import useSWRImmutable from 'swr/immutable';
+import { v4 as uuid } from 'uuid';
 
 const DivComponent = props => <div {...props} />
 
@@ -214,4 +215,65 @@ export const castString = (value) => {
 	}
 
 	return String(value);
+};
+
+export const useNormalizedValue = (props) => {
+	const value = useMemo(() => {
+		if (props.generator) {
+			return applyFilters('wcf_generator_' + props.generator, props.value, props);
+		}
+
+		return props.value;
+	}, [props]);
+
+	let normalizedValue = value;
+
+	if (typeof normalizedValue === 'undefined' && typeof props.default !== 'undefined') {
+		normalizedValue = props.default;
+	}
+
+	const defaultLinkValue = { label: '', url: '', target: null };
+
+	if (typeof normalizedValue === 'undefined') {
+		if (['multi_group', 'multi_select', 'multi_attachment', 'multi_post', 'multi_toggle'].includes(props.type)) {
+			normalizedValue = [];
+		} else if(['group'].includes(props.type)) {
+			normalizedValue = {};
+		} else if (['attachment', 'post'].includes(props.type)) {
+			normalizedValue = 0;
+		} else if ('link' === props.type) {
+			normalizedValue = defaultLinkValue;
+		} else {
+			normalizedValue = '';
+		}
+	}
+
+	if ('link' === props.type) {
+		if (typeof normalizedValue === 'string') {
+			normalizedValue = { ...defaultLinkValue, url: normalizedValue };
+		} else if (Object(normalizedValue) !== normalizedValue) {
+			normalizedValue = defaultLinkValue;
+		} else {
+			Object.keys(defaultLinkValue).forEach(key => {
+				normalizedValue[key] = normalizedValue[key] || defaultLinkValue[key];
+			});
+		}
+	} else if (['post', 'multi_post', 'attachment', 'multi_attachment'].includes(props.type)) {
+		if (!Array.isArray(normalizedValue)) {
+			normalizedValue = [normalizedValue];
+		}
+
+		normalizedValue = normalizedValue.filter(Boolean).map(v => parseInt(v, 10));
+	} else if ('multi_group' === props.type) {
+		normalizedValue = clone(normalizedValue).map((value) => {
+			value.__key = uuid();
+			return value;
+		});
+	} else if ('multi_toggle' === props.type && Array.isArray(normalizedValue)) {
+		normalizedValue = [];
+	}
+
+	const [currentValue, setCurrentValue] = useState(normalizedValue);
+
+	return { value, currentValue, setCurrentValue };
 };

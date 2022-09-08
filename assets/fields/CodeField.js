@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
 import PT from 'prop-types';
 import { applyFilters } from '@wordpress/hooks';
-import { castString } from '../helpers';
+import { castString, useNormalizedValue, valueOrDefault } from '../helpers';
 
 const CodeField = React.forwardRef((props, ref) => {
 	const {
@@ -17,25 +17,18 @@ const CodeField = React.forwardRef((props, ref) => {
 		mode = null,
 	} = props;
 
-	const value = useMemo(() => {
-		if (props.generator) {
-			return castString(applyFilters('wcf_generator_' + props.generator, props.value, props));
-		}
-
-		return castString(props.value);
-	}, [props]);
+	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
 
 	const textarea = useRef();
 	const codemirror = useRef();
-	const [currentValue, setCurrentValue] = useState(value);
 
 	if (ref) {
 		ref.current = textarea.current;
 	}
 
-	const handleChange = (cm) => {
+	const handleChange = useCallback((cm) => {
 		setCurrentValue(cm.getValue());
-	};
+	}, [setCurrentValue]);
 
 	useEffect(() => {
 		if (textarea.current) {
@@ -45,7 +38,7 @@ const CodeField = React.forwardRef((props, ref) => {
 			codemirror.current = wp.codeEditor.initialize(textarea.current, currentSettings);
 			codemirror.current.codemirror.on('change', handleChange);
 		}
-	}, [mode]);
+	}, [mode, handleChange]);
 
 	useEffect(() => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {

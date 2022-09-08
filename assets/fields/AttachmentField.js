@@ -1,13 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 import { __ } from '@wordpress/i18n';
 import Button from '../components/Button';
 import Attachment from '../components/Attachment';
-import { useForceUpdate } from '../helpers';
+import { useForceUpdate, useNormalizedValue } from '../helpers';
 import SortableControl from '../components/SortableControl';
 import ErrorBoundary from '../components/ErrorBoundary';
-import { applyFilters } from '@wordpress/hooks';
 
 const AttachmentField = (props) => {
 	const {
@@ -20,21 +19,9 @@ const AttachmentField = (props) => {
 		description,
 	} = props;
 
-	const value = useMemo(() => {
-		let adjusted = props.value;
+	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
 
-		if (props.generator) {
-			adjusted = applyFilters('wcf_generator_' + props.generator, adjusted, props);
-		}
-
-		adjusted = Array.isArray(adjusted) ? adjusted : [adjusted];
-
-		return adjusted.filter(Boolean).map(v => parseInt(v, 10));
-	}, [props]);
-
-	const [currentValues, setCurrentValues] = useState(value);
-
-	const returnValue = isMulti ? currentValues.filter(Boolean) : currentValues.find(Boolean);
+	const returnValue = isMulti ? currentValue.filter(Boolean) : currentValue.find(Boolean);
 	const frame = useRef();
 	const [attachments, setAttachments] = useState([]);
 	const forceUpdate = useForceUpdate();
@@ -50,12 +37,12 @@ const AttachmentField = (props) => {
 
 		selection.each(attachment => attachments.push(attachment));
 		setAttachments(attachments);
-		setCurrentValues(attachments.map(attachment => attachment.id));
+		setCurrentValue(attachments.map(attachment => attachment.id));
 	}, []);
 
 	const handleOpen = () => {
 		const selection = frame.current.state().get('selection');
-		currentValues.forEach(currentValue => {
+		currentValue.forEach(currentValue => {
 			const attachment = wp.media.attachment(parseInt(currentValue, 10));
 			attachment.fetch();
 			selection.add(attachment ? [attachment] : []);
@@ -76,25 +63,25 @@ const AttachmentField = (props) => {
 
 		const attachments = [];
 
-		for (let i = 0; i < currentValues.length; i++) {
-			const attachment = wp.media.attachment(currentValues[i]);
+		for (let i = 0; i < currentValue.length; i++) {
+			const attachment = wp.media.attachment(currentValue[i]);
 
 			attachment.fetch({ success: forceUpdate });
 			attachments.push(attachment);
 		}
 
 		setAttachments(attachments);
-		setCurrentValues(attachments.map(i => i.id));
+		setCurrentValue(attachments.map(i => i.id));
 	}, []);
 
 	useEffect(() => {
-		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValues)) {
+		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
 			onChange(returnValue);
 		}
-	}, [value, returnValue, currentValues, onChange]);
+	}, [value, returnValue, currentValue, onChange]);
 
 	const handleDelete = (attributes) => {
-		setCurrentValues(currentValues => currentValues.filter(value => value !== attributes.id));
+		setCurrentValue(currentValue => currentValue.filter(value => value !== attributes.id));
 		setAttachments(attachments => attachments.filter(attachment => attachment.id !== attributes.id));
 	};
 
@@ -103,11 +90,11 @@ const AttachmentField = (props) => {
 			{group_level === 0 && (
 				<input type="hidden" name={id} value={JSON.stringify(returnValue)}/>
 			)}
-			{isMulti && currentValues.length > 1 ? (
+			{isMulti && currentValue.length > 1 ? (
 				<div className="wcf-media-list">
 					<SortableControl
-						items={currentValues.map(String)}
-						setItems={(currentValues) => setCurrentValues(currentValues.map(v => parseInt(v, 10)))}
+						items={currentValue.map(String)}
+						setItems={(currentValue) => setCurrentValue(currentValue.map(v => parseInt(v, 10)))}
 						renderItem={(id) => {
 							const attachment = attachments.find(a => a.id === parseInt(id, 10));
 

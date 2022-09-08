@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import PT from 'prop-types';
 import { ToggleControl } from '@wordpress/components';
 import ErrorBoundary from '../components/ErrorBoundary';
-import { applyFilters } from '@wordpress/hooks';
+import { useNormalizedValue } from '../helpers';
 
 const MultiToggleField = (props) => {
 	const {
@@ -17,16 +17,7 @@ const MultiToggleField = (props) => {
 		options = [],
 	} = props;
 
-	const value = useMemo(() => {
-		if (props.generator) {
-			return applyFilters('wcf_generator_' + props.generator, props.value || [], props);
-		}
-
-		return props.value;
-	}, [props]);
-
-
-	const [currentValue, setCurrentValue] = useState(Array.isArray(value) ? value : []);
+	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
 
 	useEffect(() => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {

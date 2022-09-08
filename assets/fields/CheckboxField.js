@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect } from 'react';
 import classnames from 'classnames';
 import PT from 'prop-types';
 import ErrorBoundary from '../components/ErrorBoundary';
-import { applyFilters } from '@wordpress/hooks';
+import { useNormalizedValue } from '../helpers';
 
 // eslint-disable-next-line react/display-name
 const CheckboxField = React.forwardRef((props, ref) => {
@@ -16,15 +16,7 @@ const CheckboxField = React.forwardRef((props, ref) => {
 		className
 	} = props;
 
-	const value = useMemo(() => {
-		if (props.generator) {
-			return applyFilters('wcf_generator_' + props.generator, props.value, props);
-		}
-
-		return Boolean(props.value);
-	}, [props]);
-
-	const [currentValue, setCurrentValue] = useState(value);
+	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
 
 	useEffect(() => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {

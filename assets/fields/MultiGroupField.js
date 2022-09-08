@@ -5,21 +5,9 @@ import { __ } from '@wordpress/i18n';
 import Button from '../components/Button';
 import MultiGroupFieldRow from './MultiGroupFieldRow';
 import SortableControl from '../components/SortableControl';
-import { clone } from '../helpers';
+import { clone, useNormalizedValue } from '../helpers';
 import { v4 as uuid } from 'uuid';
 import ErrorBoundary from '../components/ErrorBoundary';
-import { applyFilters } from '@wordpress/hooks';
-
-const prepareValues = (values = []) => {
-	if (Array.isArray(values)) {
-		return clone(values).map((value) => {
-			value.__key = uuid();
-			return value;
-		});
-	}
-
-	return [];
-};
 
 const removeKeys = (values = []) => clone(values).map(value => {
 	delete value.__key;
@@ -43,16 +31,10 @@ const MultiGroupField = (props) => {
 		group_title,
 	} = props;
 
+	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
+
 	const [disabledButtons, setDisabledButtons] = useState(disable_buttons);
 
-	const value = useMemo(() => {
-		if (props.generator) {
-			return applyFilters('wcf_generator_' + props.generator, prepareValues(props.value || []), props);
-		}
-
-		return prepareValues(props.value || []);
-	}, [props]);
-	const [currentValue, setCurrentValue] = useState(value);
 	const [opened, setOpened] = useState(null);
 
 	const handleChange = (index) => (changedItem = {}) => {

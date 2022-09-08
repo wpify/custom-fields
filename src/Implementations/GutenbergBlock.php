@@ -204,7 +204,7 @@ final class GutenbergBlock extends AbstractImplementation {
 		foreach ( $items as $item ) {
 			$attributes[ $item['id'] ] = array(
 					'type'    => $this->get_item_type( $item ),
-					'default' => $item['default'],
+					'default' => $item['default'] ?? null,
 			);
 		}
 
