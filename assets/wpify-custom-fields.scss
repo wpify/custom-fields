@@ -98,6 +98,7 @@
 
   &--delete {
 	cursor: pointer;
+	margin-left: auto;
   }
 
   &--clone {
@@ -193,6 +194,7 @@
 
 .wcf-post-selected {
   &__item {
+	position: relative;
 	background-color: white;
 	padding: 1rem 1.5rem;
 	margin: 5px 0;
@@ -216,6 +218,7 @@
 	grid-template:
   		"image header"
 		"image description";
+	grid-template-columns: 80px auto;
   }
 
   &__item-header {

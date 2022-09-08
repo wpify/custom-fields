@@ -4,11 +4,10 @@ import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
 import SelectControl from '../components/SelectControl';
 import SortableControl from '../components/SortableControl';
-import MoveButton from '../components/MoveButton';
 import CloseButton from '../components/CloseButton';
 import { useNormalizedValue } from '../helpers';
 
-const SelectedOption = ({ selectedOptions, value, handleDelete }) => {
+const SelectedOption = ({ selectedOptions, value, handleDelete, sortable = false }) => {
 	const option = selectedOptions.find(o => String(o.value) === String(value));
 
 	return option ? (
@@ -24,9 +23,6 @@ const SelectedOption = ({ selectedOptions, value, handleDelete }) => {
 					</div>
 				)}
 				<div className="wcf-post-selected__item-header">
-					{selectedOptions.length > 1 && (
-						<MoveButton/>
-					)}
 					<strong dangerouslySetInnerHTML={{ __html: option.label }}/>
 					<CloseButton onClick={handleDelete(option.value)}/>
 				</div>
@@ -119,6 +115,7 @@ const PostField = (props) => {
 					<SortableControl
 						items={currentValue.map(o => String(o))}
 						setItems={(items) => setCurrentValue(items.map(v => parseInt(v)))}
+						allowSort={true}
 						renderItem={(value) => (
 							<SelectedOption
 								selectedOptions={selectedOptions}
