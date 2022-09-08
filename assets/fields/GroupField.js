@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect } from 'react';
-import PT  from 'prop-types';
+import PT from 'prop-types';
 import ScreenContext from '../components/ScreenContext';
 import ErrorBoundary from '../components/ErrorBoundary';
 import GroupFieldRow from '../components/GroupFieldRow.js';
@@ -37,11 +37,11 @@ const GroupField = (props) => {
 
 	return (
 		<React.Fragment>
-			{group_level === 0 && (
-				<input type="hidden" id={id} name={id} value={JSON.stringify(currentValue)}/>
-			)}
 			<ErrorBoundary>
 				<RootWrapper group_level={group_level + 1}>
+					{group_level === 0 && (
+						<input type="hidden" id={id} name={id} value={JSON.stringify(currentValue)}/>
+					)}
 					{items.map((item) => (
 						<GroupFieldRow
 							key={item.id}
