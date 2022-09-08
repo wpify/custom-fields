@@ -9,11 +9,13 @@ import { clone, useNormalizedValue } from '../helpers';
 import { v4 as uuid } from 'uuid';
 import ErrorBoundary from '../components/ErrorBoundary';
 
-const removeKeys = (values = []) => clone(values).map(value => {
-	delete value.__key;
+const removeKeys = (values = []) => {
+	return clone(Array.isArray(values) ? values : []).map(value => {
+		delete value.__key;
 
-	return value;
-});
+		return value;
+	});
+};
 
 const MultiGroupField = (props) => {
 	const {

@@ -265,7 +265,13 @@ export const useNormalizedValue = (props) => {
 
 		normalizedValue = normalizedValue.filter(Boolean).map(v => parseInt(v, 10));
 	} else if ('multi_group' === props.type) {
-		normalizedValue = clone(normalizedValue).map((value) => {
+		if (!Array.isArray(normalizedValue)) {
+			normalizedValue = [];
+		} else {
+			normalizedValue = clone(normalizedValue);
+		}
+
+		normalizedValue = normalizedValue.map((value) => {
 			value.__key = uuid();
 			return value;
 		});
