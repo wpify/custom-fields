@@ -40,12 +40,13 @@ const SelectControl = (props) => {
 		otherArgs,
 		listId,
 		async,
+		asyncParams,
 	} = props;
 
 	const [inputValue, setInputValue] = useState('');
 	const [optionsCache, setOptionsCache] = useState([]);
-	const [optionsArgs, setOptionsArgs] = useState({ options: defaultOptions, search: inputValue, listId, value, ...otherArgs });
-	const response = useOptions(api, optionsArgs);
+	const [optionsArgs, setOptionsArgs] = useState({ options: defaultOptions, search: inputValue, listId, value, async, ...otherArgs });
+	const response = useOptions(api, optionsArgs, asyncParams);
 	const { isLoading, data: options } = response;
 	const portal = useRef();
 

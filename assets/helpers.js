@@ -144,7 +144,7 @@ export const useDebounce = (callback, delay, dependencies) => {
 
 export const fetcher = (args) => apiFetch({ ...args });
 
-export const useOptions = (api, args) => {
+export const useOptions = (api, args, params = {}) => {
 	const [search, setSearch] = useState(args.search || '');
 
 	useDebounce(() => {
@@ -158,8 +158,14 @@ export const useOptions = (api, args) => {
 			isError: false,
 		};
 	} else if (typeof args.options === 'string') {
+		let query = '';
+
+		if (Object(params) === params && Object.keys(params).length > 0) {
+			query = '?' + String(new URLSearchParams(params));
+		}
+
 		const { data, error } = useSWRImmutable({
-			path: `${api.path}/options`,
+			path: `${api.path}/options${query}`,
 			data: {
 				...args,
 				value: (Array.isArray(args.value) ? args.value : [args.value]).filter(Boolean),

@@ -678,6 +678,7 @@ The select field can accept options asynchronously from API (recommended) or inl
 **Additional attributes**
 * `options` List of options or callback that return list of options with keys `value` and `label`.
 * `async` If true, the options list will be loaded asynchronously.
+* array `async_params` The additional GET params to the async request.
 
 ## Phone number field type `tel`
 

@@ -17,6 +17,7 @@ const SelectField = (props) => {
 		options,
 		list_id,
 		async,
+		async_params,
 	} = props;
 
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
@@ -45,6 +46,7 @@ const SelectField = (props) => {
 				defaultOptions={options}
 				listId={list_id}
 				async={async}
+				asyncParams={async_params}
 			/>
 			{description && (
 				<ErrorBoundary>
