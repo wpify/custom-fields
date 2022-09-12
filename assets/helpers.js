@@ -275,7 +275,7 @@ export const useNormalizedValue = (props) => {
 			value.__key = uuid();
 			return value;
 		});
-	} else if ('multi_toggle' === props.type && Array.isArray(normalizedValue)) {
+	} else if ('multi_toggle' === props.type && ! Array.isArray(normalizedValue)) {
 		normalizedValue = [];
 	}
 
