@@ -103,7 +103,7 @@ const MultiGroupFieldRow = (props) => {
 									htmlId={htmlId}
 									group_level={group_level}
 									onChange={value => handleChange({ [item.id]: value })}
-									value={value[item.id]}
+									value={value && value[item.id]}
 									appContext={appContext}
 								/>
 							</ErrorBoundary>

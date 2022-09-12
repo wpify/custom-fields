@@ -49,7 +49,7 @@ const GroupField = (props) => {
 							group_level={group_level}
 							appContext={appContext}
 							onChange={handleChange}
-							value={value[item.id]}
+							value={value && value[item.id]}
 						/>
 					))}
 				</RootWrapper>
