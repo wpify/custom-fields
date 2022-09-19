@@ -45,6 +45,7 @@ const CodeField = React.forwardRef((props, ref) => {
 			onChange(currentValue);
 		}
 	}, [onChange, value, currentValue]);
+	console.log(currentValue);
 
 	const describedBy = description ? id + '-description' : null;
 
@@ -59,7 +60,8 @@ const CodeField = React.forwardRef((props, ref) => {
 				rows={10}
 				cols={50}
 				{...custom_attributes}
-			>{currentValue}</textarea>
+				value={currentValue}
+			/>
 			{description && (
 				<ErrorBoundary>
 					<p className="description" id={describedBy} dangerouslySetInnerHTML={{ __html: description }}/>
