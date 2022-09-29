@@ -290,7 +290,8 @@ abstract class AbstractImplementation {
 	 */
 	protected function fill_values( array $definition ) {
 		foreach ( $definition['items'] as $key => $item ) {
-			$value = $this->parse_value( $this->get_field( $item['id'], $item ) );
+			$value = $this->get_field( $item['id'], $item );
+			$value = $this->parse_value( $value, $item );
 
 			if ( ! empty( $definition['items'][ $key ]['items'] ) ) {
 				$definition['items'][ $key ]['items'] = array_filter( array_map(
