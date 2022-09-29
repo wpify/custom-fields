@@ -10,6 +10,8 @@ final class Parser {
 	/** @var string[] */
 	private $parsers = array(
 		'group'            => 'parse_group_value',
+		'toggle'           => 'parse_bool_value',
+		'checkbox'         => 'parse_bool_value',
 		'link'             => 'parse_group_value',
 		'multi_group'      => 'parse_multi_group_value',
 		'multi_select'     => 'parse_multi_select_value',
@@ -105,6 +107,16 @@ final class Parser {
 		return array();
 	}
 
+	public function parse_bool_value( $value ) {
+		if ( is_numeric( $value ) ) {
+			$value = boolval( intval( $value ) );
+		} else {
+			$value = boolval( $value );
+		}
+
+		return $value;
+	}
+
 	/**
 	 * @param $item
 	 *
@@ -114,7 +126,7 @@ final class Parser {
 		if ( empty( $item['type'] ) ) {
 			return array( $this, 'no_parser' );
 		}
-		
+
 		return apply_filters( 'wcf_parse_' . $item['type'] . '_value_callback', array( $this, 'no_parser' ) );
 	}
 }
