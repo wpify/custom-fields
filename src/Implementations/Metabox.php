@@ -202,8 +202,12 @@ final class Metabox extends AbstractPostImplementation {
 	 *
 	 * @return mixed
 	 */
-	public function get_field( $name ) {
-		return get_post_meta( $this->post_id, $name, true );
+	public function get_field( $name, $item ) {
+		if ( ! empty( $item['callback_get'] ) ) {
+			return call_user_func( $item['callback_get'], $item, $this->post_id );
+		} else {
+			return get_post_meta( $this->post_id, $name, true );
+		}
 	}
 
 	/**
@@ -244,7 +248,7 @@ final class Metabox extends AbstractPostImplementation {
 			$sanitizer = $this->sanitizer->get_sanitizer( $item );
 			$value     = $sanitizer( wp_unslash( $_POST[ $item['id'] ] ) );
 
-			$this->set_field( $item['id'], $value );
+			$this->set_field( $item['id'], $value, $item );
 		}
 
 		return true;
@@ -256,7 +260,11 @@ final class Metabox extends AbstractPostImplementation {
 	 *
 	 * @return bool|int
 	 */
-	public function set_field( $name, $value ) {
-		return update_post_meta( $this->post_id, $name, wp_slash( $value ) );
+	public function set_field( $name, $value, $item ) {
+		if ( ! empty( $item['callback_set'] ) ) {
+			return call_user_func( $item['callback_set'], $item, $this->post_id, $value );
+		} else {
+			return update_post_meta( $this->post_id, $name, wp_slash( $value ) );
+		}
 	}
 }

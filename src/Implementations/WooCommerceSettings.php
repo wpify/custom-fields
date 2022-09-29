@@ -219,8 +219,12 @@ final class WooCommerceSettings extends AbstractImplementation {
 	 *
 	 * @return mixed
 	 */
-	public function get_field( $name, $default = '' ) {
-		return WC_Admin_Settings::get_option( $name, $default );
+	public function get_field( string $name, array $item ) {
+		if ( ! empty( $item['callback_get'] ) ) {
+			return call_user_func( $item['callback_get'], $item );
+		} else {
+			return WC_Admin_Settings::get_option( $name, isset( $item['default'] ) ? $item['default'] : '' );
+		}
 	}
 
 	/**
@@ -239,7 +243,7 @@ final class WooCommerceSettings extends AbstractImplementation {
 				$sanitizer = $this->sanitizer->get_sanitizer( $item );
 				$value     = $sanitizer( wp_unslash( $_POST[ $item['id'] ] ) );
 
-				$this->set_field( $item['id'], $value );
+				$this->set_field( $item['id'], $value, $item );
 			}
 
 			wp_redirect(
@@ -258,10 +262,15 @@ final class WooCommerceSettings extends AbstractImplementation {
 	/**
 	 * @param string $name
 	 * @param string $value
+	 * @param array  $item
 	 *
 	 * @return bool
 	 */
-	public function set_field( $name, $value ) {
-		return update_option( $name, $value );
+	public function set_field( $name, $value, $item ) {
+		if ( ! empty( $item['callback_set'] ) ) {
+			return call_user_func( $item['callback_set'], $item, $name, $value );
+		} else {
+			return update_option( $name, $value );
+		}
 	}
 }

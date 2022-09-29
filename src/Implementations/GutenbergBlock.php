@@ -228,7 +228,7 @@ final class GutenbergBlock extends AbstractImplementation {
 	 *
 	 * @return mixed
 	 */
-	public function get_field( $name ) {
+	public function get_field( $name, $item ) {
 		// TODO: Implement get_field() method.
 	}
 
@@ -238,7 +238,7 @@ final class GutenbergBlock extends AbstractImplementation {
 	 *
 	 * @return mixed
 	 */
-	public function set_field( $name, $value ) {
+	public function set_field( $name, $value, $item ) {
 		// TODO: Implement set_field() method.
 	}
 

@@ -75,7 +75,10 @@ abstract class AbstractImplementation {
 				array(
 					'wcf_code_editor_settings' => $this->wcf->get_assets()->get_code_editor_settings(),
 					'wcf_build_url'            => $this->get_build_url(),
-					'wcf_date'                 => array( 'date_format' => get_option( 'date_format' ), 'time_format' => get_option( 'time_format' ) ),
+					'wcf_date'                 => array(
+						'date_format' => get_option( 'date_format' ),
+						'time_format' => get_option( 'time_format' ),
+					),
 				)
 			);
 		}
@@ -91,7 +94,7 @@ abstract class AbstractImplementation {
 	 *
 	 * @return mixed
 	 */
-	abstract public function set_field( $name, $value );
+	abstract public function set_field( $name, $value, $field );
 
 	/**
 	 * @param string $object_type
@@ -287,7 +290,7 @@ abstract class AbstractImplementation {
 	 */
 	protected function fill_values( array $definition ) {
 		foreach ( $definition['items'] as $key => $item ) {
-			$value = $this->parse_value( $this->get_field( $item['id'] ), $item );
+			$value = $this->parse_value( $this->get_field( $item['id'], $item ) );
 
 			if ( ! empty( $definition['items'][ $key ]['items'] ) ) {
 				$definition['items'][ $key ]['items'] = array_filter( array_map(
@@ -323,7 +326,7 @@ abstract class AbstractImplementation {
 	 *
 	 * @return mixed
 	 */
-	abstract public function get_field( $name );
+	abstract public function get_field( string $name, array $item );
 
 	abstract public function set_wcf_shown( WP_Screen $current_screen );
 
@@ -410,7 +413,15 @@ abstract class AbstractImplementation {
 			$args['default'] = 0;
 		}
 
-		if ( in_array( $args['type'], array( 'group', 'multi_group', 'multi_post', 'multi_attachment', 'multi_toggle', 'multi_select', 'link' ) ) && empty( $args['default'] ) ) {
+		if ( in_array( $args['type'], array(
+				'group',
+				'multi_group',
+				'multi_post',
+				'multi_attachment',
+				'multi_toggle',
+				'multi_select',
+				'link'
+			) ) && empty( $args['default'] ) ) {
 			$args['default'] = array();
 		}
 

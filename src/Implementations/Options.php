@@ -220,7 +220,7 @@ final class Options extends AbstractImplementation {
 	 *
 	 * @return false|mixed|void
 	 */
-	public function get_field( $name ) {
+	public function get_field( $name, $item ) {
 		return get_option( $name );
 	}
 
@@ -252,7 +252,7 @@ final class Options extends AbstractImplementation {
 	 *
 	 * @return bool
 	 */
-	public function set_field( $name, $value ) {
+	public function set_field( $name, $value, $item ) {
 		return update_option( $name, $value );
 	}
 

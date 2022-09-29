@@ -137,11 +137,16 @@ final class Taxonomy extends AbstractPostImplementation {
 
 	/**
 	 * @param string $name
+	 * @param array  $item
 	 *
 	 * @return mixed
 	 */
-	public function get_field( $name ) {
-		return get_term_meta( $this->term_id, $name, true );
+	public function get_field( string $name, array $item ) {
+		if ( ! empty( $item['callback_get'] ) ) {
+			return call_user_func( $item['callback_get'], $item, $this->term_id );
+		} else {
+			return get_term_meta( $this->term_id, $name, true );
+		}
 	}
 
 	/**
@@ -158,17 +163,22 @@ final class Taxonomy extends AbstractPostImplementation {
 			$sanitizer = $this->sanitizer->get_sanitizer( $item );
 			$value     = $sanitizer( wp_unslash( $_POST[ $item['id'] ] ) );
 
-			$this->set_field( $item['id'], $value );
+			$this->set_field( $item['id'], $value, $item );
 		}
 	}
 
 	/**
 	 * @param string $name
 	 * @param string $value
+	 * @param array  $item
 	 *
 	 * @return bool|int|\WP_Error
 	 */
-	public function set_field( $name, $value ) {
-		return update_term_meta( $this->term_id, $name, wp_slash( $value ) );
+	public function set_field( $name, $value, $item ) {
+		if ( ! empty( $item['callback_set'] ) ) {
+			return call_user_func( $item['callback_set'], $item, $this->term_id, $value );
+		} else {
+			return update_term_meta( $this->term_id, $name, wp_slash( $value ) );
+		}
 	}
 }

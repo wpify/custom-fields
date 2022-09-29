@@ -201,8 +201,12 @@ final class ProductOptions extends AbstractPostImplementation {
 	 *
 	 * @return mixed
 	 */
-	public function get_field( $name ) {
-		return get_post_meta( $this->product_id, $name, true );
+	public function get_field( string $name, array $item ) {
+		if ( ! empty( $item['callback_get'] ) ) {
+			return call_user_func( $item['callback_get'], $item, $this->product_id );
+		} else {
+			return get_post_meta( $this->product_id, $name, true );
+		}
 	}
 
 	/**
@@ -219,17 +223,22 @@ final class ProductOptions extends AbstractPostImplementation {
 			$sanitizer = $this->sanitizer->get_sanitizer( $item );
 			$value     = $sanitizer( wp_unslash( $_POST[ $item['id'] ] ) );
 
-			$this->set_field( $item['id'], $value );
+			$this->set_field( $item['id'], $value, $item );
 		}
 	}
 
 	/**
 	 * @param string $name
 	 * @param string $value
+	 * @param array $item
 	 *
 	 * @return bool|int
 	 */
-	public function set_field( $name, $value ) {
-		return update_post_meta( $this->product_id, $name, wp_slash( $value ) );
+	public function set_field( $name, $value, $item ) {
+		if ( ! empty( $item['callback_set'] ) ) {
+			return call_user_func( $item['callback_set'], $item, $this->product_id, $value );
+		} else {
+			return update_post_meta( $this->product_id, $name, wp_slash( $value ) );
+		}
 	}
 }
