@@ -38,29 +38,29 @@ final class GutenbergBlock extends AbstractImplementation {
 	 */
 	public function __construct( array $args, CustomFields $wcf ) {
 		$defaults = array(
-				'name'             => null, // string
-				'title'            => '', // string
-				'category'         => 'common', // string
-				'parent'           => null, // string
-				'icon'             => null, // string
-				'description'      => null, // string
-				'keywords'         => array(), // array
-				'textdomain'       => 'wpify-custom-fields', // string
-				'styles'           => array(), // array
-				'supports'         => null, // array
-				'example'          => null, // array
-				'render_callback'  => array( $this, 'render_default' ), // callable
-				'uses_context'     => array(), // array
-				'provides_context' => null, // array
-				'editor_script'    => null, // string
-				'script'           => null, // string
-				'editor_style'     => null, // string
-				'style'            => null, // string
-				'items'            => array(), // array
-				'init_priority'    => 10,
-				'display'          => function () {
-					return true;
-				},
+			'name'             => null, // string
+			'title'            => '', // string
+			'category'         => 'common', // string
+			'parent'           => null, // string
+			'icon'             => null, // string
+			'description'      => null, // string
+			'keywords'         => array(), // array
+			'textdomain'       => 'wpify-custom-fields', // string
+			'styles'           => array(), // array
+			'supports'         => null, // array
+			'example'          => null, // array
+			'render_callback'  => array( $this, 'render_default' ), // callable
+			'uses_context'     => array(), // array
+			'provides_context' => null, // array
+			'editor_script'    => null, // string
+			'script'           => null, // string
+			'editor_style'     => null, // string
+			'style'            => null, // string
+			'items'            => array(), // array
+			'init_priority'    => 10,
+			'display'          => function () {
+				return true;
+			},
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -102,14 +102,19 @@ final class GutenbergBlock extends AbstractImplementation {
 			return;
 		}
 
-		$args             = $this->get_args();
-		$js_args          = $this->get_args( array( 'render_callback' ) );
-		$js_args['items'] = $this->fill_selects( $js_args['items'] );
+		$args = $this->get_args();
 
-		$script = 'window.wcf_blocks=(window.wcf_blocks||{});window.wcf_blocks[\'' . $this->name . '\']=' . wp_json_encode( $js_args, JSON_UNESCAPED_UNICODE ) . ';';
-		$script .= 'window.wcf_build_url=' . wp_json_encode( $this->get_build_url() ) . ';';
 		register_block_type( $this->name, $args );
-		wp_add_inline_script( $args['editor_script'], $script, 'before' );
+
+		if ( is_admin() ) {
+			$js_args          = $this->get_args( array( 'render_callback' ) );
+			$js_args['items'] = $this->fill_selects( $js_args['items'] );
+			$script           = 'window.wcf_blocks=(window.wcf_blocks||{});window.wcf_blocks[\'' . $this->name . '\']=' . wp_json_encode( $js_args, JSON_UNESCAPED_UNICODE ) . ';';
+			$script           .= 'window.wcf_build_url=' . wp_json_encode( $this->get_build_url() ) . ';';
+
+			wp_add_inline_script( $args['editor_script'], $script, 'before' );
+		}
+
 	}
 
 	/**
@@ -118,26 +123,26 @@ final class GutenbergBlock extends AbstractImplementation {
 	public function get_args( $exclude = array() ) {
 		$args   = array();
 		$fields = array(
-				'name',
-				'title',
-				'category',
-				'parent',
-				'icon',
-				'description',
-				'keywords',
-				'textdomain',
-				'styles',
-				'supports',
-				'example',
-				'render_callback',
-				'uses_context',
-				'provides_context',
-				'editor_script',
-				'script',
-				'editor_style',
-				'style',
-				'attributes',
-				'items',
+			'name',
+			'title',
+			'category',
+			'parent',
+			'icon',
+			'description',
+			'keywords',
+			'textdomain',
+			'styles',
+			'supports',
+			'example',
+			'render_callback',
+			'uses_context',
+			'provides_context',
+			'editor_script',
+			'script',
+			'editor_style',
+			'style',
+			'attributes',
+			'items',
 		);
 
 		foreach ( $fields as $field ) {
@@ -155,9 +160,9 @@ final class GutenbergBlock extends AbstractImplementation {
 		}
 
 		$args['api'] = array(
-				'url'   => $this->api->get_rest_url(),
-				'nonce' => $this->api->get_rest_nonce(),
-				'path'  => $this->api->get_rest_path(),
+			'url'   => $this->api->get_rest_url(),
+			'nonce' => $this->api->get_rest_nonce(),
+			'path'  => $this->api->get_rest_path(),
 		);
 
 		return $args;
@@ -169,14 +174,17 @@ final class GutenbergBlock extends AbstractImplementation {
 	public function get_editor_script() {
 		if ( empty( $this->editor_script ) ) {
 			return $this->wcf->get_assets()->register_script(
-					'wpify-custom-blocks.js',
-					array( 'wp-tinymce' ),
-					true,
-					array(
-							'wcf_code_editor_settings' => $this->wcf->get_assets()->get_code_editor_settings(),
-							'wcf_build_url'            => $this->get_build_url(),
-							'wcf_date'                 => array( 'date_format' => get_option( 'date_format' ), 'time_format' => get_option( 'time_format' ) ),
-					)
+				'wpify-custom-blocks.js',
+				array( 'wp-tinymce' ),
+				true,
+				array(
+					'wcf_code_editor_settings' => $this->wcf->get_assets()->get_code_editor_settings(),
+					'wcf_build_url'            => $this->get_build_url(),
+					'wcf_date'                 => array(
+						'date_format' => get_option( 'date_format' ),
+						'time_format' => get_option( 'time_format' )
+					),
+				)
 			);
 		}
 
@@ -203,8 +211,8 @@ final class GutenbergBlock extends AbstractImplementation {
 
 		foreach ( $items as $item ) {
 			$attributes[ $item['id'] ] = array(
-					'type'    => $this->get_item_type( $item ),
-					'default' => $item['default'] ?? null,
+				'type'    => $this->get_item_type( $item ),
+				'default' => $item['default'] ?? null,
 			);
 		}
 
@@ -216,8 +224,8 @@ final class GutenbergBlock extends AbstractImplementation {
 	 */
 	public function get_items() {
 		$items = apply_filters( 'wcf_gutenberg_block_items', $this->items, array_merge(
-				array( 'name' => $this->name ),
-				$this->get_args( array( 'attributes', 'items' ) )
+			array( 'name' => $this->name ),
+			$this->get_args( array( 'attributes', 'items' ) )
 		) );
 
 		return $this->prepare_items( $items );
@@ -247,24 +255,24 @@ final class GutenbergBlock extends AbstractImplementation {
 	 */
 	public function get_data() {
 		return array(
-				'name'             => $this->name,
-				'title'            => $this->title,
-				'category'         => $this->category,
-				'parent'           => $this->parent,
-				'icon'             => $this->icon,
-				'description'      => $this->description,
-				'keywords'         => $this->keywords,
-				'textdomain'       => $this->textdomain,
-				'styles'           => $this->styles,
-				'supports'         => $this->supports,
-				'example'          => $this->example,
-				'uses_context'     => $this->uses_context,
-				'provides_context' => $this->provides_context,
-				'editor_script'    => $this->editor_script,
-				'script'           => $this->script,
-				'editor_style'     => $this->editor_style,
-				'style'            => $this->style,
-				'items'            => $this->get_items(),
+			'name'             => $this->name,
+			'title'            => $this->title,
+			'category'         => $this->category,
+			'parent'           => $this->parent,
+			'icon'             => $this->icon,
+			'description'      => $this->description,
+			'keywords'         => $this->keywords,
+			'textdomain'       => $this->textdomain,
+			'styles'           => $this->styles,
+			'supports'         => $this->supports,
+			'example'          => $this->example,
+			'uses_context'     => $this->uses_context,
+			'provides_context' => $this->provides_context,
+			'editor_script'    => $this->editor_script,
+			'script'           => $this->script,
+			'editor_style'     => $this->editor_style,
+			'style'            => $this->style,
+			'items'            => $this->get_items(),
 		);
 	}
 
