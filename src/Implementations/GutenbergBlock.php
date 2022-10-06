@@ -111,7 +111,7 @@ final class GutenbergBlock extends AbstractImplementation {
 	/**
 	 * @return void
 	 */
-	public function add_editor_script() {
+	public function add_editor_script( $current_screen ) {
 		$display_callback = $this->display;
 
 		if ( ! boolval( $display_callback() ) ) {
@@ -120,7 +120,7 @@ final class GutenbergBlock extends AbstractImplementation {
 
 		$args = $this->get_args();
 
-		if ( get_current_screen()->is_block_editor() ) {
+		if ( $current_screen->is_block_editor() ) {
 			$js_args          = $this->get_args( array( 'render_callback' ) );
 			$js_args['items'] = $this->fill_selects( $js_args['items'] );
 			$script           = 'window.wcf_blocks=(window.wcf_blocks||{});window.wcf_blocks[\'' . $this->name . '\']=' . wp_json_encode( $js_args, JSON_UNESCAPED_UNICODE ) . ';';
