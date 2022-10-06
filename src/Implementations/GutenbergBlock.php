@@ -90,6 +90,7 @@ final class GutenbergBlock extends AbstractImplementation {
 		}
 
 		add_action( 'init', array( $this, 'register_block' ), $defaults['init_priority'] );
+		add_action( 'current_screen', array( $this, 'add_editor_script' ) );
 	}
 
 	/**
@@ -105,8 +106,21 @@ final class GutenbergBlock extends AbstractImplementation {
 		$args = $this->get_args();
 
 		register_block_type( $this->name, $args );
+	}
 
-		if ( is_admin() ) {
+	/**
+	 * @return void
+	 */
+	public function add_editor_script() {
+		$display_callback = $this->display;
+
+		if ( ! boolval( $display_callback() ) ) {
+			return;
+		}
+
+		$args = $this->get_args();
+
+		if ( get_current_screen()->is_block_editor() ) {
 			$js_args          = $this->get_args( array( 'render_callback' ) );
 			$js_args['items'] = $this->fill_selects( $js_args['items'] );
 			$script           = 'window.wcf_blocks=(window.wcf_blocks||{});window.wcf_blocks[\'' . $this->name . '\']=' . wp_json_encode( $js_args, JSON_UNESCAPED_UNICODE ) . ';';
@@ -114,7 +128,6 @@ final class GutenbergBlock extends AbstractImplementation {
 
 			wp_add_inline_script( $args['editor_script'], $script, 'before' );
 		}
-
 	}
 
 	/**
