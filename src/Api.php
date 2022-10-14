@@ -161,7 +161,7 @@ final class Api extends WP_REST_Controller {
 	public function register_fields_options() {
 		foreach ( $this->wcf->registered as $registered ) {
 			$data = $registered->get_data();
-			$registered->fill_selects( $data['items'] );
+			$registered->fill_selects( $data['items'], null, false );
 		}
 	}
 

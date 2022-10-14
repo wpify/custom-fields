@@ -202,7 +202,7 @@ abstract class AbstractImplementation {
 		}, $posts );
 	}
 
-	public function fill_selects( $items, $prefix = null ) {
+	public function fill_selects( $items, $prefix = null, $fill_options = true ) {
 		foreach ( $items as $key => $item ) {
 			if ( in_array( $item['type'], array( 'post', 'multi_post', 'link' ) ) && empty( $item['options'] ) ) {
 				$items[ $key ]['options'] = array( $this, 'get_post_options' );
@@ -220,7 +220,7 @@ abstract class AbstractImplementation {
 				if ( ! empty( $item['async'] ) ) {
 					$items[ $key ]['options'] = $id;
 					$this->wcf->set_api_callback( $items[ $key ]['options'], $callback );
-				} else {
+				} elseif ( $fill_options ) {
 					$items[ $key ]['options'] = $callback( $item );
 				}
 			} elseif ( isset( $items[ $key ]['options'] ) && is_array( $items[ $key ]['options'] ) && ! empty( $item['async'] ) ) {
@@ -239,7 +239,7 @@ abstract class AbstractImplementation {
 			}
 
 			if ( ! empty( $item['items'] ) ) {
-				$items[ $key ]['items'] = $this->fill_selects( $item['items'], $id );
+				$items[ $key ]['items'] = $this->fill_selects( $item['items'], $id, $fill_options );
 			}
 		}
 
