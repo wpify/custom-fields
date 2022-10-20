@@ -50,6 +50,8 @@ const PostField = (props) => {
 		options,
 		post_type,
 		query_args = {},
+		async,
+		async_params,
 	} = props;
 
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
@@ -102,6 +104,9 @@ const PostField = (props) => {
 				setOptions={setSelectedOptions}
 				showSelected={false}
 				otherArgs={otherArgs}
+				async={async}
+				asyncParams={async_params}
+
 			/>
 
 			{description && (
