@@ -1,11 +1,10 @@
 import React from 'react';
 import classnames from 'classnames';
-import PT from 'prop-types';
 import ErrorBoundary from './ErrorBoundary';
 
-const MetaboxRow = ({ className, item, children, htmlId = id => id }) => {
+const MetaboxRow = ({ className, item, children, htmlId = id => id, style }) => {
   return (
-		<div key={item.id} className={classnames('wcf-metabox-row', className)}>
+		<div key={item.id} className={classnames('wcf-metabox-row', className)} style={style}>
 			<ErrorBoundary>
 				<label
 					htmlFor={htmlId(item.id)}
@@ -18,14 +17,6 @@ const MetaboxRow = ({ className, item, children, htmlId = id => id }) => {
 			</ErrorBoundary>
 		</div>
 	);
-};
-
-MetaboxRow.propTypes = {
-  className: PT.string,
-	item: PT.object,
-	group_level: PT.number,
-	children: PT.element,
-	htmlId: PT.func,
 };
 
 export default MetaboxRow;

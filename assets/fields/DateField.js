@@ -1,7 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 import InputField from './InputField';
-import PT from 'prop-types';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { dateI18n } from '@wordpress/date';
 
@@ -17,10 +16,6 @@ const DateField = (props) => {
 			/>
 		</ErrorBoundary>
 	);
-};
-
-DateField.propTypes = {
-	className: PT.string,
 };
 
 DateField.getHumanTitle = (item, innerValue) => {

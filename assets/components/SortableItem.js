@@ -1,6 +1,5 @@
 import React from 'react';
 import classnames from 'classnames';
-import PT from 'prop-types';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import MoveButton from '../components/MoveButton';
@@ -21,12 +20,6 @@ const SortableItem = (props) => {
 			<MoveButton {...attributes} {...listeners} />
 		</div>
 	);
-};
-
-SortableItem.propTypes = {
-	id: PT.any,
-	children: PT.any,
-	className: PT.string,
 };
 
 export default SortableItem;

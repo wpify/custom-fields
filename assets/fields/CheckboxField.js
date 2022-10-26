@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import classnames from 'classnames';
-import PT from 'prop-types';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { useNormalizedValue } from '../helpers';
 
@@ -47,17 +46,5 @@ const CheckboxField = React.forwardRef((props, ref) => {
 		</label>
 	);
 });
-
-CheckboxField.propTypes = {
-	className: PT.string,
-	id: PT.string,
-	htmlId: PT.string,
-	label: PT.string,
-	value: PT.string,
-	group_level: PT.number,
-	custom_attributes: PT.object,
-	onChange: PT.func,
-	generator: PT.string,
-};
 
 export default CheckboxField;

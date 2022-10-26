@@ -1,5 +1,4 @@
 import React from 'react';
-import PT from 'prop-types';
 import { getItemComponent } from '../helpers';
 import ScreenContext from './ScreenContext';
 import MetaboxRow from './MetaboxRow';
@@ -35,10 +34,6 @@ const Metabox = ({ appContext, handleChange }) => {
 			})}
 		</ScreenContext.Provider>
 	);
-};
-
-Metabox.propTypes = {
-	appContext: PT.object,
 };
 
 export default Metabox;

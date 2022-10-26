@@ -1,6 +1,5 @@
 import React from 'react';
 import classnames from 'classnames';
-import PT from 'prop-types';
 import ErrorBoundary from '../components/ErrorBoundary';
 
 const TitleField = (props) => {
@@ -22,13 +21,6 @@ const TitleField = (props) => {
 			)}
 		</React.Fragment>
 	);
-};
-
-TitleField.propTypes = {
-	className: PT.string,
-	title: PT.string,
-	description: PT.string,
-	custom_attributes: PT.object,
 };
 
 export default TitleField;

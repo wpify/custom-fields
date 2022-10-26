@@ -1,6 +1,5 @@
 import React, { useCallback, useContext } from 'react';
 import classnames from 'classnames';
-import PT from 'prop-types';
 import { applyFilters } from '@wordpress/hooks';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { getItemComponent } from '../helpers';
@@ -41,15 +40,5 @@ const GroupFieldRow = (props) => {
 };
 
 GroupFieldRow.displayName = 'GroupFieldRow';
-
-GroupFieldRow.propTypes = {
-	className: PT.string,
-	item: PT.object,
-	group_level: PT.number,
-	id: PT.string,
-	appContext: PT.object,
-	value: PT.any,
-	onChange: PT.func,
-};
 
 export default GroupFieldRow;

@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import PT from 'prop-types';
+import React, { useEffect, useState } from 'react';
 import { SketchPicker } from 'react-color';
 import { Popover } from '@wordpress/components';
 import Button from '../components/Button';
@@ -80,18 +79,6 @@ const ColorField = (props) => {
 			)}
 		</React.Fragment>
 	);
-};
-
-ColorField.propTypes = {
-	className: PT.string,
-	id: PT.string,
-	htmlId: PT.string,
-	value: PT.string,
-	onChange: PT.func,
-	description: PT.string,
-	custom_attributes: PT.object,
-	group_level: PT.number,
-	generator: PT.string,
 };
 
 export default ColorField;

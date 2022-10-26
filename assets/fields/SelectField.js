@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import PT from 'prop-types';
 import ErrorBoundary from '../components/ErrorBoundary';
 import SelectControl from '../components/SelectControl';
 import { useNormalizedValue } from '../helpers';
@@ -55,21 +54,6 @@ const SelectField = (props) => {
 			)}
 		</ErrorBoundary>
 	);
-};
-
-SelectField.propTypes = {
-	className: PT.string,
-	id: PT.string,
-	value: PT.oneOfType([PT.string, PT.number]),
-	onChange: PT.func,
-	options: PT.array,
-	description: PT.oneOfType([PT.string, PT.element]),
-	group_level: PT.number,
-	required: PT.bool,
-	isMulti: PT.bool,
-	appContext: PT.object,
-	generator: PT.string,
-	async: PT.bool,
 };
 
 SelectField.getHumanTitle = (item, value) => {

@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
-import PT from 'prop-types';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { applyFilters } from '@wordpress/hooks';
 import { Icon } from '@wordpress/components';
@@ -193,21 +192,6 @@ const LinkField = React.forwardRef((props, ref) => {
 		</div>
 	);
 });
-
-LinkField.propTypes = {
-	id: PT.string,
-	htmlId: PT.func,
-	value: PT.string,
-	onChange: PT.func,
-	description: PT.oneOfType([PT.string, PT.element]),
-	suffix: PT.oneOfType([PT.string, PT.element]),
-	custom_attributes: PT.oneOfType([PT.object, PT.array]),
-	group_level: PT.number,
-	className: PT.string,
-	type: PT.oneOf(['link']),
-	generator: PT.string,
-};
-
 
 LinkField.getHumanTitle = (item, innerValue) => {
 	return innerValue?.label + ' (' + innerValue?.url + ')';

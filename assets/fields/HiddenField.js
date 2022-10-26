@@ -1,7 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 import InputField from './InputField';
-import PT from 'prop-types';
 import ErrorBoundary from '../components/ErrorBoundary';
 
 const HiddenField = (props) => {
@@ -16,10 +15,6 @@ const HiddenField = (props) => {
 			/>
 		</ErrorBoundary>
 	);
-};
-
-HiddenField.propTypes = {
-	className: PT.string,
 };
 
 export default HiddenField;

@@ -1,5 +1,4 @@
 import classnames from 'classnames';
-import PT from 'prop-types';
 import React from 'react';
 import ErrorBoundary from './ErrorBoundary';
 
@@ -13,6 +12,7 @@ const OptionsRow = (props) => {
 		withoutWrapper = false,
 		withoutSection = false,
 		withoutLabel = false,
+		style,
 	} = props;
 
 	const label = item.title
@@ -29,7 +29,7 @@ const OptionsRow = (props) => {
 
 	if (group_level > 2) {
 		return (
-			<div className={classnames('form-field', className)} data-group-level={group_level}>
+			<div className={classnames('form-field', className)} data-group-level={group_level} style={style}>
 				{!withoutLabel && (<div>{label}</div>)}
 				<div>
 					<ErrorBoundary>
@@ -42,7 +42,7 @@ const OptionsRow = (props) => {
 
 	if (withoutSection) {
 		return (
-			<tr valign="top" data-group-level={group_level}>
+			<tr valign="top" data-group-level={group_level} style={style}>
 				<td className={classnames('forminp', 'forminp-' + item.type)} colSpan={2} style={{ paddingLeft: 0, paddingRight: 0 }}>
 					<ErrorBoundary>
 						{children}
@@ -53,7 +53,7 @@ const OptionsRow = (props) => {
 	}
 
 	return (
-		<tr valign="top" data-group-level={group_level}>
+		<tr valign="top" data-group-level={group_level} style={style}>
 			<th scope="row" className="titledesc">
 				{!withoutLabel && label}
 			</th>
@@ -64,17 +64,6 @@ const OptionsRow = (props) => {
 			</td>
 		</tr>
 	);
-};
-
-OptionsRow.propTypes = {
-	item: PT.object,
-	group_level: PT.number,
-	children: PT.element,
-	className: PT.string,
-	htmlId: PT.func,
-	withoutWrapper: PT.bool,
-	withoutSection: PT.bool,
-	withoutLabel: PT.bool,
 };
 
 export default OptionsRow;

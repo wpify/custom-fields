@@ -1,5 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
-import PT from 'prop-types';
+import React, { useEffect, useState } from 'react';
 import ServerSideRender from '@wordpress/server-side-render';
 import { BlockControls } from '@wordpress/block-editor';
 import { ToolbarButton, ToolbarGroup } from '@wordpress/components';
@@ -69,13 +68,6 @@ const GutenbergBlock = (props) => {
 			)}
 		</ScreenContext.Provider>
 	);
-};
-
-GutenbergBlock.propTypes = {
-	attributes: PT.object,
-	setAttributes: PT.func,
-	isSelected: PT.bool,
-	appContext: PT.object,
 };
 
 export default GutenbergBlock;

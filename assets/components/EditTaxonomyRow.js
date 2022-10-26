@@ -1,9 +1,8 @@
 import React from 'react';
 import classnames from 'classnames';
-import PT from 'prop-types';
 import ErrorBoundary from './ErrorBoundary';
 
-const EditTaxonomyRow = ({ className, item, children, group_level = 0, htmlId = id => id }) => {
+const EditTaxonomyRow = ({ className, item, children, group_level = 0, htmlId = id => id, style }) => {
 	const label = item.title
 		? (
 			<ErrorBoundary>
@@ -14,7 +13,7 @@ const EditTaxonomyRow = ({ className, item, children, group_level = 0, htmlId = 
 
 	if (group_level > 1) {
 		return (
-			<div className={classnames('form-field', className)} data-group-level={group_level}>
+			<div className={classnames('form-field', className)} data-group-level={group_level} style={style}>
 				<div>{label}</div>
 				<div>
 					<ErrorBoundary>
@@ -26,7 +25,7 @@ const EditTaxonomyRow = ({ className, item, children, group_level = 0, htmlId = 
 	}
 
 	return (
-		<tr key={item.id} className={classnames('form-field', className)} data-group-level={group_level}>
+		<tr key={item.id} className={classnames('form-field', className)} data-group-level={group_level} style={style}>
 			<th>{label}</th>
 			<td>
 				<ErrorBoundary>
@@ -35,14 +34,6 @@ const EditTaxonomyRow = ({ className, item, children, group_level = 0, htmlId = 
 			</td>
 		</tr>
 	);
-};
-
-EditTaxonomyRow.propTypes = {
-	className: PT.string,
-	item: PT.object,
-	children: PT.element,
-	group_level: PT.number,
-	htmlId: PT.func,
 };
 
 export default EditTaxonomyRow;

@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import PT from 'prop-types';
 import ErrorBoundary from '../components/ErrorBoundary';
 import classnames from 'classnames';
 import { useNormalizedValue } from '../helpers';
@@ -54,19 +53,5 @@ const InputField = React.forwardRef((props, ref) => {
 		</React.Fragment>
 	);
 });
-
-InputField.propTypes = {
-	id: PT.string,
-	htmlId: PT.func,
-	value: PT.string,
-	onChange: PT.func,
-	description: PT.oneOfType([PT.string, PT.element]),
-	suffix: PT.oneOfType([PT.string, PT.element]),
-	custom_attributes: PT.oneOfType([PT.object, PT.array]),
-	group_level: PT.number,
-	className: PT.string,
-	type: PT.oneOf(['color', 'date', 'datetime-local', 'email', 'month', 'number', 'password', 'tel', 'text', 'time', 'url', 'week', 'hidden']),
-	generator: PT.string,
-};
 
 export default InputField;

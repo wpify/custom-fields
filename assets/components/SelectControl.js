@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
-import PT from 'prop-types';
 import Select from 'react-select';
 import classnames from 'classnames';
 import { useOptions, normalizeString } from '../helpers';
@@ -137,20 +136,6 @@ const SelectControl = (props) => {
 			menuPortalTarget={portal.current}
 		/>
 	);
-};
-
-SelectControl.propTypes = {
-	className: PT.string,
-	id: PT.string,
-	value: PT.oneOfType([PT.string, PT.number]),
-	onChange: PT.func,
-	defaultOptions: PT.array,
-	required: PT.bool,
-	isMulti: PT.bool,
-	api: PT.object,
-	setOptions: PT.func,
-	showSelected: PT.bool,
-	otherArgs: PT.array,
 };
 
 export default SelectControl;

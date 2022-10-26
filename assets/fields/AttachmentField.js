@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
-import PT from 'prop-types';
 import { __ } from '@wordpress/i18n';
 import Button from '../components/Button';
 import Attachment from '../components/Attachment';
@@ -130,18 +129,6 @@ const AttachmentField = (props) => {
 			)}
 		</div>
 	);
-};
-
-AttachmentField.propTypes = {
-	className: PT.string,
-	id: PT.string,
-	value: PT.any,
-	group_level: PT.number,
-	isMulti: PT.bool,
-	attachment_type: PT.string,
-	onChange: PT.func,
-	description: PT.string,
-	generator: PT.string,
 };
 
 export default AttachmentField;

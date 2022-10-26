@@ -1,5 +1,4 @@
 import React from 'react';
-import PT from 'prop-types';
 import classnames from 'classnames';
 
 const Move = ({ className, ...rest }) => {
@@ -16,10 +15,6 @@ const Move = ({ className, ...rest }) => {
 			</svg>
 		</button>
 	);
-};
-
-Move.propTypes = {
-  className: PT.string,
 };
 
 export default Move;

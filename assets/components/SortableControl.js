@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import PT from 'prop-types';
+import React from 'react';
 import ErrorBoundary from './ErrorBoundary';
 import {
 	DndContext,
@@ -66,12 +65,6 @@ const SortableControl = (props) => {
 			</DndContext>
 		</ErrorBoundary>
 	) : null;
-};
-
-SortableControl.propTypes = {
-	items: PT.array,
-	setItems: PT.func,
-	renderItem: PT.func,
 };
 
 export default SortableControl;

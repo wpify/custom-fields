@@ -1,12 +1,11 @@
 import React from 'react';
 import classnames from 'classnames';
-import PT from 'prop-types';
 import ErrorBoundary from './ErrorBoundary';
 
 const AddTaxonomyRow = (props) => {
-	const { className, item, children, htmlId = id => id } = props;
+	const { className, item, children, htmlId = id => id, style } = props;
   return (
-		<div key={item.id} className={classnames('form-field', className)}>
+		<div key={item.id} className={classnames('form-field', className)} style={style}>
 			<ErrorBoundary>
 				{item.title && (
 					<label htmlFor={htmlId(item.id)} dangerouslySetInnerHTML={{ __html: item.title }}/>
@@ -17,13 +16,6 @@ const AddTaxonomyRow = (props) => {
 			</ErrorBoundary>
 		</div>
   );
-};
-
-AddTaxonomyRow.propTypes = {
-  className: PT.string,
-	children: PT.element,
-	item: PT.object,
-	htmlId: PT.func,
 };
 
 export default AddTaxonomyRow;

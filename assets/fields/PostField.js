@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import PT from 'prop-types';
 import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
 import SelectControl from '../components/SelectControl';
@@ -144,21 +143,6 @@ const PostField = (props) => {
 			</div>
 		</ErrorBoundary>
 	);
-};
-
-PostField.propTypes = {
-	className: PT.string,
-	id: PT.string,
-	value: PT.oneOfType([PT.string, PT.number]),
-	onChange: PT.func,
-	options: PT.array,
-	description: PT.oneOfType([PT.string, PT.element]),
-	group_level: PT.number,
-	required: PT.bool,
-	isMulti: PT.bool,
-	appContext: PT.object,
-	generator: PT.string,
-	async: PT.bool,
 };
 
 PostField.getHumanTitle = (item, value) => {

@@ -1,5 +1,4 @@
 import React from 'react';
-import PT from 'prop-types';
 import classnames from 'classnames';
 
 const CloseButton = (props) => {
@@ -16,10 +15,6 @@ const CloseButton = (props) => {
 			</svg>
 		</button>
 	);
-};
-
-CloseButton.propTypes = {
-  className: PT.string,
 };
 
 export default CloseButton;

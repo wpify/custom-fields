@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
-import PT from 'prop-types';
-import { applyFilters } from '@wordpress/hooks';
-import { castString, useNormalizedValue, valueOrDefault } from '../helpers';
+import { useNormalizedValue } from '../helpers';
 
 const CodeField = React.forwardRef((props, ref) => {
 	const {
@@ -45,7 +43,6 @@ const CodeField = React.forwardRef((props, ref) => {
 			onChange(currentValue);
 		}
 	}, [onChange, value, currentValue]);
-	console.log(currentValue);
 
 	const describedBy = description ? id + '-description' : null;
 
@@ -70,18 +67,5 @@ const CodeField = React.forwardRef((props, ref) => {
 		</React.Fragment>
 	);
 });
-
-CodeField.propTypes = {
-	id: PT.string,
-	value: PT.string,
-	onChange: PT.func,
-	htmlId: PT.string,
-	description: PT.string,
-	custom_attributes: PT.object,
-	className: PT.string,
-	group_level: PT.number,
-	mode: PT.any,
-	generator: PT.string,
-}
 
 export default CodeField;

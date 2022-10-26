@@ -1,7 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 import InputField from './InputField';
-import PT from 'prop-types';
 import ErrorBoundary from '../components/ErrorBoundary';
 
 const TextField = (props) => {
@@ -16,10 +15,6 @@ const TextField = (props) => {
 			/>
 		</ErrorBoundary>
 	);
-};
-
-TextField.propTypes = {
-	className: PT.string,
 };
 
 export default TextField;

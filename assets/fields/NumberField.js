@@ -1,7 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 import InputField from './InputField';
-import PT from 'prop-types';
 import ErrorBoundary from '../components/ErrorBoundary';
 
 const NumberField = (props) => {
@@ -18,11 +17,6 @@ const NumberField = (props) => {
 			/>
 		</ErrorBoundary>
 	);
-};
-
-NumberField.propTypes = {
-	className: PT.string,
-	custom_attributes: PT.object,
 };
 
 export default NumberField;

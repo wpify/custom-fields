@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useEffect } from 'react';
-import PT from 'prop-types';
 import ScreenContext from '../components/ScreenContext';
 import ErrorBoundary from '../components/ErrorBoundary';
 import GroupFieldRow from '../components/GroupFieldRow.js';
@@ -16,7 +15,7 @@ const GroupField = (props) => {
 
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
 
-	const { RootWrapper } = useContext(ScreenContext);
+	const { RootWrapper, RowWrapper } = useContext(ScreenContext);
 
 	const handleChange = useCallback((changedValue = {}) => {
 		const newValue = {
@@ -40,7 +39,9 @@ const GroupField = (props) => {
 			<ErrorBoundary>
 				<RootWrapper group_level={group_level + 1}>
 					{group_level === 0 && (
-						<input type="hidden" id={id} name={id} value={JSON.stringify(currentValue)}/>
+						<RowWrapper item={{ title: 'hidden', type: 'hidden' }} withoutLabel={true} style={{ display: 'none' }}>
+							<input type="hidden" id={id} name={id} value={JSON.stringify(currentValue)}/>
+						</RowWrapper>
 					)}
 					{items.map((item) => (
 						<GroupFieldRow
@@ -56,19 +57,6 @@ const GroupField = (props) => {
 			</ErrorBoundary>
 		</React.Fragment>
 	);
-};
-
-GroupField.propTypes = {
-	object_type: PT.string,
-	items: PT.array,
-	wcf: PT.string,
-	group_level: PT.number,
-	value: PT.any,
-	onChange: PT.func,
-	id: PT.string,
-	name: PT.string,
-	appContext: PT.object,
-	generator: PT.string,
 };
 
 export default GroupField;

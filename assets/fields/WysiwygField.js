@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from 'react';
-import PT from 'prop-types';
+import React, { useCallback, useEffect, useRef } from 'react';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { v4 as uuid } from 'uuid';
 import { __ } from '@wordpress/i18n';
@@ -29,6 +28,15 @@ const WysiwygField = (props) => {
 	const tinymce = useRef();
 	const editArea = useRef();
 
+	const handleChange = useCallback((event) => {
+		const newcontent = tinymce.current.getContent();
+
+		if (newcontent !== currentValue) {
+			setCurrentValue(newcontent);
+		}
+
+	}, [setCurrentValue, currentValue]);
+
 	const setup = (editor) => {
 		tinymce.current = editor;
 
@@ -37,6 +45,7 @@ const WysiwygField = (props) => {
 		// Make toolbar always visible
 		tinymce.current.on('init', () => tinymce.current.fire('focus'));
 		tinymce.current.on('blur', () => false);
+		tinymce.current.on('focusout', handleChange);
 
 		tinymce.current.addButton('wp_add_media', {
 			tooltip: __('Insert Media'),
@@ -63,24 +72,6 @@ const WysiwygField = (props) => {
 				setup,
 			},
 		});
-	}, []);
-
-	const timer = useRef();
-	const prevContent = useRef(currentValue);
-
-	useEffect(() => {
-		timer.current = window.setInterval(() => {
-			const newcontent = tinymce.current.getContent();
-
-			if (newcontent !== prevContent.current) {
-				setCurrentValue(newcontent);
-				prevContent.current = newcontent;
-			}
-		}, 250);
-
-		return () => {
-			window.clearInterval(timer.current);
-		};
 	}, []);
 
 	useEffect(() => {
@@ -128,20 +119,6 @@ const WysiwygField = (props) => {
 			)}
 		</React.Fragment>
 	);
-};
-
-WysiwygField.propTypes = {
-	id: PT.string,
-	htmlId: PT.func,
-	value: PT.string,
-	onChange: PT.func,
-	description: PT.oneOfType([PT.string, PT.element]),
-	suffix: PT.oneOfType([PT.string, PT.element]),
-	custom_attributes: PT.any,
-	group_level: PT.number,
-	className: PT.string,
-	type: PT.string,
-	generator: PT.string,
 };
 
 WysiwygField.getHumanTitle = (item, innerValue) => {

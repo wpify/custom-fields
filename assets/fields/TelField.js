@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import classnames from 'classnames';
-import PT from 'prop-types';
 import intlTelInput from 'intl-tel-input';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { useNormalizedValue } from '../helpers';
@@ -63,19 +62,6 @@ const TelField = (props) => {
 			)}
 		</React.Fragment>
 	);
-};
-
-TelField.propTypes = {
-	id: PT.string,
-	htmlId: PT.func,
-	value: PT.string,
-	onChange: PT.func,
-	description: PT.oneOfType([PT.string, PT.element]),
-	suffix: PT.oneOfType([PT.string, PT.element]),
-	custom_attributes: PT.oneOfType([PT.object, PT.array]),
-	group_level: PT.number,
-	className: PT.string,
-	generator: PT.string,
 };
 
 export default TelField;

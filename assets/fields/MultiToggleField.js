@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect } from 'react';
 import classnames from 'classnames';
-import PT from 'prop-types';
 import { ToggleControl } from '@wordpress/components';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { useNormalizedValue } from '../helpers';
@@ -63,19 +62,6 @@ const MultiToggleField = (props) => {
 			))}
 		</React.Fragment>
 	);
-};
-
-MultiToggleField.propTypes = {
-	className: PT.string,
-	id: PT.string,
-	htmlId: PT.string,
-	value: PT.array,
-	group_level: PT.number,
-	custom_attributes: PT.object,
-	onChange: PT.func,
-	description: PT.string,
-	options: PT.array,
-	generator: PT.string,
 };
 
 export default MultiToggleField;

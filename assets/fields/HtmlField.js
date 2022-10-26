@@ -1,5 +1,4 @@
 import React from 'react';
-import PT from 'prop-types';
 import ErrorBoundary from '../components/ErrorBoundary';
 
 const HtmlField = (props) => {
@@ -14,12 +13,6 @@ const HtmlField = (props) => {
 			/>
 		</ErrorBoundary>
 	);
-};
-
-HtmlField.propTypes = {
-	className: PT.string,
-	content: PT.oneOfType([PT.string, PT.element]),
-	custom_attributes: PT.object,
 };
 
 export default HtmlField;

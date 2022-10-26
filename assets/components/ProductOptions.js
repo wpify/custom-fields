@@ -1,6 +1,5 @@
 import React from 'react';
 import classnames from 'classnames';
-import PT from 'prop-types';
 import { getItemComponent } from '../helpers';
 import ScreenContext from './ScreenContext';
 import ProductOptionsRow from './ProductOptionsRow';
@@ -38,10 +37,6 @@ const ProductOptions = ({ appContext, handleChange }) => {
 			</div>
 		</ScreenContext.Provider>
 	);
-};
-
-ProductOptions.propTypes = {
-	appContext: PT.object,
 };
 
 export default ProductOptions;

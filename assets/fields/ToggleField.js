@@ -1,6 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
 import classnames from 'classnames';
-import PT from 'prop-types';
 import { ToggleControl } from '@wordpress/components';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { useNormalizedValue } from '../helpers';
@@ -64,20 +63,6 @@ const ToggleField = (props) => {
 			)}
 		</React.Fragment>
 	);
-};
-
-ToggleField.propTypes = {
-	className: PT.string,
-	id: PT.string,
-	htmlId: PT.string,
-	label: PT.string,
-	value: PT.string,
-	group_level: PT.number,
-	custom_attributes: PT.object,
-	onChange: PT.func,
-	description: PT.string,
-	disabled: PT.bool,
-	generator: PT.string,
 };
 
 export default ToggleField;

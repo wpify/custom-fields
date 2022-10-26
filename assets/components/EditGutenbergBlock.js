@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
-import PT from 'prop-types';
 import GutenbergBlockRow from './GutenbergBlockRow';
 import ErrorBoundary from './ErrorBoundary';
 import { getItemComponent } from '../helpers';
@@ -60,13 +59,6 @@ const EditGutenbergBlock = (props) => {
 			})}
 		</div>
 	);
-};
-
-EditGutenbergBlock.propTypes = {
-	attributes: PT.object,
-	setAttributes: PT.func,
-	isSelected: PT.bool,
-	appContext: PT.object,
 };
 
 export default EditGutenbergBlock;

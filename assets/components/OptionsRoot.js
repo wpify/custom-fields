@@ -1,5 +1,4 @@
 import classnames from 'classnames';
-import PT from 'prop-types';
 import React from 'react';
 import ErrorBoundary from './ErrorBoundary';
 
@@ -23,12 +22,6 @@ const OptionsRoot = (props) => {
 			{children}
 		</ErrorBoundary>
 	);
-};
-
-OptionsRoot.propTypes = {
-	className: PT.string,
-	children: PT.node,
-	group_level: PT.number,
 };
 
 export default OptionsRoot;

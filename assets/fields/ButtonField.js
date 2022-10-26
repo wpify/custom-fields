@@ -1,5 +1,4 @@
 import React from 'react';
-import PT from 'prop-types';
 import { applyFilters, doAction } from '@wordpress/hooks';
 import Button from '../components/Button';
 import classnames from 'classnames';
@@ -52,20 +51,6 @@ const ButtonField = (props) => {
 			)}
 		</React.Fragment>
 	);
-};
-
-ButtonField.propTypes = {
-	className: PT.string,
-	content: PT.oneOfType([PT.string, PT.element]),
-	custom_attributes: PT.object,
-	title: PT.string,
-	desc: PT.string,
-	button: PT.string,
-	url: PT.string,
-	action: PT.string,
-	primary: PT.bool,
-	react_component: PT.element,
-	description: PT.string,
 };
 
 export default ButtonField;

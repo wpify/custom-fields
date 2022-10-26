@@ -3,7 +3,6 @@ import OptionsRoot from './OptionsRoot';
 import OptionsRow from './OptionsRow';
 import ScreenContext from './ScreenContext';
 import { getItemComponent } from '../helpers';
-import PT from 'prop-types';
 import ErrorBoundary from './ErrorBoundary';
 import { applyFilters } from '@wordpress/hooks';
 
@@ -42,10 +41,6 @@ const Options = ({ appContext, handleChange }) => {
 			</OptionsRoot>
 		</ScreenContext.Provider>
 	);
-};
-
-Options.propTypes = {
-	appContext: PT.object,
 };
 
 export default Options;

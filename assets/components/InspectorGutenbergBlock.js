@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
-import PT from 'prop-types';
 import { applyFilters } from '@wordpress/hooks';
 import { InspectorControls } from '@wordpress/block-editor';
 import { Panel, PanelRow, PanelBody } from '@wordpress/components';
@@ -60,13 +59,6 @@ const InspectorGutenbergBlock = (props) => {
 			</InspectorControls>
 		</ScreenContext.Provider>
 	);
-};
-
-InspectorGutenbergBlock.propTypes = {
-	attributes: PT.object,
-	setAttributes: PT.func,
-	isSelected: PT.bool,
-	appContext: PT.object,
 };
 
 export default InspectorGutenbergBlock;

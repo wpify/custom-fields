@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import PT from 'prop-types';
 import classnames from 'classnames';
 import { getItemComponent } from '../helpers';
 import CloseButton from '../components/CloseButton';
@@ -113,20 +112,6 @@ const MultiGroupFieldRow = (props) => {
 			</div>
 		</div>
 	);
-};
-
-MultiGroupFieldRow.propTypes = {
-	index: PT.number,
-	group_level: PT.number,
-	onChange: PT.func,
-	items: PT.array,
-	value: PT.object,
-	htmlId: PT.func,
-	className: PT.string,
-	collapsed: PT.bool,
-	length: PT.number,
-	toggleCollapsed: PT.func,
-	appContext: PT.object,
 };
 
 export default MultiGroupFieldRow;

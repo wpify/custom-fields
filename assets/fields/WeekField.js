@@ -1,5 +1,4 @@
 import React from 'react';
-import PT from 'prop-types';
 import classnames from 'classnames';
 import InputField from './InputField';
 import ErrorBoundary from '../components/ErrorBoundary';
@@ -16,10 +15,6 @@ const WeekField = (props) => {
 			/>
 		</ErrorBoundary>
 	);
-};
-
-WeekField.propTypes = {
-	className: PT.string,
 };
 
 export default WeekField;

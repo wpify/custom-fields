@@ -1,5 +1,4 @@
 import React from 'react';
-import PT from 'prop-types';
 import classnames from 'classnames';
 
 const CloneButton = (props) => {
@@ -16,10 +15,6 @@ const CloneButton = (props) => {
 			</svg>
 		</button>
 	);
-};
-
-CloneButton.propTypes = {
-  className: PT.string,
 };
 
 export default CloneButton;

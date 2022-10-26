@@ -1,4 +1,3 @@
-import PT from 'prop-types';
 import React, { useState, useCallback, useMemo } from 'react';
 import Options from './Options';
 import ProductOptions from './ProductOptions';
@@ -56,10 +55,6 @@ const App = (props) => {
 			<Component handleChange={handleChange} appContext={wcf} />
 		</ErrorBoundary>
 	);
-};
-
-App.propTypes = {
-	wcf: PT.object,
 };
 
 export default App;

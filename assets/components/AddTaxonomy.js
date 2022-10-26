@@ -1,5 +1,4 @@
 import React from 'react';
-import PT from 'prop-types';
 import { getItemComponent } from '../helpers';
 import ScreenContext from './ScreenContext';
 import AddTaxonomyRow from './AddTaxonomyRow';
@@ -31,11 +30,6 @@ const AddTaxonomy = (props) => {
 			})}
 		</ScreenContext.Provider>
 	);
-};
-
-AddTaxonomy.propTypes = {
-	className: PT.string,
-	appContext: PT.object,
 };
 
 export default AddTaxonomy;

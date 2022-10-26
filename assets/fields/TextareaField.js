@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import PT from 'prop-types';
 import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { useNormalizedValue } from '../helpers';
@@ -49,20 +48,6 @@ const TextareaField = (props) => {
 			)}
 		</React.Fragment>
 	);
-};
-
-TextareaField.propTypes = {
-	id: PT.string,
-	htmlId: PT.func,
-	value: PT.string,
-	onChange: PT.func,
-	description: PT.oneOfType([PT.string, PT.element]),
-	suffix: PT.oneOfType([PT.string, PT.element]),
-	custom_attributes: PT.any,
-	group_level: PT.number,
-	className: PT.string,
-	type: PT.string,
-	generator: PT.string,
 };
 
 export default TextareaField;

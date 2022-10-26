@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import classnames from 'classnames';
-import PT from 'prop-types';
 import CloseButton from './CloseButton';
 import MoveButton from './MoveButton';
 
@@ -68,13 +67,6 @@ const Attachment = (props) => {
 			)}
 		</div>
 	);
-};
-
-Attachment.propTypes = {
-	className: PT.string,
-	attachment: PT.object,
-	onDelete: PT.func,
-	length: PT.number,
 };
 
 export default Attachment;

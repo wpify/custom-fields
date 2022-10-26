@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import PT from 'prop-types';
+import React, { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { __ } from '@wordpress/i18n';
 import Button from '../components/Button';
@@ -149,19 +148,6 @@ const MultiGroupField = (props) => {
 			</div>
 		</div>
 	);
-};
-
-MultiGroupField.propTypes = {
-	object_type: PT.string,
-	items: PT.array,
-	appContext: PT.object,
-	group_level: PT.number,
-	value: PT.any,
-	onChange: PT.func,
-	id: PT.string,
-	name: PT.string,
-	className: PT.string,
-	generator: PT.string,
 };
 
 export default MultiGroupField;
