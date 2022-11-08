@@ -36,6 +36,7 @@ import ReactField from './ReactField';
 import SeparatorField from './SeparatorField';
 import WysiwygField from './WysiwygField';
 import LinkField from './LinkField';
+import InnerBlocksField from './InnerBlocksField';
 
 addFilter(
 	'wcf_field_without_wrapper',
@@ -113,4 +114,5 @@ export const fields = {
 	separator: SeparatorField,
 	wysiwyg: WysiwygField,
 	link: LinkField,
+	inner_blocks: InnerBlocksField,
 };

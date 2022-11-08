@@ -19,7 +19,7 @@ const GutenbergBlock = (props) => {
 
 	useEffect(() => {
 		if (!isSelected && view === EDIT_VIEW) {
-			setView(DESKTOP_VIEW);
+			//setView(DESKTOP_VIEW);
 		}
 	}, [isSelected, view]);
 

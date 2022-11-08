@@ -26,6 +26,7 @@ The custom fields themselves use the standard HTML inputs, so it's recommended t
 * E-mail `email`
 * Group `group`: To save multiple custom fields in one object.
 * HTML `html`: To print some piece of HTML in the settings.
+* Inner Blocks `inner_blocks`: To use inner blocks in Gutenberg editor.
 * Link `link`
 * Month `month`
 * Number `number`
@@ -635,6 +636,18 @@ As you can see, you can add a new group with any fields inside it, move the grou
 **Additional attributes**
 
 * `content`: String with HTML to render.
+
+## Inner Blocks field type `inner_blocks`
+
+Inner Blocks are limited in usage, please follow:
+
+- Can be used in Gutenberg blocks only.
+- Cannot be used in groups.
+- Can be used one `inner_blocks` field in the block.
+
+**Additional attributes**
+
+* `template`: String with HTML to render.
 
 ## Link field type `link`
 

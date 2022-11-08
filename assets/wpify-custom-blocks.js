@@ -7,6 +7,7 @@ import React from 'react';
 import { registerBlockType } from '@wordpress/blocks';
 import { registerFieldTypes } from './helpers';
 import GutenbergBlock from './components/GutenbergBlock';
+import { InnerBlocks } from '@wordpress/block-editor';
 
 registerFieldTypes();
 
@@ -19,8 +20,9 @@ Object.keys(window.wcf_blocks).forEach((blockName) => {
 		block.icon = <span dangerouslySetInnerHTML={{ __html: block.icon }}/>;
 	}
 
-	const save = () => null;
+	const save = () => <InnerBlocks.Content />;
 	const edit = (props) => <GutenbergBlock appContext={block} {...props} />;
+
 
 	registerBlockType(block.name, {
 		...block,
