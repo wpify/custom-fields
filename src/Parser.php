@@ -9,6 +9,7 @@ namespace Wpify\CustomFields;
 final class Parser {
 	/** @var string[] */
 	private $parsers = array(
+		'mapycz'           => 'parse_group_value',
 		'group'            => 'parse_group_value',
 		'toggle'           => 'parse_bool_value',
 		'checkbox'         => 'parse_bool_value',

@@ -28,6 +28,7 @@ The custom fields themselves use the standard HTML inputs, so it's recommended t
 * HTML `html`: To print some piece of HTML in the settings.
 * Inner Blocks `inner_blocks`: To use inner blocks in Gutenberg editor.
 * Link `link`
+* Mapy.cz `mapycz`: To enter coordinates of some place.
 * Month `month`
 * Number `number`
 * Password `password`
@@ -656,6 +657,19 @@ Field that returns an array `array( 'url' => '', 'label' => '', 'target' => null
 **Additional attributes**
 
 * `post_type`: Name of the post type you want to link to.
+
+## Mapy.cz field type `mapycz`
+
+Shows the search box for location and map, where the user can set some location. The output is an object with the following shape:
+
+```json
+{
+  "address": "Praha",
+  "latitude": 50.0835493857,
+  "longitude": 14.4341412988,
+  "zoom": 12
+}
+```
 
 ## Month field type `month`
 

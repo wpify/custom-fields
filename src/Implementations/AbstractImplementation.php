@@ -350,6 +350,7 @@ abstract class AbstractImplementation {
 				return 'array';
 			case 'group':
 			case 'link':
+			case 'mapycz':
 				return 'object';
 			case 'checkbox':
 			case 'toggle':

@@ -9,6 +9,7 @@ namespace Wpify\CustomFields;
 final class Sanitizer {
 	/** @var string[] */
 	private $sanitizers = array(
+		'mapycz'           => 'sanitize_group_value',
 		'group'            => 'sanitize_group_value',
 		'multi_group'      => 'sanitize_group_value',
 		'link'             => 'sanitize_group_value',
