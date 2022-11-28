@@ -1,7 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import classnames from 'classnames';
 import CloseButton from './CloseButton';
-import MoveButton from './MoveButton';
 
 const getImageSize = ({
 	attributes = {},
@@ -28,7 +27,22 @@ const getImageSize = ({
 };
 
 const Attachment = (props) => {
-	const { className, attachment = {}, onDelete, length = 1 } = props;
+	const { className, onDelete, id } = props;
+	const [attachment, setAttachment] = useState();
+
+	const handleDelete = useCallback(() => {
+		onDelete(id);
+	}, [onDelete, attachment]);
+
+	useEffect(function () {
+		const wpattachment = wp.media.attachment(id);
+		wpattachment.fetch({ success: setAttachment });
+	}, [id, setAttachment]);
+
+	if (!attachment) {
+		return null;
+	}
+
 	const { attributes } = attachment;
 
 	const image = getImageSize({
@@ -37,15 +51,8 @@ const Attachment = (props) => {
 		maxHeight: 50,
 	});
 
-	const handleDelete = useCallback(() => {
-		onDelete(attachment);
-	}, [onDelete, attachment]);
-
 	return (
 		<div className={classnames(className, 'wcf-attachment')} key={props.id}>
-			{length > 1 && (
-				<MoveButton />
-			)}
 			<div className="wcf-attachment__image">
 				{image ? (
 					<img src={image.url} width={image.width} height={image.height} alt={attributes.title} />
