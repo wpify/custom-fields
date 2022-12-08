@@ -45,6 +45,13 @@ const Attachment = (props) => {
 
 	const { attributes } = attachment;
 
+	const editLink = new URL(attributes.editLink.replace(/wp-admin\/post\.php/, 'wp-admin/upload.php'));
+	const editLinkSearch = new URLSearchParams(editLink.search);
+	editLinkSearch.set('item', editLinkSearch.get('post'));
+	editLinkSearch.delete('post');
+	editLinkSearch.delete('action');
+	editLink.search = editLinkSearch;
+
 	const image = getImageSize({
 		attributes,
 		maxWidth: 50,
@@ -62,7 +69,7 @@ const Attachment = (props) => {
 			</div>
 			<div className="wcf-attachment__description">
 				<strong>
-					<a href={attributes.editLink} target="_blank">
+					<a href={editLink} target="_blank">
 						{attributes.title}
 					</a>
 				</strong>
