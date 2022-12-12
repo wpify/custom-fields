@@ -3,6 +3,7 @@
 namespace Wpify\CustomFields;
 
 use Wpify\CustomFields\Implementations\AbstractImplementation;
+use Wpify\CustomFields\Implementations\Comment;
 use Wpify\CustomFields\Implementations\GutenbergBlock;
 use Wpify\CustomFields\Implementations\Metabox;
 use Wpify\CustomFields\Implementations\Options;
@@ -13,6 +14,7 @@ use Wpify\CustomFields\Implementations\WooCommerceSettings;
 
 /**
  * Class CustomFields
+ *
  * @package CustomFields
  */
 final class CustomFields {
@@ -64,6 +66,18 @@ final class CustomFields {
 	 */
 	public function create_metabox( $args = array() ) {
 		$metabox            = new Metabox( $args, $this );
+		$this->registered[] = $metabox;
+
+		return $metabox;
+	}
+
+	/**
+	 * @param array $args
+	 *
+	 * @return Comment
+	 */
+	public function create_comment_metabox( $args = array() ) {
+		$metabox            = new Comment( $args, $this );
 		$this->registered[] = $metabox;
 
 		return $metabox;
