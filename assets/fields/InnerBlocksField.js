@@ -11,6 +11,7 @@ const InnerBlocksField = React.forwardRef((props, ref) => {
 		className,
 		allowed_blocks,
 		template,
+		template_lock,
 		orientation,
 	} = props;
 
@@ -25,6 +26,7 @@ const InnerBlocksField = React.forwardRef((props, ref) => {
 					allowedBlocks={allowed_blocks}
 					template={template}
 					orientation={orientation}
+					templateLock={template_lock}
 				/>
 			</div>
 			{description && (
