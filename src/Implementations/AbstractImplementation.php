@@ -347,6 +347,8 @@ abstract class AbstractImplementation {
 			case 'multi_group':
 			case 'multi_post':
 			case 'multi_select':
+	        case 'multi_checkbox':
+	        case 'multi_toggle':
 				return 'array';
 			case 'group':
 			case 'link':
