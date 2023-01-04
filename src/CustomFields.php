@@ -30,9 +30,6 @@ final class CustomFields {
 	/** @var Api */
 	private $api;
 
-	/** @var WPML */
-	private $wpml;
-
 	/** @var callable[] */
 	public $api_callbacks = array();
 
@@ -48,7 +45,6 @@ final class CustomFields {
 		$this->sanitizer = new Sanitizer();
 		$this->parser    = new Parser();
 		$this->api       = new Api( $this );
-		$this->wpml      = new WPML();
 	}
 
 	/**
