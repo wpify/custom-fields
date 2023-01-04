@@ -11,10 +11,10 @@ use Wpify\CustomFields\Implementations\ProductOptions;
 use Wpify\CustomFields\Implementations\Taxonomy;
 use Wpify\CustomFields\Implementations\User;
 use Wpify\CustomFields\Implementations\WooCommerceSettings;
+use Wpify\CustomFields\Integrations\WPML;
 
 /**
  * Class CustomFields
- *
  * @package CustomFields
  */
 final class CustomFields {
@@ -29,6 +29,9 @@ final class CustomFields {
 
 	/** @var Api */
 	private $api;
+
+	/** @var WPML */
+	private $wpml;
 
 	/** @var callable[] */
 	public $api_callbacks = array();
@@ -45,10 +48,11 @@ final class CustomFields {
 		$this->sanitizer = new Sanitizer();
 		$this->parser    = new Parser();
 		$this->api       = new Api( $this );
+		$this->wpml      = new WPML();
 	}
 
 	/**
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return Options
 	 */
@@ -60,7 +64,7 @@ final class CustomFields {
 	}
 
 	/**
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return Metabox
 	 */
@@ -72,7 +76,7 @@ final class CustomFields {
 	}
 
 	/**
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return Comment
 	 */
@@ -84,7 +88,7 @@ final class CustomFields {
 	}
 
 	/**
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return ProductOptions
 	 */
@@ -96,7 +100,7 @@ final class CustomFields {
 	}
 
 	/**
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return Taxonomy
 	 */
@@ -108,7 +112,7 @@ final class CustomFields {
 	}
 
 	/**
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return User
 	 */
@@ -120,7 +124,7 @@ final class CustomFields {
 	}
 
 	/**
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return WooCommerceSettings
 	 */
@@ -132,7 +136,7 @@ final class CustomFields {
 	}
 
 	/**
-	 * @param array $args
+	 * @param  array  $args
 	 *
 	 * @return GutenbergBlock
 	 */
