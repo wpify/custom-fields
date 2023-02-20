@@ -20,7 +20,11 @@ const InputField = React.forwardRef((props, ref) => {
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
 
 	const handleChange = (event) => {
-		setCurrentValue(event.target.value);
+		if (type === 'number') {
+			setCurrentValue(parseFloat(event.target.value));
+		} else {
+			setCurrentValue(event.target.value);
+		}
 	};
 
 	useEffect(() => {
