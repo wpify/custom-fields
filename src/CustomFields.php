@@ -10,6 +10,7 @@ use Wpify\CustomFields\Implementations\Options;
 use Wpify\CustomFields\Implementations\ProductOptions;
 use Wpify\CustomFields\Implementations\Taxonomy;
 use Wpify\CustomFields\Implementations\User;
+use Wpify\CustomFields\Implementations\WcMembershipPlanOptions;
 use Wpify\CustomFields\Implementations\WooCommerceSettings;
 use Wpify\CustomFields\Integrations\WPML;
 
@@ -48,7 +49,7 @@ final class CustomFields {
 	}
 
 	/**
-	 * @param  array  $args
+	 * @param array $args
 	 *
 	 * @return Options
 	 */
@@ -60,7 +61,7 @@ final class CustomFields {
 	}
 
 	/**
-	 * @param  array  $args
+	 * @param array $args
 	 *
 	 * @return Metabox
 	 */
@@ -72,7 +73,7 @@ final class CustomFields {
 	}
 
 	/**
-	 * @param  array  $args
+	 * @param array $args
 	 *
 	 * @return Comment
 	 */
@@ -84,7 +85,7 @@ final class CustomFields {
 	}
 
 	/**
-	 * @param  array  $args
+	 * @param array $args
 	 *
 	 * @return ProductOptions
 	 */
@@ -96,7 +97,19 @@ final class CustomFields {
 	}
 
 	/**
-	 * @param  array  $args
+	 * @param array $args
+	 *
+	 * @return WcMembershipPlanOptions
+	 */
+	public function create_membership_plan_options( $args = array() ) {
+		$membership_plan_options = new WcMembershipPlanOptions( $args, $this );
+		$this->registered[]      = $membership_plan_options;
+
+		return $membership_plan_options;
+	}
+
+	/**
+	 * @param array $args
 	 *
 	 * @return Taxonomy
 	 */
@@ -108,7 +121,7 @@ final class CustomFields {
 	}
 
 	/**
-	 * @param  array  $args
+	 * @param array $args
 	 *
 	 * @return User
 	 */
@@ -120,7 +133,7 @@ final class CustomFields {
 	}
 
 	/**
-	 * @param  array  $args
+	 * @param array $args
 	 *
 	 * @return WooCommerceSettings
 	 */
@@ -132,7 +145,7 @@ final class CustomFields {
 	}
 
 	/**
-	 * @param  array  $args
+	 * @param array $args
 	 *
 	 * @return GutenbergBlock
 	 */

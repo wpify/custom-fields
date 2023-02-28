@@ -12,6 +12,7 @@ At the moment, you can add custom fields to the following locations:
 * Taxonomy
 * Options page
 * WooCommerce product options
+* WooCommerce membership plan options
 * WooCommerce settings section
 * User options
 
@@ -325,6 +326,52 @@ The product options are stored as post meta, so you can read the data the same w
 
 ```php
 $some_custom_field_value = get_post_meta( $product_id, 'some_id_of_the_meta', true );
+```
+
+**Links**
+
+* `get_post_meta`: https://developer.wordpress.org/reference/functions/get_post_meta/
+
+## How to add custom fields to the membership plan options?
+
+![Membership plan options](docs/images/wcf-membership-plan-options.png)
+
+WooCommerce membership plan options works similarly to product options. You can define it as follows:
+
+```php
+wpify_custom_fields()->create_membership_plan_options( array(
+   'tab'          => array(
+      'id'       => 'general',
+      'label'    => null,
+      'priority' => 100,
+      'class'    => array(),
+   ),
+   'init_priority' => 10,
+   'display'       => function() {
+	  // Conditional display
+	  return true;
+   },
+   'items'         => array(),
+) );
+```
+
+**Arguments**
+
+* `tab`: An array with tab settings. If the tab ID doesn't exist, it will be created.
+	- `id`: ID of the tab.
+	- `label`: Label of the tab.
+	- `priority`: Priority of the tab.
+	- `class`: Classes for the tab. You can use any classes you want, but also some built-in: `hide_if_grouped`
+	  , `show_if_simple`, `show_if_variable`, `show_if_grouped`, `show_if_external`, `hide_if_external`
+	  , `hide_if_virtual`
+* `items`: array, required: List of the custom fields in the options.
+
+**Reading the custom fields**
+
+The membership plan options are stored as post meta, so you can read the data the same way as any other post meta:
+
+```php
+$some_custom_field_value = get_post_meta( $membership_plan_id, 'some_id_of_the_meta', true );
 ```
 
 **Links**
