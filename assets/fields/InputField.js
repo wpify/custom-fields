@@ -44,7 +44,7 @@ const InputField = React.forwardRef((props, ref) => {
 				value={currentValue}
 				onChange={handleChange}
 				aria-describedby={describedBy}
-				className={classnames(className, 'components-text-control__input')}
+				className={classnames(className)}
 				ref={ref}
 				{...custom_attributes}
 			/>

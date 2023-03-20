@@ -19,7 +19,6 @@ const MapyczField = (props) => {
 
 	useEffect(() => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
-			console.log(currentValue);
 			onChange(currentValue);
 		}
 	}, [onChange, value, currentValue]);

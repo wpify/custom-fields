@@ -320,6 +320,30 @@ wpify_custom_fields()->create_product_options( array(
 	  , `hide_if_virtual`
 * `items`: array, required: List of the custom fields in the options.
 
+## How to add custom fields to the product variations?
+
+![Product options](docs/images/wcf-product-variation-options.png)
+
+You can add custom fields to product variations as well. You can define it as follows:
+
+```php
+wpify_custom_fields()->create_product_options( array(
+   'after'          => 'pricing',
+   'init_priority' => 10,
+   'display'       => function() {
+	  // Conditional display
+	  return true;
+   },
+   'items'         => array(),
+) );
+```
+
+**Arguments**
+
+* `after`: Item, after which you want to place your custom fields. Possible options are: `pricing` _(default)_, `inventory`, `dimensions`, `download`, `attributes` _(after all fields)_.
+* `items`: array, required: List of the custom fields in the options.
+
+
 **Reading the custom fields**
 
 The product options are stored as post meta, so you can read the data the same way as any other post meta:
@@ -336,7 +360,7 @@ $some_custom_field_value = get_post_meta( $product_id, 'some_id_of_the_meta', tr
 
 ![Membership plan options](docs/images/wcf-membership-plan-options.png)
 
-WooCommerce membership plan options works similarly to product options. You can define it as follows:
+WooCommerce Membership plan options works similarly to product options. You can define it as follows:
 
 ```php
 wpify_custom_fields()->create_membership_plan_options( array(

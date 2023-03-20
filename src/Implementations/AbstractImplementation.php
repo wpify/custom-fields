@@ -123,7 +123,7 @@ abstract class AbstractImplementation {
 		do_action( 'wcf_before_fields', $data );
 		$script = 'try{window.wcf_data=(window.wcf_data||{});window.wcf_data.' . $hash . '=' . $json . ';}catch(e){console.error(e);}';
 		echo '<script type="text/javascript">' . $script . '</script>';
-		echo '<' . $tag . ' class="' . esc_attr( $class ) . '" data-hash="' . esc_attr( $hash ) . '"></' . $tag . '>';
+		echo '<' . $tag . ' class="' . esc_attr( $class ) . '" data-hash="' . esc_attr( $hash ) . '" data-loaded="false"></' . $tag . '>';
 		do_action( 'wcf_after_fields', $data );
 	}
 

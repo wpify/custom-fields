@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import Options from './Options';
 import ProductOptions from './ProductOptions';
+import ProductVariationOptions from './ProductVariationOptions';
 import AddTaxonomy from './AddTaxonomy';
 import EditTaxonomy from './EditTaxonomy';
 import Metabox from './Metabox';
@@ -42,6 +43,7 @@ const App = (props) => {
 		options_page: Options,
 		woocommerce_settings: Options,
 		product_options: ProductOptions,
+		product_variation_options: ProductVariationOptions,
 		add_taxonomy: AddTaxonomy,
 		edit_taxonomy: EditTaxonomy,
 		metabox: Metabox,

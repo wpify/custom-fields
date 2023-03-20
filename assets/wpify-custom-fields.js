@@ -8,14 +8,21 @@ import ReactDOM from 'react-dom';
 import { registerFieldTypes } from './helpers';
 import App from './components/App';
 
-window.addEventListener('load', () => {
-	registerFieldTypes();
-
-	document.querySelectorAll('.js-wcf[data-hash]').forEach((container) => {
+function loadCustomFields() {
+	document.querySelectorAll('.js-wcf[data-loaded=false]').forEach((container) => {
 		const hash = container.dataset.hash;
+
 		if (hash) {
 			const wcf = (window.wcf_data||{})[hash];
 			ReactDOM.render(<App wcf={wcf} />, container);
+			container.dataset.loaded = true;
 		}
 	});
+}
+
+window.addEventListener('load', () => {
+	registerFieldTypes();
+	loadCustomFields();
 });
+
+document.addEventListener('wcf_product_variation_loaded', loadCustomFields);

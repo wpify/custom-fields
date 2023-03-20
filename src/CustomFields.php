@@ -8,6 +8,7 @@ use Wpify\CustomFields\Implementations\GutenbergBlock;
 use Wpify\CustomFields\Implementations\Metabox;
 use Wpify\CustomFields\Implementations\Options;
 use Wpify\CustomFields\Implementations\ProductOptions;
+use Wpify\CustomFields\Implementations\ProductVariationOptions;
 use Wpify\CustomFields\Implementations\Taxonomy;
 use Wpify\CustomFields\Implementations\User;
 use Wpify\CustomFields\Implementations\WcMembershipPlanOptions;
@@ -94,6 +95,18 @@ final class CustomFields {
 		$this->registered[] = $product_options;
 
 		return $product_options;
+	}
+
+	/**
+	 * @param array $args
+	 *
+	 * @return ProductVariationOptions
+	 */
+	public function create_product_variation_options( $args = array() ) {
+		$product_variation_options    = new ProductVariationOptions( $args, $this );
+		$this->registered[] = $product_variation_options;
+
+		return $product_variation_options;
 	}
 
 	/**
