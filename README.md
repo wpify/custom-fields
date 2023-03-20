@@ -320,6 +320,19 @@ wpify_custom_fields()->create_product_options( array(
 	  , `hide_if_virtual`
 * `items`: array, required: List of the custom fields in the options.
 
+**Reading the custom fields**
+
+The product options are stored as post meta, so you can read the data the same way as any other post meta:
+
+```php
+$some_custom_field_value = get_post_meta( $product_id, 'some_id_of_the_meta', true );
+```
+
+**Links**
+
+* `get_post_meta`: https://developer.wordpress.org/reference/functions/get_post_meta/
+
+
 ## How to add custom fields to the product variations?
 
 ![Product options](docs/images/wcf-product-variation-options.png)
