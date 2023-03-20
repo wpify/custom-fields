@@ -340,7 +340,7 @@ $some_custom_field_value = get_post_meta( $product_id, 'some_id_of_the_meta', tr
 You can add custom fields to product variations as well. You can define it as follows:
 
 ```php
-wpify_custom_fields()->create_product_options( array(
+wpify_custom_fields()->create_product_variation_options( array(
    'after'          => 'pricing',
    'init_priority' => 10,
    'display'       => function() {
@@ -356,13 +356,12 @@ wpify_custom_fields()->create_product_options( array(
 * `after`: Item, after which you want to place your custom fields. Possible options are: `pricing` _(default)_, `inventory`, `dimensions`, `download`, `attributes` _(after all fields)_.
 * `items`: array, required: List of the custom fields in the options.
 
-
 **Reading the custom fields**
 
 The product options are stored as post meta, so you can read the data the same way as any other post meta:
 
 ```php
-$some_custom_field_value = get_post_meta( $product_id, 'some_id_of_the_meta', true );
+$some_custom_field_value = get_post_meta( $product_variation_id, 'some_id_of_the_meta', true );
 ```
 
 **Links**
