@@ -518,6 +518,44 @@ $some_custom_field_value = get_user_meta( $user_id, 'some_id_of_the_meta', true 
 
 * `get_user_meta`: https://developer.wordpress.org/reference/functions/get_user_meta/
 
+## How to add custom fields to comments?
+
+![Adding a metabox to the post](docs/images/wcf-comments-metabox.png)
+
+You can also easily add custom fields to comments:
+
+```php
+wpify_custom_fields()->create_comment_metabox( array(
+   'id'    => 'cool_comments_metabox',
+	'title' => __( 'Example metabox', '' ),
+	'items' => array(
+		array(
+			'type'  => 'text',
+			'id'    => 'test',
+			'label' => 'Test metafield'
+		),
+	),
+) );
+```
+
+**Arguments**
+
+See post metabox for available arguments.
+
+**Reading the custom fields**
+
+To read the data, you can use simply built-in functions:
+
+```php
+$some_custom_field_value = get_comment_meta( $post_id, 'some_id_of_the_meta', true );
+```
+
+**Links**
+
+* `add_meta_box`: https://developer.wordpress.org/reference/functions/add_meta_box/
+* `get_comment_meta`: https://developer.wordpress.org/reference/functions/get_comment_meta/
+
+
 # Custom fields definition
 
 In examples above, only one custom field were shown. But you can define more than just text fields. There are many field
@@ -950,3 +988,39 @@ This approach has some caveats:
 
 * You cannot define conditional fields in multi group field type. The new items will apply to all groups in multi group.
 * If you define conditions in gutenberg blocks, you need to define all attributes, or it won't be saved.
+
+# Advanced usage - custom getters and setters
+
+If you want to retrieve or save the field value from/to a non-default location, you can easily override the getter and setter with `callback_get` and `callback_set` arguments.
+
+**Arguments**
+
+* `callback_get`: callback, that will receive field definition `$item` and object id `$id`, and should return the field value
+* `callback_set`: callback, that will receive field definition `$item`, object id `$id` and field value `$value`
+ 
+The following example demonstrates saving and retrieving post meta field with `get_option` and `update_option` functions. 
+
+
+```php
+wpify_custom_fields()->create_metabox( array(
+	'title'      => 'Details',
+	'post_types' => array( 'post' ),
+	'priority' => 'high',
+	'items'      => array(
+		array(
+			'type'  => 'text',
+			'title' => 'Some field',
+			'id'    => 'some_field',
+			'callback_get' => function($item, $id) {
+				// Retrieve the value from wp_options. 
+				return get_option($item['id'],'');
+			},
+			'callback_set' => function($item, $id, $value) {
+				// Save the value to wp_options.
+				update_option($item['id'],$value);
+			},
+			),
+		),
+	) 
+);
+```
