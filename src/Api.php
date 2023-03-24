@@ -15,6 +15,7 @@ final class Api extends WP_REST_Controller {
 	 */
 	private $wcf;
 
+	private $rest_url;
 	/**
 	 * Api constructor.
 	 */
@@ -70,11 +71,10 @@ final class Api extends WP_REST_Controller {
 	 * @return string
 	 */
 	public function get_rest_url(): string {
-		static $rest_url;
-		if (!$rest_url) {
-			$rest_url = rest_url( $this->get_namespace() );
+		if (!$this->rest_url) {
+			$this->rest_urll = rest_url( $this->get_namespace() );
 		}
-		return $rest_url;
+		return $this->rest_url;
 	}
 
 	/**
