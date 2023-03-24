@@ -35,6 +35,7 @@ abstract class AbstractImplementation {
 	/** @var string */
 	protected $script_handle = '';
 
+	private $build_url;
 	public function __construct( array $args, CustomFields $wcf ) {
 		$this->wcf               = $wcf;
 		$this->parser            = $wcf->get_parser();
@@ -85,7 +86,10 @@ abstract class AbstractImplementation {
 	}
 
 	public function get_build_url() {
-		return $this->wcf->get_assets()->path_to_url( $this->wcf->get_assets()->get_assets_path() );
+		if (!$this->build_url) {
+			$this->build_url = $this->wcf->get_assets()->path_to_url( $this->wcf->get_assets()->get_assets_path() );
+		}
+		return $this->build_url;
 	}
 
 	/**
