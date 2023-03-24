@@ -85,7 +85,11 @@ abstract class AbstractImplementation {
 	}
 
 	public function get_build_url() {
-		return $this->wcf->get_assets()->path_to_url( $this->wcf->get_assets()->get_assets_path() );
+		static $build_url;
+		if (!$build_url) {
+			$build_url = $this->wcf->get_assets()->path_to_url( $this->wcf->get_assets()->get_assets_path() );
+		}
+		return $build_url;
 	}
 
 	/**

@@ -70,7 +70,11 @@ final class Api extends WP_REST_Controller {
 	 * @return string
 	 */
 	public function get_rest_url(): string {
-		return rest_url( $this->get_namespace() );
+		static $rest_url;
+		if (!$rest_url) {
+			$rest_url = rest_url( $this->get_namespace() );
+		}
+		return $rest_url;
 	}
 
 	/**

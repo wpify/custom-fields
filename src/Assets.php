@@ -16,6 +16,7 @@ final class Assets {
 	/** @var array */
 	private $manifest = array();
 
+	private $found_files = [];
 	private $code_editor_settings = array();
 
 	/**
@@ -79,6 +80,9 @@ final class Assets {
 	 * @return mixed
 	 */
 	private function get_file( $file ) {
+		if (array_key_exists($file, $this->found_files)) {
+			return $this->found_files[$file];
+		}
 		$asset_path = trailingslashit( $this->assets_path ) . preg_replace( "/\.\S+$/", '.asset.php', $file );
 		$path       = trailingslashit( $this->assets_path ) . $file;
 		$pathinfo   = pathinfo( $path );
@@ -94,6 +98,7 @@ final class Assets {
 		$manifest['src']    = $this->path_to_url( $path );
 		$manifest['handle'] = 'wcf-' . $pathinfo['filename'] . '-' . $pathinfo['extension'];
 
+		$this->found_files[$file] = $manifest;
 		return $manifest;
 	}
 
