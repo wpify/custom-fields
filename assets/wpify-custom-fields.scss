@@ -465,3 +465,16 @@
 .wcf-metabox-row {
   margin-bottom: 1rem;
 }
+
+.wcf-block pre.CodeMirror-line {
+	 background: unset;
+	 font-family: inherit;
+	 margin-bottom: unset;
+	 padding: unset;
+	 overflow: unset;
+	 max-width: unset;
+}
+
+.wcf-block .CodeMirror-scroll {
+	border: 1px solid rgba(0,0,0,0.15);
+}
