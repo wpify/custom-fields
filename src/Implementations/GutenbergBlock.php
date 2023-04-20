@@ -186,8 +186,10 @@ final class GutenbergBlock extends AbstractImplementation {
 	 */
 	public function get_editor_script() {
 		if ( empty( $this->editor_script ) ) {
-			wp_enqueue_editor();
-			wp_enqueue_code_editor( array( 'type' => 'text/html' ) );
+			if ( is_admin() ) {
+				wp_enqueue_editor();
+				wp_enqueue_code_editor( array( 'type' => 'text/html' ) );
+			}
 
 			return $this->wcf->get_assets()->register_script(
 				'wpify-custom-blocks.js',
