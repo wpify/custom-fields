@@ -23,26 +23,26 @@
     "cover 97%"
   ],
   "dependencies": {
-    "@dnd-kit/core": "^6.0.5",
-    "@dnd-kit/sortable": "^7.0.1",
-    "@dnd-kit/utilities": "^3.2.0",
-    "classnames": "^2.3.1",
-    "intl-tel-input": "^17.0.18",
+    "@dnd-kit/core": "^6.0.8",
+    "@dnd-kit/sortable": "^7.0.2",
+    "@dnd-kit/utilities": "^3.2.1",
+    "classnames": "^2.3.2",
+    "intl-tel-input": "^18.1.5",
     "md5": "^2.3.0",
     "react-color": "^2.19.3",
-    "react-select": "^5.4.0",
-    "swr": "^1.3.0",
-    "uuid": "^8.3.2",
+    "react-select": "^5.7.3",
+    "swr": "^2.1.5",
+    "uuid": "^9.0.0",
     "wpify-mapy-cz": "^1.1.4"
   },
   "devDependencies": {
-    "@wordpress/icons": "^8.1.0",
-    "@wordpress/scripts": "^23.7.2",
-    "browser-sync": "^2.27.10",
+    "@wordpress/icons": "^9.23.0",
+    "@wordpress/scripts": "^26.3.0",
+    "browser-sync": "^2.29.1",
     "browser-sync-webpack-plugin": "^2.3.0",
     "node-sass-glob-importer": "^5.3.2"
   },
   "peerDependencies": {
-    "@wordpress/hooks": "^3.15.0"
+    "@wordpress/hooks": "^3.32.0"
   }
 }

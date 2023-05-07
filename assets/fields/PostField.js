@@ -87,12 +87,12 @@ const PostField = (props) => {
 	return (
 		<ErrorBoundary>
 			{group_level === 0 && (
-				<input type="hidden" name={id} value={isMulti
+				<input type="hidden" name={appContext.hooks.name(id)} value={isMulti
 					? JSON.stringify(Array.isArray(currentValue) ? currentValue.filter(Boolean) : [])
 					: currentValue}/>
 			)}
 			<SelectControl
-				id={id}
+				id={appContext.hooks.id(id)}
 				onChange={handleAdd}
 				required={required}
 				isMulti={isMulti}
@@ -105,7 +105,6 @@ const PostField = (props) => {
 				otherArgs={otherArgs}
 				async={async}
 				asyncParams={async_params}
-
 			/>
 
 			{description && (

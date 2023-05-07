@@ -13,6 +13,7 @@ const CodeField = React.forwardRef((props, ref) => {
 		className,
 		group_level = 0,
 		mode = null,
+		appContext,
 	} = props;
 
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
@@ -50,8 +51,8 @@ const CodeField = React.forwardRef((props, ref) => {
 		<React.Fragment>
 			<textarea
 				ref={textarea}
-				id={htmlId(id)}
-				name={group_level === 0 && id}
+				id={appContext.hooks.id(htmlId(id))}
+				name={group_level === 0 ? appContext.hooks.name(id) : null}
 				aria-describedby={description && describedBy}
 				className={classnames('large-text', className)}
 				rows={10}

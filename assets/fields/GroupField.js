@@ -40,7 +40,7 @@ const GroupField = (props) => {
 				<RootWrapper group_level={group_level + 1}>
 					{group_level === 0 && (
 						<RowWrapper item={{ title: 'hidden', type: 'hidden' }} withoutLabel={true} style={{ display: 'none' }}>
-							<input type="hidden" id={id} name={id} value={JSON.stringify(currentValue)}/>
+							<input type="hidden" id={appContext.hooks.id(id)} name={appContext.hooks.name(id)} value={JSON.stringify(currentValue)} />
 						</RowWrapper>
 					)}
 					{items.map((item) => (

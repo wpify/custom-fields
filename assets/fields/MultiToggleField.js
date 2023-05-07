@@ -14,6 +14,7 @@ const MultiToggleField = (props) => {
 		className,
 		description,
 		options = [],
+		appContext,
 	} = props;
 
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
@@ -40,7 +41,7 @@ const MultiToggleField = (props) => {
 	return (
 		<React.Fragment>
 			{group_level === 0 && (
-				<input type="hidden" name={id} value={JSON.stringify(currentValue)}/>
+				<input type="hidden" name={appContext.hooks.name(id)} value={JSON.stringify(currentValue)}/>
 			)}
 			{description && (
 				<ErrorBoundary>
@@ -50,7 +51,7 @@ const MultiToggleField = (props) => {
 			{Array.isArray(options) && options.map(option => (
 				<ErrorBoundary key={id + '_' + option.value}>
 					<ToggleControl
-						id={htmlId(id + '_' + option.value)}
+						id={appContext.hooks.id(htmlId(id + '_' + option.value))}
 						checked={currentValue.includes(option.value)}
 						onChange={handleChange(option.value)}
 						label={<span dangerouslySetInnerHTML={{ __html: option.label }}/>}

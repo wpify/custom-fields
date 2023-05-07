@@ -12,6 +12,7 @@ const TextareaField = (props) => {
 		custom_attributes,
 		className,
 		group_level = 0,
+		appContext,
 	} = props;
 
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
@@ -31,8 +32,8 @@ const TextareaField = (props) => {
 	return (
 		<React.Fragment>
 			<textarea
-				id={htmlId(id)}
-				name={group_level === 0 ? id : null}
+				id={appContext.hooks.id(htmlId(id))}
+				name={group_level === 0 ? appContext.hooks.name(id) : null}
 				onChange={handleChange}
 				aria-describedby={description && describedBy}
 				className={classnames('large-text', className)}

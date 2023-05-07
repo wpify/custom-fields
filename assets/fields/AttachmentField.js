@@ -16,6 +16,7 @@ const AttachmentField = (props) => {
 		attachment_type,
 		onChange,
 		description,
+		appContext,
 	} = props;
 
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
@@ -71,7 +72,7 @@ const AttachmentField = (props) => {
 	return (
 		<div className={classnames(className)}>
 			{group_level === 0 && (
-				<input type="hidden" name={id} value={JSON.stringify(returnValue)}/>
+				<input type="hidden" name={appContext.hooks.name(id)} value={JSON.stringify(returnValue)}/>
 			)}
 			{isMulti ? (
 				<div className="wcf-media-list">

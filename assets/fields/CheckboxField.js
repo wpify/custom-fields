@@ -12,7 +12,8 @@ const CheckboxField = React.forwardRef((props, ref) => {
 		group_level = 0,
 		custom_attributes = {},
 		onChange,
-		className
+		className,
+		appContext,
 	} = props;
 
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
@@ -30,12 +31,12 @@ const CheckboxField = React.forwardRef((props, ref) => {
 	return (
 		<label htmlFor={htmlId(id)} className={classnames(className)}>
 			{group_level === 0 && (
-				<input type="hidden" name={id} value={currentValue ? 1 : 0}/>
+				<input type="hidden" name={appContext.hooks.name(id)} value={currentValue ? 1 : 0}/>
 			)}
 			<input
 				type="checkbox"
 				checked={currentValue}
-				id={htmlId(id)}
+				id={appContext.hooks.id(htmlId(id))}
 				onChange={handleChange}
 				ref={ref}
 				{...custom_attributes}

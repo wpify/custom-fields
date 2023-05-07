@@ -30,12 +30,12 @@ const SelectField = (props) => {
 	return (
 		<ErrorBoundary>
 			{group_level === 0 && (
-				<input type="hidden" name={id} value={isMulti
+				<input type="hidden" name={appContext.hooks.name(id)} value={isMulti
 					? JSON.stringify(Array.isArray(currentValue) ? currentValue.filter(Boolean) : [])
 					: currentValue}/>
 			)}
 			<SelectControl
-				id={id}
+				id={appContext.hooks.id(id)}
 				onChange={setCurrentValue}
 				required={required}
 				isMulti={isMulti}

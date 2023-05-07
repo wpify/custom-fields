@@ -15,6 +15,7 @@ const ToggleField = (props) => {
 		className,
 		description,
 		disabled = false,
+		appContext,
 	} = props;
 
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
@@ -34,9 +35,9 @@ const ToggleField = (props) => {
 	const control = (
 		<ErrorBoundary>
 			<ToggleControl
-				id={htmlId(id)}
+				id={appContext.hooks.id(htmlId(id))}
 				checked={currentValue}
-				name={group_level === 0 && id}
+				name={group_level === 0 ? appContext.hooks.name(id) : null}
 				onChange={handleChange}
 				label={<span dangerouslySetInnerHTML={{ __html: label }}/>}
 				className={classnames(className)}

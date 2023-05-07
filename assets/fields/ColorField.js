@@ -15,6 +15,7 @@ const ColorField = (props) => {
 		custom_attributes = {},
 		className,
 		group_level = 0,
+		appContext,
 	} = props;
 
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
@@ -39,12 +40,12 @@ const ColorField = (props) => {
 	return (
 		<React.Fragment>
 			{group_level === 0 && (
-				<input type="hidden" name={id} value={currentValue}/>
+				<input type="hidden" name={appContext.hooks.name(id)} value={currentValue}/>
 			)}
 			<span>
 				<ErrorBoundary>
 					<Button
-						id={htmlId(id)}
+						id={appContext.hooks.id(htmlId(id))}
 						style={{
 							backgroundColor: currentValue,
 							color: invertColor(currentValue, true),

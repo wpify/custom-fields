@@ -8,14 +8,29 @@ import ReactDOM from 'react-dom';
 import { registerFieldTypes } from './helpers';
 import App from './components/App';
 
-function loadCustomFields() {
+function loadCustomFields (event) {
 	document.querySelectorAll('.js-wcf[data-loaded=false]').forEach((container) => {
 		const hash = container.dataset.hash;
 
 		if (hash) {
-			const wcf = (window.wcf_data||{})[hash];
-			ReactDOM.render(<App wcf={wcf} />, container);
-			container.dataset.loaded = true;
+			const wcf = (window.wcf_data || {})[hash];
+
+			if (wcf) {
+				if (event?.detail?.loop !== undefined) {
+					wcf.hooks = {
+						name: (name) => name + '[' + event.detail.loop + ']',
+						id: (id) => id + '_' + event.detail.loop,
+					};
+				} else {
+					wcf.hooks = {
+						name: (name) => name,
+						id: (id) => id,
+					};
+				}
+
+				ReactDOM.render(<App wcf={wcf}/>, container);
+				container.dataset.loaded = true;
+			}
 		}
 	});
 }

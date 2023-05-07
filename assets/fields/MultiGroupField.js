@@ -106,7 +106,7 @@ const MultiGroupField = (props) => {
 	return (
 		<div className={classnames('wcf-multi-group', className)}>
 			{group_level === 0 && (
-				<input type="hidden" id={id} name={id} value={JSON.stringify(removeKeys(currentValue))}/>
+				<input type="hidden" id={appContext.hooks.id(id)} name={appContext.hooks.name(id)} value={JSON.stringify(removeKeys(currentValue))} />
 			)}
 			{description && (
 				<p>{description}</p>

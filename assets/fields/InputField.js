@@ -15,6 +15,7 @@ const InputField = React.forwardRef((props, ref) => {
 		group_level = 0,
 		className,
 		type,
+		appContext,
 	} = props;
 
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
@@ -39,8 +40,8 @@ const InputField = React.forwardRef((props, ref) => {
 		<React.Fragment>
 			<input
 				type={type}
-				id={htmlId(id)}
-				name={group_level === 0 ? id : null}
+				id={appContext.hooks.id(htmlId(id))}
+				name={group_level === 0 ? appContext.hooks.name(id) : null}
 				value={currentValue}
 				onChange={handleChange}
 				aria-describedby={describedBy}

@@ -20,6 +20,11 @@ Object.keys(window.wcf_blocks).forEach((blockName) => {
 		block.icon = <span dangerouslySetInnerHTML={{ __html: block.icon }}/>;
 	}
 
+	block.hooks = {
+		name: (name) => name,
+		id: (id) => id,
+	};
+
 	const save = () => <InnerBlocks.Content />;
 	const edit = (props) => <GutenbergBlock appContext={block} {...props} />;
 

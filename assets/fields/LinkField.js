@@ -107,7 +107,7 @@ const LinkField = React.forwardRef((props, ref) => {
 			<div className={classnames('wcf-link', className, { 'wcf-link--open': isOpen })} ref={div}>
 				<input
 					type="hidden"
-					name={group_level === 0 ? id : null}
+					name={group_level === 0 ? appContext.hooks.name(id) : null}
 					value={JSON.stringify(currentValue)}
 					ref={ref}
 					{...custom_attributes}

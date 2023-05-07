@@ -107,7 +107,7 @@ final class ProductVariationOptions extends AbstractPostImplementation {
 		$this->set_post( $variation->ID );
 		$this->render_fields();
 
-		echo '<script>document.dispatchEvent(new CustomEvent("wcf_product_variation_loaded",{ detail: { id: ' . $variation->ID . ' }}))</script>';
+		echo '<script>document.dispatchEvent(new CustomEvent(\'wcf_product_variation_loaded\',{detail:{id:' . $variation->ID . ',loop:' . $loop . '}}))</script>';
 	}
 
 	/**
@@ -149,12 +149,12 @@ final class ProductVariationOptions extends AbstractPostImplementation {
 		$this->set_post( $product_variation_id, );
 
 		foreach ( $this->items as $item ) {
-			if ( ! isset( $_POST[ $item['id'] ] ) ) {
+			if ( ! isset( $_POST[ $item['id'] ][ $loop ] ) ) {
 				continue;
 			}
 
 			$sanitizer = $this->sanitizer->get_sanitizer( $item );
-			$value     = $sanitizer( wp_unslash( $_POST[ $item['id'] ] ) );
+			$value     = $sanitizer( wp_unslash( $_POST[ $item['id'] ][ $loop ] ) );
 
 			$this->set_field( $item['id'], $value, $item );
 		}

@@ -4,7 +4,7 @@ import { load } from 'wpify-mapy-cz';
 import { __, sprintf } from '@wordpress/i18n';
 
 const MapyczField = (props) => {
-	const { id, className, group_level = 0, value = {}, onChange } = props;
+	const { id, className, group_level = 0, value = {}, onChange, appContext } = props;
 	const [currentValue, setCurrentValue] = useState(value);
 	const suggestref = useRef();
 	const ref = useRef();
@@ -91,11 +91,11 @@ const MapyczField = (props) => {
 	return (
 		<React.Fragment>
 			{group_level === 0 && ( // We need to have the input with the name only if not in group
-				<input type="hidden" name={id} value={JSON.stringify(currentValue)}/>
+				<input type="hidden" name={appContext.hooks.name(id)} value={JSON.stringify(currentValue)}/>
 			)}
 			<div style={{ marginBottom: '1rem' }}>
 				<input
-					id={id}
+					id={appContext.hooks.id(id)}
 					type="text"
 					ref={suggestref}
 					className={classnames('regular-text', className)}

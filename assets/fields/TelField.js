@@ -15,6 +15,7 @@ const TelField = (props) => {
 		custom_attributes = {},
 		group_level = 0,
 		className,
+		appContext,
 	} = props;
 
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
@@ -44,8 +45,8 @@ const TelField = (props) => {
 	return (
 		<React.Fragment>
 			<input
-				id={htmlId(id)}
-				name={group_level === 0 ? id : null}
+				id={appContext.hooks.id(htmlId(id))}
+				name={group_level === 0 ? appContext.hooks.name(id) : null}
 				value={currentValue}
 				aria-describedby={describedBy}
 				className={classnames(className, 'regular-text components-text-control__input')}
