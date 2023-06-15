@@ -101,6 +101,7 @@ final class Options extends AbstractImplementation {
 			add_action( 'user_admin_menu', array( $this, 'register' ), $args['priority'] );
 		} elseif ( $this->type === 'network' ) {
 			add_action( 'network_admin_menu', array( $this, 'register' ), $args['priority'] );
+			add_action( 'network_admin_edit_wcf-save-network-options', array( $this, 'save_network_options' ) );
 		} else {
 			add_action( 'admin_menu', array( $this, 'register' ), $args['priority'] );
 		}
@@ -138,6 +139,9 @@ final class Options extends AbstractImplementation {
 					array( $this, 'render' ),
 					$this->position
 			);
+		}
+		if ( 'network' === $this->type ) {
+			$this->hook_suffix = $this->hook_suffix . '-network';
 		}
 	}
 
@@ -221,7 +225,11 @@ final class Options extends AbstractImplementation {
 	 * @return false|mixed|void
 	 */
 	public function get_field( $name, $item ) {
-		return get_option( $name );
+		if ( 'network' === $this->type ) {
+			return get_network_option( get_current_network_id(), $name);
+		} else {
+			return get_option( $name );
+		}
 	}
 
 	/**
@@ -231,11 +239,15 @@ final class Options extends AbstractImplementation {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
+		$action = 'options.php';
+		if ( 'network' === $this->type ) {
+			$action = add_query_arg( 'action', 'wcf-save-network-options', 'edit.php' );
+		}
 		?>
 		<div class="wrap">
 			<h1><?php echo $this->page_title; ?></h1>
 			<?php // phpcs:ignore ?>
-			<form method="post" name="form" action="options.php">
+			<form method="post" name="form" action="<?php echo $action; ?>">
 				<?php
 				settings_fields( $this->menu_slug );
 				do_settings_sections( $this->menu_slug );
@@ -253,7 +265,11 @@ final class Options extends AbstractImplementation {
 	 * @return bool
 	 */
 	public function set_field( $name, $value, $item ) {
-		return update_option( $name, $value );
+		if ( 'network' === $this->type ) {
+			return update_network_option(get_current_network_id(),$name, $value );
+		} else {
+			return update_option( $name, $value );
+		}
 	}
 
 	/**
@@ -261,5 +277,20 @@ final class Options extends AbstractImplementation {
 	 */
 	public function render_section() {
 		$this->render_fields();
+	}
+
+	/**
+	 * Save network options
+	 *
+	 * @return void
+	 */
+	public function save_network_options(  ) {
+		foreach ( $this->get_items() as $item ) {
+			if (!empty($_POST[$item['id']])) {
+				$this->set_field( $item['id'], json_decode(wp_unslash($_POST[$item['id']]), ARRAY_A), $item );
+			}
+		}
+		wp_safe_redirect( wp_get_referer() );
+		exit();
 	}
 }
