@@ -34,6 +34,8 @@ final class SiteOptions extends AbstractImplementation {
 	/** @var callable */
 	private $display;
 
+	private $blog_id;
+
 	/**
 	 * Options constructor.
 	 *
@@ -81,6 +83,7 @@ final class SiteOptions extends AbstractImplementation {
 		add_action( 'network_admin_menu', [ $this, 'register_settings_page' ] );
 		add_action( 'admin_init', array( $this, 'register_settings' ), $args['init_priority'] );
 		add_action( 'network_admin_edit_wcf-save-site-options', [ $this, 'save_site_options' ] );
+		$this->blog_id = empty( $_REQUEST['id'] ) ? 0 : absint( $_REQUEST['id'] );
 	}
 
 	/**
@@ -138,14 +141,15 @@ final class SiteOptions extends AbstractImplementation {
 	 * @return void
 	 */
 	public function register_settings_page() {
-		add_submenu_page( null, $this->menu_title, $this->menu_title, $this->capability, $this->menu_slug, [ $this, 'render_section' ] );
+		$this->hook_suffix = add_submenu_page( null, $this->menu_title, $this->menu_title, $this->capability, $this->menu_slug, [ $this, 'render' ] );
+		$this->hook_suffix = $this->hook_suffix . '-network';
 	}
 
 	/**
 	 * @return void
 	 */
 	public function set_wcf_shown( WP_Screen $current_screen ) {
-		$this->wcf_shown = ( $this->hook_suffix === $current_screen->base );
+		$this->wcf_shown = $this->hook_suffix === $current_screen->base;
 	}
 
 	/**
@@ -164,19 +168,6 @@ final class SiteOptions extends AbstractImplementation {
 			array( $this, 'render_section' ),
 			$this->menu_slug
 		);
-
-		foreach ( $this->get_items() as $item ) {
-			register_setting(
-				$this->menu_slug,
-				$item['id'],
-				array(
-					'type'              => $this->get_item_type( $item ),
-					'description'       => $item['title'],
-					'default'           => $item['default'] ?? null,
-					'sanitize_callback' => $this->sanitizer->get_sanitizer( $item ),
-				)
-			);
-		}
 	}
 
 	public function get_items() {
@@ -213,7 +204,7 @@ final class SiteOptions extends AbstractImplementation {
 	 * @return false|mixed|void
 	 */
 	public function get_field( $name, $item ) {
-		return get_site_option( $name, );
+		return get_blog_option( $this->blog_id, $name );
 	}
 
 	/**
@@ -223,15 +214,30 @@ final class SiteOptions extends AbstractImplementation {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
+		$id = absint( $_REQUEST[ 'id' ] );
+		$site = get_site( $id );
 		$action = add_query_arg( 'action', 'wcf-save-site-options', 'edit.php' );
 		?>
 		<div class="wrap">
-			<h1><?php
-				echo $this->page_title; ?></h1>
+			<h1 id="edit-site">Edit Site: <?php echo $site->blogname ?></h1>
+			<p class="edit-site-actions">
+				<a href="<?php echo esc_url( get_home_url( $id, '/' ) ) ?>">Visit</a> | <a href="<?php echo esc_url( get_admin_url( $id ) ) ?>">Dashboard</a>
+			</p>
+			<?php
+			// navigation tabs
+			network_edit_site_nav(
+				array(
+					'blog_id'  => $id,
+					'selected' => $this->menu_slug
+				)
+			);
+			?>
+			<h2><?php
+				echo $this->page_title; ?></h2>
 			<?php
 			// phpcs:ignore ?>
-			<form method="post" name="form" action="<?php
-			echo $action; ?>">
+			<form method="post" name="form" action="<?php echo $action; ?>">
+				<input type="hidden" name="id" value="<?php echo $id ?>" />
 				<?php
 				settings_fields( $this->menu_slug );
 				do_settings_sections( $this->menu_slug );
@@ -249,7 +255,7 @@ final class SiteOptions extends AbstractImplementation {
 	 * @return bool
 	 */
 	public function set_field( $name, $value, $item ) {
-		return update_site_option( $name, $value );
+		return update_blog_option( $this->blog_id, $name, $value );
 	}
 
 	/**
