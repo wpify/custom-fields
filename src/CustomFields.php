@@ -9,6 +9,7 @@ use Wpify\CustomFields\Implementations\Metabox;
 use Wpify\CustomFields\Implementations\Options;
 use Wpify\CustomFields\Implementations\ProductOptions;
 use Wpify\CustomFields\Implementations\ProductVariationOptions;
+use Wpify\CustomFields\Implementations\SiteOptions;
 use Wpify\CustomFields\Implementations\Taxonomy;
 use Wpify\CustomFields\Implementations\User;
 use Wpify\CustomFields\Implementations\WcMembershipPlanOptions;
@@ -56,6 +57,18 @@ final class CustomFields {
 	 */
 	public function create_options_page( $args = array() ) {
 		$options            = new Options( $args, $this );
+		$this->registered[] = $options;
+
+		return $options;
+	}
+
+	/**
+	 * @param array $args
+	 *
+	 * @return Options
+	 */
+	public function create_site_options( $args = array() ) {
+		$options            = new SiteOptions( $args, $this );
 		$this->registered[] = $options;
 
 		return $options;
