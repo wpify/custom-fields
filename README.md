@@ -749,6 +749,7 @@ As you can see, you can add a new group with any fields inside it, move the grou
 * `min`: int, minimum number of items.
 * `max`: int, maximum number of items.
 * `disable_buttons`: array, buttons that are disabled for multigroup (`add`|`delete`|`duplicate`|`move`).
+* `buttons`: array, custom label for buttons; button type as a key (`add`|`delete`|`duplicate`|`move`) and custom text as a value.
 * `group_title`: string, field ID inside the group, that will be used for group title.
 
 ## HTML field type `html`
