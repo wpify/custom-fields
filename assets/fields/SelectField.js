@@ -21,6 +21,31 @@ const SelectField = (props) => {
 
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
 
+	function normalizeOptions(options) {
+		if (Object(options) === options) {
+			return Object.keys(options).map(key => ({
+				value: String(key),
+				label: options[key],
+			}));
+		} else if (Array.isArray(options)) {
+			return options.map(option => {
+				if (Object(option) === option) {
+					return {
+						value: String(option.value),
+						label: option.label,
+					};
+				} else {
+					return {
+						value: String(option),
+						label: option,
+					};
+				}
+			});
+		}
+
+		return [];
+	}
+
 	useEffect(() => {
 		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
 			onChange(currentValue);
@@ -42,7 +67,7 @@ const SelectField = (props) => {
 				className={className}
 				api={appContext.api}
 				value={currentValue}
-				defaultOptions={options}
+				defaultOptions={normalizeOptions(options)}
 				listId={list_id}
 				async={async}
 				asyncParams={async_params}

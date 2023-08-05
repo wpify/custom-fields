@@ -824,9 +824,48 @@ Allows selecting posts from a particular post type.
 The select field can accept options asynchronously from API (recommended) or inline from `option` attribute. Each option must be an associative array with `label` and `value` keys.
 
 **Additional attributes**
-* `options` List of options or callback that return list of options with keys `value` and `label`.
+* `options` List of options or callback that return list of options with keys `value` and `label`. Alternatively, you can use an associative array with value as key and label as value.
 * `async` If true, the options list will be loaded asynchronously.
 * array `async_params` The additional GET params to the async request.
+
+**Example**
+
+```php
+$field = array(
+	'id'      => 'some_id_of_field',
+	'type'    => 'select',
+	'label'   => __( 'Example select', 'your_plugin' ),
+	'options' => array(
+		3 => 'Test 3',
+		2 => 'Test 2',
+		1 => 'Test 1',
+		0 => 'Test 0',
+	),
+);
+
+// OR
+
+$field = array(
+	'id'      => 'some_id_of_field',
+	'type'    => 'select',
+	'label'   => __( 'Example select', 'your_plugin' ),
+	'options' => array(
+		array( 'value' => 3, 'label' => 'Test 3' ),
+		array( 'value' => 2, 'label' => 'Test 2' ),
+		array( 'value' => 1, 'label' => 'Test 1' ),
+		array( 'value' => 0, 'label' => 'Test 0' ),
+	),
+);
+
+// OR
+
+$field = array(
+	'id'      => 'some_id_of_field',
+	'type'    => 'select',
+	'label'   => __( 'Example select', 'your_plugin' ),
+	'options' => 'callback_that_returns_options_in_shape_as_above',
+);
+```
 
 ## Phone number field type `tel`
 

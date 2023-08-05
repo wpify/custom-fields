@@ -5,10 +5,7 @@
   "scripts": {
     "start": "wp-scripts start",
     "build": "wp-scripts build",
-    "packages-update": "wp-scripts packages-update",
-    "ddevcerts": "docker cp ddev-router:/etc/nginx/certs .ssl",
-    "prestart": "npm run ddevcerts",
-    "prehot": "npm run ddevcerts"
+    "packages-update": "wp-scripts packages-update"
   },
   "author": "WPify <info@wpify.io>",
   "license": "ISC",

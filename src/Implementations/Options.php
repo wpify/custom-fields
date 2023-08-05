@@ -52,29 +52,29 @@ final class Options extends AbstractImplementation {
 	/**
 	 * Options constructor.
 	 *
-	 * @param array        $args
+	 * @param array $args
 	 * @param CustomFields $wcf
 	 */
 	public function __construct( array $args, CustomFields $wcf ) {
 		parent::__construct( $args, $wcf );
 
 		$args = wp_parse_args( $args, array(
-				'type'          => 'normal',
-				'parent_slug'   => null,
-				'page_title'    => '',
-				'menu_title'    => '',
-				'capability'    => 'manage_options',
-				'menu_slug'     => null,
-				'section'       => null,
-				'page'          => null,
-				'icon_url'      => null,
-				'position'      => null,
-				'priority'      => 100,
-				'init_priority' => 10,
-				'items'         => array(),
-				'display'       => function () {
-					return true;
-				},
+			'type'          => 'normal',
+			'parent_slug'   => null,
+			'page_title'    => '',
+			'menu_title'    => '',
+			'capability'    => 'manage_options',
+			'menu_slug'     => null,
+			'section'       => null,
+			'page'          => null,
+			'icon_url'      => null,
+			'position'      => null,
+			'priority'      => 100,
+			'init_priority' => 10,
+			'items'         => array(),
+			'display'       => function () {
+				return true;
+			},
 		) );
 
 		$this->type        = in_array( $args['type'], array( 'normal', 'user', 'network' ) ) ? $args['type'] : 'normal';
@@ -121,23 +121,23 @@ final class Options extends AbstractImplementation {
 
 		if ( empty( $this->parent_slug ) ) {
 			$this->hook_suffix = add_menu_page(
-					$this->page_title,
-					$this->menu_title,
-					$this->capability,
-					$this->menu_slug,
-					array( $this, 'render' ),
-					$this->icon_url,
-					$this->position
+				$this->page_title,
+				$this->menu_title,
+				$this->capability,
+				$this->menu_slug,
+				array( $this, 'render' ),
+				$this->icon_url,
+				$this->position
 			);
 		} elseif ( ! empty( $this->menu_slug ) ) {
 			$this->hook_suffix = add_submenu_page(
-					$this->parent_slug,
-					$this->page_title,
-					$this->menu_title,
-					$this->capability,
-					$this->menu_slug,
-					array( $this, 'render' ),
-					$this->position
+				$this->parent_slug,
+				$this->page_title,
+				$this->menu_title,
+				$this->capability,
+				$this->menu_slug,
+				array( $this, 'render' ),
+				$this->position
 			);
 		}
 		if ( 'network' === $this->type ) {
@@ -163,41 +163,43 @@ final class Options extends AbstractImplementation {
 		}
 
 		add_settings_section(
-				'general',
-				null,
-				array( $this, 'render_section' ),
-				$this->menu_slug
+			'general',
+			null,
+			array( $this, 'render_section' ),
+			$this->menu_slug
 		);
 
 		foreach ( $this->get_items() as $item ) {
 			register_setting(
-					$this->menu_slug,
-					$item['id'],
-					array(
-							'type'              => $this->get_item_type( $item ),
-							'description'       => $item['title'],
-							'default'           => $item['default'] ?? null,
-							'sanitize_callback' => $this->sanitizer->get_sanitizer( $item ),
-					)
+				$this->menu_slug,
+				$item['id'],
+				array(
+					'type'              => $this->get_item_type( $item ),
+					'description'       => $item['title'],
+					'default'           => $item['default'] ?? null,
+					'sanitize_callback' => $this->sanitizer->get_sanitizer( $item ),
+				)
 			);
 		}
 	}
 
 	public function get_items() {
 		$items = apply_filters( 'wcf_options_items', $this->items, array(
-				'type'        => $this->type,
-				'parent_slug' => $this->parent_slug,
-				'page_title'  => $this->page_title,
-				'menu_title'  => $this->menu_title,
-				'capability'  => $this->capability,
-				'menu_slug'   => $this->menu_slug,
-				'section'     => $this->section,
-				'page'        => $this->page,
-				'icon_url'    => $this->icon_url,
-				'position'    => $this->position,
+			'type'        => $this->type,
+			'parent_slug' => $this->parent_slug,
+			'page_title'  => $this->page_title,
+			'menu_title'  => $this->menu_title,
+			'capability'  => $this->capability,
+			'menu_slug'   => $this->menu_slug,
+			'section'     => $this->section,
+			'page'        => $this->page,
+			'icon_url'    => $this->icon_url,
+			'position'    => $this->position,
 		) );
 
-		return $this->prepare_items( $items );
+		$items = $this->prepare_items( $items );
+
+		return $items;
 	}
 
 	/**
@@ -205,17 +207,17 @@ final class Options extends AbstractImplementation {
 	 */
 	public function get_data() {
 		return array(
-				'object_type' => 'options_page',
-				'type'        => $this->type,
-				'page_title'  => $this->page_title,
-				'menu_title'  => $this->menu_title,
-				'capability'  => $this->capability,
-				'parent_slug' => $this->parent_slug,
-				'menu_slug'   => $this->menu_slug,
-				'icon_url'    => $this->icon_url,
-				'position'    => $this->position,
-				'hook_suffix' => $this->hook_suffix,
-				'items'       => $this->get_items(),
+			'object_type' => 'options_page',
+			'type'        => $this->type,
+			'page_title'  => $this->page_title,
+			'menu_title'  => $this->menu_title,
+			'capability'  => $this->capability,
+			'parent_slug' => $this->parent_slug,
+			'menu_slug'   => $this->menu_slug,
+			'icon_url'    => $this->icon_url,
+			'position'    => $this->position,
+			'hook_suffix' => $this->hook_suffix,
+			'items'       => $this->get_items(),
 		);
 	}
 
@@ -226,7 +228,7 @@ final class Options extends AbstractImplementation {
 	 */
 	public function get_field( $name, $item ) {
 		if ( 'network' === $this->type ) {
-			return get_network_option( get_current_network_id(), $name);
+			return get_network_option( get_current_network_id(), $name );
 		} else {
 			return get_option( $name );
 		}
@@ -266,7 +268,7 @@ final class Options extends AbstractImplementation {
 	 */
 	public function set_field( $name, $value, $item ) {
 		if ( 'network' === $this->type ) {
-			return update_network_option(get_current_network_id(),$name, $value );
+			return update_network_option( get_current_network_id(), $name, $value );
 		} else {
 			return update_option( $name, $value );
 		}
@@ -284,10 +286,10 @@ final class Options extends AbstractImplementation {
 	 *
 	 * @return void
 	 */
-	public function save_network_options(  ) {
+	public function save_network_options() {
 		foreach ( $this->get_items() as $item ) {
-			if (!empty($_POST[$item['id']])) {
-				$this->set_field( $item['id'], json_decode(wp_unslash($_POST[$item['id']]), ARRAY_A), $item );
+			if ( ! empty( $_POST[ $item['id'] ] ) ) {
+				$this->set_field( $item['id'], json_decode( wp_unslash( $_POST[ $item['id'] ] ), ARRAY_A ), $item );
 			}
 		}
 		wp_safe_redirect( wp_get_referer() );

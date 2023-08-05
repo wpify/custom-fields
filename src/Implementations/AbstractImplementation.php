@@ -36,6 +36,7 @@ abstract class AbstractImplementation {
 	protected $script_handle = '';
 
 	private $build_url;
+
 	public function __construct( array $args, CustomFields $wcf ) {
 		$this->wcf               = $wcf;
 		$this->parser            = $wcf->get_parser();
@@ -86,9 +87,10 @@ abstract class AbstractImplementation {
 	}
 
 	public function get_build_url() {
-		if (!$this->build_url) {
+		if ( ! $this->build_url ) {
 			$this->build_url = $this->wcf->get_assets()->path_to_url( $this->wcf->get_assets()->get_assets_path() );
 		}
+
 		return $this->build_url;
 	}
 
@@ -304,7 +306,7 @@ abstract class AbstractImplementation {
 				) );
 			}
 
-			if ( empty( $value ) ) {
+			if ( ! isset( $value ) ) {
 				$definition['items'][ $key ]['value'] = '';
 			} else {
 				$definition['items'][ $key ]['value'] = $value;
@@ -351,8 +353,8 @@ abstract class AbstractImplementation {
 			case 'multi_group':
 			case 'multi_post':
 			case 'multi_select':
-	        case 'multi_checkbox':
-	        case 'multi_toggle':
+			case 'multi_checkbox':
+			case 'multi_toggle':
 				return 'array';
 			case 'group':
 			case 'link':

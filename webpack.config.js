@@ -82,20 +82,14 @@ module.exports = (env) => {
 			...defaultConfig.plugins,
 			env.WEBPACK_WATCH && config.browsersync && new BrowserSyncPlugin({
 				...config.browsersync,
-				...(
-					fs.existsSync(resolvePathsRecursively('.ssl/certs/master.key')) && fs.existsSync(resolvePathsRecursively('.ssl/certs/master.crt'))
-						? {
-							https: resolvePathsRecursively({
-								key: '.ssl/certs/master.key',
-								cert: '.ssl/certs/master.crt',
-							})
-						}
-						: {}
-				),
+				https: {
+					key: '../../../../.ddev/traefik/certs/customfields.key',
+					cert: '../../../../.ddev/traefik/certs/customfields.crt',
+				},
 			}, {
 				injectCss: true,
 				reload: true
 			}),
 		].filter(Boolean),
 	};
-}
+};
