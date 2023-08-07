@@ -22,7 +22,7 @@ const SelectField = (props) => {
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
 
 	function normalizeOptions(options) {
-		if (Object(options) === options) {
+		if (Object(options) === options && !Array.isArray(options)) {
 			return Object.keys(options).map(key => ({
 				value: String(key),
 				label: options[key],
