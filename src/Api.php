@@ -178,6 +178,7 @@ final class Api extends WP_REST_Controller {
 
 		if ( is_callable( $callback ) ) {
 			$items = $callback( $args );
+			$items = Helpers::normalize_options( $items );
 
 			if ( empty( $args['search'] )
 			     && ! empty( $args['value'] )
@@ -189,7 +190,10 @@ final class Api extends WP_REST_Controller {
 					return $option['value'];
 				}, $items );
 
-				foreach ( $callback( $default_args ) as $default_option ) {
+				$default_options = $callback( $default_args );
+				$default_options = Helpers::normalize_options( $default_options );
+
+				foreach ( $default_options as $default_option ) {
 					if ( ! in_array( $default_option['value'], $set_values ) ) {
 						$items[] = $default_option;
 					}

@@ -5,6 +5,7 @@ namespace Wpify\CustomFields\Implementations;
 use WP_Query;
 use WP_Screen;
 use Wpify\CustomFields\Api;
+use Wpify\CustomFields\Helpers;
 use Wpify\CustomFields\Parser;
 use Wpify\CustomFields\Sanitizer;
 use Wpify\CustomFields\CustomFields;
@@ -227,7 +228,7 @@ abstract class AbstractImplementation {
 					$items[ $key ]['options'] = $id;
 					$this->wcf->set_api_callback( $items[ $key ]['options'], $callback );
 				} elseif ( $fill_options ) {
-					$items[ $key ]['options'] = $callback( $item );
+					$items[ $key ]['options'] = Helpers::normalize_options( $callback( $item ) );
 				}
 			} elseif ( isset( $items[ $key ]['options'] ) && is_array( $items[ $key ]['options'] ) && ! empty( $item['async'] ) ) {
 				$items[ $key ]['options'] = $id;
@@ -242,6 +243,10 @@ abstract class AbstractImplementation {
 
 					return $item['options'];
 				} );
+			}
+
+			if ( ! empty( $item['options'] ) ) {
+				$items[ $key ]['options'] = Helpers::normalize_options( $items[ $key ]['options'] );
 			}
 
 			if ( ! empty( $item['items'] ) ) {

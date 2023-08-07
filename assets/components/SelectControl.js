@@ -44,7 +44,13 @@ const SelectControl = (props) => {
 
 	const [inputValue, setInputValue] = useState('');
 	const [optionsCache, setOptionsCache] = useState([]);
-	const [optionsArgs, setOptionsArgs] = useState({ options: defaultOptions, search: inputValue, listId, value, ...otherArgs });
+	const [optionsArgs, setOptionsArgs] = useState({
+		options: defaultOptions,
+		search: inputValue,
+		listId,
+		value,
+		...otherArgs
+	});
 	const response = useOptions(api, optionsArgs, asyncParams);
 	const { isLoading, data: options } = response;
 	const portal = useRef();
@@ -60,7 +66,9 @@ const SelectControl = (props) => {
 
 	useEffect(() => {
 		const cachedIds = optionsCache.map(o => String(o.value));
-		const notCached = Array.isArray(options) ? options.filter(o => !cachedIds.includes(String(o.value))) : [];
+		const notCached = Array.isArray(options)
+			? options.filter(o => !cachedIds.includes(String(o.value)))
+			: [];
 
 		if (notCached.length > 0) {
 			setOptionsCache((cached) => [
@@ -71,7 +79,13 @@ const SelectControl = (props) => {
 	}, [options]);
 
 	useEffect(() => {
-		setOptionsArgs({ options: defaultOptions, search: inputValue, value, listId, ...otherArgs });
+		setOptionsArgs({
+			options: defaultOptions,
+			search: inputValue,
+			value,
+			listId,
+			...otherArgs
+		});
 	}, [defaultOptions, inputValue, value, props, listId, otherArgs]);
 
 	const valueOptions = useMemo(() => {
