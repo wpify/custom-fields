@@ -96,7 +96,7 @@ final class Assets {
 
 		$manifest['path']   = $path;
 		$manifest['src']    = $this->path_to_url( $path );
-		$manifest['handle'] = 'wcf-' . $pathinfo['filename'] . '-' . $pathinfo['extension'];
+		$manifest['handle'] = 'wcf_' . $pathinfo['filename'] . '_' . $pathinfo['extension'] . '_' . md5( $path );
 
 		$this->found_files[$file] = $manifest;
 		return $manifest;
