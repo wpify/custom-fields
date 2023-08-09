@@ -28,9 +28,9 @@ Object.keys(window.wcf_blocks).forEach((blockName) => {
 	const save = () => <InnerBlocks.Content />;
 	const edit = (props) => <GutenbergBlock appContext={block} {...props} />;
 
-
 	registerBlockType(block.name, {
 		...block,
+		apiVersion: 3,
 		edit,
 		save,
 	});

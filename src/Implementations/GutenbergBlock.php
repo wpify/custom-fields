@@ -47,7 +47,7 @@ final class GutenbergBlock extends AbstractImplementation {
 			'keywords'         => array(), // array
 			'textdomain'       => 'wpify-custom-fields', // string
 			'styles'           => array(), // array
-			'supports'         => null, // array
+			'supports'         => array(), // array
 			'example'          => null, // array
 			'render_callback'  => array( $this, 'render_default' ), // callable
 			'uses_context'     => array(), // array

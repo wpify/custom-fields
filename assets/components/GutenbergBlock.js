@@ -9,6 +9,7 @@ import InspectorGutenbergBlock from './InspectorGutenbergBlock';
 import GutenbergRootWrapper from './GutenbergRootWrapper';
 import GutenbergBlockRow from './GutenbergBlockRow';
 import ScreenContext from './ScreenContext';
+import { useBlockProps } from '@wordpress/block-editor';
 
 const DESKTOP_VIEW = 'DESKTOP_VIEW';
 const EDIT_VIEW = 'EDIT_VIEW';
@@ -26,47 +27,51 @@ const GutenbergBlock = (props) => {
 	const showViewSwitch = appContext.items.filter(item => item.position !== 'inspector').length > 0;
 	const showInspector = appContext.items.filter(item => item.position === 'inspector').length > 0;
 
+	const blockProps = useBlockProps();
+
 	return (
-		<ScreenContext.Provider value={{ RootWrapper: GutenbergRootWrapper, RowWrapper: GutenbergBlockRow }}>
-			{showViewSwitch && (
-				<BlockControls>
-					<ToolbarGroup>
-						<ToolbarButton
-							isActive={view === DESKTOP_VIEW}
-							onClick={() => setView(DESKTOP_VIEW)}
-						>
-							<div className="wcf-block-toolbar-button">
-								<Icon icon={desktop}/>
-								{__('View', 'wpify-custom-fields')}
-							</div>
-						</ToolbarButton>
-						<ToolbarButton
-							isActive={view === EDIT_VIEW}
-							onClick={() => setView(EDIT_VIEW)}
-						>
-							<div className="wcf-block-toolbar-button">
-								<Icon icon={edit}/>
-								{__('Edit', 'wpify-custom-fields')}
-							</div>
-						</ToolbarButton>
-					</ToolbarGroup>
-				</BlockControls>
-			)}
-			{view === DESKTOP_VIEW && (
-				<ServerSideRender
-					className="wcf-server-side-rendered"
-					block={appContext.name}
-					attributes={{ ...attributes }}
-					httpMethod="POST"
-				/>
-			)}
-			{view === EDIT_VIEW && (
-				<EditGutenbergBlock {...props} />
-			)}
-			{showInspector && (
-				<InspectorGutenbergBlock {...props} />
-			)}
-		</ScreenContext.Provider>
+		<div {...blockProps}>
+			<ScreenContext.Provider value={{ RootWrapper: GutenbergRootWrapper, RowWrapper: GutenbergBlockRow }}>
+				{showViewSwitch && (
+					<BlockControls>
+						<ToolbarGroup>
+							<ToolbarButton
+								isActive={view === DESKTOP_VIEW}
+								onClick={() => setView(DESKTOP_VIEW)}
+							>
+								<div className="wcf-block-toolbar-button">
+									<Icon icon={desktop}/>
+									{__('View', 'wpify-custom-fields')}
+								</div>
+							</ToolbarButton>
+							<ToolbarButton
+								isActive={view === EDIT_VIEW}
+								onClick={() => setView(EDIT_VIEW)}
+							>
+								<div className="wcf-block-toolbar-button">
+									<Icon icon={edit}/>
+									{__('Edit', 'wpify-custom-fields')}
+								</div>
+							</ToolbarButton>
+						</ToolbarGroup>
+					</BlockControls>
+				)}
+				{view === DESKTOP_VIEW && (
+					<ServerSideRender
+						className="wcf-server-side-rendered"
+						block={appContext.name}
+						attributes={{ ...attributes }}
+						httpMethod="POST"
+					/>
+				)}
+				{view === EDIT_VIEW && (
+					<EditGutenbergBlock {...props} />
+				)}
+				{showInspector && (
+					<InspectorGutenbergBlock {...props} />
+				)}
+			</ScreenContext.Provider>
+		</div>
 	);
 };
 
