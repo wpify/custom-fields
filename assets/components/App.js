@@ -21,6 +21,28 @@ const App = (props) => {
 
 		return originalWcf;
 	}, [applyFilters, originalWcf, data]);
+	function findDuplicateIds(obj) {
+		const idSet = new Set();
+		const duplicateIds = new Set();
+
+		function traverseObject(obj) {
+			if (obj.id) {
+				if (idSet.has(obj.id)) {
+					duplicateIds.add(obj.id); // Add the duplicate ID to the set
+				}
+				idSet.add(obj.id);
+			}
+
+			if (obj.items && Array.isArray(obj.items)) {
+				for (const item of obj.items) {
+					traverseObject(item);
+				}
+			}
+		}
+
+		traverseObject(obj);
+		return Array.from(duplicateIds);
+	}
 
 	const handleChange = useCallback((item) => (value) => {
 		setData((data) => {
@@ -54,7 +76,7 @@ const App = (props) => {
 
 	return (
 		<ErrorBoundary>
-			<Component handleChange={handleChange} appContext={wcf} />
+			{findDuplicateIds(wcf).length ? <>Duplicated ids found in the definition: <strong>{findDuplicateIds(wcf).join(', ')}</strong></> : <Component handleChange={handleChange} appContext={wcf} />}
 		</ErrorBoundary>
 	);
 };
