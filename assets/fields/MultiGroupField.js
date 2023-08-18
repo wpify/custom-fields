@@ -27,8 +27,8 @@ const MultiGroupField = (props) => {
 		appContext,
 		buttons = {},
 		disable_buttons = [],
-		min,
-		max,
+		min = 0,
+		max = 0,
 		group_title,
 	} = props;
 
@@ -88,8 +88,9 @@ const MultiGroupField = (props) => {
 		}
 
 		if (min > 0 && max >= min || min === 0 && max > 0) {
-			if (currentValue.length < max && disabledButtons.find(c => c === 'add' || c === 'duplicate')) {
-				setDisabledButtons(disabledButtons.filter(c => c !== 'add' || c !== 'duplicate'));
+			if (currentValue.length < max) {
+				console.log(disabledButtons);
+				setDisabledButtons(disabledButtons.filter(c => c !== 'add' && c !== 'duplicate'));
 			} else if (currentValue.length >= max && !disabledButtons.find(c => c === 'add' || c === 'duplicate')) {
 				setDisabledButtons([...disabledButtons, 'add', 'duplicate']);
 			}
