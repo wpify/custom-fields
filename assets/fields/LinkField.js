@@ -80,6 +80,10 @@ const LinkField = React.forwardRef((props, ref) => {
 
 	const describedBy = description ? id + '-description' : null;
 
+	const clear = () => {
+		setCurrentValue({ label: '', url: '' });
+		toggleOpen();
+	}
 	const handleChange = (key) => (event) => {
 		let newValue = { label: '', url: '', target: null, post: null };
 
@@ -179,6 +183,7 @@ const LinkField = React.forwardRef((props, ref) => {
 						{(!Boolean(currentValue.label) && !Boolean(currentValue.url)) && (
 							<Icon icon={'insert'}/>
 						)}
+						{(currentValue.label || currentValue.url) && <><Icon icon={'no'} onClick={clear}/></>}
 					</div>
 				)}
 				<button type="button" id={htmlId(id)} className="wcf-link__toggle-button" onClick={toggleOpen}/>
