@@ -25,22 +25,24 @@ const App = (props) => {
 		const idSet = new Set();
 		const duplicateIds = new Set();
 
-		function traverseObject(obj) {
+		function traverseObject(obj, prefix = '') {
+			console.log({ obj_id: obj.id, prefix })
 			if (obj.id) {
-				if (idSet.has(obj.id)) {
-					duplicateIds.add(obj.id); // Add the duplicate ID to the set
+				if (idSet.has(prefix + obj.id)) {
+					duplicateIds.add(prefix + obj.id); // Add the duplicate ID to the set
 				}
-				idSet.add(obj.id);
+				idSet.add(prefix + obj.id);
 			}
 
 			if (obj.items && Array.isArray(obj.items)) {
 				for (const item of obj.items) {
-					traverseObject(item);
+					traverseObject(item, obj.id ? prefix + obj.id + '.' : prefix);
 				}
 			}
 		}
 
 		traverseObject(obj);
+
 		return Array.from(duplicateIds);
 	}
 
