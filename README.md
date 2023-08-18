@@ -872,6 +872,11 @@ $field = array(
 
 ![Tel field](docs/images/wcf-tel-type.png)
 
+**Additional attributes**
+
+* `initial_country` Initially selected country.
+
+
 ## Textarea field type `textarea`
 
 ![Textarea field](docs/images/wcf-textarea-type.png)
