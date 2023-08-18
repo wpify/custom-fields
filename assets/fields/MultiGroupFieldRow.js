@@ -52,7 +52,7 @@ const MultiGroupFieldRow = (props) => {
 	};
 
 	const title = [...items]
-		.sort((a, b) => a.id === group_title ? -1 : 0)
+		.sort((a, b) => (a.id === group_title) ? -1 : (b.id === group_title) ? 1 : 0)
 		.map(getItemTitle)
 		.filter(value => !!(typeof value === 'string' ? value.trim : value))
 		.find(value => typeof value === 'string') || '';
