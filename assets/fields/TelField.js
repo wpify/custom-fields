@@ -16,6 +16,7 @@ const TelField = (props) => {
 		group_level = 0,
 		className,
 		appContext,
+		initial_country = '',
 	} = props;
 
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
@@ -25,8 +26,8 @@ const TelField = (props) => {
 
 	useEffect(() => {
 		itiRef.current = intlTelInput(inputRef.current, {
-			nationalMode: false,
 			utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.11/js/utils.min.js',
+			initialCountry: initial_country,
 		});
 	}, []);
 
