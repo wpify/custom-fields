@@ -38,7 +38,7 @@ const GroupField = (props) => {
 	return (
 		<React.Fragment>
 			<ErrorBoundary>
-				<RootWrapper group_level={group_level + 1} className={className}>
+				<RootWrapper group_level={group_level + 1} className={props?.class}>
 					{group_level === 0 && (
 						<RowWrapper item={{ title: 'hidden', type: 'hidden' }} withoutLabel={true} style={{ display: 'none' }}>
 							<input type="hidden" id={appContext.hooks.id(id)} name={appContext.hooks.name(id)} value={JSON.stringify(currentValue)} />
