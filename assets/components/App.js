@@ -26,7 +26,6 @@ const App = (props) => {
 		const duplicateIds = new Set();
 
 		function traverseObject(obj, prefix = '') {
-			console.log({ obj_id: obj.id, prefix })
 			if (obj.id) {
 				if (idSet.has(prefix + obj.id)) {
 					duplicateIds.add(prefix + obj.id); // Add the duplicate ID to the set
