@@ -89,7 +89,6 @@ const MultiGroupField = (props) => {
 
 		if (min > 0 && max >= min || min === 0 && max > 0) {
 			if (currentValue.length < max) {
-				console.log(disabledButtons);
 				setDisabledButtons(disabledButtons.filter(c => c !== 'add' && c !== 'duplicate'));
 			} else if (currentValue.length >= max && !disabledButtons.find(c => c === 'add' || c === 'duplicate')) {
 				setDisabledButtons([...disabledButtons, 'add', 'duplicate']);
