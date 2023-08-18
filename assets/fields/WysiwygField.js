@@ -15,6 +15,7 @@ const WysiwygField = (props) => {
 		className,
 		group_level = 0,
 		appContext,
+		toolbar,
 	} = props;
 
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
@@ -64,15 +65,16 @@ const WysiwygField = (props) => {
 
 		const { settings } = window.wpEditorL10n.tinymce;
 
-		wp.oldEditor.initialize(`editor-${clientId.current}`, {
-			tinymce: {
-				...settings,
-				inline: true,
-				content_css: false,
-				fixed_toolbar_container: `#toolbar-${clientId.current}`,
-				setup,
-			},
-		});
+		const tinymce = {
+			...settings,
+			toolbar1: toolbar ? toolbar : settings.toolbar1,
+			inline: true,
+			content_css: false,
+			fixed_toolbar_container: `#toolbar-${clientId.current}`,
+			setup,
+		};
+
+		wp.oldEditor.initialize(`editor-${clientId.current}`, { tinymce });
 	}, []);
 
 	useEffect(() => {

@@ -910,6 +910,10 @@ This field gives you the TinyMCE editor, that enables you edit the HTML visualy!
 
 ![WYSIWYG field](docs/images/wcf-wysiwyg-type.png)
 
+**Additional attributes**
+
+* `toolbar` String with buttons in toolbar. You can see the default options if you open developers console on a page with the editor by typing `window.wpEditorL10n.tinymce.settings.toolbar1`.
+
 # Extending the field types
 
 You can extend the custom field types with your own:
