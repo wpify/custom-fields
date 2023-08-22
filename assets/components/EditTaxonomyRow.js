@@ -11,6 +11,10 @@ const EditTaxonomyRow = ({ className, item, children, group_level = 0, htmlId = 
 		)
 		: null;
 
+	if(!item.render) {
+		return null;
+	}
+
 	if (group_level > 1) {
 		return (
 			<div className={classnames('form-field', className)} data-group-level={group_level} style={style}>
