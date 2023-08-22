@@ -3,7 +3,12 @@ import classnames from 'classnames';
 import ErrorBoundary from './ErrorBoundary';
 
 const MetaboxRow = ({ className, item, children, htmlId = id => id, style }) => {
-  return (
+
+	if(!item.render) {
+		return null;
+	}
+
+	return (
 		<div key={item.id} className={classnames('wcf-metabox-row', className)} style={style}>
 			<ErrorBoundary>
 				<label

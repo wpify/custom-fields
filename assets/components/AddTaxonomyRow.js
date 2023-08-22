@@ -4,7 +4,12 @@ import ErrorBoundary from './ErrorBoundary';
 
 const AddTaxonomyRow = (props) => {
 	const { className, item, children, htmlId = id => id, style } = props;
-  return (
+
+  	if(!item.render) {
+		return null;
+	}
+
+  	return (
 		<div key={item.id} className={classnames('form-field', className)} style={style}>
 			<ErrorBoundary>
 				{item.title && (
@@ -15,7 +20,7 @@ const AddTaxonomyRow = (props) => {
 				{children}
 			</ErrorBoundary>
 		</div>
-  );
+  	);
 };
 
 export default AddTaxonomyRow;
