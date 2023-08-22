@@ -84,6 +84,10 @@ const MultiGroupFieldRow = (props) => {
 				{items.map((item) => {
 					const Field = getItemComponent(item);
 
+					if(!item.render) {
+						return null;
+					}
+
 					return (
 						<div key={item.id} className={classnames('wcf-multi-group-row__content-item')}>
 							{!applyFilters('wcf_field_without_label', false, item.type) && (
