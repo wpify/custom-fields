@@ -27,6 +27,10 @@ const OptionsRow = (props) => {
 		return children;
 	}
 
+	if(!item.render) {
+		return null;
+	}
+
 	if (group_level > 2) {
 		return (
 			<div className={classnames('form-field', className)} data-group-level={group_level} style={style}>
