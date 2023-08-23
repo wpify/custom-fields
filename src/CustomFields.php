@@ -7,6 +7,7 @@ use Wpify\CustomFields\Implementations\Comment;
 use Wpify\CustomFields\Implementations\GutenbergBlock;
 use Wpify\CustomFields\Implementations\Metabox;
 use Wpify\CustomFields\Implementations\Options;
+use Wpify\CustomFields\Implementations\OrderMetabox;
 use Wpify\CustomFields\Implementations\ProductOptions;
 use Wpify\CustomFields\Implementations\ProductVariationOptions;
 use Wpify\CustomFields\Implementations\SiteOptions;
@@ -14,7 +15,6 @@ use Wpify\CustomFields\Implementations\Taxonomy;
 use Wpify\CustomFields\Implementations\User;
 use Wpify\CustomFields\Implementations\WcMembershipPlanOptions;
 use Wpify\CustomFields\Implementations\WooCommerceSettings;
-use Wpify\CustomFields\Integrations\WPML;
 
 /**
  * Class CustomFields
@@ -81,6 +81,18 @@ final class CustomFields {
 	 */
 	public function create_metabox( $args = array() ) {
 		$metabox            = new Metabox( $args, $this );
+		$this->registered[] = $metabox;
+
+		return $metabox;
+	}
+
+	/**
+	 * @param array $args
+	 *
+	 * @return OrderMetabox
+	 */
+	public function create_order_metabox( $args = array() ) {
+		$metabox            = new OrderMetabox( $args, $this );
 		$this->registered[] = $metabox;
 
 		return $metabox;

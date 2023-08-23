@@ -12,6 +12,7 @@ At the moment, you can add custom fields to the following locations:
 * Taxonomy
 * Options page
 * WooCommerce product options
+* WooCommerce order metabox
 * WooCommerce membership plan options
 * WooCommerce settings section
 * User options
@@ -331,6 +332,41 @@ $some_custom_field_value = get_post_meta( $product_id, 'some_id_of_the_meta', tr
 **Links**
 
 * `get_post_meta`: https://developer.wordpress.org/reference/functions/get_post_meta/
+
+![Order metabox](docs/images/wcf-order-metabox.png)
+
+Use Order metabox to add metaboxes to WooCommerce Orders with HPOS enabled. You can define it as follows
+
+```php
+$this->wcf->create_order_metabox(
+	array(
+		'title'      => 'Details',
+		'items' => array(
+			array(
+				'type'  => 'text',
+				'id'    => 'test',
+				'title' => 'Test',
+			),
+		),
+	)
+);
+```
+
+**Arguments**
+See create_metabox arguments.
+
+**Reading the custom fields**
+
+The order meta is stored using the standard WooCommerce CRUD functions, so you can read the data the same way as any other order meta:
+
+```php
+$order = wc_get_order( $order_id );
+$order->get_meta( 'test' );
+```
+
+**Links**
+
+* `WooCommerce HPOS`: https://woocommerce.com/document/high-performance-order-storage/
 
 
 ## How to add custom fields to the product variations?
