@@ -15,10 +15,6 @@ const GroupFieldRow = (props) => {
 		onChange({ [id]: changedValue });
 	}, [id, onChange]);
 
-	if(!item.render) {
-		return null;
-	}
-
 	return (
 		<RowWrapper
 			className={classnames(className)}
