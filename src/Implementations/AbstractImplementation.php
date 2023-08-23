@@ -407,7 +407,6 @@ abstract class AbstractImplementation {
 			'custom_attributes' => array(),
 			'description'       => '',
 			'tooltip_html'      => '',
-			'render'			=> true,
 		) );
 
 		/* Compatibility with WPify Woo */

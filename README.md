@@ -606,7 +606,6 @@ $some_item = array(
    'suffix'            => '',
    'custom_attributes' => array(),
    'description'       => '',
-   'render'            => true,
    'display'           => function ( $item, $context ) {
         return true;
    },
@@ -628,7 +627,6 @@ wpify_custom_fields()->add_some_custom_field_implementation( array(
 * `suffix`: Text behind the field.
 * `custom_attributes`: array of custom attributes you want to add to the field.
 * `description`: Description that will be shown below the field.
-* `render`: Sets whether the field should be displayed on the JS side or not (useful for conditional display of fields using a filter), the current value of the field is always stored regardless of whether it is hidden or not.
 * `display`: Callback function or boolean value that indicates wheter the item is shown.
 
 ## Attachment field type `attachment`, `multi_attachment`
