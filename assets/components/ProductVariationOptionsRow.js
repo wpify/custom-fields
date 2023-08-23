@@ -3,11 +3,6 @@ import classnames from 'classnames';
 import ErrorBoundary from './ErrorBoundary';
 
 const ProductVariationOptionsRow = ({ className, children, item, htmlId = id => id, style }) => {
-
-	if(!item.render) {
-		return null;
-	}
-
 	if (item.title.trim().length === 0) {
 		return (
 			<ErrorBoundary>
