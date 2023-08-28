@@ -248,7 +248,8 @@ final class Options extends AbstractImplementation {
 		?>
 		<div class="wrap">
 			<h1><?php echo $this->page_title; ?></h1>
-			<?php // phpcs:ignore ?>
+			<?php settings_errors(); ?>
+
 			<form method="post" name="form" action="<?php echo $action; ?>">
 				<?php
 				settings_fields( $this->menu_slug );
