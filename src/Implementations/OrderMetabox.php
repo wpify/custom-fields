@@ -176,7 +176,7 @@ final class OrderMetabox extends AbstractPostImplementation {
 	/**
 	 * @param WP_Post $post
 	 */
-	public function render( Order $order ) {
+	public function render( $order ) {
 		wp_nonce_field( $this->id, $this->nonce );
 
 		$this->set_post( $order->get_id() );
