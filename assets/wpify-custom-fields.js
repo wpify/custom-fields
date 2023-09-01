@@ -4,7 +4,7 @@
 __webpack_public_path__ = window.wcf_build_url;
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { registerFieldTypes } from './helpers';
 import App from './components/App';
 
@@ -28,7 +28,7 @@ function loadCustomFields (event) {
 					};
 				}
 
-				ReactDOM.render(<App wcf={wcf}/>, container);
+				createRoot(container).render(<App wcf={wcf}/>);
 				container.dataset.loaded = true;
 			}
 		}

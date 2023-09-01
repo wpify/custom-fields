@@ -55,17 +55,17 @@ Some fields also allow multiple values. You can also sort the values via drag&dr
 
 ### Requirements
 
-* PHP 7.3+ (we support only versions with security patches)
+* PHP 8.0+ (we support only versions with security patches)
+* WordPress 6.2+ (the library requires React 18+ that was included in WordPress 6.2)
 * Google Chrome/Firefox (the library uses native input fields that only some browsers support)
-* WordPress 5.3 (the library requires React 16.8+ that was included in WordPress 5.2 and Gutenberg editor included in WordPress 5.3)
 
 ### Development requirements
 
 If you want to help with the development of the library, feel free to extend that. In addition to the requirements above, you
 will need also:
 
+* Node 18+
 * Composer 2+
-* Node 14+
 
 ## Example: Hello custom fields
 
