@@ -11,6 +11,7 @@ use Wpify\CustomFields\Implementations\OrderMetabox;
 use Wpify\CustomFields\Implementations\ProductOptions;
 use Wpify\CustomFields\Implementations\ProductVariationOptions;
 use Wpify\CustomFields\Implementations\SiteOptions;
+use Wpify\CustomFields\Implementations\SubscriptionMetabox;
 use Wpify\CustomFields\Implementations\Taxonomy;
 use Wpify\CustomFields\Implementations\User;
 use Wpify\CustomFields\Implementations\WcMembershipPlanOptions;
@@ -93,6 +94,18 @@ final class CustomFields {
 	 */
 	public function create_order_metabox( $args = array() ) {
 		$metabox            = new OrderMetabox( $args, $this );
+		$this->registered[] = $metabox;
+
+		return $metabox;
+	}
+
+	/**
+	 * @param array $args
+	 *
+	 * @return SubscriptionMetabox
+	 */
+	public function create_subscription_metabox( $args = array() ) {
+		$metabox            = new SubscriptionMetabox( $args, $this );
 		$this->registered[] = $metabox;
 
 		return $metabox;
