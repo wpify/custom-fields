@@ -1,13 +1,12 @@
 .wcf-post-selected {
   &__item {
+		align-items: center;
+		background-color: var(--wpify-input-bg);
+		border: 1px solid var(--wpify-input-border);
+		padding: 15px 60px 15px 15px;
+		width: 350px;
 		position: relative;
-		background-color: white;
-		padding: 1rem 1.5rem;
-		margin: 5px 0;
-		border: 1px solid #c3c4c7;
-		display: grid;
-		grid-template-areas: "header" "description";
-		gap: 0 1rem;
+		border-radius: 3px;
 
 		p {
 			font-size: 12px;
@@ -18,27 +17,18 @@
 		}
   }
 
-  &__item--with-image {
-		grid-template: "image header" "image description";
-		grid-template-columns: 80px auto;
-  }
-
   &__item-header {
-		display: flex;
-		flex-flow: row nowrap;
 		font-size: 1rem;
-		line-height: 1;
-		grid-area: header;
-		align-self: flex-start;
+		line-height: 1.2;
   }
 
   &__item-description {
-		grid-area: description;
+		margin-top: 3px;
+		color: var(--wpify-gray);
   }
 
   &__item-image {
-		grid-area: image;
-		margin: -1rem 0 -1rem -1.5rem;
+		margin-bottom: 10px;
 
 		img {
 			display: block;
@@ -46,11 +36,21 @@
 		}
   }
 
-  .wcf-sortable-item &__item {
-		padding-left: 40px;
-  }
+	.wcf-button.wcf-button--delete {
+		position: absolute;
+		right: 10px;
+		top: 10px;
+	}
+
+  .wcf-sortable-item {
+		margin-bottom: 10px;
+
+		&:last-child {
+			margin: 0;
+		}
+	}
 
   .wcf-sortable-item &__item--with-image {
-		padding-left: 1.5rem;
+		padding-left: 45px;
   }
 }

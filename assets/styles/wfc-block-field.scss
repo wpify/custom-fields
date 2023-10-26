@@ -43,6 +43,24 @@
 		padding: 5px 10px;
 	}
 
+	&.wfc-block-field--post, &.wfc-block-field--multi_post {
+		flex-wrap: wrap;
+
+		.wcf-select {
+			width: calc(100% - 180px);
+		}
+
+		.wcf-post-selected {
+			margin-top: 10px;
+		}
+	}
+
+	&.wfc-block-field--inner_blocks {
+		.block-editor-block-list__layout > div > div > p {
+			padding-right: 40px;
+		}
+	}
+
 	&.wfc-block-field--toggle {
 		label {
 			position: relative;
