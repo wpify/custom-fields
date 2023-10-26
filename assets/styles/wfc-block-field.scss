@@ -7,11 +7,36 @@
 	}
 
 	label {
+		flex-shrink: 0;
 		width: 180px;
 		font-weight: bold;
-		margin: 0;
-		padding-top: 4px;
+		margin: 0 0 10px;
+		padding-top: 3px;
 		font-size: 14px;
+	}
+
+	.wcf-select .wcf-select__control {
+		border: 1px solid #8c8f94;
+		color: #2c3338;
+		border-radius: 4px;
+		padding: 5px 10px;
+		max-width: 425px;
+
+		.wcf-select__clear-indicator {
+			color: #2c3338;
+
+			&:hover {
+				color: red;
+			}
+		}
+
+		.wcf-select__dropdown-indicator {
+			color: #2c3338;
+		}
+	}
+
+	.regular-text {
+		padding: 5px 10px;
 	}
 
 	&.wfc-block-field--group {
