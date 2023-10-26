@@ -17,11 +17,11 @@
   }
 
 	&__description {
-		color: #7e7e7e;
+		color: var(--wpify-gray);
 		font-size: 12px;
 
 		strong {
-			color: #2c3338;
+			color: var(--wpify-black);
 			font-size: 16px;
 		}
 

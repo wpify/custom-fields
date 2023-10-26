@@ -6,6 +6,7 @@ import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import SelectControl from '../components/SelectControl';
 import { useNormalizedValue, valueOrDefault } from '../helpers';
+import CloseButton from '../components/CloseButton';
 
 // eslint-disable-next-line react/display-name
 const LinkField = React.forwardRef((props, ref) => {
@@ -108,7 +109,7 @@ const LinkField = React.forwardRef((props, ref) => {
 
 	return (
 		<div ref={ref}>
-			<div className={classnames('wcf-link', className, { 'wcf-link--open': isOpen })} ref={div}>
+			<div className={classnames('wcf-link', className, { 'wcf-link--open': isOpen }, {'wcf-link--not-empty': Boolean(currentValue.label) && Boolean(currentValue.url)})} ref={div}>
 				<input
 					type="hidden"
 					name={group_level === 0 ? appContext.hooks.name(id) : null}
@@ -118,7 +119,7 @@ const LinkField = React.forwardRef((props, ref) => {
 				/>
 				{isOpen ? (
 					<div className="wcf-link__form">
-						<label className="wcf-link__form-item">
+						<label className="wcf-link__form-item wcf-link__form-item--text">
 							<span>{__('Label', 'wpify-custom-fields')}</span>
 							<input
 								type="text"
@@ -128,7 +129,7 @@ const LinkField = React.forwardRef((props, ref) => {
 							/>
 						</label>
 						{post_type && (
-							<label className="wcf-link__form-item">
+							<label className="wcf-link__form-item wcf-link__form-item--text">
 								<span>{post_type_name}</span>
 								<SelectControl
 									id={id}
@@ -142,7 +143,7 @@ const LinkField = React.forwardRef((props, ref) => {
 								/>
 							</label>
 						)}
-						<label className="wcf-link__form-item">
+						<label className="wcf-link__form-item wcf-link__form-item--text">
 							<span>{__('URL', 'wpify-custom-fields')}</span>
 							<input
 								type="url"
@@ -172,21 +173,25 @@ const LinkField = React.forwardRef((props, ref) => {
 						onClick={toggleOpen}
 					>
 						{currentValue.label && (
-							<span className="wcf-link__label">{currentValue.label}</span>
+							<span className="wcf-link__label">
+								{currentValue.label}
+								{currentValue.target === '_blank' && (
+									<Icon icon={'external'}/>
+								)}
+							</span>
 						)}
 						{currentValue.url && (
 							(<span className="wcf-link__url">{currentValue.url}</span>)
 						)}
-						{currentValue.target === '_blank' && (
-							<Icon icon={'external'}/>
-						)}
 						{(!Boolean(currentValue.label) && !Boolean(currentValue.url)) && (
-							<Icon icon={'insert'}/>
+							<div class='button wcf-link__add'>{__('Add link', 'wpify-custom-fields')}<Icon icon={'insert'}/></div>
 						)}
-						{(currentValue.label || currentValue.url) && <><Icon icon={'no'} onClick={clear}/></>}
+						{(currentValue.label || currentValue.url) && <><CloseButton onClick={clear}/></>}
 					</div>
 				)}
-				<button type="button" id={htmlId(id)} className="wcf-link__toggle-button" onClick={toggleOpen}/>
+				<button type="button" id={htmlId(id)} className="wcf-link__toggle-button button" onClick={toggleOpen}>
+					{__('Update', 'wpify-custom-fields')}
+				</button>
 			</div>
 			{suffix && ' ' + suffix}
 			{description && (
