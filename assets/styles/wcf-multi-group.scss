@@ -46,20 +46,27 @@
 		}
   }
 
-  &__content {
-		margin: 0;
-		padding: 1em 1.5em;
-		background: white;
-  }
+	&__content {
+		display: block;
 
-  &__content--collapsed {
-		height: 0;
-		overflow: hidden;
-		padding: 0;
+		&.wcf-multi-group-row__content--collapsed {
+			display: none;
+		}
+	}
+
+  &__content-in {
+		width: calc(100% + 45px);
+		margin-left: -45px;
+		padding: 20px 20px 20px 50px;
+		background-color: #fff;
+
+		.wcf-multi-group-row__content-item {
+			display: flex;
+		}
   }
 
   &__content-item:not(:last-of-type) {
-		margin-bottom: 10px;
+		margin-bottom: 20px;
   }
 
   &__content-item-label {

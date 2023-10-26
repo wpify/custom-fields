@@ -78,37 +78,39 @@ const MultiGroupFieldRow = (props) => {
 					)}
 				</div>
 			</div>
-			<div className={classnames('wcf-multi-group-row__content', {
-				'wcf-multi-group-row__content--collapsed': collapsed,
-			})}>
-				{items.map((item) => {
-					const Field = getItemComponent(item);
+				<div className={classnames('wcf-multi-group-row__content', {
+					'wcf-multi-group-row__content--collapsed': collapsed,
+				})}>
+					<div className='wcf-multi-group-row__content-in'>
+					{items.map((item) => {
+						const Field = getItemComponent(item);
 
-					return (
-						<div key={item.id} className={classnames('wcf-multi-group-row__content-item')}>
-							{!applyFilters('wcf_field_without_label', false, item.type) && (
+						return (
+							<div key={item.id} className={classnames('wcf-multi-group-row__content-item')}>
+								{!applyFilters('wcf_field_without_label', false, item.type) && (
+									<ErrorBoundary>
+										<label
+											className={classnames('wcf-multi-group-row__content-item-label')}
+											htmlFor={htmlId(item.id)}
+											dangerouslySetInnerHTML={{ __html: item.title }}
+										/>
+									</ErrorBoundary>
+								)}
 								<ErrorBoundary>
-									<label
-										className={classnames('wcf-multi-group-row__content-item-label')}
-										htmlFor={htmlId(item.id)}
-										dangerouslySetInnerHTML={{ __html: item.title }}
+									<Field
+										{...item}
+										id={item.id}
+										htmlId={htmlId}
+										group_level={group_level}
+										onChange={value => handleChange({ [item.id]: value })}
+										value={value && value[item.id]}
+										appContext={appContext}
 									/>
 								</ErrorBoundary>
-							)}
-							<ErrorBoundary>
-								<Field
-									{...item}
-									id={item.id}
-									htmlId={htmlId}
-									group_level={group_level}
-									onChange={value => handleChange({ [item.id]: value })}
-									value={value && value[item.id]}
-									appContext={appContext}
-								/>
-							</ErrorBoundary>
-						</div>
-					);
-				})}
+							</div>
+						);
+					})}
+				</div>
 			</div>
 		</div>
 	);

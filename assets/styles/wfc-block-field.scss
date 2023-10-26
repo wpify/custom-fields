@@ -2,6 +2,10 @@
 	margin-bottom: 20px;
 	display: flex;
 
+	&:last-child {
+		margin-bottom: 0;
+	}
+
 	&--hidden {
 		display: none;
 	}
@@ -10,7 +14,7 @@
 		flex-shrink: 0;
 		width: 180px;
 		font-weight: bold;
-		margin: 0 0 10px;
+		margin: 0 0 10px !important;
 		padding-top: 3px;
 		font-size: 14px;
 	}
@@ -39,6 +43,10 @@
 		padding: 5px 10px;
 	}
 
+	&.wfc-block-field--multi_group {
+		max-width: 720px;
+	}
+
 	&.wfc-block-field--group {
 		display: block;
 
@@ -52,6 +60,10 @@
 			border: 1px solid #ccc;
 			padding: 20px;
 			border-radius: 2px;
+		}
+
+		.wfc-block-field label {
+			width: 158px;
 		}
 	}
 }
