@@ -1,0 +1,43 @@
+.wcf-attachment {
+  display: inline-flex;
+	align-items: center;
+	background-color: var(--wpify-input-bg);
+  border: 1px solid var(--wpify-input-border);
+  padding: 15px 60px 15px 15px;
+  width: 350px;
+  position: relative;
+	border-radius: 3px;
+
+  &__image {
+		margin-right: 15px;
+  }
+
+  &__image img {
+		display: block;
+  }
+
+	&__description {
+		color: #7e7e7e;
+		font-size: 12px;
+
+		strong {
+			color: #2c3338;
+			font-size: 16px;
+		}
+
+		a {
+			text-decoration: none !important;
+		}
+	}
+
+  .wcf-button--move,
+  .wcf-button--delete {
+		align-self: flex-start;
+  }
+
+	.wcf-button.wcf-button--delete {
+		position: absolute;
+		right: 10px;
+		top: 10px;
+	}
+}

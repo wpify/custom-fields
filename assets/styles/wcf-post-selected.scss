@@ -1,0 +1,56 @@
+.wcf-post-selected {
+  &__item {
+		position: relative;
+		background-color: white;
+		padding: 1rem 1.5rem;
+		margin: 5px 0;
+		border: 1px solid #c3c4c7;
+		display: grid;
+		grid-template-areas: "header" "description";
+		gap: 0 1rem;
+
+		p {
+			font-size: 12px;
+			line-height: 1.3;
+			max-height: 34px;
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
+  }
+
+  &__item--with-image {
+		grid-template: "image header" "image description";
+		grid-template-columns: 80px auto;
+  }
+
+  &__item-header {
+		display: flex;
+		flex-flow: row nowrap;
+		font-size: 1rem;
+		line-height: 1;
+		grid-area: header;
+		align-self: flex-start;
+  }
+
+  &__item-description {
+		grid-area: description;
+  }
+
+  &__item-image {
+		grid-area: image;
+		margin: -1rem 0 -1rem -1.5rem;
+
+		img {
+			display: block;
+			object-fit: cover;
+		}
+  }
+
+  .wcf-sortable-item &__item {
+		padding-left: 40px;
+  }
+
+  .wcf-sortable-item &__item--with-image {
+		padding-left: 1.5rem;
+  }
+}

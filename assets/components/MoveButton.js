@@ -9,9 +9,9 @@ const Move = ({ className, ...rest }) => {
 			{...rest}
 		>
 			<svg width={10} height={10} viewBox="0 0 10 10">
-				<line stroke="#50575e" strokeWidth={2} x1={0} y1={1} x2={10} y2={1} />
-				<line stroke="#50575e" strokeWidth={2} x1={0} y1={5} x2={10} y2={5} />
-				<line stroke="#50575e" strokeWidth={2} x1={0} y1={9} x2={10} y2={9} />
+				<line stroke="currentColor" strokeWidth={2} x1={0} y1={1} x2={10} y2={1} />
+				<line stroke="currentColor" strokeWidth={2} x1={0} y1={5} x2={10} y2={5} />
+				<line stroke="currentColor" strokeWidth={2} x1={0} y1={9} x2={10} y2={9} />
 			</svg>
 		</button>
 	);

@@ -1,0 +1,31 @@
+.wcf-sortable-item:first-of-type {
+	.wcf-multi-group-row {
+		border-bottom: 0;
+		border-radius: 3px 3px 0 0;
+	}
+}
+
+.wcf-sortable-item:last-of-type {
+	.wcf-multi-group-row {
+		border-radius: 0 0 3px 3px;
+	}
+}
+
+.wcf-sortable-item .wcf-multi-group-row {
+  padding-left: 45px;
+	min-width: 680px;
+	max-width: 100%;
+
+  &__header,
+  &__content {
+		padding-left: 0;
+  }
+}
+
+.wcf-sortable-item[faded=true] .wcf-button--move {
+  cursor: grab;
+}
+
+.wcf-sortable-item .wcf-attachment {
+  padding-left: 40px;
+}

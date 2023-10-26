@@ -1,0 +1,32 @@
+.wfc-block-field {
+	margin-bottom: 20px;
+	display: flex;
+
+	&--hidden {
+		display: none;
+	}
+
+	label {
+		width: 180px;
+		font-weight: bold;
+		margin: 0;
+		padding-top: 4px;
+		font-size: 14px;
+	}
+
+	&.wfc-block-field--group {
+		display: block;
+
+		> label {
+			color: #1d2327;
+			font-size: 18px;
+			margin: 20px 0 5px;
+		}
+
+		> div {
+			border: 1px solid #ccc;
+			padding: 20px;
+			border-radius: 2px;
+		}
+	}
+}
