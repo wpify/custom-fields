@@ -43,6 +43,13 @@
 		padding: 5px 10px;
 	}
 
+	&.wfc-block-field--toggle {
+		label {
+			position: relative;
+			bottom: 4px;
+		}
+	}
+
 	&.wfc-block-field--multi_group {
 		max-width: 720px;
 	}
