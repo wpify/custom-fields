@@ -22,3 +22,6 @@ trim_trailing_whitespace = false
 
 [{*.txt,wp-config-sample.php}]
 end_of_line = crlf
+
+[*.scss]
+indent_size = 2

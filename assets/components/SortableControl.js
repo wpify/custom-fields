@@ -56,11 +56,13 @@ const SortableControl = (props) => {
 				onDragEnd={handleDragEnd}
 			>
 				<SortableContext items={items}>
-					{items.map((item, index) => (
-						<SortableItem key={item} id={item} index={index}>
-							{renderItem(item, index)}
-						</SortableItem>
-					))}
+					<div className='wcf-sortable-items'>
+						{items.map((item, index) => (
+							<SortableItem key={item} id={item} index={index}>
+								{renderItem(item, index)}
+							</SortableItem>
+						))}
+					</div>
 				</SortableContext>
 			</DndContext>
 		</ErrorBoundary>

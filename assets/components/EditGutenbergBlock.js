@@ -29,7 +29,9 @@ const EditGutenbergBlock = (props) => {
 	return (
 		<div className={classnames('wcf-block')}>
 			<ErrorBoundary>
-				<div className={classnames('wcf-block__title')} dangerouslySetInnerHTML={{ __html: title }}/>
+				<div className={classnames('wcf-block__title')}>
+					<span dangerouslySetInnerHTML={{ __html: title }} />
+				</div>
 			</ErrorBoundary>
 			{items.filter(item => item.position !== 'inspector').map((item) => {
 				const Field = getItemComponent(item);

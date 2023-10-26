@@ -1,0 +1,47 @@
+.wcf-button {
+  padding: 0;
+  background: #fff;
+  border: 1px solid #8c8f94;
+	color: var(--wpify-black);
+	transition: .3s ease all;
+  cursor: pointer;
+	width: 26px;
+	height: 26px;
+	display: flex;
+	border-radius: 2px !important;
+	align-items: center;
+	justify-content: center;
+
+  svg {
+		display: block;
+		width: 12px;
+		height: 12px;
+  }
+
+	&:hover {
+		color: var(--wpify-theme);
+		border-color: var(--wpify-theme);
+	}
+
+  &--move {
+		cursor: move;
+		position: absolute;
+		left: 10px;
+		top: 16px;
+  }
+
+  &--delete {
+		cursor: pointer;
+
+		&:hover {
+			color: red;
+			border-color: red;
+		}
+  }
+
+  &--icon {
+		display: inline-block;
+		min-height: 30px !important;
+		max-height: 30px !important;
+  }
+}

@@ -1,0 +1,12 @@
+.wcf-toggle-disabled {
+  pointer-events: none;
+
+  .components-form-toggle {
+	opacity: 0.25;
+  }
+
+  a,
+  button {
+	pointer-events: auto;
+  }
+}

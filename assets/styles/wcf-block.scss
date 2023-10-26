@@ -1,0 +1,60 @@
+.wcf-block {
+	font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif;
+	background: #fff;
+  border: 1px solid #1e1e1e;
+  padding: 20px;
+  position: relative;
+	border-radius: 2px 0 2px 2px;
+
+  &__title {
+		position: absolute;
+		top: -61px;
+		right: -1px;
+		bottom: 0;
+		z-index: 2;
+		pointer-events: none;
+
+		span {
+			height: 48px;
+			line-height: 46px;
+			background: #1e1e1e;
+			color: #fff;
+			border: 0;
+			padding: 0 20px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 13px;
+			border-radius: 3px;
+			display: block;
+			position: sticky;
+			right: 0;
+			top: 12px;
+		}
+  }
+
+	h2.regular-text {
+		color: #1d2327;
+    font-size: 18px;
+    margin: 20px 0 10px;
+	}
+
+  .form-field label {
+		display: block;
+  }
+}
+
+
+.wcf-block pre.CodeMirror-line {
+	background: unset;
+	font-family: inherit;
+	margin-bottom: unset;
+	padding: unset;
+	overflow: unset;
+	max-width: unset;
+}
+
+.wcf-block .CodeMirror-scroll {
+ border: 1px solid rgba(0,0,0,0.15);
+}
+

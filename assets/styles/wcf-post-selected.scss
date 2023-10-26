@@ -1,0 +1,56 @@
+.wcf-post-selected {
+  &__item {
+		align-items: center;
+		background-color: var(--wpify-input-bg);
+		border: 1px solid var(--wpify-input-border);
+		padding: 15px 60px 15px 15px;
+		width: 350px;
+		position: relative;
+		border-radius: 3px;
+
+		p {
+			font-size: 12px;
+			line-height: 1.3;
+			max-height: 34px;
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
+  }
+
+  &__item-header {
+		font-size: 1rem;
+		line-height: 1.2;
+  }
+
+  &__item-description {
+		margin-top: 3px;
+		color: var(--wpify-gray);
+  }
+
+  &__item-image {
+		margin-bottom: 10px;
+
+		img {
+			display: block;
+			object-fit: cover;
+		}
+  }
+
+	.wcf-button.wcf-button--delete {
+		position: absolute;
+		right: 10px;
+		top: 10px;
+	}
+
+  .wcf-sortable-item {
+		margin-bottom: 10px;
+
+		&:last-child {
+			margin: 0;
+		}
+	}
+
+  .wcf-sortable-item &__item--with-image {
+		padding-left: 45px;
+  }
+}
