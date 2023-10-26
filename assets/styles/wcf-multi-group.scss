@@ -52,6 +52,17 @@
 		&.wcf-multi-group-row__content--collapsed {
 			display: none;
 		}
+
+		div[group_level="2"] {
+			padding-top: 30px;
+		}
+
+		div[group_level="2"] .wfc-block-field {
+			label {
+				width: 150px;
+				font-size: 13px;
+			}
+		}
 	}
 
   &__content-in {
