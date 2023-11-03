@@ -6,7 +6,11 @@ import apiFetch from '@wordpress/api-fetch';
 import useSWRImmutable from 'swr/immutable';
 import { v4 as uuid } from 'uuid';
 
-const DivComponent = props => <div {...props} />
+const DivComponent = (props) => {
+	const { className, id, title } = props;
+
+	return <div className={className} id={id} title={title} />;
+}
 
 export const getItemComponent = (item) => {
 	return applyFilters('wcf_field_' + item.type, DivComponent, item);

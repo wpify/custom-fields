@@ -6,7 +6,6 @@ import { htmlDecode } from '../helpers';
 
 const Option = (props) => {
 	const { children, innerProps, getStyles } = props;
-
 	return (
 		<div {...innerProps} style={getStyles('option', props)}>
 			{typeof children === 'string' ? htmlDecode(children) : children}
@@ -16,7 +15,6 @@ const Option = (props) => {
 
 const SingleValue = (props) => {
 	const { children, innerProps, getStyles } = props;
-
 	return (
 		<div {...innerProps} style={getStyles('singleValue', props)}>
 			{typeof children === 'string' ? htmlDecode(children) : children}

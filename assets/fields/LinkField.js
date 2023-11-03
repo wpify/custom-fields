@@ -184,7 +184,7 @@ const LinkField = React.forwardRef((props, ref) => {
 							(<span className="wcf-link__url">{currentValue.url}</span>)
 						)}
 						{(!Boolean(currentValue.label) && !Boolean(currentValue.url)) && (
-							<div class='button wcf-link__add'>{__('Add link', 'wpify-custom-fields')}<Icon icon={'insert'}/></div>
+							<div className='button wcf-link__add'>{__('Add link', 'wpify-custom-fields')}<Icon icon={'insert'}/></div>
 						)}
 						{(currentValue.label || currentValue.url) && <><CloseButton onClick={clear}/></>}
 					</div>

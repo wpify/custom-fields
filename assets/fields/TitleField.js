@@ -4,7 +4,6 @@ import ErrorBoundary from '../components/ErrorBoundary';
 
 const TitleField = (props) => {
 	const { className, title, description, custom_attributes } = props;
-
 	return (
 		<React.Fragment>
 			<ErrorBoundary>

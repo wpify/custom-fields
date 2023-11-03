@@ -8,7 +8,9 @@ import GutenbergBlockRow from './GutenbergBlockRow';
 import ErrorBoundary from './ErrorBoundary';
 import { getItemComponent } from '../helpers';
 
-const RootWrapper = (props) => (<div {...props} />);
+const RootWrapper = (props) => {
+	return <div {...props} />;
+};
 
 const InspectorGutenbergBlock = (props) => {
 	const { appContext, attributes, setAttributes } = props;

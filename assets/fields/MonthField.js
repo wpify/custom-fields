@@ -5,7 +5,6 @@ import ErrorBoundary from '../components/ErrorBoundary';
 
 const MonthField = (props) => {
 	const { className } = props;
-
 	return (
 		<ErrorBoundary>
 			<InputField

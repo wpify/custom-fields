@@ -3,7 +3,6 @@ import ErrorBoundary from '../components/ErrorBoundary';
 
 const HtmlField = (props) => {
 	const { className, content = '', custom_attributes = {} } = props;
-
 	return (
 		<ErrorBoundary>
 			<div

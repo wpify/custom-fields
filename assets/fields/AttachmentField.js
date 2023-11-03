@@ -60,10 +60,10 @@ const AttachmentField = (props) => {
 	}, [handleOpen, handleClose]);
 
 	useEffect(() => {
-		if (onChange && JSON.stringify(value) !== JSON.stringify(currentValue)) {
+		if (onChange && JSON.stringify(value) !== JSON.stringify(returnValue)) {
 			onChange(returnValue);
 		}
-	}, [value, returnValue, currentValue, onChange]);
+	}, [value, returnValue, onChange]);
 
 	const handleDelete = (id) => {
 		setCurrentValue(currentValue => currentValue.filter(value => value !== id));
