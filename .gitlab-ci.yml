@@ -6,12 +6,16 @@ include:
 
 assets:
   stage: .pre
-  extends: .node
   image: node:20
   artifacts:
     paths:
       - $CI_PROJECT_DIR/build
     expire_in: 1 week
+  before_script:
+    - npm ci --force
+  script:
+    - NODE_ENV=production npm run build
+
 
 .git:
   image: alpine:latest
