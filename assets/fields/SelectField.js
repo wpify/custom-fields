@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import ErrorBoundary from '../components/ErrorBoundary';
 import SelectControl from '../components/SelectControl';
 import { useNormalizedValue } from '../helpers';
@@ -27,10 +27,12 @@ const SelectField = (props) => {
 		}
 	}, [onChange, value, currentValue]);
 
+	const ref = useRef();
+
 	return (
 		<ErrorBoundary>
 			{group_level === 0 && (
-				<input type="hidden" name={appContext.hooks.name(id)} value={isMulti
+				<input type="hidden" name={appContext.hooks.name(id)} ref={ref} value={isMulti
 					? JSON.stringify(Array.isArray(currentValue) ? currentValue.filter(Boolean) : [])
 					: currentValue}/>
 			)}
