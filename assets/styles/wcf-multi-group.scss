@@ -1,4 +1,8 @@
 .wcf-multi-group {
+	& * {
+		box-sizing: border-box;
+	}
+
   &__items {
 		position: relative;
   }
