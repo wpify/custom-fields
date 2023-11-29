@@ -33,7 +33,7 @@ final class GutenbergBlock extends AbstractImplementation {
 	/**
 	 * GutenbergBlock constructor.
 	 *
-	 * @param array        $args
+	 * @param array $args
 	 * @param CustomFields $wcf
 	 */
 	public function __construct( array $args, CustomFields $wcf ) {
@@ -90,7 +90,7 @@ final class GutenbergBlock extends AbstractImplementation {
 		}
 
 		add_action( 'init', array( $this, 'register_block' ), $defaults['init_priority'] );
-		add_action( 'current_screen', array( $this, 'add_editor_script' ) );
+		add_action( 'enqueue_block_assets', array( $this, 'enqueue_block_assets' ) );
 	}
 
 	/**
@@ -108,25 +108,33 @@ final class GutenbergBlock extends AbstractImplementation {
 		register_block_type( $this->name, $args );
 	}
 
-	/**
-	 * @return void
-	 */
-	public function add_editor_script( $current_screen ) {
-		$display_callback = $this->display;
+	public function enqueue_block_assets() {
+		if ( is_admin() ) {
+			wp_enqueue_editor();
+			wp_enqueue_code_editor( array( 'type' => 'text/html' ) );
 
-		if ( ! boolval( $display_callback() ) ) {
-			return;
-		}
+			$script = $this->wcf->get_assets()->enqueue_script(
+				'wpify-custom-blocks.js',
+				array( 'wp-tinymce', 'code-editor' ),
+				true,
+				array(
+					'wcf_code_editor_settings' => $this->wcf->get_assets()->get_code_editor_settings(),
+					'wcf_build_url'            => $this->get_build_url(),
+					'wcf_date'                 => array(
+						'date_format' => get_option( 'date_format' ),
+						'time_format' => get_option( 'time_format' )
+					),
+				)
+			);
 
-		$args = $this->get_args();
-
-		if ( $current_screen->is_block_editor() || in_array( $current_screen->id, array( 'widgets', 'customize' ) ) ) {
 			$js_args          = $this->get_args( array( 'render_callback' ) );
 			$js_args['items'] = $this->fill_selects( $js_args['items'] );
-			$script           = 'window.wcf_blocks=(window.wcf_blocks||{});window.wcf_blocks[\'' . $this->name . '\']=' . wp_json_encode( $js_args, JSON_UNESCAPED_UNICODE ) . ';';
-			$script           .= 'window.wcf_build_url=' . wp_json_encode( $this->get_build_url() ) . ';';
+			$inline_script    = 'window.wcf_blocks=(window.wcf_blocks||{});window.wcf_blocks[\'' . $this->name . '\']=' . wp_json_encode( $js_args, JSON_UNESCAPED_UNICODE ) . ';';
+			$inline_script    .= 'window.wcf_build_url=' . wp_json_encode( $this->get_build_url() ) . ';';
 
-			wp_add_inline_script( $args['editor_script'], $script, 'before' );
+			wp_add_inline_script( $script, $inline_script, 'before' );
+
+			$this->wcf->get_assets()->enqueue_style( 'wpify-custom-blocks.css' );
 		}
 	}
 
@@ -182,45 +190,6 @@ final class GutenbergBlock extends AbstractImplementation {
 	}
 
 	/**
-	 * @return string|null
-	 */
-	public function get_editor_script() {
-		if ( empty( $this->editor_script ) ) {
-			if ( is_admin() ) {
-				wp_enqueue_editor();
-				wp_enqueue_code_editor( array( 'type' => 'text/html' ) );
-			}
-
-			return $this->wcf->get_assets()->register_script(
-				'wpify-custom-blocks.js',
-				array( 'wp-tinymce', 'code-editor' ),
-				true,
-				array(
-					'wcf_code_editor_settings' => $this->wcf->get_assets()->get_code_editor_settings(),
-					'wcf_build_url'            => $this->get_build_url(),
-					'wcf_date'                 => array(
-						'date_format' => get_option( 'date_format' ),
-						'time_format' => get_option( 'time_format' )
-					),
-				)
-			);
-		}
-
-		return null;
-	}
-
-	/**
-	 * @return string|null
-	 */
-	public function get_editor_style() {
-		if ( empty( $this->editor_style ) ) {
-			return $this->wcf->get_assets()->register_style( 'wpify-custom-blocks.css' );
-		}
-
-		return null;
-	}
-
-	/**
 	 * @return array
 	 */
 	public function get_attributes() {
@@ -261,6 +230,7 @@ final class GutenbergBlock extends AbstractImplementation {
 	/**
 	 * @param string $name
 	 * @param string $value
+	 * @param $item
 	 *
 	 * @return mixed
 	 */
