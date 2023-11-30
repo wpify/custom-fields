@@ -25,7 +25,7 @@ Object.keys(window.wcf_blocks).forEach((blockName) => {
 
 	registerBlockType(block.name, {
 		...block,
-		apiVersion: 3,
+		apiVersion: 2,
 		edit,
 		save,
 	});
