@@ -8,19 +8,7 @@ import { applyFilters } from '@wordpress/hooks';
 const EditGutenbergBlock = (props) => {
 	const { appContext, attributes, setAttributes } = props;
 	const [initialAttributes] = useState(attributes);
-	const originalWcf = appContext;
-
-	const wcf = useMemo(() => {
-		const newWcf = applyFilters('wcf_definition', originalWcf, attributes);
-
-		if (JSON.stringify(newWcf) !== JSON.stringify(originalWcf)) {
-			return newWcf;
-		}
-
-		return originalWcf;
-	}, [applyFilters, originalWcf, attributes]);
-
-	const { items = [], title } = wcf;
+	const { items = [], title } = appContext;
 
 	const handleChange = (item) => (value) => {
 		setAttributes(applyFilters('wcf_set_block_attribute', { [item.id]: value }, item, attributes, initialAttributes));
@@ -41,7 +29,7 @@ const EditGutenbergBlock = (props) => {
 							{...item}
 							onChange={handleChange(item)}
 							value={attributes[item.id]}
-							appContext={wcf}
+							appContext={appContext}
 						/>
 					</ErrorBoundary>
 				) : (
@@ -52,7 +40,7 @@ const EditGutenbergBlock = (props) => {
 									{...item}
 									onChange={handleChange(item)}
 									value={attributes[item.id]}
-									appContext={wcf}
+									appContext={appContext}
 								/>
 							</ErrorBoundary>
 						</GutenbergBlockRow>

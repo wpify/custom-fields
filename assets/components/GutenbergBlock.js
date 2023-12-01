@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ServerSideRender from '@wordpress/server-side-render';
 import { BlockControls } from '@wordpress/block-editor';
 import { ToolbarButton, ToolbarGroup } from '@wordpress/components';
@@ -10,19 +10,30 @@ import GutenbergRootWrapper from './GutenbergRootWrapper';
 import GutenbergBlockRow from './GutenbergBlockRow';
 import ScreenContext from './ScreenContext';
 import { useBlockProps } from '@wordpress/block-editor';
+import { applyFilters } from '@wordpress/hooks';
 
 const DESKTOP_VIEW = 'DESKTOP_VIEW';
 const EDIT_VIEW = 'EDIT_VIEW';
 
 const GutenbergBlock = (props) => {
-	const { appContext, attributes, isSelected } = props;
+	const { attributes, isSelected } = props;
 	const [view, setView] = useState(DESKTOP_VIEW);
 
 	useEffect(() => {
 		if (!isSelected && view === EDIT_VIEW) {
-			//setView(DESKTOP_VIEW);
+			setView(DESKTOP_VIEW);
 		}
 	}, [isSelected, view]);
+
+	const appContext = useMemo(() => {
+		const nextAppContext = applyFilters('wcf_definition', { ...props.appContext }, attributes);
+
+		if (JSON.stringify(nextAppContext) !== JSON.stringify(appContext)) {
+			return nextAppContext;
+		}
+
+		return props.appContext;
+	}, [applyFilters, props.appContext, attributes]);
 
 	const showViewSwitch = appContext.items.filter(item => item.position !== 'inspector').length > 0;
 	const showInspector = appContext.items.filter(item => item.position === 'inspector').length > 0;
@@ -64,10 +75,10 @@ const GutenbergBlock = (props) => {
 					/>
 				)}
 				{view === EDIT_VIEW && (
-					<EditGutenbergBlock {...props} />
+					<EditGutenbergBlock {...props} appContext={appContext} />
 				)}
 				{showInspector && (
-					<InspectorGutenbergBlock {...props} />
+					<InspectorGutenbergBlock {...props} appContext={appContext} />
 				)}
 			</ScreenContext.Provider>
 		</div>
