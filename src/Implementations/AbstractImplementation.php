@@ -352,8 +352,6 @@ abstract class AbstractImplementation {
 			case 'number':
 				return 'number';
 			case 'attachment':
-			case 'post':
-				return 'integer';
 			case 'multi_attachment':
 			case 'multi_group':
 			case 'multi_post':
