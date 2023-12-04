@@ -78,9 +78,17 @@ const PostField = (props) => {
 	const handleAdd = (item) => {
 		if (isMulti) {
 			const newValues = [...currentValue, item];
-			setCurrentValue([...new Set(newValues.map(value => String(value)))]);
+			if (['multi_post', 'multi_attachment'].includes(props.type)) {
+				setCurrentValue([...new Set(newValues.map(value => parseInt(value, 10)))]);
+      } else {
+        setCurrentValue([...new Set(newValues.map(value => String(value)))]);
+			}
 		} else {
-			setCurrentValue([item]);
+			if (['post', 'attachment'].includes(props.type)) {
+				setCurrentValue([parseInt(item, 10)]);
+			} else {
+				setCurrentValue([String(item)]);
+			}
 		}
 	};
 
