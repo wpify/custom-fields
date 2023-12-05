@@ -30,6 +30,8 @@ final class GutenbergBlock extends AbstractImplementation {
 	/** @var callable */
 	private $display;
 
+	private $enqueue_scripts = false;
+
 	/**
 	 * GutenbergBlock constructor.
 	 *
@@ -91,6 +93,7 @@ final class GutenbergBlock extends AbstractImplementation {
 
 		add_action( 'init', array( $this, 'register_block' ), $defaults['init_priority'] );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ) );
+		add_action( 'admin_footer', array( $this, 'enqueue_block_editor_scripts' ) );
 	}
 
 	/**
@@ -111,29 +114,35 @@ final class GutenbergBlock extends AbstractImplementation {
 	public function enqueue_block_editor_assets() {
 		wp_enqueue_editor();
 		wp_enqueue_code_editor( array( 'type' => 'text/html' ) );
-
-		$script = $this->wcf->get_assets()->enqueue_script(
-			'wpify-custom-blocks.js',
-			array( 'wp-tinymce', 'code-editor' ),
-			true,
-			array(
-				'wcf_code_editor_settings' => $this->wcf->get_assets()->get_code_editor_settings(),
-				'wcf_build_url'            => $this->get_build_url(),
-				'wcf_date'                 => array(
-					'date_format' => get_option( 'date_format' ),
-					'time_format' => get_option( 'time_format' )
-				),
-			)
-		);
-
-		$js_args          = $this->get_args( array( 'render_callback' ) );
-		$js_args['items'] = $this->fill_selects( $js_args['items'] );
-		$inline_script    = 'window.wcf_blocks=(window.wcf_blocks||{});window.wcf_blocks[\'' . $this->name . '\']=' . wp_json_encode( $js_args, JSON_UNESCAPED_UNICODE ) . ';';
-		$inline_script    .= 'window.wcf_build_url=' . wp_json_encode( $this->get_build_url() ) . ';';
-
-		wp_add_inline_script( $script, $inline_script, 'before' );
-
 		$this->wcf->get_assets()->enqueue_style( 'wpify-custom-blocks.css' );
+
+		$this->enqueue_scripts = true;
+
+	}
+
+	public function enqueue_block_editor_scripts() {
+		if ( $this->enqueue_scripts ) {
+			$script = $this->wcf->get_assets()->enqueue_script(
+				'wpify-custom-blocks.js',
+				array( 'wp-tinymce', 'code-editor' ),
+				true,
+				array(
+					'wcf_code_editor_settings' => $this->wcf->get_assets()->get_code_editor_settings(),
+					'wcf_build_url'            => $this->get_build_url(),
+					'wcf_date'                 => array(
+						'date_format' => get_option( 'date_format' ),
+						'time_format' => get_option( 'time_format' )
+					),
+				)
+			);
+
+			$js_args          = $this->get_args( array( 'render_callback' ) );
+			$js_args['items'] = $this->fill_selects( $js_args['items'] );
+			$inline_script    = 'window.wcf_blocks=(window.wcf_blocks||{});window.wcf_blocks[\'' . $this->name . '\']=' . wp_json_encode( $js_args, JSON_UNESCAPED_UNICODE ) . ';';
+			$inline_script    .= 'window.wcf_build_url=' . wp_json_encode( $this->get_build_url() ) . ';';
+
+			wp_add_inline_script( $script, $inline_script, 'before' );
+		}
 	}
 
 	/**
