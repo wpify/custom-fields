@@ -1,3 +1,12 @@
 .wcf-wysiwyg-field {
   background-color: white;
 }
+
+.wcf-tinymce-wrapper {
+	width: 100%;
+
+	.mce-panel, .mce-abs-layout-item, .mce-container-body {
+		width: 100% !important;
+		height: 40px !important;
+	}
+}
