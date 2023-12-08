@@ -21,7 +21,7 @@ const AttachmentField = (props) => {
 
 	const { value, currentValue, setCurrentValue } = useNormalizedValue(props);
 
-	const returnValue = isMulti ? currentValue.filter(Boolean) : currentValue.find(Boolean);
+	const returnValue = isMulti ? currentValue.filter(Boolean) : (currentValue.find(Boolean) || null);
 	const frame = useRef();
 	const { wp } = window;
 
