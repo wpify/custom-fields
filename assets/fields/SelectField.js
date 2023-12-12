@@ -2,8 +2,10 @@ import React, { useEffect, useRef } from 'react';
 import ErrorBoundary from '../components/ErrorBoundary';
 import SelectControl from '../components/SelectControl';
 import { useNormalizedValue } from '../helpers';
+import { applyFilters } from '@wordpress/hooks';
 
-const SelectField = (props) => {
+const SelectField = (rawProps) => {
+	const props = applyFilters('wcf_field_props', rawProps);
 	const {
 		id,
 		onChange,

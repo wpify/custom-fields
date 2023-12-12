@@ -2,8 +2,10 @@ import React, { useEffect } from 'react';
 import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { useNormalizedValue } from '../helpers';
+import { applyFilters } from '@wordpress/hooks';
 
-const TextareaField = (props) => {
+const TextareaField = (rawProps) => {
+	const props = applyFilters('wcf_field_props', rawProps);
 	const {
 		id,
 		htmlId = id => id,

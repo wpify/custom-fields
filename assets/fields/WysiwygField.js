@@ -4,8 +4,10 @@ import { v4 as uuid } from 'uuid';
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { useNormalizedValue } from '../helpers';
+import { applyFilters } from '@wordpress/hooks';
 
-const WysiwygField = (props) => {
+const WysiwygField = (rawProps) => {
+	const props = applyFilters('wcf_field_props', rawProps);
 	const {
 		id,
 		htmlId = id => id,

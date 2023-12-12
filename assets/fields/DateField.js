@@ -3,8 +3,10 @@ import classnames from 'classnames';
 import InputField from './InputField';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { dateI18n } from '@wordpress/date';
+import { applyFilters } from '@wordpress/hooks';
 
-const DateField = (props) => {
+const DateField = (rawProps) => {
+	const props = applyFilters('wcf_field_props', rawProps);
 	const { className } = props;
 
 	return (

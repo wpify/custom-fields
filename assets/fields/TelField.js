@@ -3,9 +3,11 @@ import classnames from 'classnames';
 import intlTelInput from 'intl-tel-input';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { useNormalizedValue } from '../helpers';
+import { applyFilters } from '@wordpress/hooks';
 
 // eslint-disable-next-line react/display-name
-const TelField = (props) => {
+const TelField = (rawProps) => {
+	const props = applyFilters('wcf_field_props', rawProps);
 	const {
 		id,
 		htmlId = id => id,

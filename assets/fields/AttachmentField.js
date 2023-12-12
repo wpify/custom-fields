@@ -6,8 +6,11 @@ import Attachment from '../components/Attachment';
 import { useNormalizedValue } from '../helpers';
 import SortableControl from '../components/SortableControl';
 import ErrorBoundary from '../components/ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
-const AttachmentField = (props) => {
+const AttachmentField = (rawProps) => {
+	const props = applyFilters('wcf_field_props', rawProps);
+
 	const {
 		id,
 		className,

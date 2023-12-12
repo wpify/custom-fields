@@ -3,8 +3,10 @@ import ScreenContext from '../components/ScreenContext';
 import ErrorBoundary from '../components/ErrorBoundary';
 import GroupFieldRow from '../components/GroupFieldRow.js';
 import { useNormalizedValue } from '../helpers';
+import { applyFilters } from '@wordpress/hooks';
 
-const GroupField = (props) => {
+const GroupField = (rawProps) => {
+	const props = applyFilters('wcf_field_props', rawProps);
 	const {
 		group_level = 0,
 		onChange,

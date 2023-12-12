@@ -4,7 +4,9 @@ import Button from '../components/Button';
 import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
 
-const ButtonField = (props) => {
+const ButtonField = (rawProps) => {
+	const props = applyFilters('wcf_field_props', rawProps);
+
 	const {
 		className,
 		title,

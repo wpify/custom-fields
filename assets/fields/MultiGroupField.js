@@ -7,6 +7,7 @@ import SortableControl from '../components/SortableControl';
 import { clone, useNormalizedValue } from '../helpers';
 import { v4 as uuid } from 'uuid';
 import ErrorBoundary from '../components/ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
 const removeKeys = (values = []) => {
 	return clone(Array.isArray(values) ? values : []).map(value => {
@@ -16,7 +17,8 @@ const removeKeys = (values = []) => {
 	});
 };
 
-const MultiGroupField = (props) => {
+const MultiGroupField = (rawProps) => {
+	const props = applyFilters('wcf_field_props', rawProps);
 	const {
 		group_level = 0,
 		onChange,

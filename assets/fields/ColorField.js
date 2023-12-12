@@ -5,8 +5,11 @@ import Button from '../components/Button';
 import { invertColor, useNormalizedValue } from '../helpers';
 import ErrorBoundary from '../components/ErrorBoundary';
 import CloseButton from '../components/CloseButton';
+import { applyFilters } from '@wordpress/hooks';
 
-const ColorField = (props) => {
+const ColorField = (rawProps) => {
+	const props = applyFilters('wcf_field_props', rawProps);
+
 	const {
 		id,
 		htmlId = id => id,

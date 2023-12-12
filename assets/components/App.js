@@ -13,7 +13,7 @@ const App = (props) => {
 	const [data, setData] = useState(Object.fromEntries(originalWcf.items.map(i => [i.id, i.value])));
 
 	const wcf = useMemo(() => {
-		const newWcf = applyFilters('wcf_definition', originalWcf, data);
+		const newWcf = applyFilters('wcf_definition', { ...originalWcf, data }, data);
 
 		if (JSON.stringify(newWcf) !== JSON.stringify(originalWcf)) {
 			return newWcf;
