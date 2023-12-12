@@ -35,3 +35,4 @@ jobs:
           git commit -m "Add built assets for ${{ github.ref }}"
           BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})
           git push origin HEAD:master
+          echo "Done!"
