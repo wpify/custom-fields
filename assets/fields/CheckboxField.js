@@ -2,9 +2,12 @@ import React, { useEffect } from 'react';
 import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { useNormalizedValue } from '../helpers';
+import { applyFilters } from '@wordpress/hooks';
 
 // eslint-disable-next-line react/display-name
-const CheckboxField = React.forwardRef((props, ref) => {
+const CheckboxField = React.forwardRef((rawProps, ref) => {
+	const props = applyFilters('wcf_field_props', rawProps);
+
 	const {
 		id,
 		htmlId = id => id,

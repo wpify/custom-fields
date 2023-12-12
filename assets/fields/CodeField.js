@@ -2,8 +2,11 @@ import React, { useEffect, useRef, useCallback } from 'react';
 import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { useNormalizedValue } from '../helpers';
+import { applyFilters } from '@wordpress/hooks';
 
-const CodeField = React.forwardRef((props, ref) => {
+const CodeField = React.forwardRef((rawProps, ref) => {
+	const props = applyFilters('wcf_field_props', rawProps);
+
 	const {
 		id,
 		onChange,

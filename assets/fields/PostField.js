@@ -5,8 +5,11 @@ import SelectControl from '../components/SelectControl';
 import SortableControl from '../components/SortableControl';
 import CloseButton from '../components/CloseButton';
 import { useNormalizedValue } from '../helpers';
+import { applyFilters } from '@wordpress/hooks';
 
-const SelectedOption = ({ selectedOptions, value, handleDelete, sortable = false }) => {
+const SelectedOption = (rawProps) => {
+	const props = applyFilters('wcf_field_props', rawProps);
+	const { selectedOptions, value, handleDelete, sortable = false } = props;
 	const option = selectedOptions.find(o => String(o.value) === String(value));
 
 	return option ? (

@@ -1,8 +1,10 @@
 import React from 'react';
 import SelectField from './SelectField';
 import ErrorBoundary from '../components/ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
-const MultiSelectField = (props) => {
+const MultiSelectField = (rawProps) => {
+	const props = applyFilters('wcf_field_props', rawProps);
 	return (
 		<ErrorBoundary>
 			<SelectField {...props} isMulti />

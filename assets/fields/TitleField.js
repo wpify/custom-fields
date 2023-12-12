@@ -1,8 +1,10 @@
 import React from 'react';
 import classnames from 'classnames';
 import ErrorBoundary from '../components/ErrorBoundary';
+import { applyFilters } from '@wordpress/hooks';
 
-const TitleField = (props) => {
+const TitleField = (rawProps) => {
+	const props = applyFilters('wcf_field_props', rawProps);
 	const { className, title, description, custom_attributes } = props;
 	return (
 		<React.Fragment>

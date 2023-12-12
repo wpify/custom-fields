@@ -1,15 +1,16 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import ErrorBoundary from '../components/ErrorBoundary';
-import { applyFilters } from '@wordpress/hooks';
 import { Icon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import SelectControl from '../components/SelectControl';
 import { useNormalizedValue, valueOrDefault } from '../helpers';
 import CloseButton from '../components/CloseButton';
+import { applyFilters } from '@wordpress/hooks';
 
 // eslint-disable-next-line react/display-name
-const LinkField = React.forwardRef((props, ref) => {
+const LinkField = React.forwardRef((rawProps, ref) => {
+	const props = applyFilters('wcf_field_props', rawProps);
 	const {
 		id,
 		htmlId = id => id,

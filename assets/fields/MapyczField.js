@@ -2,8 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
 import { load } from 'wpify-mapy-cz';
 import { __, sprintf } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 
-const MapyczField = (props) => {
+const MapyczField = (rawProps) => {
+	const props = applyFilters('wcf_field_props', rawProps);
 	const { id, className, group_level = 0, value = {}, onChange, appContext } = props;
 	const [currentValue, setCurrentValue] = useState(value);
 	const suggestref = useRef();

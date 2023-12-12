@@ -1,8 +1,10 @@
 import React from 'react';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { InnerBlocks } from '@wordpress/block-editor';
+import { applyFilters } from '@wordpress/hooks';
 
-const InnerBlocksField = React.forwardRef((props, ref) => {
+const InnerBlocksField = React.forwardRef((rawProps, ref) => {
+	const props = applyFilters('wcf_field_props', rawProps);
 	const {
 		id,
 		htmlId = id => id,

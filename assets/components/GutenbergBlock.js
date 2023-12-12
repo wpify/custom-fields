@@ -26,7 +26,7 @@ const GutenbergBlock = (props) => {
 	}, [isSelected, view]);
 
 	const appContext = useMemo(() => {
-		const nextAppContext = applyFilters('wcf_definition', { ...props.appContext }, attributes);
+		const nextAppContext = applyFilters('wcf_definition', { ...props.appContext, data: attributes }, attributes);
 
 		if (JSON.stringify(nextAppContext) !== JSON.stringify(appContext)) {
 			return nextAppContext;

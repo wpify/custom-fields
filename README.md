@@ -2,8 +2,6 @@
 
 This library provides custom fields for WordPress and WooCommerce via simple API. The custom fields are stored in plain metadata so that you can access them via standard WordPress functionality. The frontend is written in React.js and has no dependencies in PHP. The library also doesn't include React itself but uses react as a dependency from WordPress. Therefore, the library is small and fast but requires at least WordPress 5.3.
 
-[[_TOC_]]
-
 ## Overview
 
 At the moment, you can add custom fields to the following locations:
@@ -1073,6 +1071,22 @@ This approach has some caveats:
 
 * You cannot define conditional fields in multi group field type. The new items will apply to all groups in multi group.
 * If you define conditions in gutenberg blocks, you need to define all attributes, or it won't be saved.
+
+You can also use the filter `wcf_field_props`, that allows you modify e.g. classnames of the field.
+
+```javascript
+import { addFilter } from '@wordpress/hooks';
+
+addFilter('wcf_field_props', 'my-plugin-test', (props) => {
+  if (props.appContext.object_type === 'options_page' && props.appContext.menu_slug === 'some-test-menu-slug' && props.id === 'test_field') {
+		props.className += ' test-class';
+  }
+  
+  return props;
+});
+```
+
+The code above will add `test-class` to the field with ID `test_field` in options page with slug `some-test-menu-slug`.
 
 # Advanced usage - custom getters and setters
 
