@@ -4,6 +4,7 @@ import ErrorBoundary from '../components/ErrorBoundary';
 import GroupFieldRow from '../components/GroupFieldRow.js';
 import { useNormalizedValue } from '../helpers';
 import { applyFilters } from '@wordpress/hooks';
+import classnames from 'classnames';
 
 const GroupField = (rawProps) => {
 	const props = applyFilters('wcf_field_props', rawProps);
@@ -40,7 +41,7 @@ const GroupField = (rawProps) => {
 	return (
 		<React.Fragment>
 			<ErrorBoundary>
-				<RootWrapper group_level={group_level + 1} className={props?.class}>
+				<RootWrapper group_level={group_level + 1} className={classnames(props?.class, className)}>
 					{group_level === 0 && (
 						<RowWrapper item={{ title: 'hidden', type: 'hidden' }} withoutLabel={true} style={{ display: 'none' }}>
 							<input type="hidden" id={appContext.hooks.id(id)} name={appContext.hooks.name(id)} value={JSON.stringify(currentValue)} />
