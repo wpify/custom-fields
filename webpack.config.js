@@ -87,7 +87,7 @@ module.exports = (env) => {
 				'./assets/wpify-custom-blocks.js',
 				'./assets/wpify-custom-fields.scss',
 			],
-			'test': './assets/test.js',
+			'test2': './assets/test.js',
 		},
 		output: {
 			path: 'build',
