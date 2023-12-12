@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@wordpress/icons": "^9.36.0",
-    "@wordpress/scripts": "^26.16.0",
+    "@wordpress/scripts": "^26.18.0",
     "browser-sync": "^2.29.3",
     "browser-sync-webpack-plugin": "^2.3.0",
     "node-sass-glob-importer": "^5.3.3"
