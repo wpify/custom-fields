@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import classnames from 'classnames';
-import { getItemComponent } from '../helpers';
+import { getItemComponent, htmlDecode } from '../helpers';
 import CloseButton from '../components/CloseButton';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { applyFilters } from '@wordpress/hooks';
@@ -61,7 +61,7 @@ const MultiGroupFieldRow = (props) => {
 		<div className={classnames('wcf-multi-group-row', className)}>
 			<div className={classnames('wcf-multi-group-row__header')}>
 				<span className={classnames('wcf-multi-group-row__title')} onClick={() => toggleCollapsed()}>
-					#{index + 1}: {title}
+					#{index + 1}: {htmlDecode(title)}
 				</span>
 				<div className={classnames('wcf-multi-group-row__buttons')}>
 					{!disabled_buttons.includes('duplicate') && (
