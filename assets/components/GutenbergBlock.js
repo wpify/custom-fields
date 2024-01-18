@@ -21,7 +21,7 @@ const GutenbergBlock = (props) => {
 
 	useEffect(() => {
 		if (!isSelected && view === EDIT_VIEW) {
-			setView(DESKTOP_VIEW);
+			// setView(DESKTOP_VIEW); Do not do that, because it breaks in the case of inner blocks
 		}
 	}, [isSelected, view]);
 
