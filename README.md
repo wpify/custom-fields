@@ -6,14 +6,16 @@ This library provides custom fields for WordPress and WooCommerce via simple API
 
 At the moment, you can add custom fields to the following locations:
 
-* Post
-* Taxonomy
-* Options page
-* WooCommerce product options
-* WooCommerce order metabox
-* WooCommerce membership plan options
-* WooCommerce settings section
-* User options
+* [Post](#how-to-add-custom-fields-to-post-type) 
+* [Taxonomy](#how-to-add-custom-fields-to-the-taxonomy-term)
+* [Options page](#how-to-create-an-options-page-with-custom-fields)
+* [WooCommerce product options](#how-to-add-custom-fields-to-the-product-options)
+* [WooCommerce order metabox](#how-to-add-custom-fields-to-woocommerce-order-with-hpos-enabled)
+* [WooCOmmerce product variation options](#how-to-add-custom-fields-to-the-product-variations)
+* [WooCommerce membership plan options](#how-to-add-custom-fields-to-the-membership-plan-options)
+* [WooCommerce settings section](#how-to-add-custom-fields-to-woocommerce-settings)
+* [User options](#how-to-add-custom-fields-to-the-user)
+* [Guttenberg block](#how-to-generate-gutenberg-block-with-custom-fields)
 
 The custom fields themselves use the standard HTML inputs, so it's recommended to use Google Chrome or Firefox to use the custom fields. This allows having a small footprint and a speedy frontend for the custom fields. You have available wide variety of custom field types:
 
@@ -330,6 +332,8 @@ $some_custom_field_value = get_post_meta( $product_id, 'some_id_of_the_meta', tr
 **Links**
 
 * `get_post_meta`: https://developer.wordpress.org/reference/functions/get_post_meta/
+
+## How to add custom fields to WooCommerce order with HPOS enabled?
 
 ![Order metabox](docs/images/wcf-order-metabox.png)
 
