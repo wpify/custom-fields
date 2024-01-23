@@ -11,7 +11,7 @@ At the moment, you can add custom fields to the following locations:
 * [Options page](#how-to-create-an-options-page-with-custom-fields)
 * [WooCommerce product options](#how-to-add-custom-fields-to-the-product-options)
 * [WooCommerce order metabox](#how-to-add-custom-fields-to-woocommerce-order-with-hpos-enabled)
-* [WooCOmmerce product variation options](#how-to-add-custom-fields-to-the-product-variations)
+* [WooCommerce product variation options](#how-to-add-custom-fields-to-the-product-variations)
 * [WooCommerce membership plan options](#how-to-add-custom-fields-to-the-membership-plan-options)
 * [WooCommerce settings section](#how-to-add-custom-fields-to-woocommerce-settings)
 * [User options](#how-to-add-custom-fields-to-the-user)
