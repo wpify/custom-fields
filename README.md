@@ -54,6 +54,13 @@ Some fields also allow multiple values. You can also sort the values via drag&dr
 * [Multiple Posts](#post-field-type-post-multi_post) `multi_post`: Select multiple posts.
 * [Multiple Select](#select-field-type-select-multi_select) `multi_select`: Select multiple values.
 
+Advanced usage:
+
+* [Extending the field types](#extending-the-field-types)
+* [Bedrock support](#bedrock-support)
+* [Advanced usage - conditional custom fields](#advanced-usage---conditional-custom-fields)
+* [Advanced usage - custom getters and setters](#advanced-usage---custom-getters-and-setters)
+
 ### Requirements
 
 * PHP 8.0+ (we support only versions with security patches)
