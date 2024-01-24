@@ -6,50 +6,60 @@ This library provides custom fields for WordPress and WooCommerce via simple API
 
 At the moment, you can add custom fields to the following locations:
 
-* Post
-* Taxonomy
-* Options page
-* WooCommerce product options
-* WooCommerce order metabox
-* WooCommerce membership plan options
-* WooCommerce settings section
-* User options
+* [Post](#how-to-add-custom-fields-to-post-type) 
+* [Taxonomy](#how-to-add-custom-fields-to-the-taxonomy-term)
+* [Options page](#how-to-create-an-options-page-with-custom-fields)
+* [WooCommerce product options](#how-to-add-custom-fields-to-the-product-options)
+* [WooCommerce order metabox](#how-to-add-custom-fields-to-woocommerce-order-with-hpos-enabled)
+* [WooCommerce product variation options](#how-to-add-custom-fields-to-the-product-variations)
+* [WooCommerce membership plan options](#how-to-add-custom-fields-to-the-membership-plan-options)
+* [WooCommerce settings section](#how-to-add-custom-fields-to-woocommerce-settings)
+* [User options](#how-to-add-custom-fields-to-the-user)
+* [Guttenberg block](#how-to-generate-gutenberg-block-with-custom-fields)
 
 The custom fields themselves use the standard HTML inputs, so it's recommended to use Google Chrome or Firefox to use the custom fields. This allows having a small footprint and a speedy frontend for the custom fields. You have available wide variety of custom field types:
 
-* Attachment `attachment`: Files and images from Media library.
-* Checkbox `checkbox`
-* Code `code`: For CSS, javascript, HTML, PHP, and other dialects.
-* Color `color`
-* Date `date`
-* Datetime `datetime`
-* E-mail `email`
-* Group `group`: To save multiple custom fields in one object.
-* HTML `html`: To print some piece of HTML in the settings.
-* Inner Blocks `inner_blocks`: To use inner blocks in Gutenberg editor.
-* Link `link`
-* Mapy.cz `mapycz`: To enter coordinates of some place.
-* Month `month`
-* Number `number`
-* Password `password`
-* Post `post`: To select any post from any post type.
-* Select `select`: Searchable select field.
-* Phone number `tel`: The phone number input that enforces the user to put the standardized phone number in an
+* [Attachment](#attachment-field-type-attachment-multi_attachment) `attachment`: Files and images from Media library.
+* [Checkbox](#checkbox-field-type-checkbox) `checkbox`
+* [Code](#code-editor-field-type-code) `code`: For CSS, javascript, HTML, PHP, and other dialects.
+* [Color](#color-field-type-color) `color`
+* [Date](#date-field-type-date) `date`
+* [Datetime](#date-and-time-field-type-datetime) `datetime`
+* [Email](#e-mail-field-type-email) `email`
+* [Group](#group-field-type-group-multi_group) `group`: To save multiple custom fields in one object.
+* [HTML](#html-field-type-html) `html`: To print some piece of HTML in the settings.
+* [Inner Blocks](#inner-blocks-field-type-inner_blocks) `inner_blocks`: To use inner blocks in Gutenberg editor.
+* [Link](#link-field-type-link) `link`
+* [Mapy.cz](#mapycz-field-type-mapycz) `mapycz`: To enter coordinates of some place.
+* [Month](#month-field-type-month) `month`
+* [Number](#number-field-type-number) `number`
+* [Password](#password-field-type-password) `password`
+* [Post](#post-field-type-post-multi_post) `post`: To select any post from any post type.
+* [Select](#select-field-type-select-multi_select) `select`: Searchable select field.
+* [Phone number](#phone-number-field-type-tel) `tel`: The phone number input that enforces the user to put the standardized phone number in an
   international format.
-* Textarea `textarea`
-* Text `text`
-* Time `time`
-* Title `title`: To print the section title in the settings.
-* Toggle `toggle`
-* URL `url`
-* Week `week`
+* [Textarea](#textarea-field-type-textarea) `textarea`
+* [Text](#text-field-type-text) `text`
+* [Time](#time-field-type-time) `time`
+* [Title](#title-field-type-title) `title`: To print the section title in the settings.
+* [Toggle](#toggle-field-type-toggle) `toggle`
+* [URL](#url-field-type-url) `url`
+* [Week](#week-field-type-week) `week`
+* [WYSIWYG](#wysiwyg-fields-type-wysiwyg) `wysiwyg`: To edit HTML visually.
 
 Some fields also allow multiple values. You can also sort the values via drag&drop.
 
-* Multiple Attachments `multi_attachment`
-* Multiple Groups `multi_group`: The repeater allows you to have any custom fields repeated inside a group.
-* Multiple Posts `multi_post`: Select multiple posts.
-* Multiple Select `multi_select`: Select multiple values.
+* [Multiple Attachments](#attachment-field-type-attachment-multi_attachment) `multi_attachment`
+* [Multiple Groups](#group-field-type-group-multi_group) `multi_group`: The repeater allows you to have any custom fields repeated inside a group.
+* [Multiple Posts](#post-field-type-post-multi_post) `multi_post`: Select multiple posts.
+* [Multiple Select](#select-field-type-select-multi_select) `multi_select`: Select multiple values.
+
+Advanced usage:
+
+* [Extending the field types](#extending-the-field-types)
+* [Bedrock support](#bedrock-support)
+* [Advanced usage - conditional custom fields](#advanced-usage---conditional-custom-fields)
+* [Advanced usage - custom getters and setters](#advanced-usage---custom-getters-and-setters)
 
 ### Requirements
 
@@ -330,6 +340,8 @@ $some_custom_field_value = get_post_meta( $product_id, 'some_id_of_the_meta', tr
 **Links**
 
 * `get_post_meta`: https://developer.wordpress.org/reference/functions/get_post_meta/
+
+## How to add custom fields to WooCommerce order with HPOS enabled?
 
 ![Order metabox](docs/images/wcf-order-metabox.png)
 
