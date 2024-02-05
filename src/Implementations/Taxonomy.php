@@ -26,7 +26,7 @@ final class Taxonomy extends AbstractPostImplementation {
 	/**
 	 * Taxonomy constructor.
 	 *
-	 * @param array        $args
+	 * @param array $args
 	 * @param CustomFields $wcf
 	 */
 	public function __construct( array $args, CustomFields $wcf ) {
@@ -137,15 +137,19 @@ final class Taxonomy extends AbstractPostImplementation {
 
 	/**
 	 * @param string $name
-	 * @param array  $item
+	 * @param array $item
 	 *
 	 * @return mixed
 	 */
 	public function get_field( string $name, array $item ) {
 		if ( ! empty( $item['callback_get'] ) ) {
 			return call_user_func( $item['callback_get'], $item, $this->term_id );
+		} else if ( $this->term_id ) {
+			return get_term_meta( $this->term_id, $name, \true );
+		} else if ( $item['default'] ) {
+			return $item['default'];
 		} else {
-			return get_term_meta( $this->term_id, $name, true );
+			return '';
 		}
 	}
 
@@ -170,7 +174,7 @@ final class Taxonomy extends AbstractPostImplementation {
 	/**
 	 * @param string $name
 	 * @param string $value
-	 * @param array  $item
+	 * @param array $item
 	 *
 	 * @return bool|int|\WP_Error
 	 */
