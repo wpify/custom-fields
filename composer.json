@@ -9,13 +9,15 @@
 		},
 		"files": [
 			"functions.php"
-		],
-		"platform": {
-			"php": "7.4.33"
-		}
+		]
 	},
 	"require": {
 		"php": ">=7.4.33",
 		"ext-json": "*"
+	},
+	"config": {
+		"platform": {
+			"php": "7.4.33"
+		}
 	}
 }
