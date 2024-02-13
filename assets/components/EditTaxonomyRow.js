@@ -3,7 +3,8 @@ import classnames from 'classnames';
 import ErrorBoundary from './ErrorBoundary';
 
 const EditTaxonomyRow = ({ className, item, children, group_level = 0, htmlId = id => id, style }) => {
-	const label = item.title
+	const showLabel = !['title'].includes(item.type);
+	const label = item.title && showLabel
 		? (
 			<ErrorBoundary>
 				<label htmlFor={htmlId(item.id)} dangerouslySetInnerHTML={{ __html: item.title }}/>
