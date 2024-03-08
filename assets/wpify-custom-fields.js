@@ -27,7 +27,7 @@ function loadCustomFields (event) {
 					};
 				}
 
-				if (ReactDOM.createRoot) {
+				if (typeof ReactDOM.createRoot === 'function') {
 					ReactDOM.createRoot(container).render(<App wcf={wcf} />);
 				} else {
 					ReactDOM.render(<App wcf={wcf} />, container);
