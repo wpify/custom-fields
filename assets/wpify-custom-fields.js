@@ -34,7 +34,6 @@ function loadCustomFields (event) {
 				}
 
 				container.dataset.loaded = true;
-				container.dataset.loaded = true;
 			}
 		}
 	});
