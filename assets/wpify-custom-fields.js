@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types, no-redeclare, no-unused-vars, no-global-assign */
 /* global __webpack_public_path__ */
 
 __webpack_public_path__ = window.wcf_build_url;
@@ -31,10 +30,10 @@ function loadCustomFields (event) {
 				if (ReactDOM.createRoot) {
 					ReactDOM.createRoot(container).render(<App wcf={wcf} />);
 				} else {
-					// Fallback to the older ReactDOM.render method for backward compatibility
 					ReactDOM.render(<App wcf={wcf} />, container);
 				}
 
+				container.dataset.loaded = true;
 				container.dataset.loaded = true;
 			}
 		}
