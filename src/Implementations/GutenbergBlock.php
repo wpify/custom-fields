@@ -90,7 +90,7 @@ final class GutenbergBlock extends AbstractImplementation {
 				return $args['display'];
 			};
 		}
-
+		
 		add_action( 'init', array( $this, 'register_block' ), $defaults['init_priority'] );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ) );
 		add_action( 'admin_footer', array( $this, 'enqueue_block_editor_scripts' ) );
@@ -108,6 +108,7 @@ final class GutenbergBlock extends AbstractImplementation {
 
 		$args = $this->get_args();
 
+		do_action( 'wpify_custom_fields_register_block', $this->name, $args );
 		register_block_type( $this->name, $args );
 	}
 
