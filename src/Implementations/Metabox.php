@@ -47,7 +47,7 @@ final class Metabox extends AbstractPostImplementation {
 	/**
 	 * Metabox constructor.
 	 *
-	 * @param array        $args
+	 * @param array $args
 	 * @param CustomFields $wcf
 	 */
 	public function __construct( array $args, CustomFields $wcf ) {
@@ -98,6 +98,8 @@ final class Metabox extends AbstractPostImplementation {
 	 */
 	public function register_meta() {
 		$items = $this->get_items();
+
+		do_action( 'wpify_custom_fields_register_post_meta', $items, $this->post_types );
 
 		foreach ( $items as $item ) {
 			foreach ( $this->post_types as $post_type ) {
