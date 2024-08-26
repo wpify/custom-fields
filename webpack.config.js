@@ -87,6 +87,7 @@ module.exports = (env) => {
 				'./assets/wpify-custom-blocks.js',
 				'./assets/wpify-custom-fields.scss',
 			],
+			'int-tel-input-utils': './node_modules/intl-tel-input/build/js/utils.js',
 		},
 		output: {
 			path: 'build',

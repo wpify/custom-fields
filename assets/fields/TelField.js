@@ -28,7 +28,7 @@ const TelField = (rawProps) => {
 
 	useEffect(() => {
 		itiRef.current = intlTelInput(inputRef.current, {
-			utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.11/js/utils.min.js',
+			utilsScript: window.wcf_build_url + 'int-tel-input-utils.js',
 			initialCountry: initial_country,
 		});
 	}, []);
