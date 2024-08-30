@@ -167,7 +167,7 @@ final class WooCommerceSettings extends AbstractImplementation {
 						<li>
 							<a href="<?php echo admin_url( 'admin.php?page=wc-settings&tab=' . $this->tab['id'] . '&section=' . sanitize_title( $id ) ); ?>"
 							   class="<?php echo $current_section == $id ? 'current' : ''; ?>">
-								<?php echo $label; ?>
+								<?php echo wp_kses_post( $label ); ?>
 							</a>
 							<?php echo end( $array_keys ) == $id ? '' : '|'; ?>
 						</li>

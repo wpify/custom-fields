@@ -247,10 +247,10 @@ final class Options extends AbstractImplementation {
 		}
 		?>
 		<div class="wrap">
-			<h1><?php echo $this->page_title; ?></h1>
+			<h1><?php echo wp_kses_post( $this->page_title ); ?></h1>
 			<?php settings_errors(); ?>
 
-			<form method="post" name="form" action="<?php echo $action; ?>">
+			<form method="post" name="form" action="<?php echo esc_attr( $action ); ?>">
 				<?php
 				settings_fields( $this->menu_slug );
 				do_settings_sections( $this->menu_slug );

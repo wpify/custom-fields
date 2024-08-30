@@ -233,11 +233,11 @@ final class SiteOptions extends AbstractImplementation {
 			);
 			?>
 			<h2><?php
-				echo $this->page_title; ?></h2>
+				echo wp_kses_post( $this->page_title ); ?></h2>
 			<?php
 			// phpcs:ignore ?>
-			<form method="post" name="form" action="<?php echo $action; ?>">
-				<input type="hidden" name="id" value="<?php echo $id ?>" />
+			<form method="post" name="form" action="<?php echo esc_attr( $action ); ?>">
+				<input type="hidden" name="id" value="<?php echo esc_attr( $id ) ?>" />
 				<?php
 				settings_fields( $this->menu_slug );
 				do_settings_sections( $this->menu_slug );
