@@ -1,0 +1,19 @@
+.wpifycf-multi-field-item {
+  display: flex;
+}
+
+.wpifycf-attachment-button {
+  cursor: pointer;
+}
+
+.wpifycf-attachment-button:has(img) {
+  padding: 0;
+  margin: 0;
+  border: none;
+
+  img {
+    display: block;
+    object-fit: contain;
+    object-position: left;
+  }
+}

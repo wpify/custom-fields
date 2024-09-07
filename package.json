@@ -1,46 +1,17 @@
 {
-  "name": "wpify-custom-fields",
-  "version": "1.0.0",
-  "main": "build/wpify-custom-fields.js",
   "scripts": {
     "start": "wp-scripts start",
-    "build": "wp-scripts build",
-    "packages-update": "wp-scripts packages-update"
-  },
-  "author": "WPify <info@wpify.io>",
-  "license": "ISC",
-  "engines": {
-    "node": ">=v20"
-  },
-  "sideEffects": [
-    "*.scss"
-  ],
-  "browserslist": [
-    "defaults",
-    "cover 97%"
-  ],
-  "dependencies": {
-    "@dnd-kit/core": "^6.1.0",
-    "@dnd-kit/sortable": "^8.0.0",
-    "@dnd-kit/utilities": "^3.2.2",
-    "classnames": "^2.3.2",
-    "intl-tel-input": "^18.2.1",
-    "md5": "^2.3.0",
-    "react-color": "^2.19.3",
-    "react-select": "^5.8.0",
-    "react-sortable-hoc": "^2.0.0",
-    "swr": "^2.2.4",
-    "uuid": "^9.0.1",
-    "wpify-mapy-cz": "^1.1.4"
+    "build": "wp-scripts build"
   },
   "devDependencies": {
-    "@wordpress/icons": "^9.36.0",
-    "@wordpress/scripts": "^26.18.0",
-    "browser-sync": "^2.29.3",
-    "browser-sync-webpack-plugin": "^2.3.0",
-    "node-sass-glob-importer": "^5.3.3"
+    "@wordpress/hooks": "^4.7.0",
+    "@wordpress/i18n": "^5.7.0",
+    "@wordpress/scripts": "^27.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
-  "peerDependencies": {
-    "@wordpress/hooks": "^3.45.0"
+  "dependencies": {
+    "react-error-boundary": "^4.0.13",
+    "zustand": "^4.5.5"
   }
 }

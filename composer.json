@@ -1,23 +1,26 @@
 {
-	"name": "wpify/custom-fields",
-	"description": "WPify Custom Fields",
-	"type": "library",
-	"license": "GPL-2.0-or-later",
-	"autoload": {
-		"psr-4": {
-			"Wpify\\CustomFields\\": "src/"
-		},
-		"files": [
-			"functions.php"
-		]
-	},
-	"require": {
-		"php": ">=7.4.33",
-		"ext-json": "*"
-	},
-	"config": {
-		"platform": {
-			"php": "7.4.33"
-		}
-	}
+  "name": "wpify/custom-fields",
+  "description": "WPify Custom Fields",
+  "type": "library",
+  "license": "GPL-2.0-or-later",
+  "autoload": {
+    "psr-4": {
+      "Wpify\\CustomFields\\": "src/"
+    },
+    "files": [
+      "autoload.php"
+    ]
+  },
+  "config": {
+    "platform": {
+        "php": "8.0.30"
+    }
+  },
+  "require": {
+    "php": "^8.0.0",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "wpify/tracy": "^1.0"
+  }
 }
