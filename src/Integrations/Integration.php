@@ -10,6 +10,7 @@ abstract class Integration {
 	public function __construct(
 		private readonly CustomFields $custom_fields,
 	) {
+		add_action( 'rest_api_init', array( $this, 'register_options_api' ) );
 	}
 
 	protected function normalize_items( array $items ): array {
@@ -52,9 +53,26 @@ abstract class Integration {
 			$item['items'] = $this->normalize_items( $item['items'] );
 		}
 
+		if ( isset( $item['options'] ) ) {
+			if ( is_callable( $item['options'] ) ) {
+				// TODO: Add support for callable options
+			} elseif ( is_array( $item['options'] ) ) {
+				$options = array();
+
+				foreach ( $item['options'] as $key => $value ) {
+					if ( is_array( $value ) ) {
+						$options[] = $value;
+					} else {
+						$options[] = array( 'label' => $value, 'value' => $key );
+					}
+				}
+
+				$item['options'] = $options;
+			}
+		}
+
 		return $item;
 	}
-
 
 	public function enqueue() {
 		$handle = 'wpifycf_custom_fields';
@@ -96,5 +114,9 @@ abstract class Integration {
 		}
 
 		return false;
+	}
+
+	public function register_options_api() {
+		// TODO: Api musí mít v názvu slug pluginu, id integrace a id pole
 	}
 }

@@ -1,34 +1,26 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, forwardRef } from 'react';
+import clsx from 'clsx';
+import { IconButton } from '@/components/IconButton';
+import { Button } from '@/components/Button';
 import { __ } from '@wordpress/i18n';
+import { useMediaLibrary } from '@/helpers/hooks';
 
 export function Attachment ({ htmlId, value, name, onChange }) {
   const [attachment, setAttachment] = useState(null);
 
-  useEffect(() => {
-    if (value) {
-      wp.media.attachment(value).fetch().then((data) => {
-        setAttachment(data);
-      });
-    }
+  useEffect(function () {
+    value && wp.media.attachment(value).fetch().then(setAttachment);
   }, [value]);
 
-  const openMediaLibrary = () => {
-    const file_frame = wp.media({
-      multiple: false,
-    });
-
-    file_frame.on('select', () => {
-      const attachment = file_frame.state().get('selection').first().toJSON();
-
-      setAttachment(attachment);
-
-      if (typeof onChange === 'function') {
-        onChange(attachment.id);
-      }
-    });
-
-    file_frame.open();
-  };
+  const openMediaLibrary = useMediaLibrary({
+    value,
+    onChange,
+    multiple: false,
+    title: __('Select attachment', 'wpify-custom-fields'),
+    button: {
+      text: __('Select attachment', 'wpify-custom-fields'),
+    },
+  });
 
   const remove = useCallback(function () {
     setAttachment(null);
@@ -36,31 +28,52 @@ export function Attachment ({ htmlId, value, name, onChange }) {
   }, [setAttachment, onChange]);
 
   return (
-    <div className="attachment-picker">
-      <input type="hidden" id={htmlId} name={name} value={value} />
-      <button type="button" onClick={openMediaLibrary} className="wpifycf-attachment-button">
-        {attachment ? (
-          attachment.sizes?.thumbnail.url ? (
-            <img src={attachment.sizes.thumbnail.url} alt={attachment.filename} width={75} />
-          ) : (
-            <img src={attachment.icon} alt={attachment.filename} width={75} />
-          )
-        ) : (
-          __('Select Attachment', 'wpify-custom-fields')
-        )}
-      </button>
-
-      {attachment && (
-        <div className="attachment-details">
-          <p>{attachment.filename} [{attachment.filesizeHumanReadable}]</p>
-          <p>
-            {/* links to edit photo or remove photo */}
-            <a href={attachment.editLink} target="_blank" rel="noopener noreferrer">{__('Edit', 'wpify-custom-fields')}</a>
-            {' | '}
-            <button type="button" onClick={remove}>{__('Remove', 'wpify-custom-fields')}</button>
-          </p>
-        </div>
+    <span className="wpifycf-field-attachment">
+      {name && (
+        <input type="hidden" id={htmlId} name={name} value={value} />
       )}
-    </div>
+      {attachment && (
+        <AttachmentItem attachment={attachment} remove={remove} />
+      )}
+      {!attachment && (
+        <Button onClick={openMediaLibrary} className="wpifycf-button__add">
+          {__('Add attachment', 'wpify-custom-fields')}
+        </Button>
+      )}
+    </span>
   );
 }
+
+export const AttachmentItem = forwardRef(function ({ attachment, remove }, ref) {
+  const thumbnail = attachment?.sizes?.medium?.url;
+  const icon = attachment?.icon;
+
+  return (
+    <span
+      ref={ref}
+      className={clsx('wpifycf-attachment-item', {
+        ['wpifycf-attachment-item--has-thumbnail']: !!thumbnail,
+        ['wpifycf-attachment-item--has-icon']: !thumbnail,
+      })}
+    >
+      {thumbnail ? (
+        <span className="wpifycf-attachment-item__thumbnail">
+          <img src={thumbnail} alt={attachment.filename} width={150} height={150} />
+        </span>
+      ) : (
+        <span className="wpifycf-attachment-item__icon">
+          <img src={icon} alt={attachment.filename} width={50} />
+        </span>
+      )}
+      {!thumbnail && (
+        <span className="wpifycf-attachment-item__info">
+          {attachment.filename}
+        </span>
+      )}
+      <span className="wpifycf-attachment-item__actions">
+        <IconButton href={attachment.editLink} icon="edit" style="dark" />
+        <IconButton onClick={remove} icon="trash" style="dark" />
+      </span>
+    </span>
+  );
+});

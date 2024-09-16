@@ -33,7 +33,6 @@ import { Wysiwyg } from '@/fields/Wysiwyg';
 import { MultiAttachment } from '@/fields/MultiAttachment';
 import { MultiButton } from '@/fields/MultiButton';
 import { MultiCheckbox } from '@/fields/MultiCheckbox';
-import { MultiCode } from '@/fields/MultiCode';
 import { MultiColor } from '@/fields/MultiColor';
 import { MultiDate } from '@/fields/MultiDate';
 import { MultiDatetime } from '@/fields/MultiDatetime';
@@ -54,7 +53,6 @@ import { MultiTime } from '@/fields/MultiTime';
 import { MultiToggle } from '@/fields/MultiToggle';
 import { MultiUrl } from '@/fields/MultiUrl';
 import { MultiWeek } from '@/fields/MultiWeek';
-import { MultiWysiwyg } from '@/fields/MultiWysiwyg';
 
 export function registerFieldTypes () {
   addFilter('wpifycf_field_attachment', 'wpify_custom_fields', () => Attachment);
@@ -90,7 +88,6 @@ export function registerFieldTypes () {
   addFilter('wpifycf_field_multi_attachment', 'wpify-custom-fields', () => MultiAttachment);
   addFilter('wpifycf_field_multi_button', 'wpify-custom-fields', () => MultiButton);
   addFilter('wpifycf_field_multi_checkbox', 'wpify-custom-fields', () => MultiCheckbox);
-  addFilter('wpifycf_field_multi_code', 'wpify-custom-fields', () => MultiCode);
   addFilter('wpifycf_field_multi_color', 'wpify-custom-fields', () => MultiColor);
   addFilter('wpifycf_field_multi_date', 'wpify-custom-fields', () => MultiDate);
   addFilter('wpifycf_field_multi_datetime', 'wpify-custom-fields', () => MultiDatetime);
@@ -111,5 +108,4 @@ export function registerFieldTypes () {
   addFilter('wpifycf_field_multi_toggle', 'wpify-custom-fields', () => MultiToggle);
   addFilter('wpifycf_field_multi_url', 'wpify-custom-fields', () => MultiUrl);
   addFilter('wpifycf_field_multi_week', 'wpify-custom-fields', () => MultiWeek);
-  addFilter('wpifycf_field_multi_wysiwyg', 'wpify-custom-fields', () => MultiWysiwyg);
 }

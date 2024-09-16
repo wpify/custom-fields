@@ -5,6 +5,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Text } from '@/fields/Text.js';
 import { FieldWrapper } from '@/components/FieldWrapper';
 import { Label } from '@/components/Label';
+import clsx from 'clsx';
 
 export function Field ({ type, node, renderOptions, description, ...props }) {
   const FieldComponent = applyFilters('wpifycf_field_' + type, Text, props);
@@ -18,7 +19,12 @@ export function Field ({ type, node, renderOptions, description, ...props }) {
   const descriptionPosition = FieldComponent.descriptionPosition || 'after';
 
   const renderedDescription = description && (
-    <div className="wpifycf-field-description">
+    <div
+      className={clsx(
+        'wpifycf-field-description',
+        `wpifycf-field-description--${descriptionPosition}`
+      )}
+    >
       {description}
     </div>
   );

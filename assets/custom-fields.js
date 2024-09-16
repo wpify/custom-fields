@@ -2,9 +2,8 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { App } from '@/components/App';
 import { registerFieldTypes } from '@/helpers/field-types';
-
-import '@/styles/custom-fields.scss';
 import { addStyleSheet } from '@/helpers/functions';
+import '@/styles/custom-fields.scss';
 
 function loadCustomFields (event) {
   document.querySelectorAll('.wpifycf-app[data-loaded=false]').forEach(function (container) {
@@ -19,9 +18,7 @@ function loadCustomFields (event) {
         />
       </StrictMode>,
     );
-
-    // TODO: Add a correct loading for product variations
-
+    
     container.setAttribute('data-loaded', 'true');
   });
 }

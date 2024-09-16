@@ -1,4 +1,76 @@
-export function MultiAttachment() {
-  // TODO
-  return 'MultiAttachment';
+import { useCallback, useEffect, useState, useRef } from 'react';
+import { __ } from '@wordpress/i18n';
+import { AttachmentItem } from '@/fields/Attachment';
+import { useSortableList, useMediaLibrary } from '@/helpers/hooks';
+import { Button } from '@/components/Button';
+
+export function MultiAttachment ({
+  htmlId,
+  value = [],
+  name,
+  onChange,
+}) {
+  const [attachments, setAttachments] = useState([]);
+  const containerRef = useRef(null);
+
+  const onSortEnd = useCallback((next) => {
+    setAttachments(next);
+    onChange(next.map((attachment) => attachment.id));
+  }, [onChange]);
+
+  useSortableList({
+    containerRef,
+    items: attachments,
+    setItems: onSortEnd,
+  });
+
+  useEffect(() => {
+    value.length > 0 && Promise.all(
+      value
+        .map((id) => parseInt(id, 10))
+        .filter(Boolean)
+        .map((id) => wp.media.attachment(id).fetch()),
+    )
+      .then(setAttachments)
+      .catch((error) =>
+        console.error(__('Failed to fetch attachments', 'wpify-custom-fields'), error),
+      );
+  }, [value]);
+
+  const openMediaLibrary = useMediaLibrary({
+    value,
+    onChange,
+    multiple: true,
+    title: __('Add attachments', 'wpify-custom-fields'),
+    button: {
+      text: __('Add selected', 'wpify-custom-fields'),
+    },
+  });
+
+  const remove = useCallback(
+    (removeId) => () => {
+      const newValue = value.filter((id) => id !== removeId);
+      onChange(newValue);
+      setAttachments((attachments) => attachments.filter((attachment) => attachment.id !== removeId));
+    },
+    [onChange, value],
+  );
+
+  return (
+    <span className="wpifycf-field-multi-attachment">
+      {name && <input type="hidden" id={htmlId} name={name} value={JSON.stringify(value)} />}
+      <Button className="wpifycf-button__add" onClick={openMediaLibrary}>
+        {__('Add attachments', 'wpify-custom-fields')}
+      </Button>
+      <span className="wpifycf-field-multi-attachment__items" ref={containerRef}>
+        {attachments.map((attachment) => (
+          <AttachmentItem
+            key={attachment.id}
+            attachment={attachment}
+            remove={remove(attachment.id)}
+          />
+        ))}
+      </span>
+    </span>
+  );
 }

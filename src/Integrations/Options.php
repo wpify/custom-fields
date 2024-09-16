@@ -38,7 +38,7 @@ class Options extends Integration {
 	 */
 	public function __construct(
 		array $args,
-		private CustomFields $custom_fields,
+		CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 

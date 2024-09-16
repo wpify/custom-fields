@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { tryParseJson } from '@/helpers/functions';
 import { Field } from '@/components/Field';
 
 function Group ({
@@ -34,14 +33,19 @@ function Group ({
   }, [value, onChange]);
 
   return (
-    <fieldset className="wpifycf-group-field">
+    <span className="wpifycf-group-field">
       {name && (
         <input type="hidden" id={htmlId} name={name} value={JSON.stringify(value)} />
       )}
       {fields.map((field, index) => (
-        <Field key={field.id} {...field} onChange={handleChange(field.id)} />
+        <Field
+          key={field.id}
+          {...field}
+          onChange={handleChange(field.id)}
+          htmlId={`${htmlId}.${field.id}`}
+        />
       ))}
-    </fieldset>
+    </span>
   );
 }
 

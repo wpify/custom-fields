@@ -31,8 +31,7 @@ class CustomFields {
 		add_filter( 'wpifycf_sanitize_field_type_month', 'sanitize_text_field' );
 		add_filter( 'wpifycf_sanitize_field_type_multi_attachment', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_multi_button', array( $this, 'sanitize_multi_field' ) );
-		add_filter( 'wpifycf_sanitize_field_type_multi_checkbox', array( $this, 'sanitize_multi_field' ) );
-		add_filter( 'wpifycf_sanitize_field_type_multi_code', array( $this, 'sanitize_multi_field' ) );
+		add_filter( 'wpifycf_sanitize_field_type_multi_checkbox', array( $this, 'sanitize_multi_checkbox' ) );
 		add_filter( 'wpifycf_sanitize_field_type_multi_color', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_multi_date', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_multi_datetime', array( $this, 'sanitize_multi_field' ) );
@@ -126,6 +125,14 @@ class CustomFields {
 
 		if ( is_string( $value ) ) {
 			return json_decode( $value, true );
+		}
+
+		return array();
+	}
+
+	public function sanitize_multi_checkbox( $value ) {
+		if ( is_array( $value ) ) {
+			return array_map( 'boolval', $value );
 		}
 
 		return array();

@@ -7,7 +7,9 @@ export function App ({ integrationId, context }) {
 
   const setContext = useCustomFieldsContext(state => state.setContext);
 
-  useEffect(() => setContext(context), [context, setContext]);
+  useEffect(() => {
+    return setContext(context);
+  }, [context, setContext]);
 
   const getRenderOptions = useCallback(function (context) {
     switch (context) {
