@@ -1,11 +1,14 @@
 import { useCallback } from 'react';
+import clsx from 'clsx';
+import { addFilter } from '@wordpress/hooks';
 
-export function Password ({
+function Password ({
+  id,
   name,
   htmlId,
   onChange,
   value,
-  attributes,
+  attributes = {},
 }) {
   const handleChange = useCallback(function (event) {
     if (typeof onChange === 'function') {
@@ -20,8 +23,10 @@ export function Password ({
       id={htmlId}
       onChange={handleChange}
       value={value}
-      className="wpifycf-field-password"
+      className={clsx('wpifycf-field-password', `wpifycf-field-password--${id}`, attributes.class)}
       {...attributes}
     />
   );
 }
+
+addFilter('wpifycf_field_password', 'wpify_custom_fields', () => Password);

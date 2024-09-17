@@ -1,6 +1,7 @@
 import { MultiField } from '@/components/MultiField';
 import { Date } from '@/fields/Date';
+import { addFilter } from '@wordpress/hooks';
 
-export function MultiDate(props) {
-  return <MultiField {...props} component={Date} />;
-}
+const MultiDate = props => <MultiField {...props} component={Date} />;
+
+addFilter('wpifycf_field_multi_date', 'wpify_custom_fields', () => MultiDate);

@@ -1,11 +1,14 @@
 import { useCallback } from 'react';
+import clsx from 'clsx';
+import { addFilter } from '@wordpress/hooks';
 
 export function Month ({
+  id,
   name,
   htmlId,
   onChange,
   value,
-  attributes,
+  attributes = {},
 }) {
   const handleChange = useCallback(function (event) {
     if (typeof onChange === 'function') {
@@ -20,8 +23,10 @@ export function Month ({
       id={htmlId}
       onChange={handleChange}
       value={value}
-      className="wpifycf-field-month"
+      className={clsx('wpifycf-field-month', `wpifycf-field-month--${id}`, attributes.class)}
       {...attributes}
     />
   );
 }
+
+addFilter('wpifycf_field_month', 'wpify_custom_fields', () => Month);

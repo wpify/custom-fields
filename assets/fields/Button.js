@@ -1,10 +1,12 @@
 import { Button as ButtonComponent } from '@/components/Button';
-import { doAction } from '@wordpress/hooks';
+import { addFilter, doAction } from '@wordpress/hooks';
 import { useCallback } from 'react';
+import clsx from 'clsx';
 
 export function Button (props) {
   const {
     title,
+    id,
     href,
     action,
     primary,
@@ -23,10 +25,12 @@ export function Button (props) {
       primary={primary}
       href={href}
       onClick={handleClick}
-      className="wpifycf-field-button"
+      className={clsx('wpifycf-field-button', `wpifycf-field-${id}`, attributes.class)}
       {...attributes}
     >
       {title}
     </ButtonComponent>
   );
 }
+
+addFilter('wpifycf_field_button', 'wpify_custom_fields', () => Button);

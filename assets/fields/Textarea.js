@@ -1,11 +1,14 @@
 import { useCallback } from 'react';
+import clsx from 'clsx';
+import { addFilter } from '@wordpress/hooks';
 
 export function Textarea ({
+  id,
   name,
   htmlId,
   onChange,
   value,
-  attributes,
+  attributes = {},
 }) {
   const handleChange = useCallback(function (event) {
     if (typeof onChange === 'function') {
@@ -19,8 +22,10 @@ export function Textarea ({
       id={htmlId}
       onChange={handleChange}
       value={value}
-      className="wpifycf-field-textarea"
+      className={clsx('wpifycf-field-textarea', `wpifycf-field-textarea--${id}`, attributes.class)}
       {...attributes}
     />
   );
 }
+
+addFilter('wpifycf_field_textarea', 'wpify_custom_fields', () => Textarea);

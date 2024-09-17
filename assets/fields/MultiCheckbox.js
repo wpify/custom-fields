@@ -1,12 +1,15 @@
 import { useCallback } from 'react';
+import clsx from 'clsx';
+import { addFilter } from '@wordpress/hooks';
 
-export function MultiCheckbox ({
+function MultiCheckbox ({
+  id,
   name,
   htmlId,
   onChange,
   value = {},
   options,
-  attributes,
+  attributes = {},
 }) {
   const handleChange = useCallback(optionValue => event => {
     const nextValue = { ...value };
@@ -23,7 +26,7 @@ export function MultiCheckbox ({
             id={`${htmlId}-${option.value}`}
             onChange={handleChange(option.value)}
             checked={value[option.value]}
-            className="wpifycf-field-multi-checkbox__checkbox"
+            className={clsx('wpifycf-field-multi-checkbox', `wpifycf-field-multi-checkbox--${id}`, `wpifycf-field-multi-checkbox--${option.value}`, attributes.class)}
             {...attributes}
           />
           <label
@@ -37,3 +40,5 @@ export function MultiCheckbox ({
     </span>
   );
 }
+
+addFilter('wpifycf_field_multi_checkbox', 'wpify_custom_fields', () => MultiCheckbox);

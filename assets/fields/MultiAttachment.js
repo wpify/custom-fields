@@ -3,12 +3,16 @@ import { __ } from '@wordpress/i18n';
 import { AttachmentItem } from '@/fields/Attachment';
 import { useSortableList, useMediaLibrary } from '@/helpers/hooks';
 import { Button } from '@/components/Button';
+import clsx from 'clsx';
+import { addFilter } from '@wordpress/hooks';
 
-export function MultiAttachment ({
+function MultiAttachment ({
+  id,
   htmlId,
   value = [],
   name,
   onChange,
+  className,
 }) {
   const [attachments, setAttachments] = useState([]);
   const containerRef = useRef(null);
@@ -57,7 +61,9 @@ export function MultiAttachment ({
   );
 
   return (
-    <span className="wpifycf-field-multi-attachment">
+    <span
+      className={clsx('wpifycf-field-multi-attachment', `wpifycf-field-multi-attachment--${id}`, className)}
+    >
       {name && <input type="hidden" id={htmlId} name={name} value={JSON.stringify(value)} />}
       <Button className="wpifycf-button__add" onClick={openMediaLibrary}>
         {__('Add attachments', 'wpify-custom-fields')}
@@ -74,3 +80,5 @@ export function MultiAttachment ({
     </span>
   );
 }
+
+addFilter('wpifycf_field_multi_attachment', 'wpify_custom_fields', () => MultiAttachment);

@@ -1,11 +1,14 @@
 import { useCallback } from 'react';
+import clsx from 'clsx';
+import { addFilter } from '@wordpress/hooks';
 
-export function Hidden ({
+function Hidden ({
+  id,
   name,
   htmlId,
   onChange,
   value,
-  attributes,
+  attributes = {},
 }) {
   const handleChange = useCallback(function (event) {
     if (typeof onChange === 'function') {
@@ -20,8 +23,10 @@ export function Hidden ({
       id={htmlId}
       onChange={handleChange}
       value={value}
-      className="wpifycf-field-hidden"
+      className={clsx('wpifycf-field-hidden', `wpifycf-field-hidden--${id}`, attributes.class)}
       {...attributes}
     />
   );
 }
+
+addFilter('wpifycf_field_hidden', 'wpify_custom_fields', () => Hidden);

@@ -4,8 +4,17 @@ import { IconButton } from '@/components/IconButton';
 import { Button } from '@/components/Button';
 import { __ } from '@wordpress/i18n';
 import { useMediaLibrary } from '@/helpers/hooks';
+import { addFilter } from '@wordpress/hooks';
 
-export function Attachment ({ htmlId, value, name, onChange }) {
+function Attachment ({
+  htmlId,
+  value,
+  id,
+  name,
+  onChange,
+  type,
+  attributes = {},
+}) {
   const [attachment, setAttachment] = useState(null);
 
   useEffect(function () {
@@ -20,6 +29,7 @@ export function Attachment ({ htmlId, value, name, onChange }) {
     button: {
       text: __('Select attachment', 'wpify-custom-fields'),
     },
+    type,
   });
 
   const remove = useCallback(function () {
@@ -28,7 +38,9 @@ export function Attachment ({ htmlId, value, name, onChange }) {
   }, [setAttachment, onChange]);
 
   return (
-    <span className="wpifycf-field-attachment">
+    <span
+      className={clsx('wpifycf-field-attachment', `wpifycf-field-attachment--${id}`, attributes.class)}
+    >
       {name && (
         <input type="hidden" id={htmlId} name={name} value={value} />
       )}
@@ -77,3 +89,5 @@ export const AttachmentItem = forwardRef(function ({ attachment, remove }, ref) 
     </span>
   );
 });
+
+addFilter('wpifycf_field_attachment', 'wpify_custom_fields', () => Attachment);

@@ -1,11 +1,14 @@
 import { useCallback } from 'react';
+import clsx from 'clsx';
+import { addFilter } from '@wordpress/hooks';
 
-export function Checkbox ({
+function Checkbox ({
+  id,
   name,
   htmlId,
   onChange,
   value,
-  attributes,
+  attributes = {},
 }) {
   const handleChange = useCallback(function (event) {
     if (typeof onChange === 'function') {
@@ -19,9 +22,11 @@ export function Checkbox ({
       name={name}
       id={htmlId}
       onChange={handleChange}
-      className="wpifycf-field-checkbox"
+      className={clsx('wpifycf-field-checkbox', `wpifycf-field-checkbox--${id}`, attributes.class)}
       checked={value}
       {...attributes}
     />
   );
 }
+
+addFilter('wpifycf_field_checkbox', 'wpify_custom_fields', () => Checkbox);

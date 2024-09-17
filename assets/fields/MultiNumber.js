@@ -1,6 +1,7 @@
 import { MultiField } from '@/components/MultiField';
 import { Number } from '@/fields/Number';
+import { addFilter } from '@wordpress/hooks';
 
-export function MultiNumber(props) {
-  return <MultiField {...props} component={Number} />;
-}
+const MultiNumber = props => <MultiField {...props} component={Number} />;
+
+addFilter('wpifycf_field_multi_number', 'wpify_custom_fields', () => MultiNumber);

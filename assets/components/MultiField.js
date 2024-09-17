@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState, useEffect } from 'react';
 import { IconButton } from '@/components/IconButton';
-import { useSortableList } from '@/helpers/hooks';
+import { useMulti, useSortableList } from '@/helpers/hooks';
 import { v4 as uuidv4 } from 'uuid';
 import { Button } from '@/components/Button';
 
@@ -17,55 +17,23 @@ export function MultiField ({
   htmlId,
   ...props
 }) {
-  const containerRef = useRef(null);
-  const [keyPrefix, setKeyPrefix] = useState(uuidv4());
-
-  const add = useCallback(function () {
-    onChange([...value, defaultValue]);
-  }, [value, defaultValue, onChange]);
-
-  const remove = useCallback(function (index) {
-    return function () {
-      const nextValues = [...value];
-      nextValues.splice(index, 1);
-      onChange(nextValues);
-    };
-  }, [value, onChange]);
-
-  const handleChange = useCallback(function (index) {
-    return function (fieldValue) {
-      const nextValues = [...value];
-      nextValues[index] = fieldValue;
-      onChange(nextValues);
-    };
-  }, [value, onChange]);
-
-  const handleSort = useCallback((nextValue) => {
-    setKeyPrefix(uuidv4());
-    onChange(nextValue);
-  }, [onChange]);
-
-  useSortableList({
+  const {
+    add,
+    remove,
+    handleChange,
+    canAdd,
+    canRemove,
+    canMove,
     containerRef,
-    items: value,
-    setItems: handleSort,
-    handle: '.wpifycf-sort',
+    keyPrefix,
+  } = useMulti({
+    value,
+    onChange,
+    min,
+    max,
+    defaultValue,
+    disabled_buttons,
   });
-
-  useEffect(() => {
-    if (min !== undefined && value.length < min) {
-      onChange([...value, ...Array(min - value.length).fill(defaultValue)]);
-    }
-
-    if (max !== undefined && value.length > max) {
-      onChange(value.slice(0, max));
-    }
-  }, [onChange, value, min, max, defaultValue]);
-
-  const length = value.length;
-  const canAdd = !disabled_buttons.includes('move') && (typeof max === 'undefined' || length < max);
-  const canRemove = !disabled_buttons.includes('delete') && (typeof min === 'undefined' || length > min);
-  const canMove = !disabled_buttons.includes('move') && length > 1;
 
   return (
     <span className={'wpifycf-multi-field wpifycf-multi-field--' + props.type}>

@@ -1,7 +1,8 @@
 import clsx from 'clsx';
 import { Button } from '@/fields/Button';
+import { addFilter } from '@wordpress/hooks';
 
-export function MultiButton ({ className, buttons = [] }) {
+function MultiButton ({ className, buttons = [] }) {
   return (
     <span className={clsx('wpifycf-field-multi-button', className)}>
       {buttons.map((button, index) => (
@@ -13,3 +14,5 @@ export function MultiButton ({ className, buttons = [] }) {
     </span>
   );
 }
+
+addFilter('wpifycf_field_multi_button', 'wpify_custom_fields', () => MultiButton);

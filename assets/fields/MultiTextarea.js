@@ -1,6 +1,7 @@
 import { MultiField } from '@/components/MultiField';
 import { Textarea } from '@/fields/Textarea';
+import { addFilter } from '@wordpress/hooks';
 
-export function MultiTextarea(props) {
-  return <MultiField {...props} component={Textarea} />;
-}
+const MultiTextarea = props => <MultiField {...props} component={Textarea} />;
+
+addFilter('wpifycf_field_multi_textarea', 'wpify_custom_fields', () => MultiTextarea);

@@ -1,6 +1,7 @@
 import { MultiField } from '@/components/MultiField';
-import { Week } from '@/fields/Week';
+import { Month } from '@/fields/Month';
+import { addFilter } from '@wordpress/hooks';
 
-export function MultiWeek (props) {
-  return <MultiField {...props} component={Week} />;
-}
+const MultiWeek = props => <MultiField {...props} component={Month} />;
+
+addFilter('wpifycf_field_multi_week', 'wpify_custom_fields', () => MultiWeek);

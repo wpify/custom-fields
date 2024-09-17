@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Field } from '@/components/Field';
+import clsx from 'clsx';
+import { addFilter } from '@wordpress/hooks';
 
 function Group ({
   id,
@@ -8,18 +10,15 @@ function Group ({
   value,
   onChange,
   items,
+  attributes = {},
 }) {
   const [fields, setFields] = useState(items);
 
   useEffect(function () {
-    const nextValue = { ...value };
-    const nextItems = items.map(function (item) {
-      return {
-        ...item,
-        htmlId: id + '.' + item.id,
-        value: nextValue[item.id] ?? '',
-      };
-    });
+    const nextItems = items.map(item => ({
+      ...item,
+      htmlId: id + '.' + item.id,
+    }));
 
     setFields(nextItems);
   }, [items, value]);
@@ -33,14 +32,17 @@ function Group ({
   }, [value, onChange]);
 
   return (
-    <span className="wpifycf-group-field">
+    <span
+      className={clsx('wpifycf-field-group', `wpifycf-field-group--${id}`, attributes.class)}
+    >
       {name && (
         <input type="hidden" id={htmlId} name={name} value={JSON.stringify(value)} />
       )}
-      {fields.map((field, index) => (
+      {fields.map(field => (
         <Field
           key={field.id}
           {...field}
+          value={value[field.id] ?? ''}
           onChange={handleChange(field.id)}
           htmlId={`${htmlId}.${field.id}`}
         />
@@ -52,3 +54,5 @@ function Group ({
 Group.descriptionPosition = 'before';
 
 export { Group };
+
+addFilter('wpifycf_field_group', 'wpify_custom_fields', () => Group);

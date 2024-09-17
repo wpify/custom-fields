@@ -1,11 +1,14 @@
 import { useCallback } from 'react';
+import clsx from 'clsx';
+import { addFilter } from '@wordpress/hooks';
 
 export function Email ({
+  id,
   name,
   htmlId,
   onChange,
   value,
-  attributes,
+  attributes = {},
 }) {
   const handleChange = useCallback(function (event) {
     if (typeof onChange === 'function') {
@@ -20,8 +23,10 @@ export function Email ({
       id={htmlId}
       onChange={handleChange}
       value={value}
-      className="wpifycf-field-email"
+      className={clsx('wpifycf-field-email', `wpifycf-field-email--${id}`, attributes.class)}
       {...attributes}
     />
   );
 }
+
+addFilter('wpifycf_field_email', 'wpify_custom_fields', () => Email);

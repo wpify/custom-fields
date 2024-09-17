@@ -1,9 +1,10 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { App } from '@/components/App';
-import { registerFieldTypes } from '@/helpers/field-types';
 import { addStyleSheet } from '@/helpers/functions';
 import '@/styles/custom-fields.scss';
+
+require('@/helpers/field-types');
 
 function loadCustomFields (event) {
   document.querySelectorAll('.wpifycf-app[data-loaded=false]').forEach(function (container) {
@@ -18,13 +19,12 @@ function loadCustomFields (event) {
         />
       </StrictMode>,
     );
-    
+
     container.setAttribute('data-loaded', 'true');
   });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-  registerFieldTypes();
   loadCustomFields();
   addStyleSheet(window.wpifycf_custom_fields.stylesheet);
 });

@@ -1,11 +1,17 @@
 import { useCallback } from 'react';
+import clsx from 'clsx';
+import { addFilter } from '@wordpress/hooks';
 
 export function Number ({
+  id,
   name,
   htmlId,
   onChange,
   value,
-  attributes,
+  min,
+  max,
+  step,
+  attributes = {},
 }) {
   const handleChange = useCallback(function (event) {
     if (typeof onChange === 'function') {
@@ -20,8 +26,13 @@ export function Number ({
       id={htmlId}
       onChange={handleChange}
       value={value}
-      className="wpifycf-field-number"
+      min={min}
+      max={max}
+      step={step}
+      className={clsx('wpifycf-field-number', `wpifycf-field-number--${id}`, attributes.class)}
       {...attributes}
     />
   );
 }
+
+addFilter('wpifycf_field_number', 'wpify_custom_fields', () => Number);

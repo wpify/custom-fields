@@ -1,6 +1,7 @@
 import { MultiField } from '@/components/MultiField';
 import { Time } from '@/fields/Time';
+import { addFilter } from '@wordpress/hooks';
 
-export function MultiTime(props) {
-  return <MultiField {...props} component={Time} />;
-}
+const MultiTime = props => <MultiField {...props} component={Time} />;
+
+addFilter('wpifycf_field_multi_time', 'wpify_custom_fields', () => MultiTime);
