@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { IconButton } from '@/components/IconButton';
 import { Button } from '@/components/Button';
 import { __ } from '@wordpress/i18n';
-import { useMediaLibrary } from '@/helpers/hooks';
+import { useMediaLibrary, useAttachment } from '@/helpers/hooks';
 import { addFilter } from '@wordpress/hooks';
 
 function Attachment ({
@@ -12,24 +12,18 @@ function Attachment ({
   id,
   name,
   onChange,
-  type,
+  attachment_type,
   attributes = {},
 }) {
-  const [attachment, setAttachment] = useState(null);
-
-  useEffect(function () {
-    value && wp.media.attachment(value).fetch().then(setAttachment);
-  }, [value]);
+  const { attachment, setAttachment } = useAttachment(value);
 
   const openMediaLibrary = useMediaLibrary({
     value,
     onChange,
     multiple: false,
     title: __('Select attachment', 'wpify-custom-fields'),
-    button: {
-      text: __('Select attachment', 'wpify-custom-fields'),
-    },
-    type,
+    button: __('Select attachment', 'wpify-custom-fields'),
+    type: attachment_type,
   });
 
   const remove = useCallback(function () {
@@ -55,6 +49,16 @@ function Attachment ({
     </span>
   );
 }
+
+Attachment.Title = ({ field, value }) => {
+  const { attachment } = useAttachment(value);
+
+  if (attachment) {
+    return attachment.filename;
+  }
+
+  return null;
+};
 
 export const AttachmentItem = forwardRef(function ({ attachment, remove }, ref) {
   const thumbnail = attachment?.sizes?.medium?.url;

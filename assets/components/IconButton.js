@@ -1,7 +1,15 @@
-import { Icon } from '@wordpress/components';
+import { Icon, trash, chevronUpDown, create, edit, copy, bug, plus } from '@wordpress/icons';
 import clsx from 'clsx';
 
-export function IconButton ({ onClick, href, className, icon, style = 'light', size = 16 }) {
+const icons = {
+  trash,
+  move: chevronUpDown,
+  duplicate: copy,
+  edit,
+  plus,
+};
+
+export function IconButton ({ onClick, href, className, icon, style = 'light', size = 20 }) {
   const Tag = href ? 'a' : 'button';
   const props = {};
 
@@ -12,13 +20,15 @@ export function IconButton ({ onClick, href, className, icon, style = 'light', s
     props.type = 'button';
   }
 
+  const resolvedIcon = icons[icon] || bug;
+
   return (
     <Tag
       {...props}
       onClick={onClick}
-      className={clsx('wpifycf-icon-button', `wpifycf-icon-button--${style}`, className)}
+      className={clsx('wpifycf-icon-button', `wpifycf-icon-button--${style}`, `wpifycf-icon-button--${icon}`, className)}
     >
-      <Icon icon={icon} size={size} />
+      <Icon icon={resolvedIcon} size={size} />
     </Tag>
   );
 }

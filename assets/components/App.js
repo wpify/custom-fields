@@ -1,15 +1,17 @@
 import { Fragment, useCallback, useEffect } from 'react';
-import { useFields, useCustomFieldsContext } from '@/helpers/hooks';
+import { useFields, useCustomFieldsContext, useConfig } from '@/helpers/hooks';
 import { Field } from '@/components/Field';
 
-export function App ({ integrationId, context }) {
+export function App ({ integrationId, context, config }) {
   const [fields, setFields] = useFields(integrationId);
 
   const setContext = useCustomFieldsContext(state => state.setContext);
+  const setConfig = useConfig(state => state.setConfig);
 
   useEffect(() => {
-    return setContext(context);
-  }, [context, setContext]);
+    setContext(context);
+    setConfig(config);
+  }, [context, config, setContext]);
 
   const getRenderOptions = useCallback(function (context) {
     switch (context) {

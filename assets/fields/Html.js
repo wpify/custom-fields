@@ -9,9 +9,9 @@ function Html ({
   content,
 }) {
   return (
-    <ErrorBoundary fallback={<div>Failed to render HTML field</div>}>
-      <div
-        className={clsx('wpifycf-field-HTML', `wpifycf-field-HTML--${id}`, attributes.class, className)}
+    <ErrorBoundary fallback={<span>Failed to render HTML field</span>}>
+      <span
+        className={clsx('wpifycf-field-HTML', `wpifycf-field-html--${id}`, attributes.class, className)}
         {...attributes}
         dangerouslySetInnerHTML={{ __html: content }}
       />

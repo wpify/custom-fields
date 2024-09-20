@@ -10,11 +10,11 @@ if ( ! function_exists( 'wpify_custom_fields' ) ) {
 	 *
 	 * @return CustomFields
 	 */
-	function wpify_custom_fields( string $wcf_url = '' ): CustomFields {
+	function wpify_custom_fields(): CustomFields {
 		static $plugin;
 
 		if ( empty( $plugin ) ) {
-			$plugin = new CustomFields( $wcf_url );
+			$plugin = new CustomFields;
 		}
 
 		return $plugin;

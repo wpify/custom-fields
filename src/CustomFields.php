@@ -6,7 +6,13 @@ use Wpify\CustomFields\exceptions\MissingArgumentException;
 use Wpify\CustomFields\Integrations\Options;
 
 class CustomFields {
+	public Helpers $helpers;
+	public Api     $api;
+
 	public function __construct() {
+		$this->helpers = new Helpers();
+		$this->api     = new Api( $this, $this->helpers );
+
 		add_filter( 'wpifycf_option_field_type_text', array( $this, 'return_string' ) );
 		add_filter( 'wpifycf_option_field_type_multi_text', array( $this, 'return_array' ) );
 
@@ -22,12 +28,12 @@ class CustomFields {
 		add_filter( 'wpifycf_sanitize_field_type_date', 'sanitize_text_field' );
 		add_filter( 'wpifycf_sanitize_field_type_datetime', 'sanitize_text_field' );
 		add_filter( 'wpifycf_sanitize_field_type_email', 'sanitize_email' );
-		add_filter( 'wpifycf_sanitize_field_type_group', 'json_decode' );
+		add_filter( 'wpifycf_sanitize_field_type_group', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_hidden', 'sanitize_text_field' );
 		add_filter( 'wpifycf_sanitize_field_type_html', 'sanitize_text_field' );
-		add_filter( 'wpifycf_sanitize_field_type_inner_blocks', 'json_decode' );
-		add_filter( 'wpifycf_sanitize_field_type_link', 'json_decode' );
-		add_filter( 'wpifycf_sanitize_field_type_mapycz', 'json_decode' );
+		add_filter( 'wpifycf_sanitize_field_type_inner_blocks', array( $this, 'sanitize_multi_field' ) );
+		add_filter( 'wpifycf_sanitize_field_type_link', array( $this, 'sanitize_multi_field' ) );
+		add_filter( 'wpifycf_sanitize_field_type_mapycz', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_month', 'sanitize_text_field' );
 		add_filter( 'wpifycf_sanitize_field_type_multi_attachment', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_multi_button', array( $this, 'sanitize_multi_field' ) );
@@ -41,7 +47,6 @@ class CustomFields {
 		add_filter( 'wpifycf_sanitize_field_type_multi_mapycz', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_multi_month', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_multi_number', array( $this, 'sanitize_multi_field' ) );
-		add_filter( 'wpifycf_sanitize_field_type_multi_password', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_multi_post', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_multi_select', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_multi_tel', array( $this, 'sanitize_multi_field' ) );
@@ -52,7 +57,6 @@ class CustomFields {
 		add_filter( 'wpifycf_sanitize_field_type_multi_toggle', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_multi_url', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_multi_week', array( $this, 'sanitize_multi_field' ) );
-		add_filter( 'wpifycf_sanitize_field_type_multi_wysiwyg', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_number', 'floatval' );
 		add_filter( 'wpifycf_sanitize_field_type_password', 'strval' );
 		add_filter( 'wpifycf_sanitize_field_type_post', 'intval' );
@@ -123,6 +127,10 @@ class CustomFields {
 			return $value;
 		}
 
+		if ( is_object( $value ) ) {
+			return (array) $value;
+		}
+
 		if ( is_string( $value ) ) {
 			return json_decode( $value, true );
 		}
@@ -136,5 +144,11 @@ class CustomFields {
 		}
 
 		return array();
+	}
+
+	public function get_plugin_basename() {
+		$basename = plugin_basename( __FILE__ );
+
+		return substr( $basename, 0, strpos( $basename, '/' ) );
 	}
 }

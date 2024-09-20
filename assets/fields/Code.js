@@ -28,7 +28,14 @@ function Code ({
           codeLens: false,
           minimap: { enabled: false },
         }}
-        loading={<textarea value={value} style={{ width: '100%', height }} readOnly />}
+        loading={(
+          <textarea
+            className={clsx('wpifycf-field-code', 'wpifycf-field-code--fallback', `wpifycf-field-code--${id}`, attributes.class)}
+            value={value}
+            onChange={event => onChange(event.target.value)}
+            style={{ width: '100%', height }}
+          />
+        )}
       />
     </>
   );

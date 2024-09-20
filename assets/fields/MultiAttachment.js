@@ -11,6 +11,7 @@ function MultiAttachment ({
   htmlId,
   value = [],
   name,
+  attachment_type,
   onChange,
   className,
 }) {
@@ -46,9 +47,8 @@ function MultiAttachment ({
     onChange,
     multiple: true,
     title: __('Add attachments', 'wpify-custom-fields'),
-    button: {
-      text: __('Add selected', 'wpify-custom-fields'),
-    },
+    button: __('Add selected', 'wpify-custom-fields'),
+    type: attachment_type,
   });
 
   const remove = useCallback(

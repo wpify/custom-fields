@@ -1,0 +1,30 @@
+.wpifycf-field-link {
+  display: block;
+
+  &__field-label {
+    display: block;
+  }
+
+  &__field-value {
+    display: block;
+
+    input[type="text"],
+    input[type="url"],
+    .wpifycf-select {
+      width: 100%;
+      max-width: 20em;
+    }
+  }
+
+  &__field-option {
+    display: inline-block;
+    margin-left: var(--wpifycf-gap-2);
+  }
+
+  &__fields {
+    display: grid;
+    grid-template-columns: min-content auto;
+    align-items: center;
+    gap: var(--wpifycf-gap-1);
+  }
+}

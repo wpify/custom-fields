@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Field } from '@/components/Field';
 import clsx from 'clsx';
-import { addFilter } from '@wordpress/hooks';
+import { addFilter, applyFilters } from '@wordpress/hooks';
+import { Field } from '@/components/Field';
+import { Text } from '@/fields/Text';
 
 function Group ({
   id,
@@ -17,7 +18,7 @@ function Group ({
   useEffect(function () {
     const nextItems = items.map(item => ({
       ...item,
-      htmlId: id + '.' + item.id,
+      htmlId: htmlId + '.' + item.id,
     }));
 
     setFields(nextItems);
@@ -42,7 +43,7 @@ function Group ({
         <Field
           key={field.id}
           {...field}
-          value={value[field.id] ?? ''}
+          value={value[field.id] || ''}
           onChange={handleChange(field.id)}
           htmlId={`${htmlId}.${field.id}`}
         />
@@ -52,6 +53,30 @@ function Group ({
 }
 
 Group.descriptionPosition = 'before';
+
+Group.Title = ({ field, value, index }) => {
+  for (const item of field.items) {
+    const FieldComponent = applyFilters('wpifycf_field_' + item.type, Text);
+
+    if (!value[item.id]) {
+      continue;
+    }
+
+    if (typeof FieldComponent.Title === 'function') {
+      return <FieldComponent.Title value={value[item.id]} />;
+    }
+
+    if (typeof value[item.id] === 'string') {
+      return value[item.id];
+    }
+  }
+
+  if (typeof index === 'number') {
+    return `#${index + 1}`;
+  }
+
+  return null;
+};
 
 export { Group };
 

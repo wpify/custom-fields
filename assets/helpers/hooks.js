@@ -1,8 +1,10 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { create } from 'zustand';
-import { useEffect } from 'react';
 import Sortable from 'sortablejs';
 import { v4 as uuidv4 } from 'uuid';
+import { useQuery } from '@tanstack/react-query';
+import { get } from '@/helpers/api.js';
+import { useSelect } from '@wordpress/data';
 
 export function useFields (integrationId) {
   const initialFields = useMemo(function () {
@@ -27,7 +29,12 @@ export function useFields (integrationId) {
 
 export const useCustomFieldsContext = create((set) => ({
   context: 'default',
-  setContext: (context) => set((state) => ({ context })),
+  setContext: (context) => set(() => ({ context })),
+}));
+
+export const useConfig = create((set) => ({
+  config: {},
+  setConfig: (config) => set(() => ({ config })),
 }));
 
 export function useSortableList ({ containerRef, draggable, handle, items, setItems }) {
@@ -71,21 +78,27 @@ export function useMediaLibrary ({
   type,
 }) {
   return useCallback(() => {
-    const frame = wp.media({
+    const config = {
       multiple,
       title,
-      button,
-      library: {
-        type,
-      },
-    });
+    };
+
+    if (type) {
+      config.library = { type };
+    }
+
+    if (button) {
+      config.button = { text: button };
+    }
+
+    const frame = wp.media(config);
     frame
       .on('select', () => {
         let nextValue;
 
         if (multiple) {
           const attachments = frame.state().get('selection').toJSON();
-          nextValue = Array.from(new Set([...value, ...attachments.map((attachment) => attachment.id)]));
+          nextValue = Array.from(new Set([...attachments.map((attachment) => attachment.id), ...value]));
         } else {
           const attachment = frame.state().get('selection').first().toJSON();
           nextValue = attachment.id;
@@ -97,49 +110,120 @@ export function useMediaLibrary ({
   }, [value, onChange, multiple, title, button, type]);
 }
 
-export function useMulti({ value, onChange, min, max, defaultValue, disabled_buttons = [] }) {
+export function useAttachment (id) {
+  const [attachment, setAttachment] = useState(null);
+
+  useEffect(function () {
+    id && wp.media.attachment(id).fetch().then(setAttachment);
+  }, [id]);
+
+  return { attachment, setAttachment };
+}
+
+export function useMulti ({ value, onChange, min, max, defaultValue, disabled_buttons = [], dragHandle }) {
   const containerRef = useRef(null);
   const [keyPrefix, setKeyPrefix] = useState(uuidv4());
+  const [collapsed, setCollapsed] = useState(() => Array(value.length).fill(true));
 
-  const add = useCallback(function () {
+  useEffect(() => {
+    if (!Array.isArray(value)) {
+      onChange([]);
+    }
+  }, []);
+
+  // Update collapsed states when value changes
+  useEffect(() => {
+    setCollapsed((prevCollapsed) => {
+      const newCollapsed = [];
+      for (let i = 0; i < value.length; i++) {
+        newCollapsed[i] = prevCollapsed[i] !== undefined ? prevCollapsed[i] : false;
+      }
+      return newCollapsed;
+    });
+  }, [value]);
+
+  const add = useCallback(() => {
     onChange([...value, defaultValue]);
+    setCollapsed((prevCollapsed) => [...prevCollapsed, false]);
   }, [value, defaultValue, onChange]);
 
-  const remove = useCallback(function (index) {
-    return function () {
-      const nextValues = [...value];
-      nextValues.splice(index, 1);
-      onChange(nextValues);
-    };
-  }, [value, onChange]);
+  const remove = useCallback(
+    (index) => () => {
+      if (Array.isArray(value)) {
+        const nextValues = [...value];
+        nextValues.splice(index, 1);
+        onChange(nextValues);
 
-  const handleChange = useCallback(function (index) {
-    return function (fieldValue) {
+        setCollapsed((prevCollapsed) => {
+          const nextCollapsed = [...prevCollapsed];
+          nextCollapsed.splice(index, 1);
+          return nextCollapsed;
+        });
+      } else {
+        onChange([]);
+        setCollapsed([]);
+      }
+    },
+    [value, onChange],
+  );
+
+  const duplicate = useCallback(
+    (index) => () => {
+      const nextValues = [...value];
+      nextValues.splice(index, 0, nextValues[index]);
+      onChange(nextValues);
+
+      setCollapsed((prevCollapsed) => {
+        const nextCollapsed = [...prevCollapsed];
+        nextCollapsed.splice(index + 1, 0, false);
+        return nextCollapsed;
+      });
+    },
+    [onChange, value],
+  );
+
+  const handleChange = useCallback(
+    (index) => (fieldValue) => {
       const nextValues = [...value];
       nextValues[index] = fieldValue;
       onChange(nextValues);
-    };
-  }, [value, onChange]);
+    },
+    [value, onChange],
+  );
 
-  const handleSort = useCallback((nextValue) => {
-    setKeyPrefix(uuidv4());
-    onChange(nextValue);
-  }, [onChange]);
+  const handleSort = useCallback(
+    (nextValue) => {
+      setKeyPrefix(uuidv4());
+      onChange(nextValue);
+
+      // Reorder the collapsed array to match the new order
+      setCollapsed((prevCollapsed) => {
+        return nextValue.map((_, newIndex) => {
+          const oldIndex = value.findIndex((item) => item === nextValue[newIndex]);
+          return prevCollapsed[oldIndex];
+        });
+      });
+    },
+    [onChange, value],
+  );
 
   useSortableList({
     containerRef,
     items: value,
     setItems: handleSort,
-    handle: '.wpifycf-sort',
+    handle: dragHandle,
   });
 
   useEffect(() => {
     if (min !== undefined && value.length < min) {
-      onChange([...value, ...Array(min - value.length).fill(defaultValue)]);
+      const itemsToAdd = Array(min - value.length).fill(defaultValue);
+      onChange([...value, ...itemsToAdd]);
+      setCollapsed((prevCollapsed) => [...prevCollapsed, ...itemsToAdd.map(() => false)]);
     }
 
     if (max !== undefined && value.length > max) {
       onChange(value.slice(0, max));
+      setCollapsed((prevCollapsed) => prevCollapsed.slice(0, max));
     }
   }, [onChange, value, min, max, defaultValue]);
 
@@ -147,6 +231,95 @@ export function useMulti({ value, onChange, min, max, defaultValue, disabled_but
   const canAdd = !disabled_buttons.includes('move') && (typeof max === 'undefined' || length < max);
   const canRemove = !disabled_buttons.includes('delete') && (typeof min === 'undefined' || length > min);
   const canMove = !disabled_buttons.includes('move') && length > 1;
+  const canDuplicate = !disabled_buttons.includes('duplicate');
 
-  return { add, remove, handleChange, canAdd, canRemove, canMove, containerRef, keyPrefix };
+  const toggleCollapsed = useCallback((index, forceCollapsed = null) => () => {
+    setCollapsed((prevCollapsed) => {
+      const nextCollapsed = [...prevCollapsed];
+      if (forceCollapsed !== null) {
+        nextCollapsed[index] = forceCollapsed;
+      } else {
+        nextCollapsed[index] = !nextCollapsed[index];
+      }
+      return nextCollapsed;
+    });
+  }, []);
+
+  return {
+    add,
+    remove,
+    duplicate,
+    handleChange,
+    canAdd,
+    canRemove,
+    canMove,
+    canDuplicate,
+    containerRef,
+    keyPrefix,
+    collapsed,
+    toggleCollapsed,
+  };
+}
+
+const defaultQueryOptions = {
+  retry: 1,
+  retryOnMount: false,
+  refetchOnWindowFocus: false,
+  refetchOnReconnect: false,
+};
+
+export function useUrlTitle (url) {
+  const config = useConfig(state => state.config);
+  return useQuery({
+    queryKey: ['url-title', url],
+    queryFn: () => get(config.api_path + '/url-title', { url }),
+    enabled: !!config.api_path && !!url,
+    initialData: '',
+    ...defaultQueryOptions,
+  });
+}
+
+export function usePost (id) {
+  const config = useConfig(state => state.config);
+  const query = useQuery({
+    queryKey: ['post', id],
+    queryFn: () => get(config.api_path + '/post', { id }),
+    enabled: !!config.api_path && id > 0,
+    ...defaultQueryOptions,
+  });
+
+  return id > 0 ? query : { data: null, isLoading: false };
+}
+
+export function usePosts ({
+  postType,
+  ...args
+}) {
+  const config = useConfig(state => state.config);
+
+  return useQuery({
+    queryKey: ['posts', postType, args.search, args],
+    queryFn: () => get(config.api_path + '/posts', {
+      post_type: postType,
+      ...args,
+    }),
+    initialData: [],
+    enabled: !!config.api_path,
+    ...defaultQueryOptions,
+  });
+}
+
+export function usePostTypes (onlyPostTypes) {
+  return useSelect(
+    (select) => {
+      const postTypes = select('core').getPostTypes();
+
+      if (!postTypes) {
+        return [];
+      }
+
+      return postTypes.filter((postType) => Array.isArray(onlyPostTypes) ? onlyPostTypes.includes(postType.slug) : true);
+    },
+    [],
+  );
 }

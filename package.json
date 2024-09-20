@@ -4,17 +4,26 @@
     "build": "wp-scripts build"
   },
   "devDependencies": {
+    "@tanstack/react-query-devtools": "^5.56.2",
+    "@wordpress/api-fetch": "^7.7.0",
+    "@wordpress/block-editor": "^14.2.0",
     "@wordpress/components": "^28.7.0",
+    "@wordpress/data": "^10.7.0",
     "@wordpress/hooks": "^4.7.0",
     "@wordpress/i18n": "^5.7.0",
+    "@wordpress/icons": "^10.7.0",
     "@wordpress/scripts": "^27.1.0",
+    "@wordpress/url": "^4.8.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
+    "@tanstack/react-query": "^5.56.2",
+    "@uidotdev/usehooks": "^2.4.1",
     "clsx": "^2.1.1",
     "react-error-boundary": "^4.0.13",
+    "react-select": "^5.8.0",
     "sortablejs": "^1.15.3",
     "uuid": "^10.0.0",
     "zustand": "^4.5.5"

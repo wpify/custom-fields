@@ -10,7 +10,6 @@ abstract class Integration {
 	public function __construct(
 		private readonly CustomFields $custom_fields,
 	) {
-		add_action( 'rest_api_init', array( $this, 'register_options_api' ) );
 	}
 
 	protected function normalize_items( array $items ): array {
@@ -75,10 +74,12 @@ abstract class Integration {
 	}
 
 	public function enqueue() {
-		$handle = 'wpifycf_custom_fields';
+		$handle = 'wpifycf';
 		$js     = $this->custom_fields->get_js_asset( 'wpify-custom-fields' );
 		$data   = array(
-			'stylesheet' => $this->custom_fields->get_css_asset( 'wpify-custom-fields' ),
+			'stylesheet'  => $this->custom_fields->get_css_asset( 'wpify-custom-fields' ),
+			'api_path'    => $this->custom_fields->api->get_rest_namespace(),
+			'plugin_base' => $this->custom_fields->get_plugin_basename(),
 		);
 
 		wp_enqueue_script(
@@ -114,9 +115,5 @@ abstract class Integration {
 		}
 
 		return false;
-	}
-
-	public function register_options_api() {
-		// TODO: Api musí mít v názvu slug pluginu, id integrace a id pole
 	}
 }

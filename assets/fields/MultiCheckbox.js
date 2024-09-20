@@ -26,7 +26,6 @@ function MultiCheckbox ({
             id={`${htmlId}-${option.value}`}
             onChange={handleChange(option.value)}
             checked={value[option.value]}
-            className={clsx('wpifycf-field-multi-checkbox', `wpifycf-field-multi-checkbox--${id}`, `wpifycf-field-multi-checkbox--${option.value}`, attributes.class)}
             {...attributes}
           />
           <label

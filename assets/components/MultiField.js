@@ -1,7 +1,5 @@
-import { useCallback, useRef, useState, useEffect } from 'react';
 import { IconButton } from '@/components/IconButton';
-import { useMulti, useSortableList } from '@/helpers/hooks';
-import { v4 as uuidv4 } from 'uuid';
+import { useMulti } from '@/helpers/hooks';
 import { Button } from '@/components/Button';
 
 export function MultiField ({
@@ -73,14 +71,14 @@ export function MultiField ({
       </span>
       {canAdd && (
         <span className="wpifycf-multi-field-item-buttons-after">
-        {buttons.add ? (
-          <Button onClick={add}>
-            {buttons.add}
-          </Button>
-        ) : (
-          <IconButton icon="plus" onClick={add} />
-        )}
-      </span>
+          {buttons.add ? (
+            <Button onClick={add}>
+              {buttons.add}
+            </Button>
+          ) : (
+            <IconButton icon="plus" onClick={add} size={24} />
+          )}
+        </span>
       )}
     </span>
   );

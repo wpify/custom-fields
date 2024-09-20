@@ -1,0 +1,30 @@
+.wpifycf-icon-button {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1;
+  display: inline-block;
+
+  &--dark {
+    background: black;
+    border-radius: 50%;
+
+    svg {
+      display: block;
+      fill: white;
+    }
+  }
+
+  &--light {
+    svg {
+      fill: black;
+    }
+  }
+
+  &--move {
+    cursor: move;
+  }
+}
