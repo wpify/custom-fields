@@ -1,29 +1,51 @@
-import { useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
+import PhoneInput from 'react-phone-number-input';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import 'react-phone-number-input/style.css';
 
-export function Tel ({
+export function Tel({
   id,
   name,
   htmlId,
   onChange,
   value,
   attributes = {},
+  defaultCountry = 'US',
 }) {
-  const handleChange = useCallback(function (event) {
-    if (typeof onChange === 'function') {
-      onChange(parseFloat(event.target.value));
-    }
-  }, [onChange]);
+  const [phoneValue, setPhoneValue] = useState(value || '');
+
+  const handleChange = useCallback(
+    (value) => {
+      setPhoneValue(value);
+      if (typeof onChange === 'function') {
+        let normalizedValue = '';
+        if (value) {
+          const phoneNumber = parsePhoneNumberFromString(value);
+          if (phoneNumber && phoneNumber.isValid()) {
+            normalizedValue = phoneNumber.number; // E.164 format
+          }
+        }
+        onChange(normalizedValue);
+      }
+    },
+    [onChange]
+  );
 
   return (
-    <input
-      type="tel"
+    <PhoneInput
+      international
+      defaultCountry={defaultCountry}
+      value={phoneValue}
       name={name}
       id={htmlId}
       onChange={handleChange}
-      value={value}
-      className={clsx('wpifycf-field-tel', `wpifycf-field-tel--${id}`, attributes.class)}
+      className={clsx(
+        'wpifycf-field-tel',
+        `wpifycf-field-tel--${id}`,
+        attributes.class
+      )}
       {...attributes}
     />
   );

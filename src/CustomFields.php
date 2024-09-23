@@ -29,7 +29,6 @@ class CustomFields {
 		add_filter( 'wpifycf_sanitize_field_type_datetime', 'sanitize_text_field' );
 		add_filter( 'wpifycf_sanitize_field_type_email', 'sanitize_email' );
 		add_filter( 'wpifycf_sanitize_field_type_group', array( $this, 'sanitize_multi_field' ) );
-		add_filter( 'wpifycf_sanitize_field_type_hidden', 'sanitize_text_field' );
 		add_filter( 'wpifycf_sanitize_field_type_html', 'sanitize_text_field' );
 		add_filter( 'wpifycf_sanitize_field_type_inner_blocks', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_link', array( $this, 'sanitize_multi_field' ) );
@@ -68,7 +67,7 @@ class CustomFields {
 		add_filter( 'wpifycf_sanitize_field_type_toggle', 'boolval' );
 		add_filter( 'wpifycf_sanitize_field_type_url', 'sanitize_url' );
 		add_filter( 'wpifycf_sanitize_field_type_week', 'sanitize_text_field' );
-		add_filter( 'wpifycf_sanitize_field_type_wysiwyg', 'sanitize_text_field' );
+		add_filter( 'wpifycf_sanitize_field_type_wysiwyg', 'esc_html' );
 	}
 
 	/**
@@ -93,7 +92,7 @@ class CustomFields {
 		return $asset;
 	}
 
-	public function get_css_asset( string $item ): string {
+	public function get_css_asset( string $item ): array|string {
 		$build_path = plugin_dir_path( dirname( __FILE__ ) ) . 'build/';
 		$asset_php  = $build_path . $item . '.asset.php';
 
@@ -101,10 +100,21 @@ class CustomFields {
 			$asset = require $asset_php;
 		}
 
-		$src = plugin_dir_url( dirname( __FILE__ ) ) . 'build/' . $item . '.css';
+		$src = add_query_arg(
+			'ver',
+			$asset['version'],
+			plugin_dir_url( dirname( __FILE__ ) ) . 'build/' . $item . '.css',
+		);
 
-		if ( ! empty( $asset['version'] ) ) {
-			$src = add_query_arg( 'ver', $asset['version'], $src );
+		if ( file_exists( $build_path . 'style-' . $item . '.css' ) ) {
+			$src = array(
+				$src,
+				add_query_arg(
+					'ver',
+					$asset['version'],
+					plugin_dir_url( dirname( __FILE__ ) ) . 'build/style-' . $item . '.css',
+				)
+			);
 		}
 
 		return $src;

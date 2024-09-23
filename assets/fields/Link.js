@@ -1,20 +1,23 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
-import '@wordpress/core-data';
-import { isValidUrl, normalizeUrl } from '@/helpers/functions';
-import { usePost, usePostTypes, useUrlTitle } from '@/helpers/hooks';
-import PostSelect from '@/components/PostSelect';
+import { normalizeUrl } from '@/helpers/functions';
+import { usePostTypes, useUrlTitle } from '@/helpers/hooks';
+import { PostSelect } from '@/components/PostSelect';
 
 export function Link ({ name, htmlId, value = {}, onChange, post_type }) {
   const [blurUrl, setBlurUrl] = useState(null);
   const postTypes = usePostTypes(post_type);
 
-  const handlePostChange = useCallback(post => {
-    onChange({
-      ...value,
-      post,
-    });
+  const handlePostChange = useCallback(option => {
+    if (typeof option !== 'undefined') {
+      onChange({
+        ...value,
+        post: option?.id,
+        label: option?.title,
+        url: option?.permalink,
+      });
+    }
   }, [onChange, value]);
 
   const handleUrlChange = useCallback(event => {
@@ -46,10 +49,6 @@ export function Link ({ name, htmlId, value = {}, onChange, post_type }) {
       url: null,
     });
   }, [onChange, value]);
-
-  const isValueUrlValid = useMemo(() => {
-    return isValidUrl(value.url);
-  }, [value.url]);
 
   const handleUrlBlur = useCallback((event) => {
     const normalizedUrl = normalizeUrl(event.target.value);
@@ -95,16 +94,14 @@ export function Link ({ name, htmlId, value = {}, onChange, post_type }) {
         </span>
         <span className="wpifycf-field-link__field-value">
           {value.post_type ? (
-            <PostSelect postType={value.post_type} value={value.post} onChange={handlePostChange} />
+            <PostSelect postType={value.post_type} value={value.post} onSelect={handlePostChange} />
           ) : (
             <input type="url" value={value?.url || ''} id={htmlId + '.url'} onChange={handleUrlChange} onBlur={handleUrlBlur} />
           )}
-          {isValueUrlValid && (
-            <label className="wpifycf-field-link__field-option">
-              <input type="checkbox" value={value?.target === '_blank'} onChange={handleTargetChange} />
-              {__('Open in a new tab', 'wpify-custom-fields')}
-            </label>
-          )}
+          <label className="wpifycf-field-link__field-option">
+            <input type="checkbox" checked={value?.target === '_blank'} onChange={handleTargetChange} />
+            {__('Open in a new tab', 'wpify-custom-fields')}
+          </label>
         </span>
         <label className="wpifycf-field-link__field-label" htmlFor={htmlId + '.label'}>
           {__('Label', 'wpify-custom-fields')}

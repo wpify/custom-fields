@@ -41,11 +41,15 @@ class Helpers {
 
 		$posts = array();
 
-		if ( ! empty( $args['ensure'] ) ) {
+		$exclude = $args['exclude'] ?? array();
+		$ensure = $args['ensure'] ?? array();
+
+		if ( ! empty( $ensure ) ) {
 			$posts = get_posts(
 				array(
 					...$args,
-					'include' => $args['ensure'],
+					'include' => $ensure,
+					'exclude' => array(),
 				),
 			);
 		}
@@ -55,15 +59,23 @@ class Helpers {
 			get_posts(
 				array(
 					...$args,
-					'exclude' => $args['ensure'] ?? array(),
+					'exclude' => array_merge( $exclude, $ensure ),
 				),
 			),
 		);
 
+		$placeholder = plugin_dir_url( dirname( __FILE__ ) ) . 'assets/images/placeholder-image.svg';
+
 		return array_map(
 			fn( \WP_Post $post ) => array(
-				'value' => $post->ID,
-				'label' => $post->post_title,
+				'id'                => $post->ID,
+				'title'             => $post->post_title,
+				'post_type'         => $post->post_type,
+				'post_status'       => $post->post_status,
+				'post_status_label' => get_post_status_object( $post->post_status )->label,
+				'permalink'         => get_permalink( $post ),
+				'thumbnail'         => get_the_post_thumbnail_url( $post ) ?: $placeholder,
+				'excerpt'           => get_the_excerpt( $post ),
 			),
 			$posts,
 		);

@@ -6,19 +6,20 @@
   }
 
   &__field-value {
-    display: block;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: var(--wpifycf-gap-1);
 
     input[type="text"],
     input[type="url"],
     .wpifycf-select {
-      width: 100%;
-      max-width: 20em;
+      width: 20em;
     }
   }
 
   &__field-option {
-    display: inline-block;
-    margin-left: var(--wpifycf-gap-2);
+    display: block;
   }
 
   &__fields {

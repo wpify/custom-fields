@@ -310,8 +310,8 @@ class Options extends Integration {
 		}
 	}
 
-	protected function normalize_item( array $item ): array {
-		$item = parent::normalize_item( $item );
+	protected function normalize_item( array $item, string $global_id = '' ): array {
+		$item = parent::normalize_item( $item, $global_id );
 
 		if ( empty( $item['section'] ) ) {
 			$item['section'] = 'general';
@@ -321,12 +321,12 @@ class Options extends Integration {
 	}
 
 	public function print_field( array $item ): void {
-		$props = array(
-			...$item,
-			'value' => get_option( $item['id'], $item['default'] ),
-		);
+		$value = get_option( $item['id'], $item['default'] );
+		$value = is_string( $value ) ? html_entity_decode( $value ) : $value;
+		$props = array( ...$item, 'value' => $value );
+		$json  = wp_json_encode( $props );
 		?>
-		<div class="wpifycf-field wpifycf-field--options wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?>" data-props="<?php echo esc_attr( wp_json_encode( $props ) ) ?>" data-integration-id="<?php echo esc_attr( $this->id ) ?>"></div>
+		<div class="wpifycf-field wpifycf-field--options wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?>" data-props="<?php echo esc_attr( $json ) ?>" data-integration-id="<?php echo esc_attr( $this->id ) ?>"></div>
 		<?php
 	}
 }

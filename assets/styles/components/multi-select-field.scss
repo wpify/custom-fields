@@ -1,0 +1,21 @@
+.wpifycf-field-multi-select {
+  display: block;
+
+  &__options {
+    display: flex;
+    flex-flow: row wrap;
+    gap: var(--wpifycf-gap-1);
+    margin-bottom: var(--wpifycf-gap-1);
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    gap: var(--wpifycf-gap-1);
+    background: var(--wpifycf-border-color);
+    padding: 0 0 0 var(--wpifycf-gap-2);
+    border-radius: 5px;
+    line-height: 1;
+    cursor: move;
+  }
+}

@@ -9,6 +9,7 @@ module.exports = {
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'assets'),
+      'npm': path.resolve(__dirname, 'node_modules'),
     },
   },
 };

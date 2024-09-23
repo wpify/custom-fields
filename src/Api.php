@@ -42,7 +42,7 @@ class Api {
 		);
 	}
 
-	private function register_rest_route( string $route, string $method, callable $callback, array $args = array() ) {
+	public function register_rest_route( string $route, string $method, callable $callback, array $args = array() ) {
 		register_rest_route(
 			$this->get_rest_namespace(),
 			$route,

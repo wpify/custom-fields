@@ -1,0 +1,39 @@
+.wpifycf-post-preview {
+  display: inline-grid;
+  gap: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
+  width: 350px;
+  grid-template-areas:
+          "thumbnail title delete"
+          "thumbnail excerpt excerpt";
+  grid-template-columns: min-content auto min-content;
+  grid-template-rows: 1.2em auto;
+  background: rgba(255, 255, 255, 0.5);
+  padding: var(--wpifycf-gap-1);
+  max-height: calc(100px + 2 * var(--wpifycf-gap-1));
+  border: 1px solid var(--wpifycf-border-color);
+
+  &__thumbnail {
+    grid-area: thumbnail;
+  }
+
+  &__title {
+    grid-area: title;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1;
+  }
+
+  &__excerpt {
+    grid-area: excerpt;
+  }
+
+  &__delete {
+    grid-area: delete;
+    align-self: start;
+    position: relative;
+    top: calc(var(--wpifycf-gap-1) * -1);
+    right: calc(var(--wpifycf-gap-1) * -1);
+  }
+}

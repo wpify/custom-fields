@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useQuery } from '@tanstack/react-query';
 import { get } from '@/helpers/api.js';
 import { useSelect } from '@wordpress/data';
+import '@wordpress/core-data';
 
 export function useFields (integrationId) {
   const initialFields = useMemo(function () {
@@ -12,11 +13,16 @@ export function useFields (integrationId) {
     const fields = [];
 
     containers.forEach(function (container) {
-      const props = JSON.parse(container.dataset.props);
-      fields.push({
-        ...props,
-        node: container,
-      });
+      try {
+        const props = JSON.parse(container.dataset.props);
+        fields.push({
+          ...props,
+          node: container,
+        });
+      } catch (error) {
+        console.error(error);
+        return;
+      }
     });
 
     return fields;
@@ -293,6 +299,9 @@ export function usePost (id) {
 
 export function usePosts ({
   postType,
+  select,
+  enabled = true,
+  initialData = [],
   ...args
 }) {
   const config = useConfig(state => state.config);
@@ -303,8 +312,9 @@ export function usePosts ({
       post_type: postType,
       ...args,
     }),
-    initialData: [],
-    enabled: !!config.api_path,
+    initialData,
+    enabled: enabled && !!postType && !!config.api_path,
+    select,
     ...defaultQueryOptions,
   });
 }
@@ -322,4 +332,23 @@ export function usePostTypes (onlyPostTypes) {
     },
     [],
   );
+}
+
+export function useOptions ({
+  optionsKey,
+  initialData = [],
+  enabled = true,
+  select,
+  ...args
+}) {
+  const config = useConfig(state => state.config);
+
+  return useQuery({
+    queryKey: ['options', optionsKey, args],
+    queryFn: () => get(config.api_path + '/options/' + optionsKey, args),
+    initialData,
+    enabled: enabled && !!config.api_path && !!optionsKey,
+    select,
+    ...defaultQueryOptions,
+  });
 }

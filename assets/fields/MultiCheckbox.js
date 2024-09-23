@@ -1,9 +1,7 @@
 import { useCallback } from 'react';
-import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
 
 function MultiCheckbox ({
-  id,
   name,
   htmlId,
   onChange,
@@ -19,7 +17,7 @@ function MultiCheckbox ({
   return (
     <span className="wpifycf-field-multi-checkbox">
       {options.map((option, index) => (
-        <span className={`wpifycf-field-multi-checkbox__item wpifycf-field-multi-checkbox__item--${option.value}`}>
+        <span className={`wpifycf-field-multi-checkbox__item wpifycf-field-multi-checkbox__item--${option.value}`} key={option.value}>
           <input
             type="checkbox"
             name={`${name}[${option.value}]`}

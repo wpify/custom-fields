@@ -2,18 +2,26 @@
 
 namespace Wpify\CustomFields\Integrations;
 
+use WP_REST_Request;
+use WP_REST_Server;
 use Wpify\CustomFields\CustomFields;
 
 abstract class Integration {
-	public readonly array $items;
+	public readonly array  $items;
+	public readonly string $id;
 
 	public function __construct(
 		private readonly CustomFields $custom_fields,
 	) {
+		add_action( 'rest_api_init', array( $this, 'register_rest_options' ) );
 	}
 
-	protected function normalize_items( array $items ): array {
+	protected function normalize_items( array $items, $global_id = '' ): array {
 		$next_items = array();
+
+		if ( empty( $global_id ) ) {
+			$global_id = $this->id;
+		}
 
 		foreach ( $items as $key => $item ) {
 			if ( empty( $item['id'] ) && is_string( $key ) ) {
@@ -22,13 +30,15 @@ abstract class Integration {
 				$item['id'] = uniqid();
 			}
 
-			$next_items[ $item['id'] ] = $this->normalize_item( $item );
+			$next_items[ $item['id'] ] = $this->normalize_item( $item, $global_id );
 		}
 
 		return array_values( $next_items );
 	}
 
-	protected function normalize_item( array $item ): array {
+	protected function normalize_item( array $item, string $global_id ): array {
+		$item['global_id'] = $global_id . '__' . $item['id'];
+
 		if ( isset( $item['custom_attributes'] ) ) {
 			$item['props'] = $item['custom_attributes'];
 			unset( $item['custom_attributes'] );
@@ -49,38 +59,61 @@ abstract class Integration {
 		}
 
 		if ( isset( $item['items'] ) ) {
-			$item['items'] = $this->normalize_items( $item['items'] );
+			$item['items'] = $this->normalize_items( $item['items'], $item['global_id'] );
 		}
 
 		if ( isset( $item['options'] ) ) {
-			if ( is_callable( $item['options'] ) ) {
-				// TODO: Add support for callable options
-			} elseif ( is_array( $item['options'] ) ) {
-				$options = array();
-
-				foreach ( $item['options'] as $key => $value ) {
-					if ( is_array( $value ) ) {
-						$options[] = $value;
-					} else {
-						$options[] = array( 'label' => $value, 'value' => $key );
-					}
+			if ( is_callable( $item['options'] ) && empty( $item['async'] ) ) {
+				$item['options'] = $this->normalize_options( $item['options']() );
+			} elseif ( is_callable( $item['options'] ) ) {
+				if ( empty( $item['options_key'] ) ) {
+					$item['options_key'] = $item['global_id'];
 				}
 
-				$item['options'] = $options;
+				$item['options_callback'] = $item['options'];
+				$item['options']          = array();
+			} elseif ( is_array( $item['options'] ) ) {
+				$item['options'] = $this->normalize_options( $item['options'] );
 			}
 		}
 
 		return $item;
 	}
 
+	public function normalize_options( array $options ): array {
+		$next_options = array();
+
+		foreach ( $options as $key => $value ) {
+			if ( is_string( $key ) ) {
+				$next_options[] = array( 'label' => $value, 'value' => $key );
+			} else {
+				$next_options[] = $value;
+			}
+		}
+
+		return $next_options;
+	}
+
 	public function enqueue() {
 		$handle = 'wpifycf';
 		$js     = $this->custom_fields->get_js_asset( 'wpify-custom-fields' );
 		$data   = array(
-			'stylesheet'  => $this->custom_fields->get_css_asset( 'wpify-custom-fields' ),
-			'api_path'    => $this->custom_fields->api->get_rest_namespace(),
-			'plugin_base' => $this->custom_fields->get_plugin_basename(),
+			'stylesheet' => $this->custom_fields->get_css_asset( 'wpify-custom-fields' ),
+			'api_path'   => $this->custom_fields->api->get_rest_namespace(),
 		);
+
+		if ( $this->has_field_type( $this->items, 'wysiwyg' ) ) {
+			$js['dependencies'][] = 'wp-tinymce';
+			$js['dependencies'][] = 'code-editor';
+
+			wp_enqueue_editor();
+			wp_enqueue_script( 'wp-block-library' );
+			wp_tinymce_inline_scripts();
+		}
+
+		if ( $this->has_field_type( $this->items, 'attachment' ) ) {
+			wp_enqueue_media();
+		}
 
 		wp_enqueue_script(
 			$handle,
@@ -96,9 +129,7 @@ abstract class Integration {
 			'before',
 		);
 
-		if ( $this->has_field_type( $this->items, 'attachment' ) ) {
-			wp_enqueue_media();
-		}
+		wp_enqueue_style( 'wp-components' );
 	}
 
 	public function has_field_type( array $items, string $type ): bool {
@@ -115,5 +146,37 @@ abstract class Integration {
 		}
 
 		return false;
+	}
+
+	public function register_rest_options() {
+		$items = $this->normalize_items( $this->items );
+
+		$this->register_options_routes( $items );
+	}
+
+	public function register_options_routes( array $items = array() ) {
+		foreach ( $items as $item ) {
+			$this->register_options_route( $item );
+		}
+	}
+
+	public function register_options_route( array $item ) {
+		if ( ! empty( $item['options_key'] ) ) {
+			$this->custom_fields->api->register_rest_route(
+				'options/' . $item['options_key'],
+				WP_REST_Server::READABLE,
+				function ( WP_REST_Request $request ) use ( $item ) {
+					$options = $item['options_callback']( $request->get_params() );
+
+					if ( is_array( $options ) ) {
+						return $this->normalize_options( $options );
+					}
+
+					return array();
+				},
+			);
+		} elseif ( ! empty( $item['items'] ) ) {
+			$this->register_options_routes( $item['items'] );
+		}
 	}
 }

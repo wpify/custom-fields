@@ -1,0 +1,29 @@
+.wpifycf-field-wysiwyg {
+  display: block;
+
+  &__buttons {
+    display: flex;
+    flex-flow: row wrap;
+    background: white;
+    border: 1px solid var(--wpifycf-border-color);
+    border-bottom: none;
+  }
+
+  &__editor {
+    display:block;
+    background: white;
+    border: 1px solid var(--wpifycf-border-color);
+    padding: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
+    max-height: 400px;
+    overflow: auto;
+  }
+
+  &__bubble {
+    display: block;
+    background: white;
+    padding: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
+    border-radius: 5px;
+    border: 1px solid var(--wpifycf-border-color);
+    box-shadow: 0 0 5px rgba(0,0,0,.1);
+  }
+}

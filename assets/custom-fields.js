@@ -1,10 +1,9 @@
+import '@/styles/custom-fields.scss';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom';
 import { App } from '@/components/App';
 import { addStyleSheet } from '@/helpers/functions';
-import '@/styles/custom-fields.scss';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 require('@/helpers/field-types');
 
@@ -24,7 +23,6 @@ function loadCustomFields (event) {
             context={container.dataset.context}
             config={config}
           />
-          <ReactQueryDevtools initialIsOpen={false}/>
         </QueryClientProvider>
       </StrictMode>,
     );

@@ -7,7 +7,6 @@ require('@/fields/Date');
 require('@/fields/Datetime');
 require('@/fields/Email');
 require('@/fields/Group');
-require('@/fields/Hidden');
 require('@/fields/Html');
 require('@/fields/InnerBlock');
 require('@/fields/Link');

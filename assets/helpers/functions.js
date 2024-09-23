@@ -21,6 +21,14 @@ export function tryParseJson (value, defaultValue = null) {
 }
 
 export function addStyleSheet (url) {
+  if (Array.isArray(url)) {
+    url.forEach(addStyleSheetItem);
+  } else {
+    addStyleSheetItem(url);
+  }
+}
+
+function addStyleSheetItem (url) {
   if (document.querySelector(`link[href="${url}"]`)) {
     return;
   }
