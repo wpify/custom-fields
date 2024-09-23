@@ -5,7 +5,6 @@ import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { javascript } from '@codemirror/lang-javascript';
 import { html } from '@codemirror/lang-html';
 import { css } from '@codemirror/lang-css';
-import { python } from '@codemirror/lang-python';
 import { sql } from '@codemirror/lang-sql';
 import { php } from '@codemirror/lang-php';
 import { markdown } from '@codemirror/lang-markdown';
@@ -20,9 +19,6 @@ function getLanguageExtension (language) {
       return javascript();
     case 'html':
       return html();
-    case 'python':
-    case 'py':
-      return python();
     case 'css':
       return css();
     case 'sql':
