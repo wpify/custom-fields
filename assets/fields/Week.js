@@ -4,7 +4,6 @@ import { addFilter } from '@wordpress/hooks';
 
 export function Week ({
   id,
-  name,
   htmlId,
   onChange,
   value,
@@ -19,7 +18,6 @@ export function Week ({
   return (
     <input
       type="week"
-      name={name}
       id={htmlId}
       onChange={handleChange}
       value={value}

@@ -1,23 +1,14 @@
 import { addFilter } from '@wordpress/hooks';
 import { ToggleControl } from '@wordpress/components';
 
-function Toggle ({ htmlId, name, value, item_label, onChange }) {
+function Toggle ({ htmlId, value, item_label, onChange }) {
   return (
-    <>
-      {name && (
-        <input
-          type="hidden"
-          name={name}
-          value={value}
-        />
-      )}
-      <ToggleControl
-        id={htmlId}
-        label={item_label}
-        checked={value}
-        onChange={onChange}
-      />
-    </>
+    <ToggleControl
+      id={htmlId}
+      label={item_label}
+      checked={value}
+      onChange={onChange}
+    />
   );
 }
 

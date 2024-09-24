@@ -10,17 +10,17 @@
     width: 100%;
   }
 
+  &__description--before {
+    margin-bottom: var(--wpifycf-gap-1);
+  }
+
+  &__description--after {
+    margin-top: var(--wpifycf-gap-1);
+  }
+
   &__label {
     width: 150px;
     font-weight: 500;
-  }
-
-  &__field {
-    flex: 1;
-    display: flex;
-    flex-flow: column;
-    gap: var(--wpifycf-gap-1);
-    max-width: 100%;
   }
 
   .sortable-ghost {

@@ -4,7 +4,6 @@ import { addFilter } from '@wordpress/hooks';
 
 function Color ({
   id,
-  name,
   htmlId,
   onChange,
   value,
@@ -19,7 +18,6 @@ function Color ({
   return (
     <input
       type="color"
-      name={name}
       id={htmlId}
       onChange={handleChange}
       value={value}

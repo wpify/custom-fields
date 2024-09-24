@@ -5,7 +5,7 @@ import { MultiSelect } from '@/fields/MultiSelect';
 import { CategoryTree } from '@/fields/Term';
 import { useMemo } from 'react';
 
-export function MultiTerm ({ taxonomy, id, htmlId, name, value = [], onChange }) {
+export function MultiTerm ({ taxonomy, id, htmlId, value = [], onChange }) {
   const { data: terms, isError, isFetching } = useTerms({ taxonomy });
 
   const termOptions = useMemo(
@@ -13,7 +13,7 @@ export function MultiTerm ({ taxonomy, id, htmlId, name, value = [], onChange })
     [terms],
   );
 
-  let content = '';
+  let content;
 
   if (isFetching) {
     content = __('Loading terms...', 'wpify-custom-fields');
@@ -45,7 +45,6 @@ export function MultiTerm ({ taxonomy, id, htmlId, name, value = [], onChange })
 
   return (
     <span className="wpifycf-field-term">
-      {name && <input type="hidden" name={name} value={JSON.stringify(value)} />}
       {content}
     </span>
   );

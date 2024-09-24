@@ -4,7 +4,6 @@ import { addFilter } from '@wordpress/hooks';
 
 export function Textarea ({
   id,
-  name,
   htmlId,
   onChange,
   value,
@@ -18,7 +17,6 @@ export function Textarea ({
 
   return (
     <textarea
-      name={name}
       id={htmlId}
       onChange={handleChange}
       value={value}

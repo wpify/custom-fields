@@ -4,7 +4,6 @@ import { addFilter } from '@wordpress/hooks';
 
 function Password ({
   id,
-  name,
   htmlId,
   onChange,
   value,
@@ -19,7 +18,6 @@ function Password ({
   return (
     <input
       type="password"
-      name={name}
       id={htmlId}
       onChange={handleChange}
       value={value}

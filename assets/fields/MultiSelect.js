@@ -6,7 +6,6 @@ import { IconButton } from '@/components/IconButton';
 
 export function MultiSelect ({
   id,
-  name,
   value = [],
   onChange,
   options = [],
@@ -32,7 +31,7 @@ export function MultiSelect ({
   );
 
   const usedOptions = useMemo(
-    () => value.map(value => realOptions.find(option => option.value === value)),
+    () => value.map(value => realOptions.find(option => String(option.value) === String(value)) || { value, label: value }),
     [realOptions, value],
   );
 
@@ -48,9 +47,6 @@ export function MultiSelect ({
 
   return (
     <span className="wpifycf-field-multi-select">
-      {name && (
-        <input type="hidden" name={name} value={JSON.stringify(value)} />
-      )}
       {usedOptions.length > 0 && (
         <span className="wpifycf-field-multi-select__options" ref={containerRef}>
           {usedOptions.map((option, index) => (

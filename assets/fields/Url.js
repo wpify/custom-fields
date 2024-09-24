@@ -5,7 +5,6 @@ import { normalizeUrl } from '@/helpers/functions';
 
 export function Url ({
   id,
-  name,
   htmlId,
   onChange,
   value,
@@ -28,7 +27,6 @@ export function Url ({
   return (
     <input
       type="url"
-      name={name}
       id={htmlId}
       onChange={handleChange}
       onBlur={handleBlur}

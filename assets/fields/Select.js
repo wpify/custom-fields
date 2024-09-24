@@ -5,7 +5,6 @@ import { useMemo, useState } from 'react';
 
 export function Select ({
   id,
-  name,
   value,
   onChange,
   options = [],
@@ -27,19 +26,14 @@ export function Select ({
   );
 
   return (
-    <>
-      {name && (
-        <input type="hidden" name={name} value={value} />
-      )}
-      <SelectControl
-        id={id}
-        value={Array.isArray(realOptions) && realOptions.find(option => String(option.value) === String(value))}
-        onChange={onChange}
-        options={realOptions}
-        filterOption={optionsKey ? Boolean : undefined}
-        onInputChange={setSearch}
-      />
-    </>
+    <SelectControl
+      id={id}
+      value={Array.isArray(realOptions) && realOptions.find(option => String(option.value) === String(value))}
+      onChange={onChange}
+      options={realOptions}
+      filterOption={optionsKey ? Boolean : undefined}
+      onInputChange={setSearch}
+    />
   );
 }
 

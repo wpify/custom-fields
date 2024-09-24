@@ -7,7 +7,6 @@ import { Text } from '@/fields/Text';
 function Group ({
   id,
   htmlId,
-  name,
   value,
   onChange,
   items,
@@ -36,9 +35,6 @@ function Group ({
     <span
       className={clsx('wpifycf-field-group', `wpifycf-field-group--${id}`, attributes.class)}
     >
-      {name && (
-        <input type="hidden" id={htmlId} name={name} value={JSON.stringify(value)} />
-      )}
       {fields.map(field => (
         <Field
           key={field.id}

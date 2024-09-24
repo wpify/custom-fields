@@ -4,7 +4,6 @@ import { addFilter } from '@wordpress/hooks';
 
 export function Email ({
   id,
-  name,
   htmlId,
   onChange,
   value,
@@ -19,7 +18,6 @@ export function Email ({
   return (
     <input
       type="email"
-      name={name}
       id={htmlId}
       onChange={handleChange}
       value={value}

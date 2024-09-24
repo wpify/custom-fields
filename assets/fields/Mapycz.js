@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useMapyCzApiKey, useMapyCzReverseGeocode, useMapyCzSuggestions } from '@/helpers/hooks';
 import { Button } from '@/components/Button';
 import 'leaflet/dist/leaflet.css';
-import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
+import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { useLeafletContext } from '@react-leaflet/core';
 import L from 'leaflet';
 
@@ -20,14 +20,11 @@ const defaultValue = {
   zoom: 13,
 }
 
-export function Mapycz ({ id, htmlId, name, value = {}, onChange, lang = 'en' }) {
+export function Mapycz ({ htmlId, value = {}, onChange, lang = 'en' }) {
   const mapycz = useMapyCzApiKey();
 
   return (
     <span className="wpifycf-field-mapycz">
-      {name && (
-        <input type="hidden" name={name} value={JSON.stringify(value)} />
-      )}
       {mapycz.isFetching ? (
         <span>{__('Loading MapyCZ field...', 'wpify-custom-field')}</span>
       ) : mapycz.isError ? (
@@ -288,7 +285,7 @@ function SeznamCzLogo () {
       options: {
         position: 'bottomleft',
       },
-      onAdd: (map) => {
+      onAdd: () => {
         const container = L.DomUtil.create('div');
         const link = L.DomUtil.create('a', '', container);
 

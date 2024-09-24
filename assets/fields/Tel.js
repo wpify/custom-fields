@@ -6,7 +6,6 @@ import 'react-phone-number-input/style.css';
 
 export function Tel ({
   id,
-  name,
   htmlId,
   onChange,
   value,
@@ -14,24 +13,19 @@ export function Tel ({
   default_country: defaultCountry = 'US',
 }) {
   return (
-    <>
-      {name && (
-        <input type="hidden" name={name} value={value} />
+    <PhoneInput
+      international
+      defaultCountry={defaultCountry}
+      value={value}
+      id={htmlId}
+      onChange={onChange}
+      className={clsx(
+        'wpifycf-field-tel',
+        `wpifycf-field-tel--${id}`,
+        attributes.class,
       )}
-      <PhoneInput
-        international
-        defaultCountry={defaultCountry}
-        value={value}
-        id={htmlId}
-        onChange={onChange}
-        className={clsx(
-          'wpifycf-field-tel',
-          `wpifycf-field-tel--${id}`,
-          attributes.class,
-        )}
-        {...attributes}
-      />
-    </>
+      {...attributes}
+    />
   );
 }
 

@@ -15,7 +15,6 @@ import { EditorView } from '@codemirror/view'
 
 export function Code ({
   id,
-  name,
   value,
   onChange,
   language = 'html',
@@ -31,30 +30,25 @@ export function Code ({
   }
 
   return (
-    <>
-      {name && (
-        <input type="hidden" name={name} value={value} />
-      )}
-      <ErrorBoundary
-        fallback={(
-          <textarea
-            className={clsx('wpifycf-field-code', 'wpifycf-field-code--fallback', `wpifycf-field-code--${id}`, attributes.class)}
-            value={value}
-            onChange={event => onChange(event.target.value)}
-            style={{ width: '100%', height: height + 'px' }}
-          />
-        )}
-      >
-        <CodeMirror
-          className={clsx('wpifycf-field-code', `wpifycf-field-code--${id}`, attributes.class)}
+    <ErrorBoundary
+      fallback={(
+        <textarea
+          className={clsx('wpifycf-field-code', 'wpifycf-field-code--fallback', `wpifycf-field-code--${id}`, attributes.class)}
           value={value}
-          onChange={onChange}
-          height={height + 'px'}
-          theme={theme === 'dark' ? vscodeDark : undefined}
-          extensions={extensions}
+          onChange={event => onChange(event.target.value)}
+          style={{ width: '100%', height: height + 'px' }}
         />
-      </ErrorBoundary>
-    </>
+      )}
+    >
+      <CodeMirror
+        className={clsx('wpifycf-field-code', `wpifycf-field-code--${id}`, attributes.class)}
+        value={value}
+        onChange={onChange}
+        height={height + 'px'}
+        theme={theme === 'dark' ? vscodeDark : undefined}
+        extensions={extensions}
+      />
+    </ErrorBoundary>
   );
 }
 

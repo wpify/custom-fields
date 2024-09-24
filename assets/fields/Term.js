@@ -6,21 +6,15 @@ import { Select } from '@/fields/Select';
 import { __ } from '@wordpress/i18n';
 
 function isCategoryExpanded (category, value) {
-  if (value.includes(category.id)) {
-    return true;
-  }
-
-  if (category.children) {
-    return category.children.some(child => isCategoryExpanded(child, value));
-  }
-
-  return false;
+  return category.children
+    ? category.children.some(child => value.includes(child.id) || isCategoryExpanded(child, value))
+    : false;
 }
 
-export function Term ({ taxonomy, id, htmlId, name, value, onChange }) {
-  const { data: terms, isLoading, isError, isFetching } = useTerms({ taxonomy });
+export function Term ({ taxonomy, id, htmlId, value, onChange }) {
+  const { data: terms, isError, isFetching } = useTerms({ taxonomy });
 
-  let content = '';
+  let content;
 
   if (isFetching) {
     content = __('Loading terms...', 'wpify-custom-fields');
@@ -52,13 +46,12 @@ export function Term ({ taxonomy, id, htmlId, name, value, onChange }) {
 
   return (
     <span className="wpifycf-field-term">
-      {name && <input type="hidden" name={name} value={value} />}
       {content}
     </span>
   );
 }
 
-export function CategoryTree ({ name, categories = [], value = [], onChange, htmlId, type }) {
+export function CategoryTree ({ categories = [], value = [], onChange, htmlId, type }) {
   return (
     <span className="wpifycf-term-items">
       {categories.map(category => (
@@ -86,17 +79,17 @@ function CategoryItem ({ htmlId, category, value = [], onChange, type }) {
     setIsExpanded(prev => !prev);
   }, []);
 
-  const handleSelect = useCallback(event => {
+  const handleSelect = useCallback(id => () => {
     if (type === 'radio') {
-      onChange(category.id);
+      onChange(id);
     } else if (type === 'checkbox') {
-      onChange(
-        event.target.checked
-          ? [...value, category.id]
-          : value.filter(id => id !== category.id),
-      );
+      if (value.includes(id)) {
+        onChange(value.filter(cid => id !== cid));
+      } else {
+        onChange([...value, id]);
+      }
     }
-  }, [type, onChange, category.id, value]);
+  }, [type, onChange, value]);
 
   return (
     <span className="wpifycf-term-item">
@@ -104,11 +97,11 @@ function CategoryItem ({ htmlId, category, value = [], onChange, type }) {
         <input
           type={type}
           name={htmlId}
-          onChange={handleSelect}
+          onChange={handleSelect(category.id)}
           checked={value.includes(category.id)}
         />
         <span
-          onClick={handleToggleExpanded}
+          onClick={category.children ? handleToggleExpanded : handleSelect(category.id)}
           dangerouslySetInnerHTML={{ __html: category.name }}
         />
         {category.children && (

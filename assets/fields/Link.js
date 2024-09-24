@@ -5,12 +5,17 @@ import { normalizeUrl } from '@/helpers/functions';
 import { usePostTypes, useUrlTitle } from '@/helpers/hooks';
 import { PostSelect } from '@/components/PostSelect';
 
-export function Link ({ name, htmlId, value = {}, onChange, post_type }) {
+export function Link ({
+  htmlId,
+  value = {},
+  onChange,
+  post_type,
+}) {
   const [blurUrl, setBlurUrl] = useState(null);
   const postTypes = usePostTypes(post_type);
 
   const handlePostChange = useCallback(option => {
-    if (typeof option !== 'undefined') {
+    if (typeof option !== 'undefined' && option?.id !== value.post) {
       onChange({
         ...value,
         post: option?.id,
@@ -47,6 +52,7 @@ export function Link ({ name, htmlId, value = {}, onChange, post_type }) {
       post_type: event.target.value,
       post: null,
       url: null,
+      label: null,
     });
   }, [onChange, value]);
 
@@ -72,9 +78,6 @@ export function Link ({ name, htmlId, value = {}, onChange, post_type }) {
 
   return (
     <span className="wpifycf-field-link">
-      {name && (
-        <input type="hidden" value={JSON.stringify(value)} name={name} />
-      )}
       <span className="wpifycf-field-link__fields">
         <span className="wpifycf-field-link__field-label">
           {postTypes.length > 0 ? (

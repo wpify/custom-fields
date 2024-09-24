@@ -3,8 +3,6 @@ import { addFilter } from '@wordpress/hooks';
 import { ToggleControl } from '@wordpress/components';
 
 function MultiToggle ({
-  id,
-  name,
   htmlId,
   onChange,
   value = {},
@@ -18,14 +16,7 @@ function MultiToggle ({
 
   return (
     <span className="wpifycf-field-multi-toggle">
-      {name && (
-        <input
-          type="hidden"
-          name={name}
-          value={JSON.stringify(value)}
-        />
-      )}
-      {options.map((option, index) => (
+      {options.map(option => (
         <span className={`wpifycf-field-multi-toggle__item wpifycf-field-multi-checkbox__item--${option.value}`} key={option.value}>
           <ToggleControl
             id={`${htmlId}-${option.value}`}

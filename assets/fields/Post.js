@@ -3,7 +3,7 @@ import { addFilter } from '@wordpress/hooks';
 import { PostSelect } from '@/components/PostSelect';
 import { IconButton } from '@/components/IconButton';
 
-export function Post ({ name, value, onChange, post_type: postType }) {
+export function Post ({ value, onChange, post_type: postType }) {
   const [selected, setSelected] = useState(null);
 
   const handleDelete = useCallback(() => {
@@ -12,9 +12,6 @@ export function Post ({ name, value, onChange, post_type: postType }) {
 
   return (
     <span className="wpifycf-field-post">
-      {name && (
-        <input type="hidden" name={name} value={value} />
-      )}
       <PostSelect
         value={value}
         onChange={onChange}

@@ -7,10 +7,8 @@ import { useMediaLibrary, useAttachment } from '@/helpers/hooks';
 import { addFilter } from '@wordpress/hooks';
 
 function Attachment ({
-  htmlId,
   value,
   id,
-  name,
   onChange,
   attachment_type,
   attributes = {},
@@ -35,9 +33,6 @@ function Attachment ({
     <span
       className={clsx('wpifycf-field-attachment', `wpifycf-field-attachment--${id}`, attributes.class)}
     >
-      {name && (
-        <input type="hidden" id={htmlId} name={name} value={value} />
-      )}
       {attachment && (
         <AttachmentItem attachment={attachment} remove={remove} />
       )}
@@ -50,7 +45,7 @@ function Attachment ({
   );
 }
 
-Attachment.Title = ({ field, value }) => {
+Attachment.Title = ({ value }) => {
   const { attachment } = useAttachment(value);
 
   if (attachment) {

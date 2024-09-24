@@ -10,7 +10,6 @@ const VIEW_HTML = 'html';
 export function Wysiwyg ({
   id,
   htmlId,
-  name,
   value,
   onChange,
   height = 200,
@@ -38,7 +37,6 @@ export function Wysiwyg ({
       {view === VIEW_VISUAL && (
         <TinyMCE
           htmlId={htmlId}
-          name={name}
           value={value}
           onChange={onChange}
           height={height}
@@ -46,7 +44,6 @@ export function Wysiwyg ({
       )}
       {view === VIEW_HTML && (
         <Code
-          name={name}
           value={value}
           onChange={onChange}
           height={height + 94}
@@ -60,7 +57,7 @@ export function Wysiwyg ({
   );
 }
 
-function TinyMCE ({ htmlId, name, value, onChange, height }) {
+function TinyMCE ({ htmlId, value, onChange, height }) {
   const editorRef = useRef(null);
 
   useEffect(() => {
@@ -115,7 +112,7 @@ function TinyMCE ({ htmlId, name, value, onChange, height }) {
   }, [value]);
 
   return (
-    <textarea name={name} id={htmlId} onChange={onChange} value={value} />
+    <textarea id={htmlId} onChange={onChange} value={value} />
   );
 }
 

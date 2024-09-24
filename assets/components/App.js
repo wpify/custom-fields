@@ -2,11 +2,12 @@ import { Fragment, useCallback, useEffect } from 'react';
 import { useFields, useCustomFieldsContext, useConfig } from '@/helpers/hooks';
 import { Field } from '@/components/Field';
 
-export function App ({ integrationId, context, config }) {
+export function App ({ integrationId, context, config, tabs }) {
   const [fields, setFields] = useFields(integrationId);
-
   const setContext = useCustomFieldsContext(state => state.setContext);
   const setConfig = useConfig(state => state.setConfig);
+
+  console.log(tabs);
 
   useEffect(() => {
     setContext(context);
@@ -38,7 +39,7 @@ export function App ({ integrationId, context, config }) {
 
   return (
     <Fragment>
-      {fields.map((field, index) => (
+      {fields.map(field => (
         <Field
           key={field.id}
           {...field}

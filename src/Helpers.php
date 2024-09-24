@@ -39,30 +39,40 @@ class Helpers {
 			$args['post_status'] = 'any';
 		}
 
-		$posts = array();
-
-		$exclude = $args['exclude'] ?? array();
-		$ensure  = $args['ensure'] ?? array();
+		$posts         = array();
+		$exclude       = $args['exclude'] ?? array();
+		$ensure        = $args['ensure'] ?? array();
+		$ensured_posts = array();
+		$added_posts   = array();
 
 		if ( ! empty( $ensure ) ) {
-			$posts = get_posts(
+			$ensured_posts = get_posts(
 				array(
 					...$args,
 					'include' => $ensure,
-					'exclude' => array(),
 				),
 			);
 		}
 
-		$posts = array_merge(
-			$posts,
-			get_posts(
-				array(
-					...$args,
-					'exclude' => array_merge( $exclude, $ensure ),
-				),
+		$raw_posts = get_posts(
+			array(
+				...$args,
+				'limit' => $args['numberposts'] + count( $ensured_posts ) + count( $exclude ),
 			),
 		);
+
+		foreach ( $ensured_posts as $post ) {
+			$posts[]       = $post;
+			$added_posts[] = $post->ID;
+		}
+
+		foreach ( $raw_posts as $post ) {
+			if ( in_array( $post->ID, $exclude ) || in_array( $post->ID, $added_posts ) || count( $posts ) >= $args['numberposts'] ) {
+				continue;
+			}
+
+			$posts[] = $post;
+		}
 
 		$placeholder = plugin_dir_url( dirname( __FILE__ ) ) . 'assets/images/placeholder-image.svg';
 

@@ -7,7 +7,6 @@ import { __ } from '@wordpress/i18n';
 import { IconButton } from '@/components/IconButton';
 
 function MultiGroup ({
-  name,
   value = [],
   onChange,
   default: defaultValue,
@@ -47,9 +46,6 @@ function MultiGroup ({
 
   return (
     <span className={clsx('wpifycf-field-multi-group', `wpifycf-field-multi-group--${props.id}`, props.attributes?.class)}>
-      {name && (
-        <input type="hidden" id={htmlId} name={name} value={JSON.stringify(value)} />
-      )}
       <span className="wpifycf-field-multi-group__items" ref={containerRef}>
         {Array.isArray(value) && value.map((value, index) => (
           <span

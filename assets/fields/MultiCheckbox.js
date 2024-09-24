@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { addFilter } from '@wordpress/hooks';
 
 function MultiCheckbox ({
-  name,
   htmlId,
   onChange,
   value = {},
@@ -14,13 +13,13 @@ function MultiCheckbox ({
     nextValue[optionValue] = event.target.checked;
     onChange(nextValue);
   }, [onChange, value]);
+
   return (
     <span className="wpifycf-field-multi-checkbox">
-      {options.map((option, index) => (
+      {options.map(option => (
         <span className={`wpifycf-field-multi-checkbox__item wpifycf-field-multi-checkbox__item--${option.value}`} key={option.value}>
           <input
             type="checkbox"
-            name={`${name}[${option.value}]`}
             id={`${htmlId}-${option.value}`}
             onChange={handleChange(option.value)}
             checked={value[option.value]}

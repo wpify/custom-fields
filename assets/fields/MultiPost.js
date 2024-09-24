@@ -4,7 +4,11 @@ import { PostSelect } from '@/components/PostSelect';
 import { PostPreview } from '@/fields/Post';
 import { useMulti, usePosts } from '@/helpers/hooks';
 
-export function MultiPost ({ name, value = [], onChange, post_type: postType }) {
+export function MultiPost ({
+  value = [],
+  onChange,
+  post_type: postType
+}) {
   if (!Array.isArray(value)) {
     value = [];
   }
@@ -23,9 +27,6 @@ export function MultiPost ({ name, value = [], onChange, post_type: postType }) 
 
   return (
     <span className="wpifycf-field-multi-post">
-      {name && (
-        <input type="hidden" name={name} value={JSON.stringify(value)} />
-      )}
       <PostSelect
         value={null}
         exclude={value}

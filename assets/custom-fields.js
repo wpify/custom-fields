@@ -10,7 +10,7 @@ require('@/helpers/field-types');
 const config = { ...window.wpifycf };
 const queryClient = new QueryClient();
 
-function loadCustomFields (event) {
+function loadCustomFields () {
   document.querySelectorAll('.wpifycf-app[data-loaded=false]').forEach(function (container) {
     const form = container.closest('form');
 
@@ -21,6 +21,7 @@ function loadCustomFields (event) {
             integrationId={container.dataset.integrationId}
             form={form}
             context={container.dataset.context}
+            tabs={container.dataset.tabs}
             config={config}
           />
         </QueryClientProvider>

@@ -4,7 +4,6 @@ import { addFilter } from '@wordpress/hooks';
 
 export function Month ({
   id,
-  name,
   htmlId,
   onChange,
   value,
@@ -19,7 +18,6 @@ export function Month ({
   return (
     <input
       type="month"
-      name={name}
       id={htmlId}
       onChange={handleChange}
       value={value}

@@ -8,9 +8,7 @@ import { addFilter } from '@wordpress/hooks';
 
 function MultiAttachment ({
   id,
-  htmlId,
   value = [],
-  name,
   attachment_type,
   onChange,
   className,
@@ -68,7 +66,6 @@ function MultiAttachment ({
     <span
       className={clsx('wpifycf-field-multi-attachment', `wpifycf-field-multi-attachment--${id}`, className)}
     >
-      {name && <input type="hidden" id={htmlId} name={name} value={JSON.stringify(value)} />}
       <Button className="wpifycf-button__add" onClick={openMediaLibrary}>
         {__('Add attachments', 'wpify-custom-fields')}
       </Button>

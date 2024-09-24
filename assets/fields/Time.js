@@ -4,7 +4,6 @@ import { addFilter } from '@wordpress/hooks';
 
 export function Time ({
   id,
-  name,
   htmlId,
   onChange,
   value,
@@ -19,7 +18,6 @@ export function Time ({
   return (
     <input
       type="time"
-      name={name}
       id={htmlId}
       onChange={handleChange}
       value={value}

@@ -4,7 +4,6 @@ import { addFilter } from '@wordpress/hooks';
 
 export function Text ({
   id,
-  name,
   htmlId,
   onChange,
   value,
@@ -19,7 +18,6 @@ export function Text ({
   return (
     <input
       type="text"
-      name={name}
       id={htmlId}
       onChange={handleChange}
       value={value}
