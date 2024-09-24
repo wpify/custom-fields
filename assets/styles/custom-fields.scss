@@ -1,6 +1,7 @@
 :root {
   --wpifycf-gap-1: 5px;
   --wpifycf-gap-2: 10px;
+  --wpifycf-gap-3: 20px;
   --wpifycf-border-color: #ddd;
 }
 
@@ -19,3 +20,4 @@
 @import "components/multi-select-field";
 @import "components/wysiwyg-field";
 @import "components/mapycz-field";
+@import "components/term-field";

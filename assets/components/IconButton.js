@@ -27,6 +27,7 @@ import {
   formatUnderline,
   link,
   linkOff,
+  reset,
 } from '@wordpress/icons';
 import clsx from 'clsx';
 
@@ -36,6 +37,7 @@ const icons = {
   duplicate: copy,
   edit,
   plus,
+  minus: reset,
   bold: formatBold,
   italic: formatItalic,
   strike: formatStrikethrough,

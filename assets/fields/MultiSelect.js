@@ -21,14 +21,19 @@ export function MultiSelect ({
     search,
   });
 
+  const realOptions = useMemo(
+    () => optionsKey ? fetchedOptions : options,
+    [fetchedOptions, options]
+  );
+
   const availableOptions = useMemo(
-    () => fetchedOptions.filter(option => !value?.includes(option.value)),
-    [fetchedOptions, value],
+    () => realOptions.filter(option => !value?.includes(option.value)),
+    [realOptions, value],
   );
 
   const usedOptions = useMemo(
-    () => fetchedOptions.filter(option => value?.includes(option.value)),
-    [fetchedOptions, value],
+    () => realOptions.filter(option => value?.includes(option.value)),
+    [realOptions, value],
   );
 
   const {

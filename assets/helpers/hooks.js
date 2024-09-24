@@ -285,18 +285,6 @@ export function useUrlTitle (url) {
   });
 }
 
-export function usePost (id) {
-  const config = useConfig(state => state.config);
-  const query = useQuery({
-    queryKey: ['post', id],
-    queryFn: () => get(config.api_path + '/post', { id }),
-    enabled: !!config.api_path && id > 0,
-    ...defaultQueryOptions,
-  });
-
-  return id > 0 ? query : { data: null, isLoading: false };
-}
-
 export function usePosts ({
   postType,
   select,
@@ -314,6 +302,25 @@ export function usePosts ({
     }),
     initialData,
     enabled: enabled && !!postType && !!config.api_path,
+    select,
+    ...defaultQueryOptions,
+  });
+}
+
+export function useTerms ({
+  taxonomy,
+  select,
+  enabled = true,
+  initialData = [],
+  ...args
+}) {
+  const config = useConfig(state => state.config);
+
+  return useQuery({
+    queryKey: ['terms', taxonomy, args],
+    queryFn: () => get(config.api_path + '/terms', { taxonomy, ...args }),
+    initialData,
+    enabled: enabled && !!taxonomy && !!config.api_path,
     select,
     ...defaultQueryOptions,
   });

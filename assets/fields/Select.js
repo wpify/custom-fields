@@ -1,7 +1,7 @@
 import { addFilter } from '@wordpress/hooks';
 import { Select as SelectControl } from '@/components/Select.js';
 import { useOptions } from '@/helpers/hooks';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export function Select ({
   id,
@@ -21,6 +21,11 @@ export function Select ({
     value,
   });
 
+  const realOptions = useMemo(
+    () => optionsKey ? fetchedOptions : options,
+    [fetchedOptions, options]
+  );
+
   return (
     <>
       {name && (
@@ -28,9 +33,9 @@ export function Select ({
       )}
       <SelectControl
         id={id}
-        value={Array.isArray(fetchedOptions) && fetchedOptions.find(option => String(option.value) === String(value))}
+        value={Array.isArray(realOptions) && realOptions.find(option => String(option.value) === String(value))}
         onChange={onChange}
-        options={fetchedOptions}
+        options={realOptions}
         filterOption={optionsKey ? Boolean : undefined}
         onInputChange={setSearch}
       />

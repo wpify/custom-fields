@@ -26,18 +26,18 @@ class Api {
 		$this->register_rest_route(
 			'posts',
 			WP_REST_Server::READABLE,
-			fn( WP_REST_Request $request ) => $this->helpers->get_posts_for_options( $request->get_params() ),
+			fn( WP_REST_Request $request ) => $this->helpers->get_posts( $request->get_params() ),
 			array(
 				'post_type' => array( 'required' => true ),
 			),
 		);
 
 		$this->register_rest_route(
-			'post',
+			'terms',
 			WP_REST_Server::READABLE,
-			fn( WP_REST_Request $request ) => $this->helpers->get_post( $request->get_param( 'id' ) ),
+			fn( WP_REST_Request $request ) => $this->helpers->get_terms( $request->get_params() ),
 			array(
-				'id' => array( 'required' => true ),
+				'taxonomy' => array( 'required' => true ),
 			),
 		);
 	}

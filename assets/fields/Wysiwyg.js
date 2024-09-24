@@ -36,7 +36,7 @@ export function Wysiwyg ({
         </button>
       </span>
       {view === VIEW_VISUAL && (
-        <VisualView
+        <TinyMCE
           htmlId={htmlId}
           name={name}
           value={value}
@@ -60,7 +60,7 @@ export function Wysiwyg ({
   );
 }
 
-function VisualView ({ htmlId, name, value, onChange, height }) {
+function TinyMCE ({ htmlId, name, value, onChange, height }) {
   const editorRef = useRef(null);
 
   useEffect(() => {

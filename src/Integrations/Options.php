@@ -263,7 +263,7 @@ class Options extends Integration {
 		$items = $this->normalize_items( $this->items );
 
 		foreach ( $items as $item ) {
-			$type = apply_filters( 'wpifycf_option_field_type_' . $item['type'], 'string', $item );
+			$type = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
 
 			register_setting(
 				$this->option_group,

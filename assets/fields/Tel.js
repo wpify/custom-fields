@@ -11,7 +11,7 @@ export function Tel ({
   onChange,
   value,
   attributes = {},
-  defaultCountry = 'US',
+  default_country: defaultCountry = 'US',
 }) {
   return (
     <>

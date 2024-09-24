@@ -30,7 +30,7 @@ class Helpers {
 		return $title->item( 0 )->textContent;
 	}
 
-	public function get_posts_for_options( array $args = array() ) {
+	public function get_posts( array $args = array() ) {
 		if ( empty( $args['numberposts'] ) ) {
 			$args['numberposts'] = 50;
 		}
@@ -42,7 +42,7 @@ class Helpers {
 		$posts = array();
 
 		$exclude = $args['exclude'] ?? array();
-		$ensure = $args['ensure'] ?? array();
+		$ensure  = $args['ensure'] ?? array();
 
 		if ( ! empty( $ensure ) ) {
 			$posts = get_posts(
@@ -81,28 +81,61 @@ class Helpers {
 		);
 	}
 
-	public function get_post( int $post_id ) {
-		$post = get_post( $post_id );
+	public function get_terms( $args ) {
+		$terms = get_terms(
+			array(
+				'hide_empty' => false,
+				...$args,
+			),
+		);
 
-		if ( ! $post ) {
+		if ( is_wp_error( $terms ) || empty( $terms ) ) {
 			return array();
 		}
 
-		return array(
-			'id'                => $post->ID,
-			'title'             => $post->post_title,
-			'post_type'         => $post->post_type,
-			'post_status'       => $post->post_status,
-			'post_status_label' => get_post_status_object( $post->post_status )->label,
-			'permalink'         => get_permalink( $post ),
-		);
-	}
+		// Build an array of terms indexed by term_id
+		$terms_by_id = array();
+		foreach ( $terms as $term ) {
+			$terms_by_id[ $term->term_id ] = array(
+				'id'     => $term->term_id,
+				'name'   => $term->name,
+				'slug'   => $term->slug,
+				'parent' => $term->parent,
+			);
+		}
 
-	public function set_mapycz_api_key( string $api_key ) {
-		if ( update_option( 'wpifycf_mapycz_api_key', $api_key ) ) {
-			return $api_key;
-		};
+		foreach ( $terms_by_id as $id => &$term ) {
+			$full_name_parts = array();
+			$current_term_id = $id;
 
-		return '';
+			while ( $current_term_id !== 0 && isset( $terms_by_id[ $current_term_id ] ) ) {
+				array_unshift( $full_name_parts, $terms_by_id[ $current_term_id ]['name'] );
+				$current_term_id = $terms_by_id[ $current_term_id ]['parent'];
+			}
+
+			$term['full_name'] = implode( ' > ', $full_name_parts );
+		}
+
+		unset( $term );
+
+		$tree = array();
+
+		foreach ( $terms_by_id as $id => &$term ) {
+			if ( $term['parent'] !== 0 && isset( $terms_by_id[ $term['parent'] ] ) ) {
+				$parent =& $terms_by_id[ $term['parent'] ];
+
+				if ( ! isset( $parent['children'] ) ) {
+					$parent['children'] = array();
+				}
+
+				$parent['children'][] =& $term;
+			} else {
+				$tree[] =& $term;
+			}
+		}
+
+		unset( $term );
+
+		return $tree;
 	}
 }

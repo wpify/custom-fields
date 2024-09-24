@@ -14,15 +14,8 @@ class CustomFields {
 		$this->helpers = new Helpers();
 		$this->api     = new Api( $this, $this->helpers );
 
-		add_filter( 'wpifycf_option_field_type_text', array( $this, 'return_string' ) );
-		add_filter( 'wpifycf_option_field_type_multi_text', array( $this, 'return_array' ) );
-
-		add_filter( 'wpifycf_option_field_type_group', array( $this, 'return_object' ) );
-		add_filter( 'wpifycf_option_field_type_multi_group', array( $this, 'return_array' ) );
-
 		// Sanitizers for field types
 		add_filter( 'wpifycf_sanitize_field_type_attachment', 'intval' );
-		add_filter( 'wpifycf_sanitize_field_type_button', 'sanitize_text_field' );
 		add_filter( 'wpifycf_sanitize_field_type_checkbox', 'boolval' );
 		add_filter( 'wpifycf_sanitize_field_type_code', 'strval' );
 		add_filter( 'wpifycf_sanitize_field_type_color', 'sanitize_hex_color' );
@@ -36,7 +29,6 @@ class CustomFields {
 		add_filter( 'wpifycf_sanitize_field_type_mapycz', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_month', 'sanitize_text_field' );
 		add_filter( 'wpifycf_sanitize_field_type_multi_attachment', array( $this, 'sanitize_multi_field' ) );
-		add_filter( 'wpifycf_sanitize_field_type_multi_button', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_multi_checkbox', array( $this, 'sanitize_multi_checkbox' ) );
 		add_filter( 'wpifycf_sanitize_field_type_multi_color', array( $this, 'sanitize_multi_field' ) );
 		add_filter( 'wpifycf_sanitize_field_type_multi_date', array( $this, 'sanitize_multi_field' ) );
@@ -69,6 +61,53 @@ class CustomFields {
 		add_filter( 'wpifycf_sanitize_field_type_url', 'sanitize_url' );
 		add_filter( 'wpifycf_sanitize_field_type_week', 'sanitize_text_field' );
 		add_filter( 'wpifycf_sanitize_field_type_wysiwyg', 'esc_html' );
+
+		// WordPress types for field types
+		add_filter( 'wpifycf_field_type_attachment', array( $this, 'return_integer' ) );
+		add_filter( 'wpifycf_field_type_checkbox', array( $this, 'return_boolean' ) );
+		add_filter( 'wpifycf_field_type_code', array( $this, 'return_string' ) );
+		add_filter( 'wpifycf_field_type_color', array( $this, 'return_string' ) );
+		add_filter( 'wpifycf_field_type_date', array( $this, 'return_string' ) );
+		add_filter( 'wpifycf_field_type_datetime', array( $this, 'return_string' ) );
+		add_filter( 'wpifycf_field_type_email', array( $this, 'return_string' ) );
+		add_filter( 'wpifycf_field_type_group', array( $this, 'return_object' ) );
+		add_filter( 'wpifycf_field_type_html', array( $this, 'return_string' ) );
+		add_filter( 'wpifycf_field_type_link', array( $this, 'return_object' ) );
+		add_filter( 'wpifycf_field_type_mapycz', array( $this, 'return_object' ) );
+		add_filter( 'wpifycf_field_type_month', array( $this, 'return_string' ) );
+		add_filter( 'wpifycf_field_type_multi_attachment', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_checkbox', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_color', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_date', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_datetime', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_email', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_group', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_link', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_mapycz', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_month', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_number', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_post', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_select', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_tel', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_term', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_text', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_textarea', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_time', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_toggle', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_url', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_multi_week', array( $this, 'return_array' ) );
+		add_filter( 'wpifycf_field_type_number', array( $this, 'return_number' ) );
+		add_filter( 'wpifycf_field_type_password', array( $this, 'return_string' ) );
+		add_filter( 'wpifycf_field_type_post', array( $this, 'return_integer' ) );
+		add_filter( 'wpifycf_field_type_select', array( $this, 'return_string' ) );
+		add_filter( 'wpifycf_field_type_tel', array( $this, 'return_string' ) );
+		add_filter( 'wpifycf_field_type_term', array( $this, 'return_integer' ) );
+		add_filter( 'wpifycf_field_type_textarea', array( $this, 'return_string' ) );
+		add_filter( 'wpifycf_field_type_time', array( $this, 'return_string' ) );
+		add_filter( 'wpifycf_field_type_toggle', array( $this, 'return_boolean' ) );
+		add_filter( 'wpifycf_field_type_url', array( $this, 'return_string' ) );
+		add_filter( 'wpifycf_field_type_week', array( $this, 'return_string' ) );
+		add_filter( 'wpifycf_field_type_wysiwyg', array( $this, 'return_string' ) );
 	}
 
 	/**
@@ -125,12 +164,24 @@ class CustomFields {
 		return 'string';
 	}
 
-	public function return_object(): string {
-		return 'object';
+	public function return_boolean(): string {
+		return 'boolean';
+	}
+
+	public function return_integer(): string {
+		return 'integer';
+	}
+
+	public function return_number(): string {
+		return 'number';
 	}
 
 	public function return_array(): string {
 		return 'array';
+	}
+
+	public function return_object(): string {
+		return 'object';
 	}
 
 	public function sanitize_multi_field( $value ): array {
