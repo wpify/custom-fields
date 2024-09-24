@@ -1,5 +1,5 @@
 form:has([data-context="options"]) {
-  tr:has([data-hide-field="true"]) {
+  tr:has(td > .wpifycf-field > [data-hide-field="true"]) {
     display: none;
   }
 }

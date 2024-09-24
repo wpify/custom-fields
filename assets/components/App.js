@@ -42,19 +42,34 @@ export function App ({ integrationId, context, config, tabs }) {
     };
   }, [setFields]);
 
+  const hasColumns = fields.some(field => field.type === 'column');
+  const defaultColumn = 'default';
+  const fieldsWithColumns = fields.map(field => {
+    if (field.type === 'column') {
+      return field;
+    }
+
+    return {
+      ...field,
+      column: field.column || defaultColumn,
+    };
+  });
+
   return (
     <>
       <Tabs tabs={tabs} />
-      {fields.map(field => (
-        <Field
-          key={field.id}
-          {...field}
-          name={field.name || field.id}
-          htmlId={field.id}
-          onChange={handleChange(field.id)}
-          renderOptions={getRenderOptions(context)}
-        />
-      ))}
+      <span className="wpifycf-columns">
+        {fieldsWithColumns.map(field => (
+          <Field
+            key={field.id}
+            {...field}
+            name={field.name || field.id}
+            htmlId={field.id}
+            onChange={handleChange(field.id)}
+            renderOptions={getRenderOptions(context)}
+          />
+        ))}
+      </span>
     </>
   );
 }
