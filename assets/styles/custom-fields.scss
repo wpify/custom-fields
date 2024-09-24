@@ -5,6 +5,9 @@
   --wpifycf-border-color: #ddd;
 }
 
+@import "components/options-context";
+
+@import "components/tabs";
 @import "components/field";
 @import "components/attachment-field";
 @import "components/multi-field";

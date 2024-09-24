@@ -6,9 +6,16 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Text } from '@/fields/Text.js';
 import { Label } from '@/components/Label';
 import clsx from 'clsx';
+import { useTab } from '@/helpers/hooks';
 
-export function Field ({ type, name, node, renderOptions, description, value, ...props }) {
+export function Field ({ type, name, node, renderOptions, description, value, tab, ...props }) {
   const FieldComponent = applyFilters('wpifycf_field_' + type, Text, props);
+
+  const currentTab = useTab(state => state.tab);
+
+  if (tab) {
+    console.log({ currentTab, tab });
+  }
 
   const fallback = (
     <span className="wpifycf-error-boundary">
@@ -22,14 +29,19 @@ export function Field ({ type, name, node, renderOptions, description, value, ..
     <span
       className={clsx(
         'wpifycf-field__description',
-        `wpifycf-field__description--${descriptionPosition}`
+        `wpifycf-field__description--${descriptionPosition}`,
       )}
     >
       {description}
     </span>
   );
 
-  const field = (
+  const isHidden = tab && currentTab && currentTab !== tab && !!name;
+  const hiddenField = name && <input type="hidden" name={name} data-hide-field={isHidden ? 'true' : 'false'} value={typeof value === 'object' ? JSON.stringify(value) : value} />;
+
+  const field = isHidden
+    ? hiddenField
+    : (
     <FieldWrapper renderOptions={renderOptions}>
       {descriptionPosition === 'before' && renderedDescription}
       <Label
@@ -39,9 +51,7 @@ export function Field ({ type, name, node, renderOptions, description, value, ..
         {...props}
       />
       <ErrorBoundary fallback={fallback}>
-        {name && (
-          <input type="hidden" name={name} value={typeof value === 'object' ? JSON.stringify(value) : value} />
-        )}
+        {hiddenField}
         <FieldComponent
           type={type}
           value={value}

@@ -1,0 +1,18 @@
+.wpifycf-tabs {
+    display: flex;
+    margin-bottom: var(--wpifycf-gap-2);
+    border-bottom: 1px solid var(--wpifycf-border-color);
+
+    &__item {
+        padding: var(--wpifycf-gap-1) var(--wpifycf-gap-3);
+        cursor: pointer;
+        border: none;
+        background: none;
+    }
+
+    &__item--active {
+        border: 1px solid var(--wpifycf-border-color);
+        border-bottom: none;
+        background: white;
+    }
+}

@@ -101,6 +101,7 @@ class Options extends Integration {
 		if ( empty( $args['sections'] ) ) {
 			$args['sections'] = array();
 		}
+
 		$sections = array();
 
 		foreach ( $args['sections'] as $key => $section ) {
@@ -221,7 +222,7 @@ class Options extends Integration {
 			}
 			?>
 			<form action="<?php echo esc_attr( $action ) ?>" method="POST">
-				<div class="wpifycf-app" data-loaded="false" data-integration-id="<?php echo esc_attr( $this->id ) ?>" data-tabs="<?php esc_attr( wp_json_encode( $this->tabs ) ) ?>" data-context="options"></div>
+				<div class="wpifycf-app" data-loaded="false" data-integration-id="<?php echo esc_attr( $this->id ) ?>" data-tabs="<?php echo esc_attr( wp_json_encode( $this->tabs ) ) ?>" data-context="options"></div>
 				<?php
 				settings_fields( $this->option_group );
 				do_settings_sections( $this->menu_slug );

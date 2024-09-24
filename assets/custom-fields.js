@@ -21,7 +21,7 @@ function loadCustomFields () {
             integrationId={container.dataset.integrationId}
             form={form}
             context={container.dataset.context}
-            tabs={container.dataset.tabs}
+            tabs={JSON.parse(container.dataset.tabs)}
             config={config}
           />
         </QueryClientProvider>

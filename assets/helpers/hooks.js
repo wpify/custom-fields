@@ -21,7 +21,7 @@ export function useFields (integrationId) {
         });
       } catch (error) {
         console.error(error);
-        return;
+        return null;
       }
     });
 
@@ -41,6 +41,11 @@ export const useCustomFieldsContext = create((set) => ({
 export const useConfig = create((set) => ({
   config: {},
   setConfig: (config) => set(() => ({ config })),
+}));
+
+export const useTab = create((set) => ({
+  tab: '',
+  setTab: tab => set(() => ({ tab })),
 }));
 
 export function useSortableList ({ containerRef, draggable, handle, items, setItems }) {
