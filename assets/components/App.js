@@ -42,7 +42,7 @@ export function App ({ integrationId, context, config }) {
         <Field
           key={field.id}
           {...field}
-          name={field.id}
+          name={field.name || field.id}
           htmlId={field.id}
           onChange={handleChange(field.id)}
           renderOptions={getRenderOptions(context)}

@@ -93,30 +93,15 @@ class Helpers {
 			return array();
 		}
 
-		// Build an array of terms indexed by term_id
 		$terms_by_id = array();
+
 		foreach ( $terms as $term ) {
 			$terms_by_id[ $term->term_id ] = array(
 				'id'     => $term->term_id,
 				'name'   => $term->name,
-				'slug'   => $term->slug,
 				'parent' => $term->parent,
 			);
 		}
-
-		foreach ( $terms_by_id as $id => &$term ) {
-			$full_name_parts = array();
-			$current_term_id = $id;
-
-			while ( $current_term_id !== 0 && isset( $terms_by_id[ $current_term_id ] ) ) {
-				array_unshift( $full_name_parts, $terms_by_id[ $current_term_id ]['name'] );
-				$current_term_id = $terms_by_id[ $current_term_id ]['parent'];
-			}
-
-			$term['full_name'] = implode( ' > ', $full_name_parts );
-		}
-
-		unset( $term );
 
 		$tree = array();
 

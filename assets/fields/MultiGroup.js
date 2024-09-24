@@ -18,6 +18,10 @@ function MultiGroup ({
   htmlId,
   ...props
 }) {
+  if (!Array.isArray(value)) {
+    value = [];
+  }
+
   const {
     add,
     remove,

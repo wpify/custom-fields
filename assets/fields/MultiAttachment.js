@@ -15,6 +15,10 @@ function MultiAttachment ({
   onChange,
   className,
 }) {
+  if (!Array.isArray(value)) {
+    value = [];
+  }
+
   const [attachments, setAttachments] = useState([]);
   const containerRef = useRef(null);
 

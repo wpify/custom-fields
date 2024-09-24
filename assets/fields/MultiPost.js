@@ -5,6 +5,10 @@ import { PostPreview } from '@/fields/Post';
 import { useMulti, usePosts } from '@/helpers/hooks';
 
 export function MultiPost ({ name, value = [], onChange, post_type: postType }) {
+  if (!Array.isArray(value)) {
+    value = [];
+  }
+
   const handleAdd = useCallback(newValue => onChange([newValue, ...value]), [onChange, value]);
   const { data: posts } = usePosts({
     postType: postType,

@@ -32,7 +32,7 @@ export function MultiSelect ({
   );
 
   const usedOptions = useMemo(
-    () => realOptions.filter(option => value?.includes(option.value)),
+    () => value.map(value => realOptions.find(option => option.value === value)),
     [realOptions, value],
   );
 

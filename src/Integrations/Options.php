@@ -30,8 +30,11 @@ class Options extends Integration {
 	public array|string|null       $display;
 	public string|array|bool       $submit_button;
 	public readonly string         $option_group;
+	public readonly string         $option_name;
 	public readonly array          $items;
 	public readonly array          $sections;
+	public readonly string         $default_section;
+	public readonly array          $tabs;
 
 	/**
 	 * @throws MissingArgumentException
@@ -88,18 +91,39 @@ class Options extends Integration {
 		$this->help_sidebar  = $args['help_sidebar'] ?? '';
 		$this->display       = $args['display'] ?? null;
 		$this->submit_button = $args['submit_button'] ?? true;
-		$this->option_group  = sanitize_title( join( '_', array_filter( array( $this->parent_slug, $this->menu_slug ) ) ) );
 		$this->items         = $args['items'] ?? array();
-		$this->sections      = $args['sections'] ?? array(
-			array(
-				'id'       => 'default',
-				'title'    => '',
-				'callback' => '__return_true',
-				'page'     => $this->menu_slug,
-			),
-		);
+		$this->option_name   = $args['option_name'] ?? '';
+		$this->option_group  = empty( $this->option_name )
+			? sanitize_title( join( '_', array_filter( array( $this->parent_slug, $this->menu_slug ) ) ) )
+			: $this->option_name;
+		$this->tabs          = $args['tabs'] ?? array();
 
-		$this->id = sanitize_title(
+		if ( empty( $args['sections'] ) ) {
+			$args['sections'] = array();
+		}
+		$sections = array();
+
+		foreach ( $args['sections'] as $key => $section ) {
+			if ( empty( $section['id'] ) && is_string( $key ) ) {
+				$section['id'] = $key;
+			}
+
+			$sections[ $section['id'] ] = $section;
+		}
+
+		if ( empty( $sections ) ) {
+			$sections = array(
+				'default' => array(
+					'id'       => 'default',
+					'title'    => '',
+					'callback' => '__return_true',
+					'page'     => $this->menu_slug,
+				),
+			);
+		}
+
+		$this->sections = $sections;
+		$this->id       = sanitize_title(
 			join(
 				'-',
 				array(
@@ -111,6 +135,11 @@ class Options extends Integration {
 				),
 			),
 		);
+
+		foreach ( $this->sections as $section ) {
+			$this->default_section = $section['id'];
+			break;
+		}
 
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 
@@ -262,32 +291,39 @@ class Options extends Integration {
 	public function register_settings() {
 		$items = $this->normalize_items( $this->items );
 
-		foreach ( $items as $item ) {
-			$type = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
+		if ( empty( $this->option_name ) ) {
+			foreach ( $items as $item ) {
+				$type = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
 
+				register_setting(
+					$this->option_group,
+					$item['id'],
+					array(
+						'type'              => $type,
+						'label'             => $item['label'] ?? '',
+						'sanitize_callback' => fn( $value ) => apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $value, $item ),
+						'show_in_rest'      => false,
+						'default'           => $item['default'],
+					),
+				);
+			}
+		} else {
 			register_setting(
 				$this->option_group,
-				$item['id'],
+				$this->option_name,
 				array(
-					'type'              => $type,
-					'label'             => $item['label'] ?? '',
-					'description'       => $item['description'] ?? '',
-					'sanitize_callback' => function ( $value ) use ( $item ) {
-						return apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $value, $item );
-					},
+					'type'              => 'object',
+					'label'             => $this->page_title,
+					'sanitize_callback' => fn( $value ) => apply_filters( 'wpifycf_sanitize_option', $value, $items ),
 					'show_in_rest'      => false,
-					'default'           => $item['default'],
+					'default'           => array(),
 				),
 			);
 		}
 
-		foreach ( $this->sections as $key => $section ) {
-			if ( empty( $section['id'] ) && is_string( $key ) ) {
-				$section['id'] = $key;
-			}
-
+		foreach ( $this->sections as $id => $section ) {
 			add_settings_section(
-				$section['id'] ?? '',
+				$id,
 				$section['label'] ?? '',
 				$section['callback'] ?? '__return_true',
 				$this->menu_slug,
@@ -296,12 +332,14 @@ class Options extends Integration {
 		}
 
 		foreach ( $items as $item ) {
+			$section = $this->sections[ $item['section'] ]['id'] ?? $this->default_section;
+
 			add_settings_field(
 				$item['id'],
 				$item['label'],
 				array( $this, 'print_field' ),
 				$this->menu_slug,
-				$item['section'],
+				$section,
 				array(
 					'label_for' => $item['id'],
 					...$item,
@@ -321,9 +359,17 @@ class Options extends Integration {
 	}
 
 	public function print_field( array $item ): void {
-		$value = get_option( $item['id'], $item['default'] );
-		$value = is_string( $value ) ? html_entity_decode( $value ) : $value;
-		$props = array( ...$item, 'value' => $value );
+		if ( empty( $this->option_name ) ) {
+			$value = get_option( $item['id'], $item['default'] );
+			$value = is_string( $value ) ? html_entity_decode( $value ) : $value;
+			$name  = $item['id'];
+		} else {
+			$options = get_option( $this->option_name, array() );
+			$value   = $options[ $item['id'] ] ?? $item['default'];
+			$name    = $this->option_name . '[' . $item['id'] . ']';
+		}
+
+		$props = array( ...$item, 'name' => $name, 'value' => $value );
 		$json  = wp_json_encode( $props );
 		?>
 		<div class="wpifycf-field wpifycf-field--options wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?>" data-props="<?php echo esc_attr( $json ) ?>" data-integration-id="<?php echo esc_attr( $this->id ) ?>"></div>
