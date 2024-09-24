@@ -31,6 +31,7 @@ export function MultiField ({
     max,
     defaultValue,
     disabled_buttons,
+    dragHandle: '.wpifycf-multi-field-item__sort',
   });
 
   return (

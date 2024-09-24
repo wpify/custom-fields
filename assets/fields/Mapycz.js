@@ -175,8 +175,8 @@ function Address ({ value, className }) {
           {value.country}
         </>
       )}
-      {' '}
-      ({value.latitude}, {value.longitude})
+      <br />
+      {value.latitude}, {value.longitude}
     </span>
   )
 }
