@@ -26,4 +26,23 @@
     border: 1px solid var(--wpifycf-border-color);
     box-shadow: 0 0 5px rgba(0,0,0,.1);
   }
+
+  &__tabs {
+    display: flex;
+    gap: var(--wpifycf-gap-1);
+  }
+
+  &__tab {
+    appearance: none;
+    border: none;
+    background: none;
+    padding: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
+    cursor: pointer;
+
+    &.active {
+      border: 1px solid var(--wpifycf-border-color);
+      border-bottom: 0;
+      background: #f6f7f7;
+    }
+  }
 }

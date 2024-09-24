@@ -37,7 +37,7 @@ function getLanguageExtension (language) {
   }
 }
 
-function Code ({
+export function Code ({
   id,
   name,
   value,

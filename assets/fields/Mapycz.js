@@ -15,8 +15,8 @@ const markerIcon = L.icon({
 });
 
 const defaultValue = {
-  latitude: 50.0874654,
-  longitude: 14.4212535,
+  latitude: 50.07862503227565,
+  longitude: 14.460411071777346,
   zoom: 13,
 }
 
