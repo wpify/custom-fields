@@ -10,12 +10,7 @@ import { useTab } from '@/helpers/hooks';
 
 export function Field ({ type, name, node, renderOptions, description, value, tab, ...props }) {
   const FieldComponent = applyFilters('wpifycf_field_' + type, Text, props);
-
   const currentTab = useTab(state => state.tab);
-
-  if (tab) {
-    console.log({ currentTab, tab });
-  }
 
   const fallback = (
     <span className="wpifycf-error-boundary">
