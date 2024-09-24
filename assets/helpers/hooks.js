@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { create } from 'zustand';
 import Sortable from 'sortablejs';
 import { v4 as uuidv4 } from 'uuid';
-import { useQuery } from '@tanstack/react-query';
-import { get } from '@/helpers/api.js';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { get, post } from '@/helpers/api.js';
 import { useSelect } from '@wordpress/data';
 import '@wordpress/core-data';
 
@@ -349,6 +349,62 @@ export function useOptions ({
     initialData,
     enabled: enabled && !!config.api_path && !!optionsKey,
     select,
+    ...defaultQueryOptions,
+  });
+}
+
+export function useMapyCzApiKey () {
+  const config = useConfig(state => state.config);
+  const queryClient = useQueryClient();
+
+  const query = useQuery({
+    queryKey: ['mapycz-api-key'],
+    queryFn: () => get(config.api_path + '/mapycz-api-key'),
+    enabled: !!config.api_path,
+    ...defaultQueryOptions,
+  });
+
+  const mutation = useMutation({
+    mutationFn: apiKey => post(config.api_path + '/mapycz-api-key', { api_key: apiKey }),
+    mutationKey: ['mapycz-api-key'],
+    onSuccess: () => queryClient.invalidateQueries(['mapycz-api-key']),
+  });
+
+  const handleUpdate = useCallback(apiKey => mutation.mutate(apiKey), [mutation]);
+  const isFetching = query.isLoading || mutation.isPending;
+  const isError = query.isError || mutation.isError;
+  const isSuccess = query.isSuccess || mutation.isSuccess;
+  const isIdle = query.isPending && mutation.isIdle;
+  const apiKey = query.data;
+
+  return {
+    apiKey,
+    isFetching,
+    isError,
+    isSuccess,
+    isIdle,
+    handleUpdate,
+  };
+}
+
+export function useMapyCzSuggestions ({ query, apiKey, limit = 10, lang = 'en' }) {
+  return useQuery({
+    queryKey: ['mapycz-suggestions', query],
+    queryFn: () => get('https://api.mapy.cz/v1/suggest', { limit, query, apiKey, lang }),
+    enabled: !!query && !!apiKey,
+    initialData: {
+      'items': [],
+      'locality': [],
+    },
+    ...defaultQueryOptions,
+  });
+}
+
+export function useMapyCzReverseGeocode ({ apiKey, lang = 'en', latitude, longitude }) {
+  return useQuery({
+    queryKey: ['mapycz-reverse-geocode', latitude, longitude],
+    queryFn: () => get('https://api.mapy.cz/v1/rgeocode/', { apikey: apiKey, lang, lat: latitude, lon: longitude }),
+    enabled: !!apiKey && !!latitude && !!longitude,
     ...defaultQueryOptions,
   });
 }

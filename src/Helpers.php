@@ -97,4 +97,12 @@ class Helpers {
 			'permalink'         => get_permalink( $post ),
 		);
 	}
+
+	public function set_mapycz_api_key( string $api_key ) {
+		if ( update_option( 'wpifycf_mapycz_api_key', $api_key ) ) {
+			return $api_key;
+		};
+
+		return '';
+	}
 }

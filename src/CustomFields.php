@@ -2,6 +2,7 @@
 
 namespace Wpify\CustomFields;
 
+use JsonException;
 use Wpify\CustomFields\exceptions\MissingArgumentException;
 use Wpify\CustomFields\Integrations\Options;
 
@@ -113,7 +114,7 @@ class CustomFields {
 					'ver',
 					$asset['version'],
 					plugin_dir_url( dirname( __FILE__ ) ) . 'build/style-' . $item . '.css',
-				)
+				),
 			);
 		}
 
@@ -142,7 +143,15 @@ class CustomFields {
 		}
 
 		if ( is_string( $value ) ) {
-			return json_decode( $value, true );
+			try {
+				$value = json_decode( $value, true );
+
+				if ( is_array( $value ) ) {
+					return $value;
+				}
+			} catch ( JsonException $e ) {
+				return array();
+			}
 		}
 
 		return array();

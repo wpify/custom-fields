@@ -152,6 +152,7 @@ abstract class Integration {
 		$items = $this->normalize_items( $this->items );
 
 		$this->register_options_routes( $items );
+		$this->register_mapycz_api_key_route();
 	}
 
 	public function register_options_routes( array $items = array() ) {
@@ -178,5 +179,20 @@ abstract class Integration {
 		} elseif ( ! empty( $item['items'] ) ) {
 			$this->register_options_routes( $item['items'] );
 		}
+	}
+
+	public function register_mapycz_api_key_route() {
+		$this->custom_fields->api->register_rest_route(
+			'mapycz-api-key',
+			WP_REST_Server::EDITABLE,
+			fn( WP_REST_Request $request ) => update_option( 'wpifycf_mapycz_api_key', $request->get_param( 'api_key' ) ),
+			array( 'api_key' => array( 'required' => true ) ),
+		);
+
+		$this->custom_fields->api->register_rest_route(
+			'mapycz-api-key',
+			WP_REST_Server::READABLE,
+			fn( WP_REST_Request $request ) => get_option( 'wpifycf_mapycz_api_key' ),
+		);
 	}
 }
