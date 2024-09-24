@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
+import { ErrorBoundary } from 'react-error-boundary';
 import CodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { javascript } from '@codemirror/lang-javascript';
@@ -10,7 +11,52 @@ import { php } from '@codemirror/lang-php';
 import { markdown } from '@codemirror/lang-markdown';
 import { xml } from '@codemirror/lang-xml';
 import { json } from '@codemirror/lang-json';
-import { ErrorBoundary } from 'react-error-boundary';
+import { EditorView } from '@codemirror/view'
+
+export function Code ({
+  id,
+  name,
+  value,
+  onChange,
+  language = 'html',
+  height = 200,
+  theme = 'dark',
+  attributes = {},
+}) {
+  const extensions = [EditorView.lineWrapping];
+  const languageExtension = getLanguageExtension(language);
+
+  if (languageExtension) {
+    extensions.push(languageExtension);
+  }
+
+  return (
+    <>
+      {name && (
+        <input type="hidden" name={name} value={value} />
+      )}
+      <ErrorBoundary
+        fallback={(
+          <textarea
+            className={clsx('wpifycf-field-code', 'wpifycf-field-code--fallback', `wpifycf-field-code--${id}`, attributes.class)}
+            value={value}
+            onChange={event => onChange(event.target.value)}
+            style={{ width: '100%', height: height + 'px' }}
+          />
+        )}
+      >
+        <CodeMirror
+          className={clsx('wpifycf-field-code', `wpifycf-field-code--${id}`, attributes.class)}
+          value={value}
+          onChange={onChange}
+          height={height + 'px'}
+          theme={theme === 'dark' ? vscodeDark : undefined}
+          extensions={extensions}
+        />
+      </ErrorBoundary>
+    </>
+  );
+}
 
 function getLanguageExtension (language) {
   switch (language) {
@@ -35,45 +81,6 @@ function getLanguageExtension (language) {
     default:
       return null;
   }
-}
-
-export function Code ({
-  id,
-  name,
-  value,
-  onChange,
-  language = 'html',
-  height = '200px',
-  attributes = {},
-}) {
-  const languageExtension = getLanguageExtension(language);
-
-  return (
-    <>
-      {name && (
-        <input type="hidden" name={name} value={value} />
-      )}
-      <ErrorBoundary
-        fallback={(
-          <textarea
-            className={clsx('wpifycf-field-code', 'wpifycf-field-code--fallback', `wpifycf-field-code--${id}`, attributes.class)}
-            value={value}
-            onChange={event => onChange(event.target.value)}
-            style={{ width: '100%', height }}
-          />
-        )}
-      >
-        <CodeMirror
-          className={clsx('wpifycf-field-code', `wpifycf-field-code--${id}`, attributes.class)}
-          value={value}
-          onChange={onChange}
-          height={height}
-          theme={vscodeDark}
-          extensions={languageExtension ? [languageExtension] : []}
-        />
-      </ErrorBoundary>
-    </>
-  );
 }
 
 addFilter('wpifycf_field_code', 'wpify_custom_fields', () => Code);

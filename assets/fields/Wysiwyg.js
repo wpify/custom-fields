@@ -13,7 +13,7 @@ export function Wysiwyg ({
   name,
   value,
   onChange,
-  height = '200px',
+  height = 200,
 }) {
   const [view, setView] = useState(VIEW_VISUAL);
 
@@ -49,10 +49,11 @@ export function Wysiwyg ({
           name={name}
           value={value}
           onChange={onChange}
-          height={height}
+          height={height + 94}
           id={id}
           htmlId={htmlId}
           language="html"
+          theme="light"
         />
       )}
     </span>
@@ -61,7 +62,6 @@ export function Wysiwyg ({
 
 function VisualView ({ htmlId, name, value, onChange, height }) {
   const editorRef = useRef(null);
-  const [view, setView] = useState(VIEW_VISUAL);
 
   useEffect(() => {
     const { baseURL, suffix, settings } = window.wpEditorL10n.tinymce;
@@ -74,6 +74,7 @@ function VisualView ({ htmlId, name, value, onChange, height }) {
     window.wp.oldEditor.initialize(htmlId, {
       tinymce: {
         ...settings,
+        height,
         setup (editor) {
           editorRef.current = editor;
           // editor.on('init', () => {
