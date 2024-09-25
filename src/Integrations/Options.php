@@ -373,7 +373,7 @@ class Options extends Integration {
 		$props = array( ...$item, 'name' => $name, 'value' => $value );
 		$json  = wp_json_encode( $props );
 		?>
-		<div class="wpifycf-field wpifycf-field--options wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?>" data-props="<?php echo esc_attr( $json ) ?>" data-integration-id="<?php echo esc_attr( $this->id ) ?>"></div>
+		<span class="wpifycf-field wpifycf-field--options wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?>" data-props="<?php echo esc_attr( $json ) ?>" data-integration-id="<?php echo esc_attr( $this->id ) ?>"></span>
 		<?php
 	}
 }

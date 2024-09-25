@@ -1,5 +1,11 @@
 form:has([data-context="options"]) {
+  // hide the whole row if the field is hidden
   tr:has(td > .wpifycf-field > [data-hide-field="true"]) {
+    display: none;
+  }
+
+  // hide the label of the field if there is label from custom fields
+  tr > th[scope="row"]:has(.wpifycf-label) > label:not(.wpifycf-label) {
     display: none;
   }
 }

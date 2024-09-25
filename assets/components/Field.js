@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import { createPortal } from 'react-dom';
 import { applyFilters } from '@wordpress/hooks';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -6,10 +5,12 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Text } from '@/fields/Text.js';
 import { Label } from '@/components/Label';
 import clsx from 'clsx';
-import { useTab } from '@/helpers/hooks';
+import { useCustomFieldsContext, useTab } from '@/helpers/hooks';
 
 export function Field ({ type, name, node, renderOptions, description, value, tab, ...props }) {
+  const context = useCustomFieldsContext(state => state.context);
   const FieldComponent = applyFilters('wpifycf_field_' + type, Text, props);
+  const LabelComponent = applyFilters('wpifycf_label_' + context, Label, props);
   const currentTab = useTab(state => state.tab);
 
   const fallback = (
@@ -39,10 +40,11 @@ export function Field ({ type, name, node, renderOptions, description, value, ta
     : (
     <FieldWrapper renderOptions={renderOptions}>
       {descriptionPosition === 'before' && renderedDescription}
-      <Label
+      <LabelComponent
         type={type}
         renderOptions={renderOptions}
         className="wpifycf-field__label"
+        node={node}
         {...props}
       />
       <ErrorBoundary fallback={fallback}>
@@ -66,11 +68,7 @@ export function Field ({ type, name, node, renderOptions, description, value, ta
 
 export function FieldWrapper ({ renderOptions = {}, children }) {
   if (renderOptions.noWrapper === true) {
-    return (
-      <Fragment>
-        {children}
-      </Fragment>
-    );
+    return children;
   }
 
   return (

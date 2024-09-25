@@ -2,13 +2,17 @@ import { useCallback, useEffect } from 'react';
 import { useFields, useCustomFieldsContext, useConfig, useTab } from '@/helpers/hooks';
 import { Field } from '@/components/Field';
 import { Tabs } from '@/components/Tabs';
+import { addFilter } from '@wordpress/hooks';
+import { OptionsLabel } from '@/components/Label';
 
-export function App ({ integrationId, context, config, tabs }) {
+export function App ({ integrationId, context, config, tabs, form }) {
   const [fields, setFields] = useFields(integrationId);
   const setContext = useCustomFieldsContext(state => state.setContext);
   const setConfig = useConfig(state => state.setConfig);
   const setTab = useTab(state => state.setTab);
   const tab = useTab(state => state.tab);
+
+  console.log(form);
 
   useEffect(() => {
     setContext(context);
@@ -19,12 +23,17 @@ export function App ({ integrationId, context, config, tabs }) {
     }
   }, [context, config, setContext]);
 
+  useEffect(() => {
+    if (context === 'options') {
+      addFilter('wpifycf_label_options', 'wpify-custom-fields', () => OptionsLabel);
+    }
+  }, [context]);
+
   const getRenderOptions = useCallback(function (context) {
     switch (context) {
       case 'options':
         return {
           noWrapper: true,
-          noLabel: true,
         };
       default:
         return {};
@@ -42,24 +51,11 @@ export function App ({ integrationId, context, config, tabs }) {
     };
   }, [setFields]);
 
-  const hasColumns = fields.some(field => field.type === 'column');
-  const defaultColumn = 'default';
-  const fieldsWithColumns = fields.map(field => {
-    if (field.type === 'column') {
-      return field;
-    }
-
-    return {
-      ...field,
-      column: field.column || defaultColumn,
-    };
-  });
-
   return (
     <>
       <Tabs tabs={tabs} />
       <span className="wpifycf-columns">
-        {fieldsWithColumns.map(field => (
+        {fields.map(field => (
           <Field
             key={field.id}
             {...field}

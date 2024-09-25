@@ -1,4 +1,6 @@
 .wpifycf-field {
+  display: block;
+
   &__wrapper {
     display: flex;
     flex-flow: row wrap;
@@ -21,6 +23,12 @@
   &__label {
     width: 150px;
     font-weight: 500;
+  }
+
+  &__required {
+    display: inline-block;
+    margin-left: var(--wpifycf-gap-1);
+    color: red;
   }
 
   .sortable-ghost {
