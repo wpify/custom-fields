@@ -3,6 +3,7 @@ import { addFilter } from '@wordpress/hooks';
 import clsx from 'clsx';
 import { __ } from '@wordpress/i18n';
 import { Code } from '@/fields/Code';
+import { checkValidityStringType } from '@/helpers/validators';
 
 const VIEW_VISUAL = 'visual';
 const VIEW_HTML = 'html';
@@ -13,11 +14,12 @@ export function Wysiwyg ({
   value,
   onChange,
   height = 200,
+  className,
 }) {
   const [view, setView] = useState(VIEW_VISUAL);
 
   return (
-    <span className="wpifycf-field-wysiwyg">
+    <span className={clsx('wpifycf-field-wysiwyg', `wpifycf-field-wysiwyg--${id}`, className)}>
       <span className="wpifycf-field-wysiwyg__tabs">
         <button
           type="button"
@@ -56,6 +58,8 @@ export function Wysiwyg ({
     </span>
   );
 }
+
+Wysiwyg.checkValidity = checkValidityStringType;
 
 function TinyMCE ({ htmlId, value, onChange, height }) {
   const editorRef = useRef(null);

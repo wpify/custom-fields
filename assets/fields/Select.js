@@ -2,6 +2,8 @@ import { addFilter } from '@wordpress/hooks';
 import { Select as SelectControl } from '@/components/Select.js';
 import { useOptions } from '@/helpers/hooks';
 import { useMemo, useState } from 'react';
+import { checkValidityStringType } from '@/helpers/validators';
+import clsx from 'clsx';
 
 export function Select ({
   id,
@@ -9,6 +11,7 @@ export function Select ({
   onChange,
   options = [],
   options_key: optionsKey,
+  className,
 }) {
   const [search, setSearch] = useState('');
 
@@ -33,8 +36,11 @@ export function Select ({
       options={realOptions}
       filterOption={optionsKey ? Boolean : undefined}
       onInputChange={setSearch}
+      className={clsx('wpifycf-field-select', `wpifycf-field-select--${id}`, className)}
     />
   );
 }
+
+Select.checkValidity = checkValidityStringType;
 
 addFilter('wpifycf_field_select', 'wpify_custom_fields', () => Select);

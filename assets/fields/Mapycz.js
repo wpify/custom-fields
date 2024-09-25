@@ -7,6 +7,7 @@ import 'leaflet/dist/leaflet.css';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { useLeafletContext } from '@react-leaflet/core';
 import L from 'leaflet';
+import clsx from 'clsx';
 
 const markerIcon = L.icon({
   iconUrl: 'https://api.mapy.cz/img/api/marker/drop-red.png',
@@ -15,16 +16,23 @@ const markerIcon = L.icon({
 });
 
 const defaultValue = {
-  latitude: 50.07862503227565,
-  longitude: 14.460411071777346,
+  latitude: 50.078625,
+  longitude: 14.460411,
   zoom: 13,
-}
+};
 
-export function Mapycz ({ htmlId, value = {}, onChange, lang = 'en' }) {
+export function Mapycz ({
+  id,
+  htmlId,
+  value = {},
+  onChange,
+  lang = 'en',
+  className,
+}) {
   const mapycz = useMapyCzApiKey();
 
   return (
-    <span className="wpifycf-field-mapycz">
+    <span className={clsx('wpifycf-field-mapycz', `wpifycf-field-mapycz--${id}`, className)}>
       {mapycz.isFetching ? (
         <span>{__('Loading MapyCZ field...', 'wpify-custom-field')}</span>
       ) : mapycz.isError ? (
@@ -38,7 +46,23 @@ export function Mapycz ({ htmlId, value = {}, onChange, lang = 'en' }) {
   );
 }
 
-function MapyczMap ({ apiKey, value = {}, onChange, lang }) {
+Mapycz.checkValidity = function (value, field) {
+  const validity = [];
+
+  if (field.required && (typeof value === 'object' && ((!value.latitude || !value.longitude)) || typeof value !== 'object')) {
+    validity.push(__('This field is required.', 'wpify-custom-fields'));
+  }
+
+  return validity;
+};
+
+function MapyczMap ({
+  apiKey,
+  value = {},
+  onChange,
+  lang,
+  validity = [],
+}) {
   const [map, setMap] = useState(null);
   const latitude = value.latitude || defaultValue.latitude;
   const longitude = value.longitude || defaultValue.longitude;
@@ -95,7 +119,7 @@ function MapyczMap ({ apiKey, value = {}, onChange, lang }) {
   const handleMarkerDrag = useCallback((event) => {
     const marker = event.target;
     const position = marker.getLatLng();
-    onChange({ ...value, latitude: position.lat, longitude: position.lng });
+    onChange({ ...value, latitude: position.lat.toFixed(6), longitude: position.lng.toFixed(6) });
     setCenter(position);
   }, [onChange, value, setCenter]);
 
@@ -105,7 +129,7 @@ function MapyczMap ({ apiKey, value = {}, onChange, lang }) {
 
   const handleMoveEnd = useCallback((event) => {
     const center = event.target.getCenter();
-    onChange({ ...value, latitude: center.lat, longitude: center.lng });
+    onChange({ ...value, latitude: center.lat.toFixed(6), longitude: center.lng.toFixed(6) });
   }, [onChange, value]);
 
   useEffect(() => {
@@ -173,9 +197,9 @@ function Address ({ value, className }) {
         </>
       )}
       <br />
-      {value.latitude}, {value.longitude}
+      {parseFloat(value.latitude).toFixed(6)}, {parseFloat(value.longitude).toFixed(6)}
     </span>
-  )
+  );
 }
 
 function AutoComplete ({ value, onChange, apiKey, lang, setCenter }) {
@@ -199,11 +223,14 @@ function AutoComplete ({ value, onChange, apiKey, lang, setCenter }) {
   const handleSelect = useCallback((index) => {
     onChange({
       ...value,
-      latitude: suggestions.items[index].position.lat,
-      longitude: suggestions.items[index].position.lon,
+      latitude: suggestions.items[index].position.lat.toFixed(6),
+      longitude: suggestions.items[index].position.lon.toFixed(6),
     });
     setActive(null);
-    setCenter([suggestions.items[index].position.lat, suggestions.items[index].position.lon]);
+    setCenter([
+      suggestions.items[index].position.lat.toFixed(6),
+      suggestions.items[index].position.lon.toFixed(6),
+    ]);
     setQuery(suggestions.items[index].name);
   }, [onChange, suggestions.items, setCenter, value]);
 

@@ -1,8 +1,9 @@
 import { addFilter } from '@wordpress/hooks';
+import clsx from 'clsx';
 
-function Title ({ title, description }) {
+function Title ({ title, description, className }) {
   return (
-    <span className="wpify-field-title">
+    <span className={clsx('wpify-field-title', className)}>
       {title && <h2 dangerouslySetInnerHTML={{ __html: title }} />}
       {description && <p dangerouslySetInnerHTML={{ __html: description }} />}
     </span>

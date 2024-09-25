@@ -1,0 +1,9 @@
+.wpifycf-field-multi-toggle {
+  display: flex;
+  flex-flow: column;
+  gap: var(--wpifycf-gap-2);
+
+  .components-toggle-control {
+    margin: 0;
+  }
+}

@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
+import { checkValidityStringType } from '@/helpers/validators';
 
 export function Textarea ({
   id,
@@ -8,6 +9,7 @@ export function Textarea ({
   onChange,
   value,
   attributes = {},
+  className,
 }) {
   const handleChange = useCallback(function (event) {
     if (typeof onChange === 'function') {
@@ -20,10 +22,12 @@ export function Textarea ({
       id={htmlId}
       onChange={handleChange}
       value={value}
-      className={clsx('wpifycf-field-textarea', `wpifycf-field-textarea--${id}`, attributes.class)}
+      className={clsx('wpifycf-field-textarea', `wpifycf-field-textarea--${id}`, attributes.class, className)}
       {...attributes}
     />
   );
 }
+
+Textarea.checkValidity = checkValidityStringType;
 
 addFilter('wpifycf_field_textarea', 'wpify_custom_fields', () => Textarea);

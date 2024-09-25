@@ -5,22 +5,23 @@
   --wpifycf-border-color: #ddd;
 }
 
-@import "components/options-context";
-
-@import "components/tabs";
 @import "components/field";
-@import "components/attachment-field";
-@import "components/multi-field";
-@import "components/checkbox-field";
+@import "components/field-attachment";
+@import "components/field-checkbox";
+@import "components/field-group";
+@import "components/field-link";
+@import "components/field-mapycz";
+@import "components/field-multi-group";
+@import "components/field-multi-post";
+@import "components/field-multi-select";
+@import "components/field-multi-toggle";
+@import "components/field-post";
+@import "components/field-term";
+@import "components/field-toggle";
+@import "components/field-wysiwyg";
 @import "components/icon-button";
-@import "components/multi-group-field";
-@import "components/group-field";
-@import "components/link-field";
-@import "components/select";
+@import "components/multi-field";
+@import "components/options-context";
 @import "components/post-preview";
-@import "components/post-field";
-@import "components/multi-post-field";
-@import "components/multi-select-field";
-@import "components/wysiwyg-field";
-@import "components/mapycz-field";
-@import "components/term-field";
+@import "components/select";
+@import "components/tabs";

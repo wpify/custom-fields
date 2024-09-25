@@ -11,6 +11,7 @@ export function Button (props) {
     action,
     primary,
     attributes = {},
+    className,
   } = props;
 
   const handleClick = useCallback(event => {
@@ -25,7 +26,7 @@ export function Button (props) {
       primary={primary}
       href={href}
       onClick={handleClick}
-      className={clsx('wpifycf-field-button', `wpifycf-field-${id}`, attributes.class)}
+      className={clsx('wpifycf-field-button', `wpifycf-field-${id}`, attributes.class, className)}
       {...attributes}
     >
       {title}

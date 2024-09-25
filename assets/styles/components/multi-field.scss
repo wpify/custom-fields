@@ -7,3 +7,9 @@
 .wpifycf-multi-field-item {
   display: flex;
 }
+
+.wpifycf-multi-field-item-field {
+  display: block;
+  width: 600px;
+  max-width: 100%;
+}

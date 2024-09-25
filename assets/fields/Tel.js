@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
+import { checkValidityStringType } from '@/helpers/validators';
 
 export function Tel ({
   id,
@@ -11,6 +12,7 @@ export function Tel ({
   value,
   attributes = {},
   default_country: defaultCountry = 'US',
+  className,
 }) {
   return (
     <PhoneInput
@@ -23,10 +25,13 @@ export function Tel ({
         'wpifycf-field-tel',
         `wpifycf-field-tel--${id}`,
         attributes.class,
+        className,
       )}
       {...attributes}
     />
   );
 }
+
+Tel.checkValidity = checkValidityStringType;
 
 addFilter('wpifycf_field_tel', 'wpify_custom_fields', () => Tel);

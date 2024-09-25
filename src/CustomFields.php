@@ -18,7 +18,7 @@ class CustomFields {
 
 		// Sanitizers for field types
 		add_filter( 'wpifycf_sanitize_field_type_attachment', 'intval' );
-		add_filter( 'wpifycf_sanitize_field_type_checkbox', 'boolval' );
+		add_filter( 'wpifycf_sanitize_field_type_checkbox', array( $this, 'sanitize_boolean' ) );
 		add_filter( 'wpifycf_sanitize_field_type_code', 'strval' );
 		add_filter( 'wpifycf_sanitize_field_type_color', 'sanitize_hex_color' );
 		add_filter( 'wpifycf_sanitize_field_type_date', 'sanitize_text_field' );
@@ -60,7 +60,7 @@ class CustomFields {
 		add_filter( 'wpifycf_sanitize_field_type_text', 'sanitize_text_field' );
 		add_filter( 'wpifycf_sanitize_field_type_textarea', 'sanitize_textarea_field' );
 		add_filter( 'wpifycf_sanitize_field_type_time', 'sanitize_text_field' );
-		add_filter( 'wpifycf_sanitize_field_type_toggle', 'boolval' );
+		add_filter( 'wpifycf_sanitize_field_type_toggle', array( $this, 'sanitize_boolean' ) );
 		add_filter( 'wpifycf_sanitize_field_type_url', 'sanitize_url' );
 		add_filter( 'wpifycf_sanitize_field_type_week', 'sanitize_text_field' );
 		add_filter( 'wpifycf_sanitize_field_type_wysiwyg', 'esc_html' );
@@ -221,36 +221,12 @@ class CustomFields {
 		return array();
 	}
 
+	public function sanitize_boolean( $value ) {
+		return filter_var( $value, FILTER_VALIDATE_BOOLEAN );
+	}
+
 	public function sanitize_option( mixed $value, array $items ) {
-		$next_value    = $value;
-		$complex_types = apply_filters(
-			'wpifycf_complex_field_types',
-			array(
-				'group',
-				'link',
-				'mapycz',
-				'multi_attachment',
-				'multi_checkbox',
-				'multi_date',
-				'multi_datetime',
-				'multi_email',
-				'multi_group',
-				'multi_link',
-				'multi_mapycz',
-				'multi_month',
-				'multi_number',
-				'multi_post',
-				'multi_select',
-				'multi_tel',
-				'multi_term',
-				'multi_text',
-				'multi_textarea',
-				'multi_time',
-				'multi_toggle',
-				'multi_url',
-				'multi_week',
-			),
-		);
+		$next_value = $value;
 
 		if ( is_array( $next_value ) ) {
 			foreach ( $items as $item ) {
@@ -263,12 +239,12 @@ class CustomFields {
 				}
 
 				$item_value = $next_value[ $item['id'] ];
+				$wp_type    = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string' );
 
-				if ( in_array( $item['type'], $complex_types, true ) && is_string( $item_value ) ) {
+				if ( $wp_type !== 'string' && is_string( $item_value ) ) {
 					try {
 						$next_value[ $item['id'] ] = json_decode( $item_value, true, 512, JSON_THROW_ON_ERROR );
 					} catch ( JsonException $e ) {
-						$next_value[ $item['id'] ] = array();
 					}
 				}
 			}

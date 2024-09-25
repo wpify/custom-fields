@@ -5,7 +5,7 @@ form:has([data-context="options"]) {
   }
 
   // hide the label of the field if there is label from custom fields
-  tr > th[scope="row"]:has(.wpifycf-label) > label:not(.wpifycf-label) {
+  tr > th[scope="row"]:has(.wpifycf-field__label) > label:not(.wpifycf-field__label) {
     display: none;
   }
 }

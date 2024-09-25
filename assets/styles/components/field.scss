@@ -1,6 +1,14 @@
 .wpifycf-field {
   display: block;
 
+  &--invalid {
+    outline: 1px solid red;
+  }
+
+  &--invalid:not(input) {
+    padding: var(--wpifycf-gap-1);
+  }
+
   &__wrapper {
     display: flex;
     flex-flow: row wrap;
@@ -25,10 +33,23 @@
     font-weight: 500;
   }
 
+  &__label--invalid {
+    color: red;
+  }
+
   &__required {
     display: inline-block;
     margin-left: var(--wpifycf-gap-1);
     color: red;
+  }
+
+  &__error {
+    display: block;
+    color: red;
+    padding-left: var(--wpifycf-gap-1);
+    padding-right: var(--wpifycf-gap-1);
+    font-size: 0.9em;
+    font-weight: 500;
   }
 
   .sortable-ghost {
@@ -38,5 +59,16 @@
     * {
       opacity: 0;
     }
+  }
+
+  input[type="text"],
+  input[type="password"] {
+    display: block;
+    width: 100%;
+  }
+
+  input[type="number"] {
+    display: block;
+    width: 150px;
   }
 }

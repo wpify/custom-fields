@@ -1,5 +1,5 @@
-import { useCallback, useEffect } from 'react';
-import { useFields, useCustomFieldsContext, useConfig, useTab } from '@/helpers/hooks';
+import { useCallback, useEffect, useState } from 'react';
+import { useFields, useCustomFieldsContext, useConfig, useTab, useValidity } from '@/helpers/hooks';
 import { Field } from '@/components/Field';
 import { Tabs } from '@/components/Tabs';
 import { addFilter } from '@wordpress/hooks';
@@ -11,8 +11,7 @@ export function App ({ integrationId, context, config, tabs, form }) {
   const setConfig = useConfig(state => state.setConfig);
   const setTab = useTab(state => state.setTab);
   const tab = useTab(state => state.tab);
-
-  console.log(form);
+  const { validity, validate, handleValidityChange } = useValidity({ form });
 
   useEffect(() => {
     setContext(context);
@@ -54,18 +53,18 @@ export function App ({ integrationId, context, config, tabs, form }) {
   return (
     <>
       <Tabs tabs={tabs} />
-      <span className="wpifycf-columns">
-        {fields.map(field => (
-          <Field
-            key={field.id}
-            {...field}
-            name={field.name || field.id}
-            htmlId={field.id}
-            onChange={handleChange(field.id)}
-            renderOptions={getRenderOptions(context)}
-          />
-        ))}
-      </span>
+      {fields.map(field => (
+        <Field
+          key={field.id}
+          {...field}
+          name={field.name || field.id}
+          htmlId={field.id}
+          onChange={handleChange(field.id)}
+          renderOptions={getRenderOptions(context)}
+          setValidity={handleValidityChange(field.id)}
+          validity={validate ? validity[field.id] : []}
+        />
+      ))}
     </>
   );
 }

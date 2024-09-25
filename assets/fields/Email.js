@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
+import { checkValidityEmailType } from '@/helpers/validators';
 
 export function Email ({
   id,
@@ -8,6 +9,7 @@ export function Email ({
   onChange,
   value,
   attributes = {},
+  className,
 }) {
   const handleChange = useCallback(function (event) {
     if (typeof onChange === 'function') {
@@ -21,10 +23,12 @@ export function Email ({
       id={htmlId}
       onChange={handleChange}
       value={value}
-      className={clsx('wpifycf-field-email', `wpifycf-field-email--${id}`, attributes.class)}
+      className={clsx('wpifycf-field-email', `wpifycf-field-email--${id}`, attributes.class, className)}
       {...attributes}
     />
   );
 }
+
+Email.checkValidity = checkValidityEmailType;
 
 addFilter('wpifycf_field_email', 'wpify_custom_fields', () => Email);

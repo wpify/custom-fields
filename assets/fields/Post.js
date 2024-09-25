@@ -2,8 +2,16 @@ import { useCallback, useState } from 'react';
 import { addFilter } from '@wordpress/hooks';
 import { PostSelect } from '@/components/PostSelect';
 import { IconButton } from '@/components/IconButton';
+import { checkValidityNumberType } from '@/helpers/validators';
+import clsx from 'clsx';
 
-export function Post ({ value, onChange, post_type: postType }) {
+export function Post ({
+  id,
+  value,
+  onChange,
+  post_type: postType,
+  className,
+}) {
   const [selected, setSelected] = useState(null);
 
   const handleDelete = useCallback(() => {
@@ -11,7 +19,7 @@ export function Post ({ value, onChange, post_type: postType }) {
   }, [onChange]);
 
   return (
-    <span className="wpifycf-field-post">
+    <span className={clsx('wpifycf-field-post', `wpifycf-field-post--${id}`, className)}>
       <PostSelect
         value={value}
         onChange={onChange}
@@ -24,6 +32,8 @@ export function Post ({ value, onChange, post_type: postType }) {
     </span>
   );
 }
+
+Post.checkValidity = checkValidityNumberType;
 
 export function PostPreview ({ post, onDelete }) {
   return (

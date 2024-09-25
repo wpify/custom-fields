@@ -4,8 +4,17 @@ import { __ } from '@wordpress/i18n';
 import { MultiSelect } from '@/fields/MultiSelect';
 import { CategoryTree } from '@/fields/Term';
 import { useMemo } from 'react';
+import { checkValidityMultiFieldType, checkValidityMultiNonZeroType } from '@/helpers/validators';
+import clsx from 'clsx';
 
-export function MultiTerm ({ taxonomy, id, htmlId, value = [], onChange }) {
+export function MultiTerm ({
+  taxonomy,
+  id,
+  htmlId,
+  value = [],
+  onChange,
+  className,
+}) {
   const { data: terms, isError, isFetching } = useTerms({ taxonomy });
 
   const termOptions = useMemo(
@@ -44,10 +53,12 @@ export function MultiTerm ({ taxonomy, id, htmlId, value = [], onChange }) {
   }
 
   return (
-    <span className="wpifycf-field-term">
+    <span className={clsx('wpifycf-field-term', `wpifycf-field-term--${id}`, className)}>
       {content}
     </span>
   );
 }
+
+MultiTerm.checkValidity = checkValidityMultiNonZeroType;
 
 addFilter('wpifycf_field_multi_term', 'wpify_custom_fields', () => MultiTerm);

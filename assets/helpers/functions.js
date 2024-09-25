@@ -1,6 +1,8 @@
 import { useConfig } from '@/helpers/hooks';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
+import { applyFilters } from '@wordpress/hooks';
+import { Text } from '@/fields/Text';
 
 export function tryParseJson (value, defaultValue = null) {
   if (typeof value === 'string') {
@@ -119,4 +121,8 @@ function cleanEmail (content) {
 function cleanTel (content) {
   content = decodeURIComponent(content);
   return content.replace(/[^\d+]/g, '');
+}
+
+export function getFieldComponentByType (type) {
+  return applyFilters('wpifycf_field_' + type, Text);
 }

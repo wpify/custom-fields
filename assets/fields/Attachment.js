@@ -5,6 +5,7 @@ import { Button } from '@/components/Button';
 import { __ } from '@wordpress/i18n';
 import { useMediaLibrary, useAttachment } from '@/helpers/hooks';
 import { addFilter } from '@wordpress/hooks';
+import { checkValidityNonZeroIntegerType } from '@/helpers/validators';
 
 function Attachment ({
   value,
@@ -12,6 +13,7 @@ function Attachment ({
   onChange,
   attachment_type,
   attributes = {},
+  className,
 }) {
   const { attachment, setAttachment } = useAttachment(value);
 
@@ -31,7 +33,7 @@ function Attachment ({
 
   return (
     <span
-      className={clsx('wpifycf-field-attachment', `wpifycf-field-attachment--${id}`, attributes.class)}
+      className={clsx('wpifycf-field-attachment', `wpifycf-field-attachment--${id}`, attributes.class, className)}
     >
       {attachment && (
         <AttachmentItem attachment={attachment} remove={remove} />
@@ -88,5 +90,7 @@ export const AttachmentItem = forwardRef(function ({ attachment, remove }, ref) 
     </span>
   );
 });
+
+Attachment.checkValidity = checkValidityNonZeroIntegerType;
 
 addFilter('wpifycf_field_attachment', 'wpify_custom_fields', () => Attachment);

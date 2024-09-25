@@ -4,12 +4,16 @@ import { __ } from '@wordpress/i18n';
 import { normalizeUrl } from '@/helpers/functions';
 import { usePostTypes, useUrlTitle } from '@/helpers/hooks';
 import { PostSelect } from '@/components/PostSelect';
+import clsx from 'clsx';
+import { checkValidityLinkType } from '@/helpers/validators';
 
 export function Link ({
+  id,
   htmlId,
   value = {},
   onChange,
   post_type,
+  className,
 }) {
   const [blurUrl, setBlurUrl] = useState(null);
   const postTypes = usePostTypes(post_type);
@@ -77,7 +81,7 @@ export function Link ({
   }, [resolvedUrlTitle, onChange, value.label, blurUrl]);
 
   return (
-    <span className="wpifycf-field-link">
+    <span className={clsx('wpifycf-field-link', `wpifycf-field-link--${id}`, className)}>
       <span className="wpifycf-field-link__fields">
         <span className="wpifycf-field-link__field-label">
           {postTypes.length > 0 ? (
@@ -116,5 +120,7 @@ export function Link ({
   </span>
   );
 }
+
+Link.checkValidity = checkValidityLinkType;
 
 addFilter('wpifycf_field_link', 'wpify_custom_fields', () => Link);

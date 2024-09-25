@@ -12,6 +12,7 @@ import { markdown } from '@codemirror/lang-markdown';
 import { xml } from '@codemirror/lang-xml';
 import { json } from '@codemirror/lang-json';
 import { EditorView } from '@codemirror/view'
+import { checkValidityStringType } from '@/helpers/validators';
 
 export function Code ({
   id,
@@ -21,6 +22,7 @@ export function Code ({
   height = 200,
   theme = 'dark',
   attributes = {},
+  className,
 }) {
   const extensions = [EditorView.lineWrapping];
   const languageExtension = getLanguageExtension(language);
@@ -33,7 +35,7 @@ export function Code ({
     <ErrorBoundary
       fallback={(
         <textarea
-          className={clsx('wpifycf-field-code', 'wpifycf-field-code--fallback', `wpifycf-field-code--${id}`, attributes.class)}
+          className={clsx('wpifycf-field-code', 'wpifycf-field-code--fallback', `wpifycf-field-code--${id}`, attributes.class, className)}
           value={value}
           onChange={event => onChange(event.target.value)}
           style={{ width: '100%', height: height + 'px' }}
@@ -76,5 +78,7 @@ function getLanguageExtension (language) {
       return null;
   }
 }
+
+Code.checkValidity = checkValidityStringType;
 
 addFilter('wpifycf_field_code', 'wpify_custom_fields', () => Code);

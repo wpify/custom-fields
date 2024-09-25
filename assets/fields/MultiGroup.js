@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import { Button } from '@/components/Button';
 import { __ } from '@wordpress/i18n';
 import { IconButton } from '@/components/IconButton';
+import { checkValidityMultiGroupType } from '@/helpers/validators';
 
 function MultiGroup ({
   value = [],
@@ -15,6 +16,8 @@ function MultiGroup ({
   min,
   max,
   htmlId,
+  className,
+  validity = [],
   ...props
 }) {
   if (!Array.isArray(value)) {
@@ -44,12 +47,24 @@ function MultiGroup ({
     dragHandle: '.wpifycf__move-handle',
   });
 
+  const fieldsValidity = validity?.reduce((acc, item) => {
+    if (typeof item === 'object') {
+      return { ...acc, ...item };
+    }
+
+    return acc;
+  }, {});
+
   return (
-    <span className={clsx('wpifycf-field-multi-group', `wpifycf-field-multi-group--${props.id}`, props.attributes?.class)}>
+    <span className={clsx('wpifycf-field-multi-group', `wpifycf-field-multi-group--${props.id}`, props.attributes?.class, className)}>
       <span className="wpifycf-field-multi-group__items" ref={containerRef}>
         {Array.isArray(value) && value.map((value, index) => (
           <span
-            className={clsx('wpifycf-field-multi-group__item', collapsed[index] &&'wpifycf-field-multi-group__item--collapsed')}
+            className={clsx(
+              'wpifycf-field-multi-group__item',
+              collapsed[index] && 'wpifycf-field-multi-group__item--collapsed',
+              fieldsValidity[index] && 'wpifycf-field-multi-group__item--invalid',
+            )}
             key={keyPrefix + '.' + index}
           >
             <span className="wpifycf-field-multi-group__item-header wpifycf__move-handle">
@@ -93,6 +108,7 @@ function MultiGroup ({
                 onChange={handleChange(index)}
                 {...props}
                 htmlId={htmlId + '.' + index}
+                validity={fieldsValidity[index]}
               />
             </span>
           </span>
@@ -108,5 +124,7 @@ function MultiGroup ({
     </span>
   );
 }
+
+MultiGroup.checkValidity = checkValidityMultiGroupType;
 
 addFilter('wpifycf_field_multi_group', 'wpify_custom_fields', () => MultiGroup);

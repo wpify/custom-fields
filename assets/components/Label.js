@@ -2,13 +2,17 @@ import { forwardRef } from 'react';
 import { createPortal } from 'react-dom';
 import clsx from 'clsx';
 
-export const Label = forwardRef(function ({ label, type, htmlId, renderOptions, className, required }, ref) {
+export const Label = forwardRef(function ({ label, type, htmlId, renderOptions, className, required, validity = [] }, ref) {
   if (renderOptions?.noLabel === true) {
     return null;
   }
 
   return (
-    <label htmlFor={htmlId} className={clsx(`wpifycf-label wpifycf-label--${type}`, className)} ref={ref}>
+    <label
+      htmlFor={htmlId}
+      className={clsx(`wpifycf-field__label wpifycf-field__label--${type}`, className, validity.length && 'wpifycf-field__label--invalid')}
+      ref={ref}
+    >
       {label}
       {required && <span className="wpifycf-field__required">*</span>}
     </label>

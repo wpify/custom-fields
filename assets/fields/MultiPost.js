@@ -3,11 +3,15 @@ import { useCallback } from 'react';
 import { PostSelect } from '@/components/PostSelect';
 import { PostPreview } from '@/fields/Post';
 import { useMulti, usePosts } from '@/helpers/hooks';
+import { checkValidityMultiNonZeroType } from '@/helpers/validators';
+import clsx from 'clsx';
 
 export function MultiPost ({
+  id,
   value = [],
   onChange,
-  post_type: postType
+  post_type: postType,
+  className,
 }) {
   if (!Array.isArray(value)) {
     value = [];
@@ -26,7 +30,7 @@ export function MultiPost ({
   });
 
   return (
-    <span className="wpifycf-field-multi-post">
+    <span className={clsx('wpifycf-field-multi-post', `wpifycf-field-multi-post--${id}`, className)}>
       <PostSelect
         value={null}
         exclude={value}
@@ -45,5 +49,7 @@ export function MultiPost ({
     </span>
   );
 }
+
+MultiPost.checkValidity = checkValidityMultiNonZeroType;
 
 addFilter('wpifycf_field_multi_post', 'wpify_custom_fields', () => MultiPost);

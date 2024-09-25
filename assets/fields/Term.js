@@ -4,6 +4,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { IconButton } from '@/components/IconButton';
 import { Select } from '@/fields/Select';
 import { __ } from '@wordpress/i18n';
+import { checkValidityNonZeroIntegerType } from '@/helpers/validators';
+import clsx from 'clsx';
 
 function isCategoryExpanded (category, value) {
   return category.children
@@ -11,7 +13,14 @@ function isCategoryExpanded (category, value) {
     : false;
 }
 
-export function Term ({ taxonomy, id, htmlId, value, onChange }) {
+export function Term ({
+  taxonomy,
+  id,
+  htmlId,
+  value,
+  onChange,
+  className,
+}) {
   const { data: terms, isError, isFetching } = useTerms({ taxonomy });
 
   let content;
@@ -45,11 +54,13 @@ export function Term ({ taxonomy, id, htmlId, value, onChange }) {
   }
 
   return (
-    <span className="wpifycf-field-term">
+    <span className={clsx('wpifycf-field-term', `wpifycf-field-term--${id}`, className)}>
       {content}
     </span>
   );
 }
+
+Term.checkValidity = checkValidityNonZeroIntegerType;
 
 export function CategoryTree ({ categories = [], value = [], onChange, htmlId, type }) {
   return (

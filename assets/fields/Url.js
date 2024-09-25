@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
 import { normalizeUrl } from '@/helpers/functions';
+import { checkValidityStringType } from '@/helpers/validators';
 
 export function Url ({
   id,
@@ -9,6 +10,7 @@ export function Url ({
   onChange,
   value,
   attributes = {},
+  className,
 }) {
   const handleChange = useCallback(function (event) {
     if (typeof onChange === 'function') {
@@ -31,10 +33,12 @@ export function Url ({
       onChange={handleChange}
       onBlur={handleBlur}
       value={value}
-      className={clsx('wpifycf-field-url', `wpifycf-field-url--${id}`, attributes.class)}
+      className={clsx('wpifycf-field-url', `wpifycf-field-url--${id}`, attributes.class, className)}
       {...attributes}
     />
   );
 }
+
+Url.checkValidity = checkValidityStringType;
 
 addFilter('wpifycf_field_url', 'wpify_custom_fields', () => Url);

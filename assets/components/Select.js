@@ -1,7 +1,8 @@
 import ReactSelect from 'react-select';
 import { useCallback } from 'react';
+import clsx from 'clsx';
 
-export function Select ({ value, onChange, options, filterOption, onInputChange, ...rest }) {
+export function Select ({ value, onChange, options, filterOption, onInputChange, className, ...rest }) {
   const handleChange = useCallback(option => {
     onChange(option?.value);
   }, [onChange]);
@@ -12,7 +13,7 @@ export function Select ({ value, onChange, options, filterOption, onInputChange,
       onChange={handleChange}
       options={options}
       isClearable
-      className="wpifycf-select"
+      className={clsx('wpifycf-select', className)}
       classNamePrefix="wpifycf-select"
       filterOption={filterOption}
       onInputChange={onInputChange}

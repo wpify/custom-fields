@@ -3,6 +3,8 @@ import { Select as SelectControl } from '@/components/Select.js';
 import { useMulti, useOptions } from '@/helpers/hooks';
 import { useCallback, useMemo, useState } from 'react';
 import { IconButton } from '@/components/IconButton';
+import { checkValidityMultiFieldType, checkValidityMultiStringType } from '@/helpers/validators';
+import clsx from 'clsx';
 
 export function MultiSelect ({
   id,
@@ -10,6 +12,7 @@ export function MultiSelect ({
   onChange,
   options = [],
   options_key: optionsKey,
+  className,
 }) {
   const [search, setSearch] = useState('');
 
@@ -46,7 +49,7 @@ export function MultiSelect ({
   const handleChange = useCallback(newValue => onChange([newValue, ...value]), [onChange, value]);
 
   return (
-    <span className="wpifycf-field-multi-select">
+    <span className={clsx('wpifycf-field-multi-select', `wpifycf-field-multi-select--${id}`, className)}>
       {usedOptions.length > 0 && (
         <span className="wpifycf-field-multi-select__options" ref={containerRef}>
           {usedOptions.map((option, index) => (
@@ -70,5 +73,7 @@ export function MultiSelect ({
     </span>
   );
 }
+
+MultiSelect.checkValidity = checkValidityMultiStringType;
 
 addFilter('wpifycf_field_multi_select', 'wpify_custom_fields', () => MultiSelect);

@@ -420,3 +420,44 @@ export function useMapyCzReverseGeocode ({ apiKey, lang = 'en', latitude, longit
     ...defaultQueryOptions,
   });
 }
+
+export function useValidity ({ form }) {
+  const [validity, setValidity] = useState({});
+  const [validate, setValidate] = useState(false);
+
+  const handleValidityChange = useCallback(id => validity =>
+      setValidity(
+        prev => (JSON.stringify(prev[id]) === JSON.stringify(validity))
+          ? prev
+          : ({ ...prev, [id]: validity }),
+      ),
+    [setValidity],
+  );
+
+  const handleSubmit = useCallback((event) => {
+    if (validity && Object.values(validity).some(v => v.length > 0)) {
+      event.preventDefault();
+      setValidate(true);
+    } else {
+      setValidate(false);
+    }
+  }, [validity, setValidate]);
+
+  useEffect(() => {
+    if (form) {
+      form.addEventListener('submit', handleSubmit);
+    }
+
+    return () => {
+      if (form) {
+        form.removeEventListener('submit', handleSubmit);
+      }
+    };
+  }, [handleSubmit, form]);
+
+  return {
+    validity,
+    validate,
+    handleValidityChange,
+  };
+}

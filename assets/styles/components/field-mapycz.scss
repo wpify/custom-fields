@@ -1,6 +1,6 @@
 .wpifycf-field-mapycz {
   display: block;
-  min-width: 400px;
+  min-width: max(100%, 600px);
 
   &__set-key {
     display: flex;

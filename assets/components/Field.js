@@ -6,12 +6,41 @@ import { Text } from '@/fields/Text.js';
 import { Label } from '@/components/Label';
 import clsx from 'clsx';
 import { useCustomFieldsContext, useTab } from '@/helpers/hooks';
+import { useEffect, useMemo } from 'react';
 
-export function Field ({ type, name, node, renderOptions, description, value, tab, ...props }) {
+export function Field ({
+  type,
+  name,
+  node,
+  renderOptions,
+  description,
+  value,
+  tab,
+  setValidity,
+  ...props
+}) {
   const context = useCustomFieldsContext(state => state.context);
-  const FieldComponent = applyFilters('wpifycf_field_' + type, Text, props);
-  const LabelComponent = applyFilters('wpifycf_label_' + context, Label, props);
+  const FieldComponent = useMemo(() => applyFilters('wpifycf_field_' + type, Text, props), [type, props]);
+  const LabelComponent = useMemo(() => applyFilters('wpifycf_label_' + context, Label, props), [context, props]);
   const currentTab = useTab(state => state.tab);
+  const isHidden = useMemo(() => tab && currentTab && currentTab !== tab && !!name, [tab, currentTab, name]);
+
+  const validity = useMemo(
+    () => {
+      if (!isHidden && typeof setValidity === 'function' && typeof FieldComponent.checkValidity === 'function') {
+        return FieldComponent.checkValidity(value, { ...props, type });
+      }
+
+      return [];
+    },
+    [setValidity, FieldComponent, value, props, type, isHidden],
+  );
+
+  useEffect(() => {
+    if (typeof setValidity === 'function') {
+      setValidity(validity);
+    }
+  }, [setValidity, validity]);
 
   const fallback = (
     <span className="wpifycf-error-boundary">
@@ -32,32 +61,41 @@ export function Field ({ type, name, node, renderOptions, description, value, ta
     </span>
   );
 
-  const isHidden = tab && currentTab && currentTab !== tab && !!name;
-  const hiddenField = name && <input type="hidden" name={name} data-hide-field={isHidden ? 'true' : 'false'} value={typeof value === 'object' ? JSON.stringify(value) : value} />;
+  const hiddenField = name && (
+    <input type="hidden" name={name} data-hide-field={isHidden ? 'true' : 'false'} value={typeof value !== 'string' ? JSON.stringify(value) : value} />
+  );
+
+  const validityMessages = props.validity?.filter(v => typeof v === 'string') || [];
 
   const field = isHidden
     ? hiddenField
     : (
-    <FieldWrapper renderOptions={renderOptions}>
-      {descriptionPosition === 'before' && renderedDescription}
-      <LabelComponent
-        type={type}
-        renderOptions={renderOptions}
-        className="wpifycf-field__label"
-        node={node}
-        {...props}
-      />
-      <ErrorBoundary fallback={fallback}>
-        {hiddenField}
-        <FieldComponent
+      <FieldWrapper renderOptions={renderOptions}>
+        {descriptionPosition === 'before' && renderedDescription}
+        <LabelComponent
           type={type}
-          value={value}
+          renderOptions={renderOptions}
+          className="wpifycf-field__label"
+          node={node}
           {...props}
         />
-      </ErrorBoundary>
-      {descriptionPosition === 'after' && renderedDescription}
-    </FieldWrapper>
-  );
+        {hiddenField}
+        <ErrorBoundary fallback={fallback}>
+          <FieldComponent
+            type={type}
+            value={value}
+            className={clsx('wpifycf-field', `wpifycf-field--${type}`, props.className, validityMessages.length > 0 && 'wpifycf-field--invalid')}
+            {...props}
+          />
+        </ErrorBoundary>
+        {validityMessages.map((message, index) => (
+          <label htmlFor={props.htmlId} key={index} className="wpifycf-field__error">
+            {message}
+          </label>
+        ))}
+        {descriptionPosition === 'after' && renderedDescription}
+      </FieldWrapper>
+    );
 
   if (node) {
     return createPortal(field, node);

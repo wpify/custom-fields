@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
+import { checkValidityBooleanType } from '@/helpers/validators';
 
 function Checkbox ({
   id,
@@ -8,6 +9,7 @@ function Checkbox ({
   onChange,
   value,
   attributes = {},
+  className,
 }) {
   const handleChange = useCallback(function (event) {
     if (typeof onChange === 'function') {
@@ -20,11 +22,13 @@ function Checkbox ({
       type="checkbox"
       id={htmlId}
       onChange={handleChange}
-      className={clsx('wpifycf-field-checkbox', `wpifycf-field-checkbox--${id}`, attributes.class)}
+      className={clsx('wpifycf-field-checkbox', `wpifycf-field-checkbox--${id}`, attributes.class, className)}
       checked={value}
       {...attributes}
     />
   );
 }
+
+Checkbox.checkValidity = checkValidityBooleanType;
 
 addFilter('wpifycf_field_checkbox', 'wpify_custom_fields', () => Checkbox);

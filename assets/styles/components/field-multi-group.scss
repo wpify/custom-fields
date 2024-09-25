@@ -25,6 +25,11 @@
     background: white;
   }
 
+  &__item--invalid &__item-header {
+    border: 1px solid red;
+    color: red;
+  }
+
   &__header-actions {
     display: block;
   }

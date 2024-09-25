@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { addFilter, applyFilters } from '@wordpress/hooks';
 import { Field } from '@/components/Field';
 import { Text } from '@/fields/Text';
+import { checkValidityGroupType } from '@/helpers/validators';
 
 function Group ({
   id,
@@ -11,6 +12,8 @@ function Group ({
   onChange,
   items,
   attributes = {},
+  validity = [],
+  className,
 }) {
   const [fields, setFields] = useState(items);
 
@@ -31,9 +34,17 @@ function Group ({
     };
   }, [value, onChange]);
 
+  const fieldValidity = validity?.reduce((acc, item) => {
+    if (typeof item === 'object') {
+      return { ...acc, ...item };
+    }
+
+    return acc;
+  }, {});
+
   return (
     <span
-      className={clsx('wpifycf-field-group', `wpifycf-field-group--${id}`, attributes.class)}
+      className={clsx('wpifycf-field-group', `wpifycf-field-group--${id}`, attributes.class, className)}
     >
       {fields.map(field => (
         <Field
@@ -42,6 +53,7 @@ function Group ({
           value={value[field.id] || ''}
           onChange={handleChange(field.id)}
           htmlId={`${htmlId}.${field.id}`}
+          validity={fieldValidity[field.id]}
         />
       ))}
     </span>
@@ -73,6 +85,8 @@ Group.Title = ({ field, value, index }) => {
 
   return null;
 };
+
+Group.checkValidity = checkValidityGroupType;
 
 export { Group };
 

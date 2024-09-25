@@ -1,6 +1,7 @@
 import { IconButton } from '@/components/IconButton';
 import { useMulti } from '@/helpers/hooks';
 import { Button } from '@/components/Button';
+import clsx from 'clsx';
 
 export function MultiField ({
   component: Component,
@@ -13,6 +14,8 @@ export function MultiField ({
   min,
   max,
   htmlId,
+  className,
+  validity = [],
   ...props
 }) {
   const {
@@ -34,8 +37,16 @@ export function MultiField ({
     dragHandle: '.wpifycf-multi-field-item__sort',
   });
 
+  const fieldsValidity = validity?.reduce((acc, item) => {
+    if (typeof item === 'object') {
+      return { ...acc, ...item };
+    }
+
+    return acc;
+  }, {});
+
   return (
-    <span className={'wpifycf-multi-field wpifycf-multi-field--' + props.type}>
+    <span className={clsx('wpifycf-multi-field', `wpifycf-multi-field--${props.type}`, className)}>
       {name && (
         <input type="hidden" name={name} value={JSON.stringify(value)} />
       )}
@@ -54,6 +65,7 @@ export function MultiField ({
                 onChange={handleChange(index)}
                 {...props}
                 htmlId={htmlId + '.' + index}
+                validity={fieldsValidity[index]}
               />
             </span>
             {canRemove && (
