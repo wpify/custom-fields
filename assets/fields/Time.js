@@ -8,6 +8,8 @@ export function Time ({
   htmlId,
   onChange,
   value,
+  min,
+  max,
   attributes = {},
   className,
 }) {
@@ -23,6 +25,8 @@ export function Time ({
       id={htmlId}
       onChange={handleChange}
       value={value}
+      min={min}
+      max={max}
       className={clsx('wpifycf-field-time', `wpifycf-field-time--${id}`, attributes.class, className)}
       {...attributes}
     />

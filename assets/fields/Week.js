@@ -8,6 +8,8 @@ export function Week ({
   htmlId,
   onChange,
   value,
+  min,
+  max,
   attributes = {},
   className,
 }) {
@@ -23,6 +25,8 @@ export function Week ({
       id={htmlId}
       onChange={handleChange}
       value={value}
+      min={min}
+      max={max}
       className={clsx('wpifycf-field-week', `wpifycf-field-week--${id}`, attributes.class, className)}
       {...attributes}
     />

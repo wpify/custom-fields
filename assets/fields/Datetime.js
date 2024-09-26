@@ -8,6 +8,8 @@ export function Datetime ({
   htmlId,
   onChange,
   value,
+  min,
+  max,
   attributes = {},
   className,
 }) {
@@ -19,10 +21,12 @@ export function Datetime ({
 
   return (
     <input
-      type="date"
+      type="datetime-local"
       id={htmlId}
       onChange={handleChange}
       value={value}
+      min={min}
+      max={max}
       className={clsx('wpifycf-field-datetime', `wpifycf-field-datetime--${id}`, attributes.class, className)}
       {...attributes}
     />
