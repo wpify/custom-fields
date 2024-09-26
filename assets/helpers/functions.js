@@ -1,26 +1,5 @@
-import { useConfig } from '@/helpers/hooks';
-import apiFetch from '@wordpress/api-fetch';
-import { addQueryArgs } from '@wordpress/url';
 import { applyFilters } from '@wordpress/hooks';
 import { Text } from '@/fields/Text';
-
-export function tryParseJson (value, defaultValue = null) {
-  if (typeof value === 'string') {
-    try {
-      const parsedValue = JSON.parse(value);
-
-      if (defaultValue !== null && typeof parsedValue !== typeof defaultValue) {
-        return defaultValue;
-      }
-
-      return parsedValue;
-    } catch (e) {
-      return defaultValue;
-    }
-  }
-
-  return value;
-}
 
 export function addStyleSheet (url) {
   if (Array.isArray(url)) {
@@ -39,27 +18,6 @@ function addStyleSheetItem (url) {
   link.rel = 'stylesheet';
   link.href = url;
   document.head.appendChild(link);
-}
-
-export function isValidUrl (url) {
-  try {
-    new URL(url);
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-export async function getPageTitle (url) {
-  try {
-    const { config } = useConfig.getState();
-    return await apiFetch({
-      url: addQueryArgs(config.api_path + '/url-title', { url }),
-    });
-  } catch (error) {
-    console.error('Error fetching the page:', error);
-    return null;
-  }
 }
 
 export function normalizeUrl (url) {
