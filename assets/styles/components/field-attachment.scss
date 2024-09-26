@@ -45,7 +45,11 @@
   width: 150px;
   height: 150px;
   position: relative;
-  background: rgba(255, 255, 255, 0.5);
+  background: black;
+
+  &--has-icon {
+    background: white;
+  }
 
   &__thumbnail {
     display: block;
