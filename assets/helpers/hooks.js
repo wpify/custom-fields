@@ -331,12 +331,12 @@ export function useTerms ({
   });
 }
 
-export function usePostTypes (onlyPostTypes) {
+export function usePostTypes (onlyPostTypes = []) {
   return useSelect(
     (select) => {
       const postTypes = select('core').getPostTypes();
 
-      if (!postTypes) {
+      if (!postTypes || onlyPostTypes.length === 0) {
         return [];
       }
 
