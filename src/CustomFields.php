@@ -54,6 +54,7 @@ class CustomFields {
 		add_filter( 'wpifycf_sanitize_field_type_number', 'floatval' );
 		add_filter( 'wpifycf_sanitize_field_type_password', 'strval' );
 		add_filter( 'wpifycf_sanitize_field_type_post', 'intval' );
+		add_filter( 'wpifycf_sanitize_field_type_range', 'floatval' );
 		add_filter( 'wpifycf_sanitize_field_type_select', 'sanitize_text_field' );
 		add_filter( 'wpifycf_sanitize_field_type_tel', 'sanitize_text_field' );
 		add_filter( 'wpifycf_sanitize_field_type_term', 'intval' );
@@ -102,6 +103,7 @@ class CustomFields {
 		add_filter( 'wpifycf_field_type_number', array( $this, 'return_number' ) );
 		add_filter( 'wpifycf_field_type_password', array( $this, 'return_string' ) );
 		add_filter( 'wpifycf_field_type_post', array( $this, 'return_integer' ) );
+		add_filter( 'wpifycf_field_type_range', array( $this, 'return_number' ) );
 		add_filter( 'wpifycf_field_type_select', array( $this, 'return_string' ) );
 		add_filter( 'wpifycf_field_type_tel', array( $this, 'return_string' ) );
 		add_filter( 'wpifycf_field_type_term', array( $this, 'return_integer' ) );

@@ -36,6 +36,7 @@ require('@/fields/MultiWeek');
 require('@/fields/Number');
 require('@/fields/Password');
 require('@/fields/Post');
+require('@/fields/Range');
 require('@/fields/Select');
 require('@/fields/Tel');
 require('@/fields/Term');
