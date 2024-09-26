@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
 import { checkValidityNumberType } from '@/helpers/validators';
-import { __ } from '@wordpress/i18n';
 
 export function Range ({
   id,
