@@ -204,7 +204,7 @@ class Options extends Integration {
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! empty( $_GET['settings-updated'] ) ) {
-			add_settings_error( $this->menu_slug . '_error', $this->menu_slug . '_message', __( 'Settings saved', 'wpify-custom-fields' ), 'updated' );
+			add_settings_error( $this->menu_slug . '_error', $this->menu_slug . '_message', $this->success_message, 'updated' );
 		}
 
 		settings_errors( $this->menu_slug . '_error' );
