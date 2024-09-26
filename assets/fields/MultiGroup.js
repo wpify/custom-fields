@@ -6,6 +6,7 @@ import { Button } from '@/components/Button';
 import { __ } from '@wordpress/i18n';
 import { IconButton } from '@/components/IconButton';
 import { checkValidityMultiGroupType } from '@/helpers/validators';
+import { Field } from '@/components/Field';
 
 function MultiGroup ({
   value = [],
@@ -18,6 +19,7 @@ function MultiGroup ({
   htmlId,
   className,
   validity = [],
+  fieldPath,
   ...props
 }) {
   if (!Array.isArray(value)) {
@@ -102,13 +104,16 @@ function MultiGroup ({
               </span>
             </span>
             <span className="wpifycf-field-multi-group__content">
-              <Group
+              <Field
+                {...props}
                 value={value}
                 default={defaultValue}
                 onChange={handleChange(index)}
-                {...props}
+                type="group"
                 htmlId={htmlId + '.' + index}
                 validity={fieldsValidity[index]}
+                fieldPath={`${fieldPath}[${index}]`}
+                renderOptions={{ noLabel: true, noWrapper: true }}
               />
             </span>
           </span>

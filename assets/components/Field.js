@@ -3,9 +3,9 @@ import { applyFilters } from '@wordpress/hooks';
 import { ErrorBoundary } from 'react-error-boundary';
 import { __, sprintf } from '@wordpress/i18n';
 import { Text } from '@/fields/Text.js';
-import { Label } from '@/components/Label';
+import { Label, OptionsLabel } from '@/components/Label';
 import clsx from 'clsx';
-import { useCustomFieldsContext, useTab } from '@/helpers/hooks';
+import { useConditions, useCustomFieldsContext, useTabs } from '@/helpers/hooks';
 import { useEffect, useMemo } from 'react';
 
 export function Field ({
@@ -17,13 +17,22 @@ export function Field ({
   value,
   tab,
   setValidity,
+  conditions,
+  fieldPath,
   ...props
 }) {
   const context = useCustomFieldsContext(state => state.context);
   const FieldComponent = useMemo(() => applyFilters('wpifycf_field_' + type, Text, props), [type, props]);
-  const LabelComponent = useMemo(() => applyFilters('wpifycf_label_' + context, Label, props), [context, props]);
-  const currentTab = useTab(state => state.tab);
-  const isHidden = useMemo(() => tab && currentTab && currentTab !== tab && !!name, [tab, currentTab, name]);
+  const LabelComponent = useMemo(
+    () => {
+      if (context === 'options') return OptionsLabel;
+      return Label;
+    },
+    [context],
+  );
+  const { isCurrentTab } = useTabs(tab);
+  const shown = useConditions({ conditions, fieldPath });
+  const isHidden = !shown || !isCurrentTab;
 
   const validity = useMemo(
     () => {
@@ -33,7 +42,7 @@ export function Field ({
 
       return [];
     },
-    [setValidity, FieldComponent, value, props, type, isHidden],
+    [setValidity, FieldComponent, value, props, type],
   );
 
   useEffect(() => {
@@ -85,6 +94,7 @@ export function Field ({
             type={type}
             value={value}
             className={clsx('wpifycf-field', `wpifycf-field--${type}`, props.className, validityMessages.length > 0 && 'wpifycf-field--invalid')}
+            fieldPath={fieldPath}
             {...props}
           />
         </ErrorBoundary>

@@ -59,7 +59,7 @@ export function checkValidityEmailType (value, field) {
   return validity;
 }
 
-export function checkValidityGroupType (value, field) {
+export function checkValidityGroupType (value = {}, field) {
   const validity = [];
 
   if (Array.isArray(field.items)) {

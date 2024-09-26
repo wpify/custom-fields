@@ -8,12 +8,13 @@ import { checkValidityGroupType } from '@/helpers/validators';
 function Group ({
   id,
   htmlId,
-  value,
+  value = {},
   onChange,
   items,
   attributes = {},
   validity = [],
   className,
+  fieldPath,
 }) {
   const [fields, setFields] = useState(items);
 
@@ -54,6 +55,7 @@ function Group ({
           onChange={handleChange(field.id)}
           htmlId={`${htmlId}.${field.id}`}
           validity={fieldValidity[field.id]}
+          fieldPath={`${fieldPath}.${field.id}`}
         />
       ))}
     </span>

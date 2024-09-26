@@ -17,6 +17,7 @@ export function MultiField ({
   htmlId,
   className,
   validity = [],
+  fieldPath,
   ...props
 }) {
   const {
@@ -64,14 +65,15 @@ export function MultiField ({
             )}
             <span className="wpifycf-multi-field-item-field">
               <Field
+                {...props}
                 type={type}
                 value={value}
                 default={defaultValue}
                 onChange={handleChange(index)}
-                {...props}
                 htmlId={htmlId + '.' + index}
                 validity={fieldsValidity[index]}
                 renderOptions={{ noLabel: true, noWrapper: true }}
+                fieldPath={`${fieldPath}[${index}]`}
               />
             </span>
             {canRemove && (

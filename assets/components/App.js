@@ -1,16 +1,13 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useFields, useCustomFieldsContext, useConfig, useTab, useValidity } from '@/helpers/hooks';
+import { useCallback, useEffect } from 'react';
+import { useFields, useCustomFieldsContext, useConfig, useTabs, useValidity } from '@/helpers/hooks';
 import { Field } from '@/components/Field';
 import { Tabs } from '@/components/Tabs';
-import { addFilter } from '@wordpress/hooks';
-import { OptionsLabel } from '@/components/Label';
 
 export function App ({ integrationId, context, config, tabs, form }) {
-  const [fields, setFields] = useFields(integrationId);
+  const { fields, values, updateValue } = useFields(integrationId);
   const setContext = useCustomFieldsContext(state => state.setContext);
   const setConfig = useConfig(state => state.setConfig);
-  const setTab = useTab(state => state.setTab);
-  const tab = useTab(state => state.tab);
+  const { tab, setTab } = useTabs();
   const { validity, validate, handleValidityChange } = useValidity({ form });
 
   useEffect(() => {
@@ -21,12 +18,6 @@ export function App ({ integrationId, context, config, tabs, form }) {
       setTab(Object.keys(tabs)[0]);
     }
   }, [context, config, setContext]);
-
-  useEffect(() => {
-    if (context === 'options') {
-      addFilter('wpifycf_label_options', 'wpify-custom-fields', () => OptionsLabel);
-    }
-  }, [context]);
 
   const getRenderOptions = useCallback(function (context) {
     switch (context) {
@@ -39,17 +30,6 @@ export function App ({ integrationId, context, config, tabs, form }) {
     }
   }, []);
 
-  const handleChange = useCallback(function (id) {
-    return function (value) {
-      setFields(function (prev) {
-        const nextFields = [...prev];
-        const index = nextFields.findIndex(f => f.id === id);
-        nextFields[index] = { ...nextFields[index], value };
-        return nextFields;
-      });
-    };
-  }, [setFields]);
-
   return (
     <>
       <Tabs tabs={tabs} />
@@ -58,11 +38,13 @@ export function App ({ integrationId, context, config, tabs, form }) {
           key={field.id}
           {...field}
           name={field.name || field.id}
+          value={values[field.id]}
           htmlId={field.id}
-          onChange={handleChange(field.id)}
+          onChange={updateValue(field.id)}
           renderOptions={getRenderOptions(context)}
           setValidity={handleValidityChange(field.id)}
           validity={validate ? validity[field.id] : []}
+          fieldPath={field.id}
         />
       ))}
     </>

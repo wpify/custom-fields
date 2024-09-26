@@ -126,3 +126,90 @@ function cleanTel (content) {
 export function getFieldComponentByType (type) {
   return applyFilters('wpifycf_field_' + type, Text);
 }
+
+export function getValueByPath (obj = {}, path, currentPath = '') {
+  let resolvedPath = path;
+  const withoutHash = path.replace(/^#+/, '');
+  const hashCount = path.length - withoutHash.length;
+  const parts = currentPath.split('.');
+
+  if (hashCount >= parts.length) {
+    console.error(`Invalid path "${path}" in field "${currentPath}"`);
+  } else if (hashCount > 0) {
+    resolvedPath = parts.slice(0, parts.length - hashCount).join('.') + withoutHash;
+  }
+
+  return resolvedPath.split('.').reduce((acc, part) => {
+    const match = part.match(/^([^\[]+)\[(\d+)]$/);
+
+    if (match) {
+      const key = match[1];
+      const index = parseInt(match[2], 10);
+      return acc && acc[key] ? acc[key][index] : undefined;
+    }
+
+    return acc ? acc[part] : undefined;
+  }, obj);
+}
+
+// Function to evaluate individual conditions
+function evaluateCondition(value, condition, expected) {
+  switch (condition) {
+    case '=':
+      return value === expected;
+    case '>':
+      return value > expected;
+    case '>=':
+      return value >= expected;
+    case '<':
+      return value < expected;
+    case '<=':
+      return value < expected;
+    case 'between':
+      return value >= expected[0] && value <= expected[1];
+    case 'contains':
+      return value.includes(expected);
+    default:
+      return value === expected;
+  }
+}
+
+// Function to evaluate the whole condition structure
+export function evaluateConditions(data, conditions, currentPath) {
+  if (!Array.isArray(conditions)) {
+    throw new Error('Conditions must be an array');
+  }
+
+  let result = null;
+  let operator = 'and'; // Default operator if none is specified
+
+  for (let i = 0; i < conditions.length; i++) {
+    const condition = conditions[i];
+
+    if (typeof condition === 'string' && (condition === 'and' || condition === 'or')) {
+      operator = condition;
+    } else if (Array.isArray(condition)) {
+      // Handle nested conditions
+      const nestedResult = evaluateConditions(data, condition, currentPath);
+
+      if (result === null) {
+        result = nestedResult;
+      } else {
+        result = operator === 'and' ? result && nestedResult : result || nestedResult;
+      }
+    } else {
+      // Evaluate individual condition
+      const { field, condition: cond, value } = condition;
+      const fieldValue = getValueByPath(data, field, currentPath);
+      const evaluation = evaluateCondition(fieldValue, cond, value);
+
+      if (result === null) {
+        result = evaluation;
+      } else {
+        result = operator === 'and' ? result && evaluation : result || evaluation;
+      }
+    }
+  }
+
+  return result;
+}

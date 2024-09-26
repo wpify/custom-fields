@@ -6,31 +6,42 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { get, post } from '@/helpers/api.js';
 import { useSelect } from '@wordpress/data';
 import '@wordpress/core-data';
+import { evaluateConditions } from '@/helpers/functions';
+
+export const useValues = create(set => ({
+  values: {},
+  setValues: values => set(() => ({ initialized: true, values })),
+  updateValue: id => value => set(state => ({ values: { ...state.values, [id]: value } })),
+}));
 
 export function useFields (integrationId) {
-  const initialFields = useMemo(function () {
-    const containers = document.querySelectorAll('.wpifycf-field[data-integration-id="' + integrationId + '"]');
-    const fields = [];
+  const defs = useMemo(
+    () => Array.from(document.querySelectorAll('.wpifycf-field[data-integration-id="' + integrationId + '"]'))
+      .map(node => ({ ...JSON.parse(node.dataset.props), node })),
+    [integrationId],
+  );
 
-    containers.forEach(function (container) {
-      try {
-        const props = JSON.parse(container.dataset.props);
-        fields.push({
-          ...props,
-          node: container,
-        });
-      } catch (error) {
-        console.error(error);
-        return null;
-      }
-    });
+  const fields = useMemo(
+    () => defs.map(({ value, ...props }) => props),
+    [defs],
+  );
 
-    return fields;
-  }, [integrationId]);
+  const initialValues = useMemo(
+    () => defs.reduce((acc, { id, value }) => ({ ...acc, [id]: value }), {}),
+    [defs],
+  );
 
-  const [fields, setFields] = useState(initialFields);
+  const setValues = useValues(state => state.setValues);
+  const values = useValues(state => state.values);
+  const updateValue = useValues(state => state.updateValue);
 
-  return [fields, setFields];
+  useEffect(() => setValues(initialValues), [initialValues]);
+
+  return {
+    fields,
+    values,
+    updateValue,
+  };
 }
 
 export const useCustomFieldsContext = create((set) => ({
@@ -43,10 +54,23 @@ export const useConfig = create((set) => ({
   setConfig: (config) => set(() => ({ config })),
 }));
 
-export const useTab = create((set) => ({
+export const useTabsStore = create((set, get) => ({
   tab: '',
   setTab: tab => set(() => ({ tab })),
+  isCurrent: tab => !tab || !get().tab || (get().tab === tab),
 }));
+
+export function useTabs (tab) {
+  const currentTab = useTabsStore(state => state.tab);
+  const setTab = useTabsStore(state => state.setTab);
+  const isCurrent = useTabsStore(state => state.isCurrent);
+
+  return {
+    tab: currentTab,
+    setTab,
+    isCurrentTab: isCurrent(tab),
+  };
+}
 
 export function useSortableList ({ containerRef, draggable, handle, items, setItems }) {
   const onEnd = useCallback((event) => {
@@ -460,4 +484,16 @@ export function useValidity ({ form }) {
     validate,
     handleValidityChange,
   };
+}
+
+export function useConditions ({ conditions = [], fieldPath = '' }) {
+  const { values } = useValues();
+
+  return useMemo(() => {
+    if (Object.keys(values).length === 0 || !conditions || conditions.length === 0 || !fieldPath) {
+      return true;
+    }
+
+    return evaluateConditions(values, conditions, fieldPath);
+  }, [conditions, values, fieldPath])
 }
