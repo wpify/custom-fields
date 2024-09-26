@@ -79,7 +79,7 @@ export function checkValidityGroupType (value, field) {
   return validity;
 }
 
-export function checkValidityMultiGroupType(value, field) {
+export function checkValidityMultiGroupType (value, field) {
   const validity = [];
 
   if (Array.isArray(value)) {
@@ -95,28 +95,30 @@ export function checkValidityMultiGroupType(value, field) {
   return validity;
 }
 
-export function checkValidityMultiFieldType (value, field) {
-  const validity = [];
+export function checkValidityMultiFieldType (type) {
+  return (value, field) => {
+    const validity = [];
 
-  if (field.required && (!Array.isArray(value) || value.length === 0)) {
-    validity.push(__('This field is required.', 'wpify-custom-fields'));
-  }
+    if (field.required && (!Array.isArray(value) || value.length === 0)) {
+      validity.push(__('This field is required.', 'wpify-custom-fields'));
+    }
 
-  if (Array.isArray(value)) {
-    value.forEach((item, index) => {
-      const FieldComponent = getFieldComponentByType(field.type);
+    if (Array.isArray(value)) {
+      const FieldComponent = getFieldComponentByType(type);
 
-      if (typeof FieldComponent.checkValidity === 'function') {
-        const itemValidity = FieldComponent.checkValidity(item, field);
+      value.forEach((item, index) => {
+        if (typeof FieldComponent.checkValidity === 'function') {
+          const itemValidity = FieldComponent.checkValidity(item, field);
 
-        if (itemValidity.length > 0) {
-          validity.push({ [index]: itemValidity });
+          if (itemValidity.length > 0) {
+            validity.push({ [index]: itemValidity });
+          }
         }
-      }
-    });
-  }
+      });
+    }
 
-  return validity;
+    return validity;
+  };
 }
 
 export function checkValidityMultiBooleanType (value, field) {
@@ -165,7 +167,7 @@ export function checkValidityLinkType (value, field) {
   return validity;
 }
 
-export function checkValidityMultiNonZeroType(value, field) {
+export function checkValidityMultiNonZeroType (value, field) {
   const validity = [];
 
   if (field.required && (!Array.isArray(value) || !value.every(v => v > 0))) {
@@ -175,7 +177,7 @@ export function checkValidityMultiNonZeroType(value, field) {
   return validity;
 }
 
-export function checkValidityMultiStringType(value, field) {
+export function checkValidityMultiStringType (value, field) {
   const validity = [];
 
   if (field.required && !(Array.isArray(value) && value.every(v => stringRequired(v)))) {

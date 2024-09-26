@@ -1,10 +1,9 @@
 import { MultiField } from '@/components/MultiField';
-import { Month } from '@/fields/Month';
 import { addFilter } from '@wordpress/hooks';
 import { checkValidityMultiFieldType } from '@/helpers/validators';
 
-const MultiWeek = props => <MultiField {...props} component={Month} />;
+const MultiWeek = props => <MultiField {...props} type="week" />;
 
-MultiWeek.checkValidity = checkValidityMultiFieldType;
+MultiWeek.checkValidity = checkValidityMultiFieldType('week');
 
 addFilter('wpifycf_field_multi_week', 'wpify_custom_fields', () => MultiWeek);

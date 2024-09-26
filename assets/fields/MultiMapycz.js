@@ -1,10 +1,9 @@
 import { MultiField } from '@/components/MultiField';
-import { Mapycz } from '@/fields/Mapycz';
 import { addFilter } from '@wordpress/hooks';
 import { checkValidityMultiFieldType } from '@/helpers/validators';
 
-const MultiMapycz = props => <MultiField {...props} component={Mapycz} />;
+const MultiMapycz = props => <MultiField {...props} type="mapycz" />;
 
-MultiMapycz.checkValidity = checkValidityMultiFieldType;
+MultiMapycz.checkValidity = checkValidityMultiFieldType('mapycz');
 
 addFilter('wpifycf_field_multi_mapycz', 'wpify_custom_fields', () => MultiMapycz);

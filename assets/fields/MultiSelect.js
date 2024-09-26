@@ -3,7 +3,7 @@ import { Select as SelectControl } from '@/components/Select.js';
 import { useMulti, useOptions } from '@/helpers/hooks';
 import { useCallback, useMemo, useState } from 'react';
 import { IconButton } from '@/components/IconButton';
-import { checkValidityMultiFieldType, checkValidityMultiStringType } from '@/helpers/validators';
+import { checkValidityMultiStringType } from '@/helpers/validators';
 import clsx from 'clsx';
 
 export function MultiSelect ({

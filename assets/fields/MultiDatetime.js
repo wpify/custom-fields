@@ -1,11 +1,10 @@
 import { MultiField } from '@/components/MultiField';
-import { Datetime } from '@/fields/Datetime';
 import { addFilter } from '@wordpress/hooks';
 import { checkValidityMultiFieldType } from '@/helpers/validators';
 
-const MultiDatetime = props => <MultiField {...props} component={Datetime} />;
+const MultiDatetime = props => <MultiField {...props} type="datetime" />;
 
-MultiDatetime.checkValidity = checkValidityMultiFieldType;
+MultiDatetime.checkValidity = checkValidityMultiFieldType('datetime');
 
 
 addFilter('wpifycf_field_multi_datetime', 'wpify_custom_fields', () => MultiDatetime);

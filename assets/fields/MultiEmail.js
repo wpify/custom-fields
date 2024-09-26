@@ -1,10 +1,9 @@
 import { MultiField } from '@/components/MultiField';
-import { Email } from '@/fields/Email';
 import { addFilter } from '@wordpress/hooks';
 import { checkValidityMultiFieldType } from '@/helpers/validators';
 
-const MultiEmail = props => <MultiField {...props} component={Email} />;
+const MultiEmail = props => <MultiField {...props} type="email" />;
 
-MultiEmail.checkValidity = checkValidityMultiFieldType;
+MultiEmail.checkValidity = checkValidityMultiFieldType('email');
 
 addFilter('wpifycf_field_multi_email', 'wpify_custom_fields', () => MultiEmail);

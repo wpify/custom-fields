@@ -4,7 +4,7 @@ import { __ } from '@wordpress/i18n';
 import { MultiSelect } from '@/fields/MultiSelect';
 import { CategoryTree } from '@/fields/Term';
 import { useMemo } from 'react';
-import { checkValidityMultiFieldType, checkValidityMultiNonZeroType } from '@/helpers/validators';
+import { checkValidityMultiNonZeroType } from '@/helpers/validators';
 import clsx from 'clsx';
 
 export function MultiTerm ({

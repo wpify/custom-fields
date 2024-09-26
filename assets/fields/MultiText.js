@@ -1,10 +1,9 @@
 import { MultiField } from '@/components/MultiField';
-import { Text } from '@/fields/Text';
 import { addFilter } from '@wordpress/hooks';
-import { checkValidityMultiStringType } from '@/helpers/validators';
+import { checkValidityMultiFieldType } from '@/helpers/validators';
 
-const MultiText = props => <MultiField {...props} component={Text} />;
+const MultiText = props => <MultiField {...props} type="text" />;
 
-MultiText.checkValidity = checkValidityMultiStringType;
+MultiText.checkValidity = checkValidityMultiFieldType('text');
 
 addFilter('wpifycf_field_multi_text', 'wpify_custom_fields', () => MultiText);

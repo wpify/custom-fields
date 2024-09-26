@@ -5,7 +5,7 @@ import { useSortableList, useMediaLibrary } from '@/helpers/hooks';
 import { Button } from '@/components/Button';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
-import { checkValidityMultiFieldType, checkValidityMultiNonZeroType } from '@/helpers/validators';
+import { checkValidityMultiNonZeroType } from '@/helpers/validators';
 
 function MultiAttachment ({
   id,

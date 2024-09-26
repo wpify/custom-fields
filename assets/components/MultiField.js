@@ -2,9 +2,10 @@ import { IconButton } from '@/components/IconButton';
 import { useMulti } from '@/helpers/hooks';
 import { Button } from '@/components/Button';
 import clsx from 'clsx';
+import { Field } from '@/components/Field';
 
 export function MultiField ({
-  component: Component,
+  type,
   name,
   value = [],
   onChange,
@@ -46,26 +47,31 @@ export function MultiField ({
   }, {});
 
   return (
-    <span className={clsx('wpifycf-multi-field', `wpifycf-multi-field--${props.type}`, className)}>
+    <span className={clsx('wpifycf-multi-field', `wpifycf-multi-field--${type}`, className)}>
       {name && (
         <input type="hidden" name={name} value={JSON.stringify(value)} />
       )}
       <span className="wpifycf-multi-field-items" ref={containerRef}>
         {Array.isArray(value) && value.map((value, index) => (
-          <span className="wpifycf-multi-field-item" key={keyPrefix + '.' + index}>
+          <span
+            className={clsx('wpifycf-multi-field-item')}
+            key={keyPrefix + '.' + index}
+          >
             {canMove && (
               <span className="wpifycf-multi-field-item__sort">
                 <IconButton icon="move" className="wpifycf-sort" />
               </span>
             )}
             <span className="wpifycf-multi-field-item-field">
-              <Component
+              <Field
+                type={type}
                 value={value}
                 default={defaultValue}
                 onChange={handleChange(index)}
                 {...props}
                 htmlId={htmlId + '.' + index}
                 validity={fieldsValidity[index]}
+                renderOptions={{ noLabel: true, noWrapper: true }}
               />
             </span>
             {canRemove && (
