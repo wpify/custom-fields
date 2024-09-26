@@ -153,62 +153,85 @@ export function getValueByPath (obj = {}, path, currentPath = '') {
 }
 
 // Function to evaluate individual conditions
-function evaluateCondition(value, condition, expected) {
-  switch (condition) {
-    case '=':
-      return value === expected;
-    case '>':
-      return value > expected;
-    case '>=':
-      return value >= expected;
-    case '<':
-      return value < expected;
-    case '<=':
-      return value < expected;
-    case 'between':
-      return value >= expected[0] && value <= expected[1];
-    case 'contains':
-      return value.includes(expected);
-    default:
-      return value === expected;
+function evaluateCondition (value, condition, expected) {
+  try {
+    switch (condition) {
+      case '!=':
+        // noinspection EqualityComparisonWithCoercionJS
+        return value != expected;
+      case '>':
+        return value > expected;
+      case '>=':
+        return value >= expected;
+      case '<':
+        return value < expected;
+      case '<=':
+        return value < expected;
+      case 'between':
+        return value >= (expected[0] || -Infinity) && value <= (expected[1] || +Infinity);
+      case 'contains':
+        return value.includes(expected);
+      case 'not_contains':
+        return !value.includes(expected);
+      case 'in':
+        return expected.includes(value);
+      case 'not_in':
+        return !expected.includes(value);
+      case 'empty':
+        return Boolean(value) === false;
+      case 'not_empty':
+        return Boolean(value);
+      default:
+        // noinspection EqualityComparisonWithCoercionJS
+        return value == expected;
+    }
+  } catch (e) {
+    console.error('Error evaluating condition', condition, value, expected, e);
+    return true;
   }
 }
 
 // Function to evaluate the whole condition structure
-export function evaluateConditions(data, conditions, currentPath) {
-  if (!Array.isArray(conditions)) {
-    throw new Error('Conditions must be an array');
-  }
-
+export function evaluateConditions (data, conditions, currentPath) {
   let result = null;
-  let operator = 'and'; // Default operator if none is specified
 
-  for (let i = 0; i < conditions.length; i++) {
-    const condition = conditions[i];
+  try {
+    if (!Array.isArray(conditions)) {
+      console.error('Conditions must be an array', conditions);
+      return true;
+    }
 
-    if (typeof condition === 'string' && (condition === 'and' || condition === 'or')) {
-      operator = condition;
-    } else if (Array.isArray(condition)) {
-      // Handle nested conditions
-      const nestedResult = evaluateConditions(data, condition, currentPath);
+    let operator = 'and'; // Default operator if none is specified
 
-      if (result === null) {
-        result = nestedResult;
+    for (let i = 0; i < conditions.length; i++) {
+      const condition = conditions[i];
+
+      if (typeof condition === 'string' && (condition === 'and' || condition === 'or')) {
+        operator = condition;
+      } else if (Array.isArray(condition)) {
+        // Handle nested conditions
+        const nestedResult = evaluateConditions(data, condition, currentPath);
+
+        if (result === null) {
+          result = nestedResult;
+        } else {
+          result = operator === 'and' ? result && nestedResult : result || nestedResult;
+        }
       } else {
-        result = operator === 'and' ? result && nestedResult : result || nestedResult;
-      }
-    } else {
-      // Evaluate individual condition
-      const { field, condition: cond, value } = condition;
-      const fieldValue = getValueByPath(data, field, currentPath);
-      const evaluation = evaluateCondition(fieldValue, cond, value);
+        // Evaluate individual condition
+        const { field, condition: cond, value } = condition;
+        const fieldValue = getValueByPath(data, field, currentPath);
+        const evaluation = evaluateCondition(fieldValue, cond, value);
 
-      if (result === null) {
-        result = evaluation;
-      } else {
-        result = operator === 'and' ? result && evaluation : result || evaluation;
+        if (result === null) {
+          result = evaluation;
+        } else {
+          result = operator === 'and' ? result && evaluation : result || evaluation;
+        }
       }
     }
+  } catch (e) {
+    console.error('Error evaluating conditions', conditions, e);
   }
 
   return result;
