@@ -54,7 +54,7 @@ export async function getPageTitle (url) {
   try {
     const { config } = useConfig.getState();
     return await apiFetch({
-      url: addQueryArgs(config.api_base + '/url-title', { url }),
+      url: addQueryArgs(config.api_path + '/url-title', { url }),
     });
   } catch (error) {
     console.error('Error fetching the page:', error);

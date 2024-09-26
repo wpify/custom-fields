@@ -102,18 +102,19 @@ abstract class Integration {
 			'api_path'   => $this->custom_fields->api->get_rest_namespace(),
 		);
 
-		if ( $this->has_field_type( $this->items, 'wysiwyg' ) ) {
-			$js['dependencies'][] = 'wp-tinymce';
-			$js['dependencies'][] = 'code-editor';
+		// Dependencies for WYSIWYG field
+		$js['dependencies'][] = 'wp-tinymce';
+		$js['dependencies'][] = 'code-editor';
 
-			wp_enqueue_editor();
-			wp_enqueue_script( 'wp-block-library' );
-			wp_tinymce_inline_scripts();
-		}
+		wp_enqueue_editor();
+		wp_enqueue_script( 'wp-block-library' );
+		wp_tinymce_inline_scripts();
 
-		if ( $this->has_field_type( $this->items, 'attachment' ) ) {
-			wp_enqueue_media();
-		}
+		// Dependencies for Toggle field
+		wp_enqueue_style( 'wp-components' );
+
+		// Dependencies for Attachment field
+		wp_enqueue_media();
 
 		wp_enqueue_script(
 			$handle,
@@ -130,22 +131,6 @@ abstract class Integration {
 		);
 
 		wp_enqueue_style( 'wp-components' );
-	}
-
-	public function has_field_type( array $items, string $type ): bool {
-		foreach ( $items as $item ) {
-			if ( $item['type'] === $type ) {
-				return true;
-			}
-
-			if ( ! empty( $item['items'] ) ) {
-				if ( $this->has_field_type( $item['items'], $type ) ) {
-					return true;
-				}
-			}
-		}
-
-		return false;
 	}
 
 	public function register_rest_options() {

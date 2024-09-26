@@ -170,7 +170,7 @@ export function checkValidityLinkType (value, field) {
 export function checkValidityMultiNonZeroType (value, field) {
   const validity = [];
 
-  if (field.required && (!Array.isArray(value) || !value.every(v => v > 0))) {
+  if (field.required && (!Array.isArray(value) || !value.every(v => v > 0) || value.length === 0)) {
     validity.push(__('This field is required.', 'wpify-custom-fields'));
   }
 

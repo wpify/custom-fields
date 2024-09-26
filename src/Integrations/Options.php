@@ -35,6 +35,7 @@ class Options extends Integration {
 	public readonly array          $sections;
 	public readonly string         $default_section;
 	public readonly array          $tabs;
+	public readonly string         $success_message;
 
 	/**
 	 * @throws MissingArgumentException
@@ -77,26 +78,29 @@ class Options extends Integration {
 			);
 		}
 
-		$this->type          = $args['type'] ?? $this::TYPE_OPTIONS;
-		$this->page_title    = $args['page_title'];
-		$this->menu_title    = $args['menu_title'];
-		$this->capability    = $args['capability'] ?? 'manage_options';
-		$this->menu_slug     = $args['menu_slug'];
-		$this->parent_slug   = $args['parent_slug'] ?? null;
-		$this->callback      = $args['callback'] ?? null;
-		$this->icon_url      = $args['icon_url'] ?? null;
-		$this->position      = $args['position'] ?? null;
-		$this->hook_priority = $args['hook_priority'] ?? 10;
-		$this->help_tabs     = $args['help_tabs'] ?? array();
-		$this->help_sidebar  = $args['help_sidebar'] ?? '';
-		$this->display       = $args['display'] ?? null;
-		$this->submit_button = $args['submit_button'] ?? true;
-		$this->items         = $args['items'] ?? array();
-		$this->option_name   = $args['option_name'] ?? '';
-		$this->option_group  = empty( $this->option_name )
+		$this->type            = $args['type'] ?? $this::TYPE_OPTIONS;
+		$this->page_title      = $args['page_title'];
+		$this->menu_title      = $args['menu_title'];
+		$this->capability      = $args['capability'] ?? 'manage_options';
+		$this->menu_slug       = $args['menu_slug'];
+		$this->parent_slug     = $args['parent_slug'] ?? null;
+		$this->callback        = $args['callback'] ?? null;
+		$this->icon_url        = $args['icon_url'] ?? null;
+		$this->position        = $args['position'] ?? null;
+		$this->hook_priority   = $args['hook_priority'] ?? 10;
+		$this->help_tabs       = $args['help_tabs'] ?? array();
+		$this->help_sidebar    = $args['help_sidebar'] ?? '';
+		$this->display         = $args['display'] ?? null;
+		$this->submit_button   = $args['submit_button'] ?? true;
+		$this->items           = $args['items'] ?? array();
+		$this->option_name     = $args['option_name'] ?? '';
+		$this->option_group    = empty( $this->option_name )
 			? sanitize_title( join( '_', array_filter( array( $this->parent_slug, $this->menu_slug ) ) ) )
 			: $this->option_name;
-		$this->tabs          = $args['tabs'] ?? array();
+		$this->tabs            = $args['tabs'] ?? array();
+		$this->success_message = empty( $args['success_message'] )
+			? __( 'Settings saved', 'wpify-custom-fields' )
+			: $args['success_message'];
 
 		if ( empty( $args['sections'] ) ) {
 			$args['sections'] = array();
