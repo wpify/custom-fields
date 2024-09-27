@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { useFields, useCustomFieldsContext, useConfig, useTabs, useValidity } from '@/helpers/hooks';
+import { useFields, useCustomFieldsContext, useConfig, useValidity } from '@/helpers/hooks';
 import { Field } from '@/components/Field';
 import { Tabs } from '@/components/Tabs';
 
@@ -7,16 +7,11 @@ export function App ({ integrationId, context, config, tabs, form }) {
   const { fields, values, updateValue } = useFields(integrationId);
   const setContext = useCustomFieldsContext(state => state.setContext);
   const setConfig = useConfig(state => state.setConfig);
-  const { tab, setTab } = useTabs();
   const { validity, validate, handleValidityChange } = useValidity({ form });
 
   useEffect(() => {
     setContext(context);
     setConfig(config);
-
-    if (Object.keys(tabs).length > 0 && !tab) {
-      setTab(Object.keys(tabs)[0]);
-    }
   }, [context, config, setContext]);
 
   const getRenderOptions = useCallback(function (context) {

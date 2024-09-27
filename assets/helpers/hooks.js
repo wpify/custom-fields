@@ -7,6 +7,7 @@ import { get, post } from '@/helpers/api.js';
 import { useSelect } from '@wordpress/data';
 import '@wordpress/core-data';
 import { evaluateConditions } from '@/helpers/functions';
+import { persist } from 'zustand/middleware';
 
 export const useValues = create(set => ({
   values: {},
@@ -54,16 +55,51 @@ export const useConfig = create((set) => ({
   setConfig: (config) => set(() => ({ config })),
 }));
 
-export const useTabsStore = create((set, get) => ({
-  tab: '',
-  setTab: tab => set(() => ({ tab })),
-  isCurrent: tab => !tab || !get().tab || (get().tab === tab),
-}));
+export const useTabsStore = create(
+  persist(
+    (set, get) => ({
+      tab: '',
+      setTab: (tab) => set(() => ({ tab })),
+      isCurrent: (tab) => !tab || !get().tab || get().tab === tab,
+    }),
+    {
+      name: 'tab',
+      storage: {
+        getItem: (name) => {
+          const searchParams = new URLSearchParams(location.hash.slice(1));
+          const value = searchParams.get(name);
+          return {
+            state: {
+              tab: value || '',
+            },
+          };
+        },
+        setItem: (name, value) => {
+          const searchParams = new URLSearchParams(location.hash.slice(1));
+          searchParams.set(name, value.state.tab || '');
+          location.hash = searchParams.toString();
+        },
+        removeItem: (name) => {
+          const searchParams = new URLSearchParams(location.hash.slice(1));
+          searchParams.delete(name);
+          location.hash = searchParams.toString();
+        },
+      },
+    },
+  ),
+);
 
-export function useTabs (tab) {
-  const currentTab = useTabsStore(state => state.tab);
-  const setTab = useTabsStore(state => state.setTab);
-  const isCurrent = useTabsStore(state => state.isCurrent);
+export function useTabs (args = {}) {
+  const { tab, tabs } = args;
+  const currentTab = useTabsStore((state) => state.tab);
+  const setTab = useTabsStore((state) => state.setTab);
+  const isCurrent = useTabsStore((state) => state.isCurrent);
+
+  useEffect(() => {
+    if (tabs && Object.keys(tabs).length > 0 && !currentTab) {
+      setTab(Object.keys(tabs)[0]);
+    }
+  }, [currentTab, tabs]);
 
   return {
     tab: currentTab,
@@ -495,5 +531,5 @@ export function useConditions ({ conditions = [], fieldPath = '' }) {
     }
 
     return evaluateConditions(values, conditions, fieldPath);
-  }, [conditions, values, fieldPath])
+  }, [conditions, values, fieldPath]);
 }
