@@ -1,29 +1,14 @@
-import { useCallback, useEffect } from 'react';
-import { useFields, useCustomFieldsContext, useConfig, useValidity } from '@/helpers/hooks';
+import { useCallback, useContext } from 'react';
+import { useFields, useValidity } from '@/helpers/hooks';
 import { Field } from '@/components/Field';
 import { Tabs } from '@/components/Tabs';
+import { AppContext } from '@/custom-fields';
 
-export function App ({ integrationId, context, config, tabs, form }) {
+export function App ({ integrationId, tabs, form }) {
   const { fields, values, updateValue } = useFields(integrationId);
-  const setContext = useCustomFieldsContext(state => state.setContext);
-  const setConfig = useConfig(state => state.setConfig);
   const { validity, validate, handleValidityChange } = useValidity({ form });
-
-  useEffect(() => {
-    setContext(context);
-    setConfig(config);
-  }, [context, config, setContext]);
-
-  const getRenderOptions = useCallback(function (context) {
-    switch (context) {
-      case 'options':
-        return {
-          noWrapper: true,
-        };
-      default:
-        return {};
-    }
-  }, []);
+  const { context } = useContext(AppContext);
+  const getRenderOptions = useCallback(context => context === 'options' ? { noWrapper: true } : {}, []);
 
   return (
     <>

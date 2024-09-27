@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { create } from 'zustand';
 import Sortable from 'sortablejs';
 import { v4 as uuidv4 } from 'uuid';
@@ -8,6 +8,7 @@ import { useSelect } from '@wordpress/data';
 import '@wordpress/core-data';
 import { evaluateConditions } from '@/helpers/functions';
 import { persist } from 'zustand/middleware';
+import { AppContext } from '@/custom-fields';
 
 export const useValues = create(set => ({
   values: {},
@@ -44,16 +45,6 @@ export function useFields (integrationId) {
     updateValue,
   };
 }
-
-export const useCustomFieldsContext = create((set) => ({
-  context: 'default',
-  setContext: (context) => set(() => ({ context })),
-}));
-
-export const useConfig = create((set) => ({
-  config: {},
-  setConfig: (config) => set(() => ({ config })),
-}));
 
 export const useTabsStore = create(
   persist(
@@ -340,7 +331,7 @@ const defaultQueryOptions = {
 };
 
 export function useUrlTitle (url) {
-  const config = useConfig(state => state.config);
+  const { config } = useContext(AppContext);
   return useQuery({
     queryKey: ['url-title', url],
     queryFn: () => get(config.api_path + '/url-title', { url }),
@@ -357,7 +348,7 @@ export function usePosts ({
   initialData = [],
   ...args
 }) {
-  const config = useConfig(state => state.config);
+  const { config } = useContext(AppContext);
 
   return useQuery({
     queryKey: ['posts', postType, args.search, args],
@@ -379,7 +370,7 @@ export function useTerms ({
   initialData = [],
   ...args
 }) {
-  const config = useConfig(state => state.config);
+  const { config } = useContext(AppContext);
 
   return useQuery({
     queryKey: ['terms', taxonomy, args],
@@ -413,7 +404,7 @@ export function useOptions ({
   select,
   ...args
 }) {
-  const config = useConfig(state => state.config);
+  const { config } = useContext(AppContext);
 
   return useQuery({
     queryKey: ['options', optionsKey, args],
@@ -426,7 +417,7 @@ export function useOptions ({
 }
 
 export function useMapyCzApiKey () {
-  const config = useConfig(state => state.config);
+  const { config } = useContext(AppContext);
   const queryClient = useQueryClient();
 
   const query = useQuery({

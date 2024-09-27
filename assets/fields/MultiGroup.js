@@ -49,13 +49,7 @@ function MultiGroup ({
     dragHandle: '.wpifycf__move-handle',
   });
 
-  const fieldsValidity = validity?.reduce((acc, item) => {
-    if (typeof item === 'object') {
-      return { ...acc, ...item };
-    }
-
-    return acc;
-  }, {});
+  const fieldsValidity = validity?.reduce((acc, item) => typeof item === 'object' ? { ...acc, ...item } : acc, {});
 
   return (
     <span className={clsx('wpifycf-field-multi-group', `wpifycf-field-multi-group--${props.id}`, props.attributes?.class, className)}>

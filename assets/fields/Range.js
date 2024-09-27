@@ -14,11 +14,7 @@ export function Range ({
   attributes = {},
   className,
 }) {
-  const handleChange = useCallback(function (event) {
-    if (typeof onChange === 'function') {
-      onChange(event.target.value);
-    }
-  }, [onChange]);
+  const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
 
   const isValid = !isNaN(parseFloat(value));
 

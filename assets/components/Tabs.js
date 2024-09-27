@@ -2,7 +2,7 @@ import { useTabs } from '@/helpers/hooks';
 import clsx from 'clsx';
 
 export function Tabs ({ tabs }) {
-  const { tab: currentTab, setTab } = useTabs();
+  const { tab: currentTab, setTab } = useTabs({ tabs });
 
   return Object.keys(tabs).length > 1 ? (
     <div className="wpifycf-tabs">

@@ -1,4 +1,4 @@
-import { useCallback, forwardRef } from 'react';
+import { useCallback } from 'react';
 import clsx from 'clsx';
 import { IconButton } from '@/components/IconButton';
 import { Button } from '@/components/Button';
@@ -26,7 +26,7 @@ function Attachment ({
     type: attachment_type,
   });
 
-  const remove = useCallback(function () {
+  const remove = useCallback(() => {
     setAttachment(null);
     onChange(0);
   }, [setAttachment, onChange]);
@@ -57,13 +57,12 @@ Attachment.Title = ({ value }) => {
   return null;
 };
 
-export const AttachmentItem = forwardRef(function ({ attachment, remove }, ref) {
+export function AttachmentItem ({ attachment, remove }) {
   const thumbnail = attachment?.sizes?.medium?.url;
   const icon = attachment?.icon;
 
   return (
     <span
-      ref={ref}
       className={clsx('wpifycf-attachment-item', {
         ['wpifycf-attachment-item--has-thumbnail']: !!thumbnail,
         ['wpifycf-attachment-item--has-icon']: !thumbnail,
@@ -89,7 +88,7 @@ export const AttachmentItem = forwardRef(function ({ attachment, remove }, ref) 
       </span>
     </span>
   );
-});
+}
 
 Attachment.checkValidity = checkValidityNonZeroIntegerType;
 

@@ -35,7 +35,7 @@ export function PostSelect ({
     }
   }, [sentSelected, selectedOption, onSelect]);
 
-  const handleChange = useCallback((option) => {
+  const handleChange = useCallback(option => {
     if (typeof option !== 'undefined') {
       typeof onChange === 'function' && onChange(option?.value);
       typeof onSelect === 'function' && onSelect(option);

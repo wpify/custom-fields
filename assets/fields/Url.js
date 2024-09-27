@@ -12,16 +12,12 @@ export function Url ({
   attributes = {},
   className,
 }) {
-  const handleChange = useCallback(function (event) {
-    if (typeof onChange === 'function') {
-      onChange(event.target.value);
-    }
-  }, [onChange]);
+  const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
 
-  const handleBlur = useCallback(function (event) {
+  const handleBlur = useCallback(event => {
     const normalizedUrl = normalizeUrl(event.target.value);
 
-    if (value !== normalizedUrl && typeof onChange === 'function') {
+    if (value !== normalizedUrl) {
       onChange(normalizedUrl);
     }
   }, [onChange, value]);

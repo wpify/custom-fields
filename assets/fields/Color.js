@@ -11,11 +11,7 @@ function Color ({
   attributes = {},
   className,
 }) {
-  const handleChange = useCallback(function (event) {
-    if (typeof onChange === 'function') {
-      onChange(event.target.value);
-    }
-  }, [onChange]);
+  const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
 
   return (
     <input

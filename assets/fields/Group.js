@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import clsx from 'clsx';
 import { addFilter, applyFilters } from '@wordpress/hooks';
 import { Field } from '@/components/Field';
@@ -16,38 +16,14 @@ function Group ({
   className,
   fieldPath,
 }) {
-  const [fields, setFields] = useState(items);
-
-  useEffect(function () {
-    const nextItems = items.map(item => ({
-      ...item,
-      htmlId: htmlId + '.' + item.id,
-    }));
-
-    setFields(nextItems);
-  }, [items, value]);
-
-  const handleChange = useCallback(function (id) {
-    return function (fieldValue) {
-      const nextValue = { ...value };
-      nextValue[id] = fieldValue;
-      onChange(nextValue);
-    };
-  }, [value, onChange]);
-
-  const fieldValidity = validity?.reduce((acc, item) => {
-    if (typeof item === 'object') {
-      return { ...acc, ...item };
-    }
-
-    return acc;
-  }, {});
+  const handleChange = useCallback(id => fieldValue => onChange({ ...value, [id]: fieldValue }), [value, onChange]);
+  const fieldValidity = validity?.reduce((acc, item) => typeof item === 'object' ? { ...acc, ...item } : acc, {});
 
   return (
     <span
       className={clsx('wpifycf-field-group', `wpifycf-field-group--${id}`, attributes.class, className)}
     >
-      {fields.map(field => (
+      {items.map(field => (
         <Field
           key={field.id}
           {...field}

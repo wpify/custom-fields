@@ -14,9 +14,7 @@ export function Post ({
 }) {
   const [selected, setSelected] = useState(null);
 
-  const handleDelete = useCallback(() => {
-    onChange(null);
-  }, [onChange]);
+  const handleDelete = useCallback(() => onChange(null), [onChange]);
 
   return (
     <span className={clsx('wpifycf-field-post', `wpifycf-field-post--${id}`, className)}>

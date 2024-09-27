@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import {
   Icon,
   trash,
@@ -29,7 +30,6 @@ import {
   linkOff,
   reset,
 } from '@wordpress/icons';
-import clsx from 'clsx';
 
 const icons = {
   trash,

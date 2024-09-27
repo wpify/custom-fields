@@ -5,8 +5,9 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Text } from '@/fields/Text.js';
 import { Label, OptionsLabel } from '@/components/Label';
 import clsx from 'clsx';
-import { useConditions, useCustomFieldsContext, useTabs } from '@/helpers/hooks';
-import { useEffect, useMemo } from 'react';
+import { useConditions, useTabs } from '@/helpers/hooks';
+import { useContext, useEffect, useMemo } from 'react';
+import { AppContext } from '@/custom-fields';
 
 export function Field ({
   type,
@@ -21,7 +22,7 @@ export function Field ({
   fieldPath,
   ...props
 }) {
-  const context = useCustomFieldsContext(state => state.context);
+  const { context } = useContext(AppContext);
   const FieldComponent = useMemo(() => applyFilters('wpifycf_field_' + type, Text, props), [type, props]);
   const LabelComponent = useMemo(
     () => {
@@ -36,13 +37,13 @@ export function Field ({
 
   const validity = useMemo(
     () => {
-      if (!isHidden && typeof setValidity === 'function' && typeof FieldComponent.checkValidity === 'function') {
+      if (!isHidden && typeof FieldComponent.checkValidity === 'function') {
         return FieldComponent.checkValidity(value, { ...props, type });
       }
 
       return [];
     },
-    [setValidity, FieldComponent, value, props, type],
+    [FieldComponent, value, props, type],
   );
 
   useEffect(() => {
@@ -107,21 +108,15 @@ export function Field ({
       </FieldWrapper>
     );
 
-  if (node) {
-    return createPortal(field, node);
-  }
-
-  return field;
+  return node ? createPortal(field, node) : field;
 }
 
 export function FieldWrapper ({ renderOptions = {}, children }) {
-  if (renderOptions.noWrapper === true) {
-    return children;
-  }
-
-  return (
-    <span className="wpifycf-field__wrapper">
+  return renderOptions.noWrapper === true
+    ? children
+    : (
+      <span className="wpifycf-field__wrapper">
       {children}
     </span>
-  );
+    );
 }

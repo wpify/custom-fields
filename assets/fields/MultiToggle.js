@@ -12,11 +12,7 @@ function MultiToggle ({
   options,
   className,
 }) {
-  const handleChange = useCallback(optionValue => checked => {
-    const nextValue = { ...value };
-    nextValue[optionValue] = checked;
-    onChange(nextValue);
-  }, [onChange, value]);
+  const handleChange = useCallback(optionValue => checked => onChange({ ...value, [optionValue]: checked }), [onChange, value]);
 
   return (
     <span className={clsx('wpifycf-field-multi-toggle', `wpifycf-field-multi-toggle--${id}`, className)}>

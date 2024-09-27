@@ -7,9 +7,9 @@ import { __ } from '@wordpress/i18n';
 import { checkValidityNonZeroIntegerType } from '@/helpers/validators';
 import clsx from 'clsx';
 
-function isCategoryExpanded (category, value) {
+function isTermExpanded (category, value) {
   return category.children
-    ? category.children.some(child => value.includes(child.id) || isCategoryExpanded(child, value))
+    ? category.children.some(child => value.includes(child.id) || isTermExpanded(child, value))
     : false;
 }
 
@@ -80,10 +80,10 @@ export function CategoryTree ({ categories = [], value = [], onChange, htmlId, t
 }
 
 function CategoryItem ({ htmlId, category, value = [], onChange, type }) {
-  const [isExpanded, setIsExpanded] = useState(() => isCategoryExpanded(category, value));
+  const [isExpanded, setIsExpanded] = useState(() => isTermExpanded(category, value));
 
   useEffect(() => {
-    setIsExpanded(prev => prev ? prev : isCategoryExpanded(category, value));
+    setIsExpanded(prev => prev ? prev : isTermExpanded(category, value));
   }, [category, value]);
 
   const handleToggleExpanded = useCallback(() => {
