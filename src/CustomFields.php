@@ -191,8 +191,6 @@ class CustomFields {
 	}
 
 	public function sanitize_multi_field( $value ): array {
-		bdump( $value );
-
 		if ( is_array( $value ) ) {
 			return $value;
 		}

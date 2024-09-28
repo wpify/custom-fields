@@ -236,9 +236,17 @@ class Options extends Integration {
 			}
 			?>
 			<form action="<?php echo esc_attr( $action ) ?>" method="POST">
+				<?php
+				if ( $this->type === $this::TYPE_NETWORK ) {
+					wp_nonce_field( $this::NETWORK_SAVE_ACTION );
+				}
+				?>
 				<div class="wpifycf-app" data-loaded="false" data-integration-id="<?php echo esc_attr( $this->id ) ?>" data-tabs="<?php echo esc_attr( wp_json_encode( $this->tabs ) ) ?>" data-context="options"></div>
 				<?php
-				settings_fields( $this->option_group );
+				if ( $this->type !== $this::TYPE_NETWORK ) {
+					settings_fields( $this->option_group );
+				}
+
 				do_settings_sections( $this->menu_slug );
 
 				if ( $this->submit_button !== false ) {
@@ -294,16 +302,41 @@ class Options extends Integration {
 	}
 
 	public function save_network_options(): void {
+		check_admin_referer( $this::NETWORK_SAVE_ACTION );
+
 		$items = $this->normalize_items( $this->items );
 		$data  = array();
 
 		if ( ! empty( $this->option_name ) ) {
-			foreach ( $_POST[ $this->option_name ] ?? array() as $key => $value ) {
-				$data[ $key ] = json_decode( wp_unslash( $value ), ARRAY_A );
+			if ( isset( $_POST[ $this->option_name ] ) ) {
+				// Sanitization is done via a filter to allow for custom sanitization.
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				$post_data = apply_filters( 'wpifycf_sanitize_option', wp_unslash( $_POST[ $this->option_name ] ), $items );
+
+				foreach ( $items as $item ) {
+					if ( isset( $post_data[ $item['id'] ] ) ) {
+						$data[ $item['id'] ] = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $post_data[ $item['id'] ], $item );
+					}
+				}
 			}
 		} else {
 			foreach ( $items as $item ) {
-				$data[ $item['id'] ] = json_decode( wp_unslash( $_POST[ $item['id'] ] ), ARRAY_A );
+				if ( isset( $_POST[ $item['id'] ] ) ) {
+					$wp_type = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
+
+					// Sanitization is done via a filter to allow for custom sanitization.
+					$value = $wp_type === 'string'
+						// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+						? wp_unslash( $_POST[ $item['id'] ] )
+						// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+						: json_decode( wp_unslash( $_POST[ $item['id'] ] ), ARRAY_A );
+
+					if ( $wp_type === 'string' ) {
+						$value = html_entity_decode( $value );
+					}
+
+					$data[ $item['id'] ] = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $value, $item );
+				}
 			}
 		}
 
