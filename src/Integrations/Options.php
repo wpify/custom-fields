@@ -119,17 +119,13 @@ class Options extends Integration {
 
 		if ( empty( $sections ) ) {
 			$sections = array(
-				'default' => array(
-					'id'       => 'default',
-					'title'    => '',
-					'callback' => '__return_true',
-					'page'     => $this->menu_slug,
-				),
+				'default' => array( 'id' => 'default', 'title' => '', 'callback' => '__return_true', 'page' => $this->menu_slug ),
 			);
 		}
 
 		$this->sections = $sections;
-		$this->id       = sanitize_title(
+
+		$this->id = sanitize_title(
 			join(
 				'-',
 				array(
@@ -154,6 +150,7 @@ class Options extends Integration {
 		} elseif ( $this->type === $this::TYPE_NETWORK ) {
 			add_action( 'network_admin_menu', array( $this, 'register' ), $this->hook_priority );
 			add_action( 'network_admin_edit_' . $this::NETWORK_SAVE_ACTION, array( $this, 'save_network_options' ) );
+			add_action( 'network_admin_notices', array( $this, 'show_network_admin_notices' ) );
 		} else {
 			add_action( 'admin_menu', array( $this, 'register' ), $this->hook_priority );
 		}
@@ -274,11 +271,7 @@ class Options extends Integration {
 		foreach ( $this->help_tabs as $key => $tab ) {
 			$tab = wp_parse_args(
 				$tab,
-				array(
-					'id'      => '',
-					'title'   => '',
-					'content' => '',
-				),
+				array( 'id' => '', 'title' => '', 'content' => '' ),
 			);
 
 			if ( empty( $tab['id'] ) ) {
@@ -350,9 +343,7 @@ class Options extends Integration {
 
 		wp_safe_redirect(
 			add_query_arg(
-				array(
-					'updated' => true,
-				),
+				array( 'updated' => true ),
 				wp_get_referer(),
 			),
 		);
@@ -411,10 +402,7 @@ class Options extends Integration {
 				array( $this, 'print_field' ),
 				$this->menu_slug,
 				$section,
-				array(
-					'label_for' => $item['id'],
-					...$item,
-				),
+				array( 'label_for' => $item['id'], ...$item ),
 			);
 		}
 	}
@@ -466,6 +454,16 @@ class Options extends Integration {
 			} else {
 				update_option( $name, $value );
 			}
+		}
+	}
+
+	public function show_network_admin_notices() {
+		if ( isset( $_GET['updated'] ) && isset( $_GET['page'] ) && $this->menu_slug === $_GET['page'] ) {
+			?>
+			<div id="message" class="updated notice is-dismissible">
+				<p><?php echo $this->success_message ?></p>
+			</div>
+			<?php
 		}
 	}
 }
