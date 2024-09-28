@@ -458,10 +458,12 @@ class Options extends Integration {
 	}
 
 	public function show_network_admin_notices() {
+		// Just showing the success message, no need to check for the nonce.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['updated'] ) && isset( $_GET['page'] ) && $this->menu_slug === $_GET['page'] ) {
 			?>
 			<div id="message" class="updated notice is-dismissible">
-				<p><?php echo $this->success_message ?></p>
+				<p><?php echo esc_html( $this->success_message ) ?></p>
 			</div>
 			<?php
 		}
