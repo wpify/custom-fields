@@ -7,10 +7,11 @@ use Wpify\CustomFields\exceptions\MissingArgumentException;
 
 class Options extends Integration {
 	const TYPE_NETWORK        = 'network';
+	const TYPE_USER_SUBMENU   = 'user_submenu';
 	const TYPE_USER           = 'user';
 	const TYPE_OPTIONS        = 'options';
-	const ALLOWED_TYPES       = array( self::TYPE_OPTIONS, self::TYPE_NETWORK, self::TYPE_USER );
-	const NETWORK_SAVE_ACTION = 'wcf-save-network-options';
+	const ALLOWED_TYPES       = array( self::TYPE_OPTIONS, self::TYPE_NETWORK, self::TYPE_USER_SUBMENU, self::TYPE_USER );
+	const NETWORK_SAVE_ACTION = 'wpifycf-save-network-options';
 
 	public readonly string         $id;
 	public readonly string         $type;
@@ -166,7 +167,16 @@ class Options extends Integration {
 			return;
 		}
 
-		if ( $this->parent_slug ) {
+		if ( $this->type === $this::TYPE_USER_SUBMENU ) {
+			$hook_suffix = add_users_page(
+				$this->page_title,
+				$this->menu_title,
+				$this->capability,
+				$this->menu_slug,
+				array( $this, 'render' ),
+				$this->position,
+			);
+		} elseif ( $this->parent_slug ) {
 			$hook_suffix = add_submenu_page(
 				$this->parent_slug,
 				$this->page_title,
@@ -219,7 +229,7 @@ class Options extends Integration {
 				call_user_func( $this->callback );
 			}
 
-			$action = 'options.php';
+			$action = admin_url( 'options.php' );
 
 			if ( $this->type === $this::TYPE_NETWORK ) {
 				$action = add_query_arg( 'action', $this::NETWORK_SAVE_ACTION, 'edit.php' );
@@ -284,13 +294,36 @@ class Options extends Integration {
 	}
 
 	public function save_network_options(): void {
-//		foreach ( $this->get_items() as $item ) {
-//			if ( ! empty( $_POST[ $item['id'] ] ) ) {
-//				$this->set_field( $item['id'], json_decode( wp_unslash( $_POST[ $item['id'] ] ), ARRAY_A ), $item );
-//			}
-//		}
-		wp_safe_redirect( wp_get_referer() );
-		exit();
+		$items = $this->normalize_items( $this->items );
+		$data  = array();
+
+		if ( ! empty( $this->option_name ) ) {
+			foreach ( $_POST[ $this->option_name ] ?? array() as $key => $value ) {
+				$data[ $key ] = json_decode( wp_unslash( $value ), ARRAY_A );
+			}
+		} else {
+			foreach ( $items as $item ) {
+				$data[ $item['id'] ] = json_decode( wp_unslash( $_POST[ $item['id'] ] ), ARRAY_A );
+			}
+		}
+
+		if ( $this->option_name ) {
+			update_network_option( get_current_network_id(), $this->option_name, $data );
+		} else {
+			foreach ( $data as $key => $value ) {
+				$this->set_field( $key, $value );
+			}
+		}
+
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'updated' => true,
+				),
+				wp_get_referer(),
+			),
+		);
+		exit;
 	}
 
 	public function register_settings() {
@@ -364,20 +397,53 @@ class Options extends Integration {
 	}
 
 	public function print_field( array $item ): void {
-		if ( empty( $this->option_name ) ) {
-			$value = get_option( $item['id'], $item['default'] );
-			$value = is_string( $value ) ? html_entity_decode( $value ) : $value;
-			$name  = $item['id'];
-		} else {
-			$options = get_option( $this->option_name, array() );
-			$value   = $options[ $item['id'] ] ?? $item['default'];
-			$name    = $this->option_name . '[' . $item['id'] . ']';
-		}
-
-		$props = array( ...$item, 'name' => $name, 'value' => $value );
-		$json  = wp_json_encode( $props );
+		$item['name']  = empty( $this->option_name ) ? $item['id'] : $this->option_name . '[' . $item['id'] . ']';
+		$item['value'] = $this->get_field( $item['id'] ) ?? $item['default'];
 		?>
-		<span class="wpifycf-field wpifycf-field--options wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?>" data-props="<?php echo esc_attr( $json ) ?>" data-integration-id="<?php echo esc_attr( $this->id ) ?>"></span>
+		<span data-item="<?php echo esc_attr( wp_json_encode( $item ) ) ?>"
+		      data-integration-id="<?php echo esc_attr( $this->id ) ?>"
+		      class="wpifycf-field wpifycf-field--options wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?>"
+		></span>
 		<?php
+	}
+
+	public function get_field( $name ): mixed {
+		if ( $this->type === $this::TYPE_NETWORK ) {
+			if ( ! empty( $this->option_name ) ) {
+				$data = get_network_option( get_current_network_id(), $this->option_name, array() );
+
+				return $data[ $name ] ?? null;
+			} else {
+				return get_network_option( get_current_network_id(), $name, null );
+			}
+		} else {
+			if ( ! empty( $this->option_name ) ) {
+				$data = get_option( $this->option_name, array() );
+
+				return $data[ $name ] ?? null;
+			} else {
+				return get_option( $name, null );
+			}
+		}
+	}
+
+	public function set_field( $name, $value ) {
+		if ( $this->type === $this::TYPE_NETWORK ) {
+			if ( ! empty( $this->option_name ) ) {
+				$data          = get_network_option( get_current_network_id(), $this->option_name, array() );
+				$data[ $name ] = $value;
+				update_network_option( get_current_network_id(), $this->option_name, $data );
+			} else {
+				update_network_option( get_current_network_id(), $name, $value );
+			}
+		} else {
+			if ( ! empty( $this->option_name ) ) {
+				$data          = get_option( $this->option_name, array() );
+				$data[ $name ] = $value;
+				update_option( $this->option_name, $data );
+			} else {
+				update_option( $name, $value );
+			}
+		}
 	}
 }

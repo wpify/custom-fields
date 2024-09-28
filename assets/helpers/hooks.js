@@ -19,7 +19,7 @@ export const useValues = create(set => ({
 export function useFields (integrationId) {
   const defs = useMemo(
     () => Array.from(document.querySelectorAll('.wpifycf-field[data-integration-id="' + integrationId + '"]'))
-      .map(node => ({ ...JSON.parse(node.dataset.props), node })),
+      .map(node => ({ ...JSON.parse(node.dataset.item), node })),
     [integrationId],
   );
 
