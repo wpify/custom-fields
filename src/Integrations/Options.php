@@ -429,17 +429,6 @@ class Options extends Integration {
 		return $item;
 	}
 
-	public function print_field( array $item ): void {
-		$item['name']  = empty( $this->option_name ) ? $item['id'] : $this->option_name . '[' . $item['id'] . ']';
-		$item['value'] = $this->get_field( $item['id'] ) ?? $item['default'];
-		?>
-		<span data-item="<?php echo esc_attr( wp_json_encode( $item ) ) ?>"
-		      data-integration-id="<?php echo esc_attr( $this->id ) ?>"
-		      class="wpifycf-field wpifycf-field--options wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?>"
-		></span>
-		<?php
-	}
-
 	public function get_field( $name ): mixed {
 		if ( $this->type === $this::TYPE_NETWORK ) {
 			if ( ! empty( $this->option_name ) ) {
