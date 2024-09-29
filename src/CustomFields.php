@@ -5,6 +5,7 @@ namespace Wpify\CustomFields;
 use Wpify\CustomFields\exceptions\MissingArgumentException;
 use Wpify\CustomFields\Integrations\Metabox;
 use Wpify\CustomFields\Integrations\Options;
+use Wpify\CustomFields\Integrations\ProductOptions;
 
 class CustomFields {
 	public readonly Helpers        $helpers;
@@ -129,6 +130,13 @@ class CustomFields {
 
 	public function create_metabox( array $args ): Metabox {
 		return new Metabox( $args, $this );
+	}
+
+	/**
+	 * @throws MissingArgumentException
+	 */
+	public function create_product_options( array $args ): ProductOptions {
+		return new ProductOptions( $args, $this );
 	}
 
 	public function get_js_asset( string $item ): array {
