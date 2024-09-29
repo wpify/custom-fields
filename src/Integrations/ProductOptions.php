@@ -19,7 +19,7 @@ class ProductOptions extends Integration {
 	const NETWORK_SAVE_ACTION = 'wpifycf-save-network-options';
 
 	public readonly string            $id;
-	public readonly string            $product_id;
+	public int            $product_id;
 	public readonly array             $tab;
 	public readonly string            $capability;
 	public readonly array|string|null $callback;
@@ -211,9 +211,10 @@ class ProductOptions extends Integration {
 		if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
 			return call_user_func( $item['callback_set'], $item, $value );
 		}
+        $p = $this->get_product();
 
-
-		return $this->get_product()->update_meta_data( $name, $value );
+		$p->update_meta_data( $name, $value );
+        $p->save();
 	}
 
 	public function get_product() {
