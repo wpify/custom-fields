@@ -92,6 +92,26 @@ export function useTabs (args = {}) {
     }
   }, [currentTab, tabs]);
 
+  const updateTabFromHash = useCallback(() => {
+    const searchParams = new URLSearchParams(window.location.hash.slice(1));
+    const hashTab = searchParams.get('tab');
+    if (hashTab && hashTab !== currentTab) {
+      setTab(hashTab);
+    }
+  }, [currentTab, setTab]);
+
+  useEffect(() => {
+    window.addEventListener('hashchange', updateTabFromHash);
+
+    // Initial call to set the tab based on the current hash
+    updateTabFromHash();
+
+    // Clean up the event listener when the component is unmounted
+    return () => {
+      window.removeEventListener('hashchange', updateTabFromHash);
+    };
+  }, [currentTab]);
+
   return {
     tab: currentTab,
     setTab,
