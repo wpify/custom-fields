@@ -6,18 +6,6 @@ use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\exceptions\MissingArgumentException;
 
 class ProductOptions extends Integration {
-	const TYPE_NETWORK        = 'network';
-	const TYPE_USER_SUBMENU   = 'user_submenu';
-	const TYPE_USER           = 'user';
-	const TYPE_OPTIONS        = 'options';
-	const ALLOWED_TYPES       = array(
-		self::TYPE_OPTIONS,
-		self::TYPE_NETWORK,
-		self::TYPE_USER_SUBMENU,
-		self::TYPE_USER
-	);
-	const NETWORK_SAVE_ACTION = 'wpifycf-save-network-options';
-
 	public readonly string            $id;
 	public int            $product_id;
 	public readonly array             $tab;
@@ -64,19 +52,6 @@ class ProductOptions extends Integration {
 				),
 			);
 		}
-
-		if ( ! empty( $args['type'] ) && ! in_array( $args['type'], $this::ALLOWED_TYPES ) ) {
-			throw new MissingArgumentException(
-				sprintf(
-				/* translators: %1$s is the invalid argument type, %2$s is the class name, %3$s is a list of allowed types. */
-					esc_html( __( 'Invalid argument type %1$s in class %2$s. Only %3$s allowed.', 'wpify-custom-fields' ) ),
-					esc_html( $args['type'] ),
-					__CLASS__,
-					esc_html( implode( ', ', $this::ALLOWED_TYPES ) ),
-				),
-			);
-		}
-
 
 		if ( is_callable( $args['display'] ) ) {
 			$this->display = $args['display'];
