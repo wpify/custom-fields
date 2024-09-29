@@ -298,19 +298,26 @@ class Options extends Integration {
 		check_admin_referer( $this::NETWORK_SAVE_ACTION );
 
 		$items = $this->normalize_items( $this->items );
-		$data  = array();
 
 		if ( ! empty( $this->option_name ) ) {
 			if ( isset( $_POST[ $this->option_name ] ) ) {
+				$data = $this->get_field( $this->option_name );
+
 				// Sanitization is done via a filter to allow for custom sanitization.
 				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				$post_data = apply_filters( 'wpifycf_sanitize_option', wp_unslash( $_POST[ $this->option_name ] ), $items );
 
 				foreach ( $items as $item ) {
 					if ( isset( $post_data[ $item['id'] ] ) ) {
-						$data[ $item['id'] ] = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $post_data[ $item['id'] ], $item );
+						if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
+							$data[ $item['id'] ] = call_user_func( $item['callback_set'], $item, $post_data[ $item['id'] ] );
+						} else {
+							$data[ $item['id'] ] = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $post_data[ $item['id'] ], $item );
+						}
 					}
 				}
+
+				update_network_option( get_current_network_id(), $this->option_name, $data );
 			}
 		} else {
 			foreach ( $items as $item ) {
@@ -328,16 +335,9 @@ class Options extends Integration {
 						$value = html_entity_decode( $value );
 					}
 
-					$data[ $item['id'] ] = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $value, $item );
+					$value = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $value, $item );
+					$this->set_field( $item['id'], $value, $item );
 				}
-			}
-		}
-
-		if ( $this->option_name ) {
-			update_network_option( get_current_network_id(), $this->option_name, $data );
-		} else {
-			foreach ( $data as $key => $value ) {
-				$this->set_field( $key, $value );
 			}
 		}
 
@@ -417,7 +417,11 @@ class Options extends Integration {
 		return $item;
 	}
 
-	public function get_field( $name ): mixed {
+	public function get_field( $name, $item = array() ): mixed {
+		if ( isset( $item['callback_get'] ) && is_callable( $item['callback_get'] ) ) {
+			return call_user_func( $item['callback_get'], $item );
+		}
+
 		if ( $this->type === $this::TYPE_NETWORK ) {
 			if ( ! empty( $this->option_name ) ) {
 				$data = get_network_option( get_current_network_id(), $this->option_name, array() );
@@ -437,22 +441,26 @@ class Options extends Integration {
 		}
 	}
 
-	public function set_field( $name, $value ) {
+	public function set_field( $name, $value, $item = array() ) {
+		if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
+			return call_user_func( $item['callback_set'], $item, $value );
+		}
+
 		if ( $this->type === $this::TYPE_NETWORK ) {
 			if ( ! empty( $this->option_name ) ) {
 				$data          = get_network_option( get_current_network_id(), $this->option_name, array() );
 				$data[ $name ] = $value;
-				update_network_option( get_current_network_id(), $this->option_name, $data );
+				return update_network_option( get_current_network_id(), $this->option_name, $data );
 			} else {
-				update_network_option( get_current_network_id(), $name, $value );
+				return update_network_option( get_current_network_id(), $name, $value );
 			}
 		} else {
 			if ( ! empty( $this->option_name ) ) {
 				$data          = get_option( $this->option_name, array() );
 				$data[ $name ] = $value;
-				update_option( $this->option_name, $data );
+				return update_option( $this->option_name, $data );
 			} else {
-				update_option( $name, $value );
+				return update_option( $name, $value );
 			}
 		}
 	}

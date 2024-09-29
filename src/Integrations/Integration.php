@@ -135,7 +135,7 @@ abstract class Integration {
 
 	public function print_field( array $item ): void {
 		$item['name']  = empty( $this->option_name ) ? $item['id'] : $this->option_name . '[' . $item['id'] . ']';
-		$item['value'] = $this->get_field( $item['id'] ) ?? $item['default'];
+		$item['value'] = $this->get_field( $item['id'], $item ) ?? $item['default'];
 		?>
 		<span data-item="<?php echo esc_attr( wp_json_encode( $item ) ) ?>"
 		      data-integration-id="<?php echo esc_attr( $this->id ) ?>"

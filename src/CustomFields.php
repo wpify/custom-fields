@@ -18,7 +18,7 @@ class CustomFields {
 		$this->sanitizers      = new Sanitizers();
 		$this->wordpress_types = new WordPressTypes();
 
-		add_filter( 'wpifycf_sanitize_option', array( $this, 'sanitize_option' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_option', array( $this->sanitizers, 'sanitize_option' ), 10, 2 );
 
 		// Sanitizers for field types
 		add_filter( 'wpifycf_sanitize_field_type_attachment', 'intval' );
