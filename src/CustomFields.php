@@ -120,6 +120,14 @@ class CustomFields {
 		add_filter( 'wpifycf_field_type_url', array( $this->wordpress_types, 'return_string' ) );
 		add_filter( 'wpifycf_field_type_week', array( $this->wordpress_types, 'return_string' ) );
 		add_filter( 'wpifycf_field_type_wysiwyg', array( $this->wordpress_types, 'return_string' ) );
+
+		// Default values for field types
+		add_filter( 'wpifycf_field_string_default_value', array( $this->wordpress_types, 'string_default_value' ) );
+		add_filter( 'wpifycf_field_boolean_default_value', array( $this->wordpress_types, 'boolean_default_value' ) );
+		add_filter( 'wpifycf_field_integer_default_value', array( $this->wordpress_types, 'integer_default_value' ) );
+		add_filter( 'wpifycf_field_number_default_value', array( $this->wordpress_types, 'number_default_value' ) );
+		add_filter( 'wpifycf_field_array_default_value', array( $this->wordpress_types, 'array_default_value' ) );
+		add_filter( 'wpifycf_field_object_default_value', array( $this->wordpress_types, 'object_default_value' ) );
 	}
 
 	/**

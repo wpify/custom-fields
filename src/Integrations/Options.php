@@ -237,9 +237,9 @@ class Options extends Integration {
 				if ( $this->type === $this::TYPE_NETWORK ) {
 					wp_nonce_field( $this::NETWORK_SAVE_ACTION );
 				}
-				?>
-				<div class="wpifycf-app" data-loaded="false" data-integration-id="<?php echo esc_attr( $this->id ) ?>" data-tabs="<?php echo esc_attr( wp_json_encode( $this->tabs ) ) ?>" data-context="options"></div>
-				<?php
+
+				$this->print_app( 'options', $this->tabs );
+
 				if ( $this->type !== $this::TYPE_NETWORK ) {
 					settings_fields( $this->option_group );
 				}
@@ -355,17 +355,19 @@ class Options extends Integration {
 
 		if ( empty( $this->option_name ) ) {
 			foreach ( $items as $item ) {
-				$type = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
+				$wp_type          = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
+				$wp_default_value = apply_filters( 'wpifycf_field_' . $wp_type . '_default_value', '', $item );
+				$sanitizer        = fn( $value ) => apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $value, $item );
 
 				register_setting(
 					$this->option_group,
 					$item['id'],
 					array(
-						'type'              => $type,
+						'type'              => $wp_type,
 						'label'             => $item['label'] ?? '',
-						'sanitize_callback' => fn( $value ) => apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $value, $item ),
+						'sanitize_callback' => $sanitizer,
 						'show_in_rest'      => false,
-						'default'           => $item['default'],
+						'default'           => $item['default'] ?? $wp_default_value,
 					),
 				);
 			}
@@ -417,7 +419,7 @@ class Options extends Integration {
 		return $item;
 	}
 
-	public function get_field( $name, $item = array() ): mixed {
+	public function get_field( string $name, $item = array() ): mixed {
 		if ( isset( $item['callback_get'] ) && is_callable( $item['callback_get'] ) ) {
 			return call_user_func( $item['callback_get'], $item );
 		}
@@ -441,7 +443,7 @@ class Options extends Integration {
 		}
 	}
 
-	public function set_field( $name, $value, $item = array() ) {
+	public function set_field( string $name, $value, $item = array() ) {
 		if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
 			return call_user_func( $item['callback_set'], $item, $value );
 		}
@@ -450,6 +452,7 @@ class Options extends Integration {
 			if ( ! empty( $this->option_name ) ) {
 				$data          = get_network_option( get_current_network_id(), $this->option_name, array() );
 				$data[ $name ] = $value;
+
 				return update_network_option( get_current_network_id(), $this->option_name, $data );
 			} else {
 				return update_network_option( get_current_network_id(), $name, $value );
@@ -458,6 +461,7 @@ class Options extends Integration {
 			if ( ! empty( $this->option_name ) ) {
 				$data          = get_option( $this->option_name, array() );
 				$data[ $name ] = $value;
+
 				return update_option( $this->option_name, $data );
 			} else {
 				return update_option( $name, $value );

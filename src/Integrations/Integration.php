@@ -55,7 +55,8 @@ abstract class Integration {
 		}
 
 		if ( ! isset( $item['default'] ) ) {
-			$item['default'] = apply_filters( "wpifycf_field_{$item['type']}_default_value", '', $item );
+			$wp_type         = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
+			$item['default'] = apply_filters( 'wpifycf_field_' . $wp_type . '_default_value', '', $item );
 		}
 
 		if ( isset( $item['items'] ) ) {
@@ -133,6 +134,16 @@ abstract class Integration {
 		wp_enqueue_style( 'wp-components' );
 	}
 
+	public function print_app( string $context, array $tabs ): void {
+		?>
+		<div class="wpifycf-app"
+		     data-loaded="false"
+		     data-integration-id="<?php echo esc_attr( $this->id ) ?>"
+		     data-tabs="<?php echo esc_attr( wp_json_encode( $tabs ) ) ?>"
+		     data-context="<?php echo esc_attr( $context ) ?>"></div>
+		<?php
+	}
+
 	public function print_field( array $item ): void {
 		$item['name']  = empty( $this->option_name ) ? $item['id'] : $this->option_name . '[' . $item['id'] . ']';
 		$item['value'] = $this->get_field( $item['id'], $item ) ?? $item['default'];
@@ -191,4 +202,8 @@ abstract class Integration {
 			fn( WP_REST_Request $request ) => get_option( 'wpifycf_mapycz_api_key' ),
 		);
 	}
+
+	public abstract function get_field( string $name, $item = array() );
+
+	public abstract function set_field( string $name, $value, $item = array() );
 }
