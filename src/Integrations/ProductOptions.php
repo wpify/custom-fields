@@ -151,11 +151,11 @@ class ProductOptions extends Integration {
 	 */
 	public function render_data_panels() {
 		//if ( $this->is_new_tab ) {
-			?>
-            <div id="<?php echo esc_attr( $this->tab['target'] ) ?>" class="panel woocommerce_options_panel">
-				<?php do_action( 'woocommerce_product_options_' . $this->tab['target'] ); ?>
-            </div>
-			<?php
+		?>
+        <div id="<?php echo esc_attr( $this->tab['target'] ) ?>" class="panel woocommerce_options_panel">
+			<?php do_action( 'woocommerce_product_options_' . $this->tab['target'] ); ?>
+        </div>
+		<?php
 		//}
 	}
 
@@ -175,56 +175,36 @@ class ProductOptions extends Integration {
 		global $post;
 		$this->product_id = $post->ID;
 		$this->enqueue();
+		$items = $this->normalize_items( $this->items );
 		?>
-        <div class="wrap">
-			<?php
-			if ( is_callable( $this->callback ) ) {
-				call_user_func( $this->callback );
-			}
-			?>
 
+		<?php
+		if ( is_callable( $this->callback ) ) {
+			call_user_func( $this->callback );
+		}
+		?>
+
+        <div class="options_group">
             <div class="wpifycf-app" data-loaded="false" data-integration-id="<?php echo esc_attr( $this->id ) ?>"
                  data-tabs="<?php echo esc_attr( wp_json_encode( $this->tabs ) ) ?>"
                  data-context="product-options"></div>
 
+			<?php foreach ( $items as $item ) { ?>
+                <p class="form-field">
+					<?php $this->print_field( $item ); ?>
+                </p>
+
+			<?php } ?>
         </div>
 		<?php
 	}
-
-	public function render_help(): void {
-		foreach ( $this->help_tabs as $key => $tab ) {
-			$tab = wp_parse_args(
-				$tab,
-				array( 'id' => '', 'title' => '', 'content' => '' ),
-			);
-
-			if ( empty( $tab['id'] ) ) {
-				if ( ! empty( $key ) && is_string( $key ) ) {
-					$tab['id'] = $key;
-				} else {
-					$tab['id'] = sanitize_title( $tab['title'] ) . '_' . $key;
-				}
-			}
-
-			if ( is_callable( $tab['content'] ) ) {
-				$tab['content'] = call_user_func( $tab['content'] );
-			}
-
-			get_current_screen()->add_help_tab( $tab );
-		}
-
-		if ( ! empty( $this->help_sidebar ) ) {
-			get_current_screen()->set_help_sidebar( $this->help_sidebar );
-		}
-	}
-
 
 	public function get_field( $name, $item = array() ): mixed {
 		if ( isset( $item['callback_get'] ) && is_callable( $item['callback_get'] ) ) {
 			return call_user_func( $item['callback_get'], $item );
 		}
 
-		return get_post_meta( $this->product_id, $name, true );
+		return $this->get_product()->get_meta( $name );
 	}
 
 	public function set_field( $name, $value, $item = array() ) {
@@ -232,22 +212,25 @@ class ProductOptions extends Integration {
 			return call_user_func( $item['callback_set'], $item, $value );
 		}
 
-		return update_post_meta( $this->product_id, $name, wp_slash( $value ) );
+
+		return $this->get_product()->update_meta_data( $name, $value );
+	}
+
+	public function get_product() {
+		return wc_get_product( $this->product_id );
 	}
 
 	/**
 	 * @param number $post_id
 	 */
 	public function save( $post_id ) {
-		$this->set_post( $post_id );
-
 		foreach ( $this->items as $item ) {
 			if ( ! isset( $_POST[ $item['id'] ] ) ) {
 				continue;
 			}
 
-			$sanitizer = $this->sanitizer->get_sanitizer( $item );
-			$value     = $sanitizer( wp_unslash( $_POST[ $item['id'] ] ) );
+			$this->product_id = $post_id;
+			$value            = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $_POST[ $item['id'] ], $item );
 
 			$this->set_field( $item['id'], $value, $item );
 		}
