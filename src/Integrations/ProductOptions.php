@@ -160,9 +160,7 @@ class ProductOptions extends Integration {
 		?>
 
         <div class="options_group">
-            <div class="wpifycf-app" data-loaded="false" data-integration-id="<?php echo esc_attr( $this->id ) ?>"
-                 data-tabs="<?php echo esc_attr( wp_json_encode( $this->tabs ) ) ?>"
-                 data-context="product-options"></div>
+            <?php $this->print_app( 'product-options', $this->tabs ); ?>
 
 			<?php foreach ( $items as $item ) { ?>
                 <p class="form-field">

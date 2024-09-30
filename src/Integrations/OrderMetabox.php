@@ -142,13 +142,9 @@ class OrderMetabox extends Integration {
 		<?php
 		if ( is_callable( $this->callback ) ) {
 			call_user_func( $this->callback );
-		}
-		?>
+		} ?>
 
-
-        <div class="wpifycf-app" data-loaded="false" data-integration-id="<?php echo esc_attr( $this->id ) ?>"
-             data-tabs="<?php echo esc_attr( wp_json_encode( $this->tabs ) ) ?>"
-             data-context="product-options"></div>
+		<?php $this->print_app( 'order-meta', $this->tabs ); ?>
 
 		<?php foreach ( $items as $item ) { ?>
             <p class="form-field">
@@ -170,7 +166,7 @@ class OrderMetabox extends Integration {
 	 *
 	 * @return mixed
 	 */
-	public function get_field( $name, $item ) {
+	public function get_field( $name, $item = array() ) {
 		if ( ! empty( $item['callback_get'] ) ) {
 			return call_user_func( $item['callback_get'], $item, $this->order_id );
 		} else {
