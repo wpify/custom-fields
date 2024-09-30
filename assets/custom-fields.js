@@ -42,3 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('wpifycf_product_variation_loaded', loadCustomFields);
+
+jQuery(document).on('woocommerce_variations_loaded', function(event) {
+    console.log('bbbb');
+    loadCustomFields();
+});

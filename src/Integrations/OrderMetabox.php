@@ -198,11 +198,11 @@ class OrderMetabox extends Integration {
 
 	/**
 	 * @param string $name
-	 * @param string $value
+	 * @param $value
 	 *
 	 * @return bool|int
 	 */
-	public function set_field( $name, $value, $item = array() ): bool|int {
+	public function set_field( string $name, $value, $item = array() ): bool|int {
 		if ( ! empty( $item['callback_set'] ) ) {
 			return call_user_func( $item['callback_set'], $item, $this->order_id, $value );
 		} else {

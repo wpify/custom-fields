@@ -134,24 +134,34 @@ abstract class Integration {
 		wp_enqueue_style( 'wp-components' );
 	}
 
-	public function print_app( string $context, array $tabs ): void {
+	public function print_app( string $context, array $tabs, array $data_attributes = array() ): void {
+		$loop = $data_attributes['loop'] ?? '';
 		?>
-		<div class="wpifycf-app"
-		     data-loaded="false"
-		     data-integration-id="<?php echo esc_attr( $this->id ) ?>"
-		     data-tabs="<?php echo esc_attr( wp_json_encode( $tabs ) ) ?>"
-		     data-context="<?php echo esc_attr( $context ) ?>"></div>
+        <div class="wpifycf-app"
+             data-loaded="false"
+             data-integration-id="<?php echo esc_attr( $this->id . $loop ) ?>"
+             data-tabs="<?php echo esc_attr( wp_json_encode( $tabs ) ) ?>"
+             data-context="<?php echo esc_attr( $context ) ?>"
+			<?php foreach ( $data_attributes as $key => $value ) {
+				printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );
+			} ?>
+        ></div>
+
 		<?php
 	}
 
-	public function print_field( array $item ): void {
+	public function print_field( array $item, array $data_attributes = array() ): void {
 		$item['name']  = empty( $this->option_name ) ? $item['id'] : $this->option_name . '[' . $item['id'] . ']';
 		$item['value'] = $this->get_field( $item['id'], $item ) ?? $item['default'];
+		$item['loop']  = $data_attributes['loop'] ?? '';
 		?>
-		<span data-item="<?php echo esc_attr( wp_json_encode( $item ) ) ?>"
-		      data-integration-id="<?php echo esc_attr( $this->id ) ?>"
-		      class="wpifycf-field wpifycf-field--options wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?>"
-		></span>
+        <span data-item="<?php echo esc_attr( wp_json_encode( $item ) ) ?>"
+              data-integration-id="<?php echo esc_attr( $this->id . $item['loop'] ) ?>"
+              class="wpifycf-field wpifycf-field--options wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?>"
+              <?php foreach ( $data_attributes as $key => $value ) {
+	              printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );
+              } ?>
+        ></span>
 		<?php
 	}
 

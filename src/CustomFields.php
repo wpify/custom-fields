@@ -7,6 +7,7 @@ use Wpify\CustomFields\Integrations\Metabox;
 use Wpify\CustomFields\Integrations\Options;
 use Wpify\CustomFields\Integrations\OrderMetabox;
 use Wpify\CustomFields\Integrations\ProductOptions;
+use Wpify\CustomFields\Integrations\ProductVariationOptions;
 
 class CustomFields {
 	public readonly Helpers        $helpers;
@@ -32,31 +33,97 @@ class CustomFields {
 		add_filter( 'wpifycf_sanitize_field_type_email', 'sanitize_email' );
 		add_filter( 'wpifycf_sanitize_field_type_group', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
 		add_filter( 'wpifycf_sanitize_field_type_html', 'sanitize_text_field' );
-		add_filter( 'wpifycf_sanitize_field_type_inner_blocks', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_inner_blocks', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
 		add_filter( 'wpifycf_sanitize_field_type_link', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
 		add_filter( 'wpifycf_sanitize_field_type_mapycz', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
 		add_filter( 'wpifycf_sanitize_field_type_month', 'sanitize_text_field' );
-		add_filter( 'wpifycf_sanitize_field_type_multi_attachment', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_checkbox', array( $this->sanitizers, 'sanitize_multi_checkbox' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_color', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_date', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_datetime', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_email', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_group', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_link', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_mapycz', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_month', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_number', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_post', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_select', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_tel', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_term', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_text', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_textarea', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_time', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_toggle', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_url', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_week', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_attachment', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_checkbox', array(
+			$this->sanitizers,
+			'sanitize_multi_checkbox'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_color', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_date', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_datetime', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_email', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_group', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_link', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_mapycz', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_month', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_number', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_post', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_select', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_tel', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_term', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_text', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_textarea', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_time', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_toggle', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_url', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_week', array(
+			$this->sanitizers,
+			'sanitize_multi_field'
+		),          10, 2 );
 		add_filter( 'wpifycf_sanitize_field_type_number', 'floatval' );
 		add_filter( 'wpifycf_sanitize_field_type_password', 'strval' );
 		add_filter( 'wpifycf_sanitize_field_type_post', 'intval' );
@@ -147,6 +214,14 @@ class CustomFields {
 	public function create_product_options( array $args ): ProductOptions {
 		return new ProductOptions( $args, $this );
 	}
+
+	/**
+	 * @throws MissingArgumentException
+	 */
+	public function create_product_variation_options( array $args ): ProductVariationOptions {
+		return new ProductVariationOptions( $args, $this );
+	}
+
 
 	/**
 	 * @param array $args
