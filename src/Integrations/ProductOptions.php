@@ -20,7 +20,6 @@ class ProductOptions extends Integration {
 	public readonly string            $option_name;
 	public readonly array             $items;
 	public readonly array             $sections;
-	public readonly string            $default_section;
 	public readonly array             $tabs;
 	public bool                       $is_new_tab;
 
@@ -60,7 +59,7 @@ class ProductOptions extends Integration {
 				return $args['display'];
 			};
 		}
-		$this->page_title    = $args['page_title'];
+
 		$this->capability    = $args['capability'] ?? 'manage_options';
 		$this->callback      = $args['callback'] ?? null;
 		$this->hook_priority = $args['hook_priority'] ?? 10;
@@ -97,7 +96,7 @@ class ProductOptions extends Integration {
 	 *
 	 * @return array
 	 */
-	public function woocommerce_product_data_tabs( array $tabs ) {
+	public function woocommerce_product_data_tabs( array $tabs ): array {
 		if ( isset( $tabs[ $this->tab['id'] ] ) ) {
 			if ( ! empty( $this->tab['label'] ) ) {
 				$tabs[ $this->tab['id'] ]['label'] = $this->tab['label'];
@@ -124,7 +123,7 @@ class ProductOptions extends Integration {
 	/**
 	 * @return void
 	 */
-	public function render_data_panels() {
+	public function render_data_panels(): void {
 		//if ( $this->is_new_tab ) {
 		?>
         <div id="<?php echo esc_attr( $this->tab['target'] ) ?>" class="panel woocommerce_options_panel">
@@ -134,11 +133,10 @@ class ProductOptions extends Integration {
 		//}
 	}
 
-
 	/**
 	 * @return void
 	 */
-	public function render_custom_fields() {
+	public function render_custom_fields(): void {
 		$this->render();
 	}
 
@@ -190,14 +188,14 @@ class ProductOptions extends Integration {
         $p->save();
 	}
 
-	public function get_product() {
+	public function get_product(): bool|\WC_Product|null {
 		return wc_get_product( $this->product_id );
 	}
 
 	/**
 	 * @param number $post_id
 	 */
-	public function save( $post_id ) {
+	public function save( $post_id ): void {
 		foreach ( $this->items as $item ) {
 			if ( ! isset( $_POST[ $item['id'] ] ) ) {
 				continue;

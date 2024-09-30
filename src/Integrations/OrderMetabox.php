@@ -17,8 +17,6 @@ class OrderMetabox extends Integration {
 	public readonly array             $args;
 	public readonly string            $hook_suffix;
 	public readonly int               $hook_priority;
-	public readonly array             $help_tabs;
-	public readonly string            $help_sidebar;
 	public                            $display;
 	public readonly string            $option_name;
 	public readonly array             $items;
@@ -117,9 +115,9 @@ class OrderMetabox extends Integration {
 	}
 
 	/**
-	 * @param WP_Post $post
+	 * @param \WC_Order $order
 	 */
-	public function render( $order ) {
+	public function render( \WC_Order $order ) {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
@@ -147,7 +145,7 @@ class OrderMetabox extends Integration {
 	}
 
 
-	public function get_order() {
+	public function get_order(): bool|\WC_Order|\WC_Order_Refund {
 		return wc_get_order( $this->order_id );
 	}
 
@@ -156,7 +154,7 @@ class OrderMetabox extends Integration {
 	 *
 	 * @return mixed
 	 */
-	public function get_field( $name, $item = array() ) {
+	public function get_field( $name, $item = array() ): mixed {
 		if ( ! empty( $item['callback_get'] ) ) {
 			return call_user_func( $item['callback_get'], $item, $this->order_id );
 		} else {
@@ -170,7 +168,7 @@ class OrderMetabox extends Integration {
 	 *
 	 * @return mixed
 	 */
-	public function save( $post_id ) {
+	public function save( $post_id ): mixed {
 		remove_action( 'woocommerce_update_order', array( $this, 'save' ) );
 		if ( ! isset( $_POST[ $this->nonce ] ) ) {
 			return $post_id;
@@ -204,7 +202,7 @@ class OrderMetabox extends Integration {
 	 *
 	 * @return bool|int
 	 */
-	public function set_field( $name, $value, $item ) {
+	public function set_field( $name, $value, $item = array() ): bool|int {
 		if ( ! empty( $item['callback_set'] ) ) {
 			return call_user_func( $item['callback_set'], $item, $this->order_id, $value );
 		} else {
