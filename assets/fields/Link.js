@@ -99,12 +99,11 @@ export function Link ({
             </label>
           )}
         </span>
+        {value.post_type && (
+          <PostSelect postType={value.post_type} value={value.post} onSelect={handlePostChange} />
+        )}
         <span className="wpifycf-field-link__field-value">
-          {value.post_type ? (
-            <PostSelect postType={value.post_type} value={value.post} onSelect={handlePostChange} />
-          ) : (
-            <input type="url" value={value?.url || ''} id={htmlId + '.url'} onChange={handleUrlChange} onBlur={handleUrlBlur} />
-          )}
+          <input type="url" value={value?.url || ''} id={htmlId + '.url'} onChange={handleUrlChange} onBlur={handleUrlBlur} />
           <label className="wpifycf-field-link__field-option">
             <input type="checkbox" checked={value?.target === '_blank'} onChange={handleTargetChange} />
             {__('Open in a new tab', 'wpify-custom-fields')}
