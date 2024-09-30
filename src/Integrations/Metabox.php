@@ -59,7 +59,7 @@ class Metabox extends Integration {
 		add_action( 'init', array( $this, 'register_meta' ) );
 	}
 
-	public function add_meta_box( string $post_type, WP_Post $post ) {
+	public function add_meta_box( string $post_type, WP_Post $post ): void {
 		if ( in_array( $post_type, $this->post_types ) ) {
 			$this->set_post( $post );
 			add_meta_box(
@@ -74,13 +74,13 @@ class Metabox extends Integration {
 		}
 	}
 
-	public function set_post( WP_Post $post ) {
+	public function set_post( WP_Post $post ): void {
 		if ( empty( $this->post ) ) {
 			$this->post = $post;
 		}
 	}
 
-	public function save_meta_box( int $post_id, WP_Post $post ) {
+	public function save_meta_box( int $post_id, WP_Post $post ): bool|int {
 		if ( ! isset( $_POST[ $this->nonce ] ) ) {
 			return $post_id;
 		}
@@ -124,7 +124,7 @@ class Metabox extends Integration {
 		return true;
 	}
 
-	public function register_meta() {
+	public function register_meta(): void {
 		$items = $this->normalize_items( $this->items );
 
 		foreach ( $items as $item ) {
@@ -150,7 +150,7 @@ class Metabox extends Integration {
 		}
 	}
 
-	public function render( WP_Post $post ) {
+	public function render( WP_Post $post ): void {
 		$items = $this->normalize_items( $this->items );
 
 		$this->set_post( $post );

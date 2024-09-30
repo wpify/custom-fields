@@ -95,7 +95,7 @@ abstract class Integration {
 		return $next_options;
 	}
 
-	public function enqueue() {
+	public function enqueue(): void {
 		$handle = 'wpifycf';
 		$js     = $this->custom_fields->get_js_asset( 'wpify-custom-fields' );
 		$data   = array(
@@ -155,20 +155,19 @@ abstract class Integration {
 		<?php
 	}
 
-	public function register_rest_options() {
+	public function register_rest_options(): void {
 		$items = $this->normalize_items( $this->items );
 
 		$this->register_options_routes( $items );
-		$this->register_mapycz_api_key_route();
 	}
 
-	public function register_options_routes( array $items = array() ) {
+	public function register_options_routes( array $items = array() ): void {
 		foreach ( $items as $item ) {
 			$this->register_options_route( $item );
 		}
 	}
 
-	public function register_options_route( array $item ) {
+	public function register_options_route( array $item ): void {
 		if ( ! empty( $item['options_key'] ) ) {
 			$this->custom_fields->api->register_rest_route(
 				'options/' . $item['options_key'],
@@ -186,21 +185,6 @@ abstract class Integration {
 		} elseif ( ! empty( $item['items'] ) ) {
 			$this->register_options_routes( $item['items'] );
 		}
-	}
-
-	public function register_mapycz_api_key_route() {
-		$this->custom_fields->api->register_rest_route(
-			'mapycz-api-key',
-			WP_REST_Server::EDITABLE,
-			fn( WP_REST_Request $request ) => update_option( 'wpifycf_mapycz_api_key', $request->get_param( 'api_key' ) ),
-			array( 'api_key' => array( 'required' => true ) ),
-		);
-
-		$this->custom_fields->api->register_rest_route(
-			'mapycz-api-key',
-			WP_REST_Server::READABLE,
-			fn( WP_REST_Request $request ) => get_option( 'wpifycf_mapycz_api_key' ),
-		);
 	}
 
 	public abstract function get_field( string $name, $item = array() );

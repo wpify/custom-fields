@@ -13,7 +13,7 @@ class Api {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 	}
 
-	public function register_routes() {
+	public function register_routes(): void {
 		$this->register_rest_route(
 			'url-title',
 			WP_REST_Server::READABLE,
@@ -40,9 +40,22 @@ class Api {
 				'taxonomy' => array( 'required' => true ),
 			),
 		);
+
+		$this->register_rest_route(
+			'mapycz-api-key',
+			WP_REST_Server::EDITABLE,
+			fn( WP_REST_Request $request ) => update_option( 'wpifycf_mapycz_api_key', $request->get_param( 'api_key' ) ),
+			array( 'api_key' => array( 'required' => true ) ),
+		);
+
+		$this->register_rest_route(
+			'mapycz-api-key',
+			WP_REST_Server::READABLE,
+			fn( WP_REST_Request $request ) => get_option( 'wpifycf_mapycz_api_key' ),
+		);
 	}
 
-	public function register_rest_route( string $route, string $method, callable $callback, array $args = array() ) {
+	public function register_rest_route( string $route, string $method, callable $callback, array $args = array() ): void {
 		register_rest_route(
 			$this->get_rest_namespace(),
 			$route,
@@ -55,11 +68,11 @@ class Api {
 		);
 	}
 
-	public function get_rest_namespace() {
+	public function get_rest_namespace(): string {
 		return $this->custom_fields->get_plugin_basename() . '/wpifycf/v1';
 	}
 
-	public function permissions_callback() {
+	public function permissions_callback(): bool {
 		return current_user_can( 'edit_posts' );
 	}
 }

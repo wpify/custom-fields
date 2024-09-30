@@ -201,7 +201,7 @@ class CustomFields {
 		return $src;
 	}
 
-	public function get_plugin_basename() {
+	public function get_plugin_basename(): string {
 		$basename = plugin_basename( __FILE__ );
 
 		return substr( $basename, 0, strpos( $basename, '/' ) );

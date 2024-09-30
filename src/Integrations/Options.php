@@ -350,7 +350,7 @@ class Options extends Integration {
 		exit;
 	}
 
-	public function register_settings() {
+	public function register_settings(): void {
 		$items = $this->normalize_items( $this->items );
 
 		if ( empty( $this->option_name ) ) {
@@ -469,7 +469,7 @@ class Options extends Integration {
 		}
 	}
 
-	public function show_network_admin_notices() {
+	public function show_network_admin_notices(): void {
 		// Just showing the success message, no need to check for the nonce.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['updated'] ) && isset( $_GET['page'] ) && $this->menu_slug === $_GET['page'] ) {

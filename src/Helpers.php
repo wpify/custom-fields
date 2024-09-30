@@ -30,7 +30,7 @@ class Helpers {
 		return $title->item( 0 )->textContent;
 	}
 
-	public function get_posts( array $args = array() ) {
+	public function get_posts( array $args = array() ): array {
 		if ( empty( $args['numberposts'] ) ) {
 			$args['numberposts'] = 50;
 		}
@@ -91,7 +91,7 @@ class Helpers {
 		);
 	}
 
-	public function get_terms( $args ) {
+	public function get_terms( $args ): array {
 		$terms = get_terms(
 			array(
 				'hide_empty' => false,

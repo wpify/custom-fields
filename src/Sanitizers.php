@@ -28,7 +28,7 @@ class Sanitizers {
 		return array();
 	}
 
-	public function sanitize_multi_checkbox( $value ) {
+	public function sanitize_multi_checkbox( $value ): array {
 		if ( is_array( $value ) ) {
 			return array_map( 'boolval', $value );
 		}
@@ -36,11 +36,11 @@ class Sanitizers {
 		return array();
 	}
 
-	public function sanitize_boolean( $value ) {
+	public function sanitize_boolean( $value ): bool {
 		return filter_var( $value, FILTER_VALIDATE_BOOLEAN );
 	}
 
-	public function sanitize_option( mixed $value, array $items ) {
+	public function sanitize_option( mixed $value, array $items ): mixed {
 		$next_value = $value;
 
 		if ( is_array( $next_value ) ) {
