@@ -105,16 +105,6 @@ class OrderMetabox extends Integration {
 		if ( $screen !== $post_type ) {
 			return;
 		}
-		add_meta_box(
-			'custom',
-			'Custom Meta Box',
-			function () {
-				echo 'Hello World';
-			},
-			$screen,
-			'side',
-			'high'
-		);
 
 		add_meta_box(
 			$this->id,
@@ -133,7 +123,7 @@ class OrderMetabox extends Integration {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
-		global $post;
+
 		$this->order_id = $order->get_id();
 		$this->enqueue();
 		$items = $this->normalize_items( $this->items );
