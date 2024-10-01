@@ -14,6 +14,10 @@ export function MultiSelect ({
   options_key: optionsKey,
   className,
 }) {
+  if (!Array.isArray(value)) {
+    value = [];
+  }
+
   const [search, setSearch] = useState('');
 
   const { data: fetchedOptions } = useOptions({
