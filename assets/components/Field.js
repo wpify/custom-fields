@@ -31,6 +31,7 @@ export function Field ({
     },
     [context],
   );
+
   const { isCurrentTab } = useTabs({ tab });
   const shown = useConditions({ conditions, fieldPath });
   const isHidden = !shown || !isCurrentTab;

@@ -137,13 +137,12 @@ class Metabox extends Integration {
 					$post_type,
 					$item['id'],
 					array(
-						'object_subtype'    => $post_type,
 						'type'              => $wp_type,
 						'description'       => $item['label'],
 						'single'            => true,
 						'default'           => $item['default'] ?? $wp_default_value,
 						'sanitize_callback' => $sanitizer,
-						'show_in_rest'      => true,
+						'show_in_rest'      => false,
 					),
 				);
 			}
