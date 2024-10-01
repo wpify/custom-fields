@@ -157,7 +157,7 @@ abstract class Integration {
 		?>
 		<<?php echo $tag ?> data-item="<?php echo esc_attr( wp_json_encode( $item ) ) ?>"
 		data-integration-id="<?php echo esc_attr( $this->id . $item['loop'] ) ?>"
-		class="wpifycf-field wpifycf-field--options wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?> <?php echo $class ?>"
+		class="wpifycf-field wpifycf-field--taxonomy wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?> <?php echo $class ?>"
 		<?php foreach ( $data_attributes as $key => $value ) {
 			printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );
 		} ?>
