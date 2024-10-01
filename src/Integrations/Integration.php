@@ -150,14 +150,14 @@ abstract class Integration {
 		<?php
 	}
 
-	public function print_field( array $item, array $data_attributes = array(), string $tag = 'span' ): void {
+	public function print_field( array $item, array $data_attributes = array(), string $tag = 'span', string $class = '' ): void {
 		$item['name']  = empty( $this->option_name ) ? $item['id'] : $this->option_name . '[' . $item['id'] . ']';
 		$item['value'] = $this->get_field( $item['id'], $item ) ?? $item['default'];
 		$item['loop']  = $data_attributes['loop'] ?? '';
 		?>
 		<<?php echo $tag ?> data-item="<?php echo esc_attr( wp_json_encode( $item ) ) ?>"
 		data-integration-id="<?php echo esc_attr( $this->id . $item['loop'] ) ?>"
-		class="wpifycf-field wpifycf-field--options wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?>"
+		class="wpifycf-field wpifycf-field--options wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?> <?php echo $class ?>"
 		<?php foreach ( $data_attributes as $key => $value ) {
 			printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );
 		} ?>

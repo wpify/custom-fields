@@ -58,7 +58,7 @@ class Taxonomy extends Integration {
 		$items = $this->normalize_items( $this->items );
 
 		foreach ( $items as $item ) {
-			$this->print_field( $item );
+			$this->print_field( $item, array(), 'div', 'form-field' );
 		}
 	}
 

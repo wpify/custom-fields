@@ -27,6 +27,14 @@ export function FieldDescription({
     );
   }
 
+  if (context === 'add_term' && renderOptions.isRoot) {
+    return (
+      <p>
+        {description}
+      </p>
+    )
+  }
+
   return (
     <span
       className={clsx(
