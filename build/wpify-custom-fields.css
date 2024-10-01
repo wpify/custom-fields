@@ -8,11 +8,13 @@
   --wpifycf-border-color: #ddd;
 }
 
-.wpifycf-field.wpifycf-field--options {
-	display: block;
-	margin: 20px 0;
+.postbox .wpifycf-field--options {
+  margin: 20px 0;
 }
 
+.wpifycf-field {
+  flex: 1;
+}
 .wpifycf-field--invalid {
   outline: 1px solid red;
 }
@@ -37,11 +39,6 @@
 .wpifycf-field__label {
   width: 150px;
   font-weight: 500;
-
-  &.wpifycf-field__label--group {
-	font-size:1.125rem;
-	font-weight:600;
-  }
 }
 .wpifycf-field__label--invalid {
   color: red;
@@ -58,6 +55,9 @@
   padding-right: var(--wpifycf-gap-1);
   font-size: 0.9em;
   font-weight: 500;
+}
+.wpifycf-field--options {
+  display: block;
 }
 .wpifycf-field .sortable-ghost {
   background: rgba(0, 0, 0, 0.05);
@@ -115,14 +115,6 @@
 }
 .wpifycf-field-multi-attachment .wpifycf-button__add {
   margin-bottom: var(--wpifycf-gap-2);
-}
-
-.wpifycf-field-code, .wpifycf-field-wysiwyg, .wpifycf-field  {
-	flex: 1;
-}
-
-.wpifycf-field--checkbox {
-	flex-grow: 0;
 }
 
 .wpifycf-attachment-item {
@@ -193,6 +185,10 @@
   text-overflow: ellipsis;
 }
 
+.wpifycf-field--checkbox {
+  flex-grow: 0;
+}
+
 .wpifycf-field-multi-checkbox {
   display: flex;
   flex-flow: column;
@@ -221,25 +217,19 @@
 .wpifycf-field-link__field-label {
   display: block;
 }
-
-.wpifycf-field-minfullwidth {
-	min-width: 100%;
-}
-
 .wpifycf-field-link__field-value {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
   gap: var(--wpifycf-gap-1);
-
-  &.wpifycf-field-link__field-value-col-span-2 {
-	grid-column: span 2 / span 2;
-  }
 }
 .wpifycf-field-link__field-value input[type=text],
 .wpifycf-field-link__field-value input[type=url],
 .wpifycf-field-link__field-value .wpifycf-select {
   width: 20em;
+}
+.wpifycf-field-link__field-value-col-span-2 {
+  grid-column: span 2/span 2;
 }
 .wpifycf-field-link__field-option {
   display: block;
@@ -467,6 +457,7 @@
 
 .wpifycf-field-wysiwyg {
   display: block;
+  flex: 1;
 }
 .wpifycf-field-wysiwyg__buttons {
   display: flex;
@@ -508,6 +499,10 @@
   border: 1px solid var(--wpifycf-border-color);
   border-bottom: 0;
   background: #f6f7f7;
+}
+
+.wpifycf-field-code {
+  flex: 1;
 }
 
 .wpifycf-icon-button {

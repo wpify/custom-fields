@@ -1,4 +1,13 @@
+.postbox {
+	.wpifycf-field {
+		&--options {
+			margin: 20px 0;
+		}
+	}
+}
+
 .wpifycf-field {
+  flex: 1;
   &--invalid {
     outline: 1px solid red;
   }
@@ -48,6 +57,10 @@
     padding-right: var(--wpifycf-gap-1);
     font-size: 0.9em;
     font-weight: 500;
+  }
+
+  &--options {
+	display: block;
   }
 
   .sortable-ghost {

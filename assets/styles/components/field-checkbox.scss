@@ -1,3 +1,9 @@
+.wpifycf-field{
+	&--checkbox {
+		flex-grow: 0;
+	}
+}
+
 .wpifycf-field-multi-checkbox {
   display: flex;
   flex-flow: column;
