@@ -1,4 +1,4 @@
-import { useCallback, useContext } from 'react';
+import { useMemo, useContext } from 'react';
 import { useFields, useValidity } from '@/helpers/hooks';
 import { Field } from '@/components/Field';
 import { Tabs } from '@/components/Tabs';
@@ -8,7 +8,12 @@ export function App ({ integrationId, tabs, form }) {
   const { fields, values, updateValue } = useFields(integrationId);
   const { validity, validate, handleValidityChange } = useValidity({ form });
   const { context } = useContext(AppContext);
-  const getRenderOptions = useCallback(context => context === 'options' ? { noWrapper: true } : {}, []);
+
+  const renderOptions = useMemo(() => ({
+    noFieldWrapper: ['options', 'edit_term'].includes(context),
+    noControlWrapper: false,
+    isRoot: true,
+  }), [context]);
 
   return (
     <>
@@ -21,7 +26,7 @@ export function App ({ integrationId, tabs, form }) {
           value={values[field.id]}
           htmlId={field.id}
           onChange={updateValue(field.id)}
-          renderOptions={getRenderOptions(context)}
+          renderOptions={renderOptions}
           setValidity={handleValidityChange(field.id)}
           validity={validate ? validity[field.id] : []}
           fieldPath={field.id}

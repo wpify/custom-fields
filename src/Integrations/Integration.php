@@ -137,31 +137,31 @@ abstract class Integration {
 	public function print_app( string $context, array $tabs, array $data_attributes = array() ): void {
 		$loop = $data_attributes['loop'] ?? '';
 		?>
-        <div class="wpifycf-app"
-             data-loaded="false"
-             data-integration-id="<?php echo esc_attr( $this->id . $loop ) ?>"
-             data-tabs="<?php echo esc_attr( wp_json_encode( $tabs ) ) ?>"
-             data-context="<?php echo esc_attr( $context ) ?>"
+		<div class="wpifycf-app"
+		     data-loaded="false"
+		     data-integration-id="<?php echo esc_attr( $this->id . $loop ) ?>"
+		     data-tabs="<?php echo esc_attr( wp_json_encode( $tabs ) ) ?>"
+		     data-context="<?php echo esc_attr( $context ) ?>"
 			<?php foreach ( $data_attributes as $key => $value ) {
 				printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );
 			} ?>
-        ></div>
+		></div>
 
 		<?php
 	}
 
-	public function print_field( array $item, array $data_attributes = array() ): void {
+	public function print_field( array $item, array $data_attributes = array(), string $tag = 'span' ): void {
 		$item['name']  = empty( $this->option_name ) ? $item['id'] : $this->option_name . '[' . $item['id'] . ']';
 		$item['value'] = $this->get_field( $item['id'], $item ) ?? $item['default'];
 		$item['loop']  = $data_attributes['loop'] ?? '';
 		?>
-        <span data-item="<?php echo esc_attr( wp_json_encode( $item ) ) ?>"
-              data-integration-id="<?php echo esc_attr( $this->id . $item['loop'] ) ?>"
-              class="wpifycf-field wpifycf-field--options wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?>"
-              <?php foreach ( $data_attributes as $key => $value ) {
-	              printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );
-              } ?>
-        ></span>
+		<<?php echo $tag ?> data-item="<?php echo esc_attr( wp_json_encode( $item ) ) ?>"
+		data-integration-id="<?php echo esc_attr( $this->id . $item['loop'] ) ?>"
+		class="wpifycf-field wpifycf-field--options wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?>"
+		<?php foreach ( $data_attributes as $key => $value ) {
+			printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );
+		} ?>
+		></<?php echo $tag ?>>
 		<?php
 	}
 
@@ -195,6 +195,24 @@ abstract class Integration {
 		} elseif ( ! empty( $item['items'] ) ) {
 			$this->register_options_routes( $item['items'] );
 		}
+	}
+
+	public function get_sanitized_post_item_value( array $item ) {
+		if ( isset( $_POST[ $item['id'] ] ) ) {
+			$wp_type = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
+
+			// Sanitization is done via a filter to allow for custom sanitization.
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$value = $wp_type === 'string' ? wp_unslash( $_POST[ $item['id'] ] ) : json_decode( wp_unslash( $_POST[ $item['id'] ] ), ARRAY_A );
+
+			if ( $wp_type === 'string' ) {
+				$value = html_entity_decode( $value );
+			}
+
+			return apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $value, $item );
+		}
+
+		return null;
 	}
 
 	public abstract function get_field( string $name, $item = array() );

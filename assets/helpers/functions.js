@@ -1,5 +1,6 @@
 import { applyFilters } from '@wordpress/hooks';
 import { Text } from '@/fields/Text';
+import { createPortal } from 'react-dom';
 
 export function addStyleSheet (url) {
   if (Array.isArray(url)) {
@@ -193,4 +194,12 @@ export function evaluateConditions (data, conditions, currentPath) {
   }
 
   return result;
+}
+
+export function maybePortal(markup, node) {
+  if (node) {
+    return createPortal(markup, node);
+  }
+
+  return markup;
 }

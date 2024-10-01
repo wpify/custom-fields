@@ -1,20 +1,25 @@
-import { createPortal } from 'react-dom';
 import clsx from 'clsx';
+import { useContext } from 'react';
+import { AppContext } from '@/custom-fields';
+import { maybePortal } from '@/helpers/functions';
 
 export function Label ({
+  node,
   label,
   type,
   htmlId,
-  renderOptions,
+  renderOptions = {},
   className,
   required,
   validity = [],
 }) {
-  if (renderOptions?.noLabel === true) {
+  if (renderOptions.noLabel === true) {
     return null;
   }
 
-  return (
+  const { context } = useContext(AppContext);
+
+  const markup = (
     <label
       htmlFor={htmlId}
       className={clsx(`wpifycf-field__label wpifycf-field__label--${type}`, className, validity.length && 'wpifycf-field__label--invalid')}
@@ -23,11 +28,18 @@ export function Label ({
       {required && <span className="wpifycf-field__required">*</span>}
     </label>
   );
-}
 
-export function OptionsLabel ({ node, ...props }) {
-  const label = <Label {...props} />;
-  const th = node?.closest('tr')?.querySelector('th[scope="row"]');
+  if (context === 'options' && node) {
+    return maybePortal(markup, node.closest('tr')?.querySelector('th[scope="row"]'));
+  }
 
-  return th ? createPortal(label, th) : label;
+  if (context === 'edit_term' && renderOptions.isRoot) {
+    return (
+      <th scope="row">
+        {markup}
+      </th>
+    );
+  }
+
+  return markup;
 }

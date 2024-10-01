@@ -1,13 +1,15 @@
-import { createPortal } from 'react-dom';
 import { applyFilters } from '@wordpress/hooks';
 import { ErrorBoundary } from 'react-error-boundary';
 import { __, sprintf } from '@wordpress/i18n';
 import { Text } from '@/fields/Text.js';
-import { Label, OptionsLabel } from '@/components/Label';
+import { Label } from '@/components/Label';
 import clsx from 'clsx';
 import { useConditions, useTabs } from '@/helpers/hooks';
-import { useContext, useEffect, useMemo } from 'react';
-import { AppContext } from '@/custom-fields';
+import { useEffect, useMemo } from 'react';
+import { FieldWrapper } from '@/components/FieldWrapper';
+import { ControlWrapper } from '@/components/ControlWrapper';
+import { FieldDescription } from '@/components/FieldDescription';
+import { maybePortal } from '@/helpers/functions';
 
 export function Field ({
   type,
@@ -20,18 +22,10 @@ export function Field ({
   setValidity,
   conditions,
   fieldPath,
+  isRoot = false,
   ...props
 }) {
-  const { context } = useContext(AppContext);
   const FieldComponent = useMemo(() => applyFilters('wpifycf_field_' + type, Text, props), [type, props]);
-  const LabelComponent = useMemo(
-    () => {
-      if (context === 'options') return OptionsLabel;
-      return Label;
-    },
-    [context],
-  );
-
   const { isCurrentTab } = useTabs({ tab });
   const shown = useConditions({ conditions, fieldPath });
   const isHidden = !shown || !isCurrentTab;
@@ -53,71 +47,61 @@ export function Field ({
     }
   }, [setValidity, validity]);
 
-  const fallback = (
-    <span className="wpifycf-error-boundary">
-      {sprintf(__('An error occurred while rendering the field of type %s.', 'wpify-custom-fields'), type)}
-    </span>
-  );
-
-  const descriptionPosition = FieldComponent.descriptionPosition || 'after';
-
-  const renderedDescription = description && (
-    <span
-      className={clsx(
-        'wpifycf-field__description',
-        `wpifycf-field__description--${descriptionPosition}`,
-      )}
-    >
-      {description}
-    </span>
-  );
-
   const hiddenField = name && (
     <input type="hidden" name={name} data-hide-field={isHidden ? 'true' : 'false'} value={typeof value !== 'string' ? JSON.stringify(value) : value} />
   );
 
   const validityMessages = props.validity?.filter(v => typeof v === 'string') || [];
 
-  const field = isHidden
+  return maybePortal(isHidden
     ? hiddenField
     : (
       <FieldWrapper renderOptions={renderOptions}>
-        {descriptionPosition === 'before' && renderedDescription}
-        <LabelComponent
-          type={type}
+        <Label
           renderOptions={renderOptions}
+          type={type}
           className="wpifycf-field__label"
           node={node}
+          isRoot={isRoot}
           {...props}
         />
-        {hiddenField}
-        <ErrorBoundary fallback={fallback}>
-          <FieldComponent
-            type={type}
-            value={value}
-            className={clsx('wpifycf-field', `wpifycf-field--${type}`, props.className, validityMessages.length > 0 && 'wpifycf-field--invalid')}
-            fieldPath={fieldPath}
-            {...props}
-          />
-        </ErrorBoundary>
-        {validityMessages.map((message, index) => (
-          <label htmlFor={props.htmlId} key={index} className="wpifycf-field__error">
-            {message}
-          </label>
-        ))}
-        {descriptionPosition === 'after' && renderedDescription}
+        <ControlWrapper renderOptions={renderOptions}>
+          {hiddenField}
+          {FieldComponent.descriptionPosition === 'before' && (
+            <FieldDescription
+              renderOptions={renderOptions}
+              description={description}
+              descriptionPosition="before"
+            />
+          )}
+          <ErrorBoundary
+            fallback={(
+              <span className="wpifycf-error-boundary">
+                {sprintf(__('An error occurred while rendering the field of type %s.', 'wpify-custom-fields'), type)}
+              </span>
+            )}
+          >
+            <FieldComponent
+              type={type}
+              value={value}
+              className={clsx('wpifycf-field', `wpifycf-field--${type}`, props.className, validityMessages.length > 0 && 'wpifycf-field--invalid')}
+              fieldPath={fieldPath}
+              {...props}
+            />
+          </ErrorBoundary>
+          {validityMessages.map((message, index) => (
+            <label htmlFor={props.htmlId} key={index} className="wpifycf-field__error">
+              {message}
+            </label>
+          ))}
+          {FieldComponent.descriptionPosition !== 'before' && (
+            <FieldDescription
+              renderOptions={renderOptions}
+              description={description}
+              descriptionPosition="after"
+            />
+          )}
+        </ControlWrapper>
       </FieldWrapper>
-    );
-
-  return node ? createPortal(field, node) : field;
-}
-
-export function FieldWrapper ({ renderOptions = {}, children }) {
-  return renderOptions.noWrapper === true
-    ? children
-    : (
-      <span className="wpifycf-field__wrapper">
-      {children}
-    </span>
-    );
+    ), node);
 }

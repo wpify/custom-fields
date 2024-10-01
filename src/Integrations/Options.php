@@ -321,23 +321,15 @@ class Options extends Integration {
 			}
 		} else {
 			foreach ( $items as $item ) {
-				if ( isset( $_POST[ $item['id'] ] ) ) {
-					$wp_type = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
-
-					// Sanitization is done via a filter to allow for custom sanitization.
-					$value = $wp_type === 'string'
-						// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-						? wp_unslash( $_POST[ $item['id'] ] )
-						// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-						: json_decode( wp_unslash( $_POST[ $item['id'] ] ), ARRAY_A );
-
-					if ( $wp_type === 'string' ) {
-						$value = html_entity_decode( $value );
-					}
-
-					$value = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $value, $item );
-					$this->set_field( $item['id'], $value, $item );
+				if ( ! isset( $_POST[ $item['id'] ] ) ) {
+					continue;
 				}
+
+				$this->set_field(
+					$item['id'],
+					$this->get_sanitized_post_item_value( $item ),
+					$item,
+				);
 			}
 		}
 
