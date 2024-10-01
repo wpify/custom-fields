@@ -102,7 +102,12 @@ export function Link ({
         {value.post_type && (
           <PostSelect postType={value.post_type} value={value.post} onSelect={handlePostChange} />
         )}
-        <span className="wpifycf-field-link__field-value">
+		<span className={`wpifycf-field-link__field-value${value.post_type ? ' wpifycf-field-link__field-value-col-span-2' : ''}`}>
+          {value.post_type && (
+            <label htmlFor={htmlId + '.url'}>
+              {__('URL', 'wpify-custom-fields')}
+            </label>
+          )}
           <input type="url" value={value?.url || ''} id={htmlId + '.url'} onChange={handleUrlChange} onBlur={handleUrlBlur} />
           <label className="wpifycf-field-link__field-option">
             <input type="checkbox" checked={value?.target === '_blank'} onChange={handleTargetChange} />
