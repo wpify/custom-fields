@@ -68,9 +68,7 @@ export const useTabsStore = create(
           const searchParams = new URLSearchParams(location.hash.slice(1));
           const value = searchParams.get(name);
           return {
-            state: {
-              tab: value || '',
-            },
+            state: { tab: value || '' },
           };
         },
         setItem: (name, value) => {
@@ -95,36 +93,22 @@ export function useTabs (args = {}) {
   const isCurrent = useTabsStore((state) => state.isCurrent);
 
   useEffect(() => {
-    if (tabs && Object.keys(tabs).length > 0 && !currentTab) {
-      setTab(Object.keys(tabs)[0]);
-    }
+    if (tabs && Object.keys(tabs).length > 0 && !currentTab) setTab(Object.keys(tabs)[0]);
   }, [currentTab, tabs]);
 
   const updateTabFromHash = useCallback(() => {
     const searchParams = new URLSearchParams(window.location.hash.slice(1));
     const hashTab = searchParams.get('tab');
-    if (hashTab && hashTab !== currentTab) {
-      setTab(hashTab);
-    }
+    if (hashTab && hashTab !== currentTab) setTab(hashTab);
   }, [currentTab, setTab]);
 
   useEffect(() => {
     window.addEventListener('hashchange', updateTabFromHash);
-
-    // Initial call to set the tab based on the current hash
     updateTabFromHash();
-
-    // Clean up the event listener when the component is unmounted
-    return () => {
-      window.removeEventListener('hashchange', updateTabFromHash);
-    };
+    return () => window.removeEventListener('hashchange', updateTabFromHash);
   }, [currentTab]);
 
-  return {
-    tab: currentTab,
-    setTab,
-    isCurrentTab: isCurrent(tab),
-  };
+  return { tab: currentTab, setTab, isCurrentTab: isCurrent(tab) };
 }
 
 export function useSortableList ({ containerRef, draggable, handle, items, setItems }) {
@@ -137,24 +121,11 @@ export function useSortableList ({ containerRef, draggable, handle, items, setIt
 
   useEffect(() => {
     if (containerRef.current) {
-      const options = {
-        animation: 150,
-        onEnd,
-      };
-
-      if (draggable) {
-        options.draggable = draggable;
-      }
-
-      if (handle) {
-        options.handle = handle;
-      }
-
+      const options = { animation: 150, onEnd };
+      if (draggable) options.draggable = draggable;
+      if (handle) options.handle = handle;
       const sortable = Sortable.create(containerRef.current, options);
-
-      return () => {
-        sortable.destroy();
-      };
+      return () => sortable.destroy();
     }
   }, [containerRef, onEnd, draggable, handle]);
 }
@@ -168,18 +139,10 @@ export function useMediaLibrary ({
   type,
 }) {
   return useCallback(() => {
-    const config = {
-      multiple,
-      title,
-    };
+    const config = { multiple, title };
 
-    if (type) {
-      config.library = { type };
-    }
-
-    if (button) {
-      config.button = { text: button };
-    }
+    if (type) config.library = { type };
+    if (button) config.button = { text: button };
 
     const frame = wp.media(config);
     frame
@@ -202,11 +165,7 @@ export function useMediaLibrary ({
 
 export function useAttachment (id) {
   const [attachment, setAttachment] = useState(null);
-
-  useEffect(function () {
-    id && wp.media.attachment(id).fetch().then(setAttachment);
-  }, [id]);
-
+  useEffect(() => id && wp.media.attachment(id).fetch().then(setAttachment), [id]);
   return { attachment, setAttachment };
 }
 
@@ -215,13 +174,8 @@ export function useMulti ({ value, onChange, min, max, defaultValue, disabled_bu
   const [keyPrefix, setKeyPrefix] = useState(uuidv4());
   const [collapsed, setCollapsed] = useState(() => Array(value.length).fill(true));
 
-  useEffect(() => {
-    if (!Array.isArray(value)) {
-      onChange([]);
-    }
-  }, []);
+  useEffect(() => !Array.isArray(value) && onChange([]), []);
 
-  // Update collapsed states when value changes
   useEffect(() => {
     setCollapsed((prevCollapsed) => {
       const newCollapsed = [];

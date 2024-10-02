@@ -31,21 +31,13 @@ export function Field ({
   const isHidden = !shown || !isCurrentTab;
 
   const validity = useMemo(
-    () => {
-      if (!isHidden && typeof FieldComponent.checkValidity === 'function') {
-        return FieldComponent.checkValidity(value, { ...props, type });
-      }
-
-      return [];
-    },
-    [FieldComponent, value, props, type],
+    () => !isHidden && typeof FieldComponent.checkValidity === 'function'
+      ? FieldComponent.checkValidity(value, { ...props, type })
+      : [],
+    [FieldComponent, value, props, type, isHidden],
   );
 
-  useEffect(() => {
-    if (typeof setValidity === 'function') {
-      setValidity(validity);
-    }
-  }, [setValidity, validity]);
+  useEffect(() => typeof setValidity === 'function' && setValidity(validity), [setValidity, validity]);
 
   const hiddenField = name && (
     <input type="hidden" name={name} data-hide-field={isHidden ? 'true' : 'false'} value={typeof value !== 'string' ? JSON.stringify(value) : value} />
