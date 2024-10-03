@@ -3,6 +3,7 @@
 namespace Wpify\CustomFields;
 
 use Wpify\CustomFields\exceptions\MissingArgumentException;
+use Wpify\CustomFields\Integrations\GutenbergBlock;
 use Wpify\CustomFields\Integrations\Metabox;
 use Wpify\CustomFields\Integrations\Options;
 use Wpify\CustomFields\Integrations\OrderMetabox;
@@ -170,6 +171,10 @@ class CustomFields {
 	 */
 	public function create_order_metabox( $args = array() ): OrderMetabox {
 		return new OrderMetabox( $args, $this );
+	}
+
+	public function create_gutenberg_block( $args = array() ): GutenbergBlock {
+		return new GutenbergBlock( $args, $this );
 	}
 
 	public function get_js_asset( string $item ): array {

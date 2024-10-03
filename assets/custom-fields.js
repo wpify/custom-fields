@@ -5,6 +5,8 @@ import { createRoot } from 'react-dom/client';
 import { App } from '@/components/App';
 import { addStyleSheet } from '@/helpers/functions';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { registerBlockType } from '@wordpress/blocks';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 require('@/helpers/field-types');
 
@@ -17,6 +19,7 @@ const render = (container, jsx) => typeof createRoot === 'function'
   : ReactDOM.render(jsx, container);
 
 function loadCustomFields () {
+  addStyleSheet(config.stylesheet);
   document.querySelectorAll('.wpifycf-app[data-loaded=false]').forEach(container => {
     render(
       container,
@@ -36,14 +39,26 @@ function loadCustomFields () {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadCustomFields();
+const edit = ({ attributes, setAttributes }) => {
+  return (
+    <div className="wpifycf-gutenberg-block" {...useBlockProps()}>
+      BLOCK
+    </div>
+  );
+};
+
+const save = () => <InnerBlocks.Content />;
+
+function loadGutenbergBlocks(event) {
   addStyleSheet(config.stylesheet);
-});
+  registerBlockType(event.detail, {
+    ...event.detail.args,
+    edit,
+    save,
+  });
+}
 
+document.addEventListener('DOMContentLoaded', loadCustomFields);
 document.addEventListener('wpifycf_product_variation_loaded', loadCustomFields);
-
-jQuery(document).on('woocommerce_variations_loaded', function(event) {
-    console.log('bbbb');
-    loadCustomFields();
-});
+document.addEventListener('wpifycf_register_block', loadGutenbergBlocks);
+jQuery(document).on('woocommerce_variations_loaded', loadCustomFields);

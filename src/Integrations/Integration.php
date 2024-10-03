@@ -96,6 +96,10 @@ abstract class Integration {
 	}
 
 	public function enqueue(): void {
+		if ( ! is_admin() ) {
+			return;
+		}
+
 		$handle = 'wpifycf';
 		$js     = $this->custom_fields->get_js_asset( 'wpify-custom-fields' );
 		$data   = array(
@@ -157,7 +161,7 @@ abstract class Integration {
 		?>
 		<<?php echo $tag ?> data-item="<?php echo esc_attr( wp_json_encode( $item ) ) ?>"
 		data-integration-id="<?php echo esc_attr( $this->id . $item['loop'] ) ?>"
-		class="wpifycf-field wpifycf-field--taxonomy wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?> <?php echo $class ?>"
+		class="wpifycf-field wpifycf-field--taxonomy wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?><?php echo $class ?>"
 		<?php foreach ( $data_attributes as $key => $value ) {
 			printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );
 		} ?>
