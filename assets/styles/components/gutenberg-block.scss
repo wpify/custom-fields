@@ -1,0 +1,14 @@
+.wpifycf-gutenberg-block {
+  &__placeholder {
+    padding: var(--wpifycf-gap-3);
+    border: 1px solid var(--wpifycf-border-color);
+
+    code {
+      padding: 0 4px;
+    }
+
+    &--error {
+      border-color: red;
+    }
+  }
+}

@@ -7,7 +7,7 @@ export function Text ({
   id,
   htmlId,
   onChange,
-  value,
+  value = '',
   attributes = {},
   className,
 }) {

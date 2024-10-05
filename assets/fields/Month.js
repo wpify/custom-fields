@@ -7,7 +7,7 @@ export function Month ({
   id,
   htmlId,
   onChange,
-  value,
+  value = '',
   attributes = {},
   min,
   max,

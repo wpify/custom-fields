@@ -2,41 +2,43 @@
 
 namespace Wpify\CustomFields\Integrations;
 
+use Closure;
 use WP_Block;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
 class GutenbergBlock extends Integration {
-	public readonly string            $id;
-	public readonly string            $name;
-	public readonly string            $api_version;
-	public readonly string            $title;
-	public readonly string|null       $category;
-	public readonly array|null        $parent;
-	public readonly array|null        $ancestor;
-	public readonly array|null        $allowed_blocks;
-	public readonly string|null       $icon;
-	public readonly string            $description;
-	public readonly array             $keywords;
-	public readonly string|null       $textdomain;
-	public readonly array             $styles;
-	public readonly array             $variations;
-	public readonly array             $selectors;
-	public readonly array|null        $supports;
-	public readonly array|null        $example;
-	public readonly array|string|null $render_callback;
-	public readonly array|string|null $variation_callback;
-	public readonly array|null        $attributes;
-	public readonly array             $uses_context;
-	public readonly array|null        $provides_context;
-	public readonly array             $block_hooks;
-	public readonly array             $editor_script_handles;
-	public readonly array             $script_handles;
-	public readonly array             $view_script_handles;
-	public readonly array             $editor_style_handles;
-	public readonly array             $style_handles;
-	public readonly array             $view_style_handles;
-	public readonly array             $items;
+	public readonly string                    $id;
+	public readonly string                    $name;
+	public readonly string                    $api_version;
+	public readonly string                    $title;
+	public readonly string|null               $category;
+	public readonly array|null                $parent;
+	public readonly array|null                $ancestor;
+	public readonly array|null                $allowed_blocks;
+	public readonly string|null               $icon;
+	public readonly string                    $description;
+	public readonly array                     $keywords;
+	public readonly string|null               $textdomain;
+	public readonly array                     $styles;
+	public readonly array                     $variations;
+	public readonly array                     $selectors;
+	public readonly array|null                $supports;
+	public readonly array|null                $example;
+	public readonly Closure|array|string|null $render_callback;
+	public readonly Closure|array|string|null $variation_callback;
+	public readonly array|null                $attributes;
+	public readonly array                     $uses_context;
+	public readonly array|null                $provides_context;
+	public readonly array                     $block_hooks;
+	public readonly array                     $editor_script_handles;
+	public readonly array                     $script_handles;
+	public readonly array                     $view_script_handles;
+	public readonly array                     $editor_style_handles;
+	public readonly array                     $style_handles;
+	public readonly array                     $view_style_handles;
+	public readonly array                     $items;
+	public readonly array                     $tabs;
 
 	/**
 	 * @throws MissingArgumentException
@@ -49,6 +51,7 @@ class GutenbergBlock extends Integration {
 		}
 
 		$this->name                  = $args['name'];
+		$this->id                    = $args['id'] ?? sprintf( 'wpifycf_block_%s', sanitize_title( $this->name ) );
 		$this->api_version           = $args['api_version'] ?? '3';
 		$this->title                 = $args['title'];
 		$this->category              = $args['category'] ?? null;
@@ -64,9 +67,8 @@ class GutenbergBlock extends Integration {
 		$this->selectors             = $args['selectors'] ?? array();
 		$this->supports              = $args['supports'] ?? null;
 		$this->example               = $args['example'] ?? null;
-		$this->render_callback       = array( $this, 'render_callback' );
+		$this->render_callback       = $args['render_callback'] ?? null;
 		$this->variation_callback    = $args['variation_callback'] ?? null;
-		$this->attributes            = $args['attributes'] ?? null;
 		$this->uses_context          = $args['uses_context'] ?? array();
 		$this->provides_context      = $args['provides_context'] ?? null;
 		$this->block_hooks           = $args['block_hooks'] ?? array();
@@ -77,27 +79,30 @@ class GutenbergBlock extends Integration {
 		$this->style_handles         = $args['style_handles'] ?? array();
 		$this->view_style_handles    = $args['view_style_handles'] ?? array();
 		$this->items                 = $args['items'] ?? array();
-		$this->id                    = $args['id'] ?? sprintf( 'wpifycf_block_%s', sanitize_title( $this->name ) );
+		$this->attributes            = $this->get_attributes();
+		$this->tabs                  = $args['tabs'] ?? array();
 
 		add_action( 'init', array( $this, 'register_block' ) );
 		add_action( 'enqueue_block_assets', array( $this, 'enqueue' ) );
 	}
 
 	public function register_block() {
-		register_block_type(
-			$this->name,
-			array(
-				...$this->get_args(),
-				'render_callback'       => $this->render_callback,
-				'variation_callback'    => $this->variation_callback,
-				'editor_script_handles' => $this->editor_script_handles,
-				'script_handles'        => $this->script_handles,
-				'view_script_handles'   => $this->view_script_handles,
-				'editor_style_handles'  => $this->editor_style_handles,
-				'style_handles'         => $this->style_handles,
-				'view_style_handles'    => $this->view_style_handles,
-			),
+		$args = array(
+			...$this->get_args(),
+			'variation_callback'    => $this->variation_callback,
+			'editor_script_handles' => $this->editor_script_handles,
+			'script_handles'        => $this->script_handles,
+			'view_script_handles'   => $this->view_script_handles,
+			'editor_style_handles'  => $this->editor_style_handles,
+			'style_handles'         => $this->style_handles,
+			'view_style_handles'    => $this->view_style_handles,
 		);
+
+		if ( $this->render_callback ) {
+			$args['render_callback'] = array( $this, 'render' );
+		}
+
+		register_block_type( $this->name, $args );
 	}
 
 	public function enqueue(): void {
@@ -107,6 +112,7 @@ class GutenbergBlock extends Integration {
 			'name'  => $this->name,
 			'items' => $this->normalize_items( $this->items ),
 			'args'  => $this->get_args(),
+			'tabs'  => $this->tabs,
 		);
 
 		wp_add_inline_script(
@@ -147,16 +153,40 @@ class GutenbergBlock extends Integration {
 		return $args;
 	}
 
-	public function render_callback( array $attributes, string $content, WP_Block $block ) {
-		if ( ! function_exists( 'get_current_screen' ) ) {
-			return '';
+	public function get_attributes() {
+		$items      = $this->normalize_items( $this->items );
+		$attributes = array();
+
+		foreach ( $items as $item ) {
+			$wp_type          = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
+			$wp_default_value = apply_filters( 'wpifycf_field_' . $wp_type . '_default_value', '', $item );
+
+			$attributes[ $item['id'] ] = array(
+				'type'    => $wp_type,
+				'default' => $item['default'] ?? $wp_default_value,
+			);
 		}
 
-		$screen = get_current_screen();
+		return $attributes;
+	}
 
-		bdump( $screen );
+	public function render( array $attributes, string $content, WP_Block $block ) {
+		$screen  = null;
+		$context = filter_input( INPUT_GET, 'context' );
 
-		return 'BLOCK CONTENT';
+		if ( function_exists( 'get_current_screen' ) ) {
+			$screen = get_current_screen();
+		}
+
+		if (
+			( $context !== 'edit' && ! $context ) ||
+			( $screen && ! $screen->is_block_editor() ) ||
+			( $this->render_callback === null )
+		) {
+			return $content;
+		}
+
+		return call_user_func( $this->render_callback, $attributes, $content, $block );
 	}
 
 	public function get_field( string $name, $item = array() ) {

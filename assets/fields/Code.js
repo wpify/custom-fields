@@ -16,7 +16,7 @@ import { checkValidityStringType } from '@/helpers/validators';
 
 export function Code ({
   id,
-  value,
+  value = '',
   onChange,
   language = 'html',
   height = 200,

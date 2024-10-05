@@ -6,7 +6,7 @@ import { App } from '@/components/App';
 import { addStyleSheet } from '@/helpers/functions';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { registerBlockType } from '@wordpress/blocks';
-import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
+import { GutenbergBlock, SaveGutenbergBlock } from '@/components/GutenbergBlock';
 
 require('@/helpers/field-types');
 
@@ -39,22 +39,25 @@ function loadCustomFields () {
   });
 }
 
-const edit = ({ attributes, setAttributes }) => {
-  return (
-    <div className="wpifycf-gutenberg-block" {...useBlockProps()}>
-      BLOCK
-    </div>
-  );
-};
-
-const save = () => <InnerBlocks.Content />;
-
-function loadGutenbergBlocks(event) {
+function loadGutenbergBlocks (event) {
   addStyleSheet(config.stylesheet);
   registerBlockType(event.detail, {
     ...event.detail.args,
-    edit,
-    save,
+    edit: props => (
+      <QueryClientProvider client={queryClient}>
+        <AppContext.Provider value={{ context: 'gutenberg', config }}>
+          <StrictMode>
+            <GutenbergBlock
+              {...props}
+              args={event.detail.args}
+              items={event.detail.items}
+              tabs={event.detail.tabs}
+            />
+          </StrictMode>
+        </AppContext.Provider>
+      </QueryClientProvider>
+    ),
+    save: SaveGutenbergBlock,
   });
 }
 

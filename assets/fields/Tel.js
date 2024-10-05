@@ -9,7 +9,7 @@ export function Tel ({
   id,
   htmlId,
   onChange,
-  value,
+  value = '',
   attributes = {},
   default_country: defaultCountry = 'US',
   className,

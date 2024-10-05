@@ -7,7 +7,7 @@ import clsx from 'clsx';
 
 export function Post ({
   id,
-  value,
+  value = null,
   onChange,
   post_type: postType,
   className,

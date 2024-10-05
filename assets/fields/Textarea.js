@@ -7,7 +7,7 @@ export function Textarea ({
   id,
   htmlId,
   onChange,
-  value,
+  value = '',
   attributes = {},
   className,
 }) {

@@ -7,15 +7,14 @@ export function Range ({
   id,
   htmlId,
   onChange,
-  value,
+  value = '',
   min,
   max,
   step,
   attributes = {},
   className,
 }) {
-  const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
-
+  const handleChange = useCallback(event => onChange(Number(event.target.value)), [onChange]);
   const isValid = !isNaN(parseFloat(value));
 
   return (

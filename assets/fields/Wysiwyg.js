@@ -1,9 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
+import { RawHTML } from '@wordpress/element';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { addFilter } from '@wordpress/hooks';
 import clsx from 'clsx';
 import { __ } from '@wordpress/i18n';
 import { Code } from '@/fields/Code';
 import { checkValidityStringType } from '@/helpers/validators';
+import { useSelect } from '@wordpress/data';
+import { store } from '@wordpress/block-editor';
+import { AppContext } from '@/custom-fields';
+import {
+  Modal,
+  Button,
+  Flex,
+  FlexItem,
+} from '@wordpress/components';
+import { fullscreen, edit } from '@wordpress/icons';
 
 const VIEW_VISUAL = 'visual';
 const VIEW_HTML = 'html';
@@ -17,6 +28,7 @@ export function Wysiwyg ({
   className,
 }) {
   const [view, setView] = useState(VIEW_VISUAL);
+  const { context } = useContext(AppContext);
 
   return (
     <span className={clsx('wpifycf-field-wysiwyg', `wpifycf-field-wysiwyg--${id}`, className)}>
@@ -37,12 +49,21 @@ export function Wysiwyg ({
         </button>
       </span>
       {view === VIEW_VISUAL && (
-        <TinyMCE
-          htmlId={htmlId}
-          value={value}
-          onChange={onChange}
-          height={height}
-        />
+        context === 'gutenberg' ? (
+          <GutenbergTinyMCE
+            htmlId={htmlId}
+            value={value}
+            onChange={onChange}
+            height={height}
+          />
+        ) : (
+          <TinyMCE
+            htmlId={htmlId}
+            value={value}
+            onChange={onChange}
+            height={height}
+          />
+        )
       )}
       {view === VIEW_HTML && (
         <Code
@@ -61,8 +82,85 @@ export function Wysiwyg ({
 
 Wysiwyg.checkValidity = checkValidityStringType;
 
+function GutenbergTinyMCE ({ htmlId, value, onChange, height }) {
+  const [isOpen, setOpen] = useState(false);
+  const [isModalFullScreen, setIsModalFullScreen] = useState(false);
+  const handleClose = useCallback(() => setOpen(false), []);
+  const handleOpen = useCallback(() => setOpen(true), []);
+  const handleToggleFullscreen = useCallback(() => setIsModalFullScreen(!isModalFullScreen), [isModalFullScreen]);
+
+  return (
+    <>
+      <div
+        className="wpifycf-field-wysiwyg__raw-wrapper"
+        style={{ height: height + 94 }}
+      >
+        <RawHTML className="wpifycf-field-wysiwyg__raw">
+          {value}
+        </RawHTML>
+        <Button
+          onClick={handleOpen}
+          label={__('Edit')}
+          variant="primary"
+          className="wpifycf-field-wysiwyg__raw-edit"
+        >
+          {__('Edit')}
+        </Button>
+      </div>
+      {isOpen && (
+        <Modal
+          title={__('Classic Editor')}
+          onRequestClose={handleClose}
+          shouldCloseOnClickOutside={false}
+          overlayClassName="block-editor-freeform-modal"
+          isFullScreen={isModalFullScreen}
+          className="block-editor-freeform-modal__content"
+          headerActions={
+            <Button
+              size="small"
+              onClick={handleToggleFullscreen}
+              icon={fullscreen}
+              isPressed={isModalFullScreen}
+              label={
+                isModalFullScreen
+                  ? __('Exit fullscreen')
+                  : __('Enter fullscreen')
+              }
+            />
+          }
+        >
+          <TinyMCE
+            htmlId={htmlId}
+            value={value}
+            onChange={onChange}
+            height={height}
+          />
+          <Flex
+            className="block-editor-freeform-modal__actions"
+            justify="flex-end"
+            expanded={false}
+          >
+            <FlexItem>
+              <Button
+                __next40pxDefaultSize
+                variant="primary"
+                onClick={handleClose}
+              >
+                {__('OK')}
+              </Button>
+            </FlexItem>
+          </Flex>
+        </Modal>
+      )}
+    </>
+  );
+}
+
 function TinyMCE ({ htmlId, value, onChange, height }) {
   const editorRef = useRef(null);
+  const styles = useSelect(
+    (select) => select(store).getSettings().styles,
+  );
 
   useEffect(() => {
     const { baseURL, suffix, settings } = window.wpEditorL10n.tinymce;
@@ -78,14 +176,14 @@ function TinyMCE ({ htmlId, value, onChange, height }) {
         height,
         setup (editor) {
           editorRef.current = editor;
-          // editor.on('init', () => {
-          //   const doc = editor.getDoc();
-          //   styles.forEach(({ css }) => {
-          //     const styleEl = doc.createElement('style');
-          //     styleEl.innerHTML = css;
-          //     doc.head.appendChild(styleEl);
-          //   });
-          // });
+          editor.on('init', () => {
+            const doc = editor.getDoc();
+            styles?.forEach(({ css }) => {
+              const styleEl = doc.createElement('style');
+              styleEl.innerHTML = css;
+              doc.head.appendChild(styleEl);
+            });
+          });
 
           editor.on('change keyup', function () {
             const content = editor.getContent();

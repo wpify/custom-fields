@@ -7,7 +7,7 @@ function Checkbox ({
   id,
   htmlId,
   onChange,
-  value,
+  value = false,
   attributes = {},
   className,
 }) {

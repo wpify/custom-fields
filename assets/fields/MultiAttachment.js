@@ -33,16 +33,18 @@ function MultiAttachment ({
   });
 
   useEffect(() => {
-    value.length > 0 && Promise.all(
-      value
-        .map((id) => parseInt(id, 10))
-        .filter(Boolean)
-        .map((id) => wp.media.attachment(id).fetch()),
-    )
-      .then(setAttachments)
-      .catch((error) =>
-        console.error(__('Failed to fetch attachments', 'wpify-custom-fields'), error),
-      );
+    if (value.length > 0) {
+      Promise.all(
+        value
+          .map((id) => parseInt(id, 10))
+          .filter(Boolean)
+          .map((id) => wp.media.attachment(id).fetch()),
+      )
+        .then(setAttachments)
+        .catch((error) =>
+          console.error(__('Failed to fetch attachments', 'wpify-custom-fields'), error),
+        );
+    }
   }, [value]);
 
   const openMediaLibrary = useMediaLibrary({

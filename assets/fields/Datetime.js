@@ -7,7 +7,7 @@ export function Datetime ({
   id,
   htmlId,
   onChange,
-  value,
+  value = '',
   min,
   max,
   attributes = {},

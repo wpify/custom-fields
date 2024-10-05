@@ -1,6 +1,6 @@
 import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useMapyCzApiKey, useMapyCzReverseGeocode, useMapyCzSuggestions } from '@/helpers/hooks';
 import { Button } from '@/components/Button';
 import 'leaflet/dist/leaflet.css';
@@ -8,6 +8,7 @@ import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import { useLeafletContext } from '@react-leaflet/core';
 import L from 'leaflet';
 import clsx from 'clsx';
+import { AppContext } from '@/custom-fields';
 
 const markerIcon = L.icon({
   iconUrl: 'https://api.mapy.cz/img/api/marker/drop-red.png',
@@ -20,6 +21,8 @@ const defaultValue = {
   longitude: 14.460411,
   zoom: 13,
 };
+
+let logoAdded = false;
 
 export function Mapycz ({
   id,
@@ -68,6 +71,8 @@ function MapyczMap ({
   const longitude = value.longitude || defaultValue.longitude;
   const zoom = value.zoom || defaultValue.zoom;
   const center = [latitude, longitude];
+  const root = useRef();
+  const { context } = useContext(AppContext);
 
   const { data: geocoded } = useMapyCzReverseGeocode({
     latitude,
@@ -144,29 +149,31 @@ function MapyczMap ({
         map.off('moveend', handleMoveEnd);
       }
     };
-  }, [map, handleZoomEnd, handleMoveEnd]);
+  }, [map, handleZoomEnd, handleMoveEnd, context]);
 
-  const mapContainer = useMemo(() => (
-    <MapContainer
-      center={center}
-      zoom={zoom}
-      style={{ height: '300px', width: '100%' }}
-      scrollWheelZoom={false}
-      ref={setMap}
-    >
-      <TileLayerMapycz apiKey={apiKey} />
-      <Marker
-        position={center}
-        icon={markerIcon}
-        draggable
-        eventHandlers={{ dragend: handleMarkerDrag }}
-      />
-      <SeznamCzLogo />
-    </MapContainer>
-  ), [apiKey, handleMarkerDrag]);
+  const mapContainer = useMemo(() => {
+    return (
+      <MapContainer
+        center={center}
+        zoom={zoom}
+        style={{ height: '300px', width: '100%' }}
+        scrollWheelZoom={false}
+        ref={setMap}
+      >
+        <TileLayerMapycz apiKey={apiKey} />
+        <Marker
+          position={center}
+          icon={markerIcon}
+          draggable
+          eventHandlers={{ dragend: handleMarkerDrag }}
+        />
+        <SeznamCzLogo />
+      </MapContainer>
+    );
+  }, [apiKey, handleMarkerDrag]);
 
   return (
-    <span className="wpifycf-field-mapycz__map">
+    <span className="wpifycf-field-mapycz__map" ref={root}>
       <AutoComplete value={value} onChange={onChange} apiKey={apiKey} lang={lang} setCenter={setCenter} />
       {mapContainer}
       <Address value={value} className="wpifycf-field-mapycz__address" />
@@ -308,25 +315,28 @@ function SeznamCzLogo () {
   const context = useLeafletContext();
 
   useEffect(() => {
-    const LogoControl = L.Control.extend({
-      options: {
-        position: 'bottomleft',
-      },
-      onAdd: () => {
-        const container = L.DomUtil.create('div');
-        const link = L.DomUtil.create('a', '', container);
+    if (!logoAdded) {
+      const LogoControl = L.Control.extend({
+        options: {
+          position: 'bottomleft',
+        },
+        onAdd: () => {
+          const container = L.DomUtil.create('div');
+          const link = L.DomUtil.create('a', '', container);
 
-        link.setAttribute('href', 'http://mapy.cz/');
-        link.setAttribute('target', '_blank');
-        link.setAttribute('rel', 'noreferrer noopenner');
-        link.innerHTML = '<img src="https://api.mapy.cz/img/api/logo.svg" alt="Seznam.cz a.s." />';
-        L.DomEvent.disableClickPropagation(link);
+          link.setAttribute('href', 'http://mapy.cz/');
+          link.setAttribute('target', '_blank');
+          link.setAttribute('rel', 'noreferrer noopenner');
+          link.innerHTML = '<img src="https://api.mapy.cz/img/api/logo.svg" alt="Seznam.cz a.s." />';
+          L.DomEvent.disableClickPropagation(link);
 
-        return container;
-      },
-    });
+          return container;
+        },
+      });
 
-    new LogoControl().addTo(context.map);
+      new LogoControl().addTo(context.map);
+      logoAdded = true;
+    }
   }, []);
 
   return null;

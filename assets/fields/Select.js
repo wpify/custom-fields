@@ -7,7 +7,7 @@ import clsx from 'clsx';
 
 export function Select ({
   id,
-  value,
+  value = '',
   onChange,
   options = [],
   options_key: optionsKey,

@@ -46,4 +46,22 @@
       background: #f6f7f7;
     }
   }
+
+  &__raw-wrapper {
+    position: relative;
+  }
+
+  &__raw {
+    height: 100%;
+    position: relative;
+    overflow: auto;
+    border: 1px solid var(--wpifycf-border-color);
+    padding: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
+  }
+
+  &__raw-edit {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+  }
 }

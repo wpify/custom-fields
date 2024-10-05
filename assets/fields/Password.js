@@ -7,7 +7,7 @@ function Password ({
   id,
   htmlId,
   onChange,
-  value,
+  value = '',
   attributes = {},
   className,
 }) {

@@ -6,7 +6,7 @@ import clsx from 'clsx';
 function Toggle ({
   id,
   htmlId,
-  value,
+  value = false,
   item_label,
   onChange,
   className,

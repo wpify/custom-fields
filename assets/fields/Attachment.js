@@ -8,7 +8,7 @@ import { addFilter } from '@wordpress/hooks';
 import { checkValidityNonZeroIntegerType } from '@/helpers/validators';
 
 function Attachment ({
-  value,
+  value = 0,
   id,
   onChange,
   attachment_type,

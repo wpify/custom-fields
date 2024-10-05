@@ -7,7 +7,7 @@ function Color ({
   id,
   htmlId,
   onChange,
-  value,
+  value = '',
   attributes = {},
   className,
 }) {

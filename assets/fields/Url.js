@@ -8,7 +8,7 @@ export function Url ({
   id,
   htmlId,
   onChange,
-  value,
+  value = '',
   attributes = {},
   className,
 }) {

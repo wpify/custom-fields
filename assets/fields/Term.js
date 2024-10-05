@@ -17,7 +17,7 @@ export function Term ({
   taxonomy,
   id,
   htmlId,
-  value,
+  value = 0,
   onChange,
   className,
 }) {

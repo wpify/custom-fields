@@ -7,7 +7,7 @@ export function Time ({
   id,
   htmlId,
   onChange,
-  value,
+  value = '',
   min,
   max,
   attributes = {},

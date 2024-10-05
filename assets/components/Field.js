@@ -37,10 +37,19 @@ export function Field ({
     [FieldComponent, value, props, type, isHidden],
   );
 
-  useEffect(() => typeof setValidity === 'function' && setValidity(validity), [setValidity, validity]);
+  useEffect(() => {
+    if (typeof setValidity === 'function') {
+      setValidity(validity);
+    }
+  }, [setValidity, validity]);
 
   const hiddenField = name && (
-    <input type="hidden" name={name} data-hide-field={isHidden ? 'true' : 'false'} value={typeof value !== 'string' ? JSON.stringify(value) : value} />
+    <input
+      type="hidden"
+      name={name}
+      data-hide-field={isHidden ? 'true' : 'false'}
+      value={typeof value === 'undefined' ? '' : typeof value !== 'string' ? JSON.stringify(value) : value}
+    />
   );
 
   const validityMessages = props.validity?.filter(v => typeof v === 'string') || [];

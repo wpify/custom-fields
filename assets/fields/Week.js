@@ -7,7 +7,7 @@ export function Week ({
   id,
   htmlId,
   onChange,
-  value,
+  value = '',
   min,
   max,
   attributes = {},

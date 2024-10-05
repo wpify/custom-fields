@@ -10,6 +10,7 @@ use Wpify\CustomFields\Integrations\OrderMetabox;
 use Wpify\CustomFields\Integrations\ProductOptions;
 use Wpify\CustomFields\Integrations\ProductVariationOptions;
 use Wpify\CustomFields\Integrations\Taxonomy;
+use function FakerPress\ThirdParty\Symfony\Component\Translation\t;
 
 class CustomFields {
 	public readonly Helpers        $helpers;

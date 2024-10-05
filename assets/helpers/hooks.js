@@ -45,7 +45,9 @@ export function useFields (integrationId) {
   const values = useValues(state => state.values);
   const updateValue = useValues(state => state.updateValue);
 
-  useEffect(() => setValues(initialValues), [initialValues]);
+  useEffect(() => {
+    setValues(initialValues);
+  }, [initialValues]);
 
   return {
     fields,
@@ -91,22 +93,30 @@ export function useTabs (args = {}) {
   const currentTab = useTabsStore((state) => state.tab);
   const setTab = useTabsStore((state) => state.setTab);
   const isCurrent = useTabsStore((state) => state.isCurrent);
+  const { context } = useContext(AppContext);
 
   useEffect(() => {
-    if (tabs && Object.keys(tabs).length > 0 && !currentTab) setTab(Object.keys(tabs)[0]);
+    if (tabs && Object.keys(tabs).length > 0 && !currentTab) {
+      setTab(Object.keys(tabs)[0]);
+    }
   }, [currentTab, tabs]);
 
   const updateTabFromHash = useCallback(() => {
     const searchParams = new URLSearchParams(window.location.hash.slice(1));
     const hashTab = searchParams.get('tab');
+
     if (hashTab && hashTab !== currentTab) setTab(hashTab);
   }, [currentTab, setTab]);
 
   useEffect(() => {
+    if (context === 'gutenberg') return;
+
     window.addEventListener('hashchange', updateTabFromHash);
     updateTabFromHash();
-    return () => window.removeEventListener('hashchange', updateTabFromHash);
-  }, [currentTab]);
+    return () => {
+      window.removeEventListener('hashchange', updateTabFromHash);
+    };
+  }, [currentTab, context]);
 
   return { tab: currentTab, setTab, isCurrentTab: isCurrent(tab) };
 }
@@ -157,7 +167,9 @@ export function useMediaLibrary ({
           nextValue = attachment.id;
         }
 
-        typeof onChange === 'function' && onChange(nextValue);
+        if (typeof onChange === 'function') {
+          onChange(nextValue);
+        }
       })
       .open();
   }, [value, onChange, multiple, title, button, type]);
@@ -165,7 +177,11 @@ export function useMediaLibrary ({
 
 export function useAttachment (id) {
   const [attachment, setAttachment] = useState(null);
-  useEffect(() => id && wp.media.attachment(id).fetch().then(setAttachment), [id]);
+  useEffect(() => {
+    if (id) {
+      wp.media.attachment(id).fetch().then(setAttachment);
+    }
+  }, [id]);
   return { attachment, setAttachment };
 }
 
@@ -174,7 +190,11 @@ export function useMulti ({ value, onChange, min, max, defaultValue, disabled_bu
   const [keyPrefix, setKeyPrefix] = useState(uuidv4());
   const [collapsed, setCollapsed] = useState(() => Array(value.length).fill(true));
 
-  useEffect(() => !Array.isArray(value) && onChange([]), []);
+  useEffect(() => {
+    if (!Array.isArray(value)) {
+      onChange([]);
+    }
+  }, []);
 
   useEffect(() => {
     setCollapsed((prevCollapsed) => {
@@ -454,7 +474,7 @@ export function useMapyCzReverseGeocode ({ apiKey, lang = 'en', latitude, longit
   });
 }
 
-export function useValidity ({ form }) {
+export function useValidity ({ form } = {}) {
   const [validity, setValidity] = useState({});
   const [validate, setValidate] = useState(false);
 

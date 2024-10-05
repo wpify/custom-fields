@@ -7,7 +7,7 @@ export function Email ({
   id,
   htmlId,
   onChange,
-  value,
+  value = '',
   attributes = {},
   className,
 }) {
