@@ -5,7 +5,6 @@ import { useMapyCzApiKey, useMapyCzReverseGeocode, useMapyCzSuggestions } from '
 import { Button } from '@/components/Button';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
-import { useLeafletContext } from '@react-leaflet/core';
 import L from 'leaflet';
 import clsx from 'clsx';
 import { AppContext } from '@/custom-fields';
@@ -21,8 +20,6 @@ const defaultValue = {
   longitude: 14.460411,
   zoom: 13,
 };
-
-let logoAdded = false;
 
 export function Mapycz ({
   id,
@@ -167,10 +164,28 @@ function MapyczMap ({
           draggable
           eventHandlers={{ dragend: handleMarkerDrag }}
         />
-        <SeznamCzLogo />
       </MapContainer>
     );
-  }, [apiKey, handleMarkerDrag]);
+  }, [apiKey, map, handleMarkerDrag]);
+
+  useEffect(() => {
+    if (map) {
+      const LogoControl = L.Control.extend({
+        options: { position: 'bottomleft' },
+        onAdd: () => {
+          const container = L.DomUtil.create('div');
+          const link = L.DomUtil.create('a', '', container);
+          link.setAttribute('href', 'http://mapy.cz/');
+          link.setAttribute('target', '_blank');
+          link.setAttribute('rel', 'noreferrer noopenner');
+          link.innerHTML = '<img src="https://api.mapy.cz/img/api/logo.svg" alt="Seznam.cz a.s." />';
+          L.DomEvent.disableClickPropagation(link);
+          return container;
+        },
+      });
+      new LogoControl().addTo(map);
+    }
+  }, [map]);
 
   return (
     <span className="wpifycf-field-mapycz__map" ref={root}>
@@ -228,17 +243,19 @@ function AutoComplete ({ value, onChange, apiKey, lang, setCenter }) {
   }, []);
 
   const handleSelect = useCallback((index) => {
-    onChange({
-      ...value,
-      latitude: suggestions.items[index].position.lat.toFixed(6),
-      longitude: suggestions.items[index].position.lon.toFixed(6),
-    });
-    setActive(null);
-    setCenter([
-      suggestions.items[index].position.lat.toFixed(6),
-      suggestions.items[index].position.lon.toFixed(6),
-    ]);
-    setQuery(suggestions.items[index].name);
+    if (suggestions.items[index]) {
+      onChange({
+        ...value,
+        latitude: suggestions.items[index].position.lat.toFixed(6),
+        longitude: suggestions.items[index].position.lon.toFixed(6),
+      });
+      setActive(null);
+      setCenter([
+        suggestions.items[index].position.lat.toFixed(6),
+        suggestions.items[index].position.lon.toFixed(6),
+      ]);
+      setQuery(suggestions.items[index].name);
+    }
   }, [onChange, suggestions.items, setCenter, value]);
 
   const length = suggestions.items.length;
@@ -309,37 +326,6 @@ function TileLayerMapycz ({ apiKey }) {
       attribution='<a href="https://api.mapy.cz/copyright" target="_blank">&copy; Seznam.cz a.s. a další</a>'
     />
   );
-}
-
-function SeznamCzLogo () {
-  const context = useLeafletContext();
-
-  useEffect(() => {
-    if (!logoAdded) {
-      const LogoControl = L.Control.extend({
-        options: {
-          position: 'bottomleft',
-        },
-        onAdd: () => {
-          const container = L.DomUtil.create('div');
-          const link = L.DomUtil.create('a', '', container);
-
-          link.setAttribute('href', 'http://mapy.cz/');
-          link.setAttribute('target', '_blank');
-          link.setAttribute('rel', 'noreferrer noopenner');
-          link.innerHTML = '<img src="https://api.mapy.cz/img/api/logo.svg" alt="Seznam.cz a.s." />';
-          L.DomEvent.disableClickPropagation(link);
-
-          return container;
-        },
-      });
-
-      new LogoControl().addTo(context.map);
-      logoAdded = true;
-    }
-  }, []);
-
-  return null;
 }
 
 function SetApiKey ({ mapycz, htmlId }) {
