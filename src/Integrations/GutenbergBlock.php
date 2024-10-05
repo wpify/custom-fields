@@ -171,17 +171,9 @@ class GutenbergBlock extends Integration {
 	}
 
 	public function render( array $attributes, string $content, WP_Block $block ) {
-		$screen  = null;
-		$context = filter_input( INPUT_GET, 'context' );
-
-		if ( function_exists( 'get_current_screen' ) ) {
-			$screen = get_current_screen();
-		}
-
 		if (
-			( $context !== 'edit' && ! $context ) ||
-			( $screen && ! $screen->is_block_editor() ) ||
-			( $this->render_callback === null )
+			( defined( 'REST_REQUEST' ) && REST_REQUEST && filter_input( INPUT_GET, 'context' ) !== 'edit' )
+			|| ( $this->render_callback === null )
 		) {
 			return $content;
 		}

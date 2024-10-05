@@ -6,8 +6,6 @@ import { __, sprintf } from '@wordpress/i18n';
 import { desktop, edit, Icon } from '@wordpress/icons';
 import { useValidity } from '@/helpers/hooks';
 import { AppContext } from '@/custom-fields';
-import { Tabs } from '@/components/Tabs';
-import { Field } from '@/components/Field';
 import { RootFields } from '@/components/RootFields';
 
 const RENDERED_VIEW = 'view';
@@ -18,8 +16,6 @@ export function GutenbergBlock ({ attributes, setAttributes, name, args, items, 
   const [view, setView] = useState(RENDERED_VIEW);
   const switchToRenderedView = useCallback(() => setView(RENDERED_VIEW), []);
   const switchToEditorView = useCallback(() => setView(EDITOR_VIEW), []);
-
-  console.log(attributes);
 
   return (
     <div {...props}>
@@ -133,6 +129,6 @@ function LoadingResponse ({ title, name }) {
   );
 }
 
-export function SaveGutenbergBlock ({ attributes }) {
+export function SaveGutenbergBlock () {
   return <InnerBlocks.Content />;
 }
