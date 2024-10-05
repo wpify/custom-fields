@@ -2,30 +2,24 @@
 
 namespace Wpify\CustomFields\Integrations;
 
-use WP_Post;
-use WP_Screen;
+use WP_Comment;
 use Wpify\CustomFields\CustomFields;
 
-class Metabox extends Integration {
-	const CONTEXT_NORMAL   = 'normal';
-	const CONTEXT_ADVANCED = 'advanced';
-	const CONTEXT_SIDE     = 'side';
+class Comment extends Integration {
 	const PRIORITY_HIGH    = 'high';
 	const PRIORITY_CORE    = 'core';
 	const PRIORITY_LOW     = 'low';
 	const PRIORITY_DEFAULT = 'default';
 
-	public readonly string                      $id;
-	public readonly string                      $title;
-	public readonly null|string|array|WP_Screen $screen;
-	public readonly string                      $context;
-	public readonly string                      $priority;
-	public readonly array                       $callback_args;
-	public readonly WP_Post                     $post;
-	public readonly string                      $nonce;
-	public readonly array                       $post_types;
-	public readonly array                       $tabs;
-	public readonly array                       $items;
+	public readonly string $id;
+	public readonly string $title;
+	public readonly string $priority;
+	public readonly array  $callback_args;
+	public readonly int    $comment_id;
+	public readonly string $nonce;
+	public readonly array  $post_types;
+	public readonly array  $tabs;
+	public readonly array  $items;
 
 	public function __construct(
 		array $args,
@@ -34,8 +28,6 @@ class Metabox extends Integration {
 		parent::__construct( $custom_fields );
 
 		$this->title         = $args['title'] ?? '';
-		$this->screen        = $args['screen'] ?? null;
-		$this->context       = $args['context'] ?? self::CONTEXT_NORMAL;
 		$this->priority      = $args['priority'] ?? self::PRIORITY_DEFAULT;
 		$this->callback_args = $args['callback_args'] ?? array();
 		$this->id            = $args['id'] ?? sanitize_title(
@@ -43,8 +35,7 @@ class Metabox extends Integration {
 				'_',
 				array(
 					$this->title,
-					$this->screen,
-					$this->context,
+					'comment',
 					$this->priority,
 				),
 			),
@@ -54,55 +45,41 @@ class Metabox extends Integration {
 		$this->post_types    = $args['post_types'] ?? array();
 		$this->tabs          = $args['tabs'] ?? array();
 
-		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
-		add_action( 'save_post', array( $this, 'save_meta_box' ), 10, 2 );
-		add_action( 'init', array( $this, 'register_meta' ) );
+		add_action( 'add_meta_boxes_comment', array( $this, 'add_meta_box' ) );
+		add_action( 'edit_comment', array( $this, 'save_meta_box' ), 10, 2 );
 	}
 
-	public function add_meta_box( string $post_type ): void {
-		if ( in_array( $post_type, $this->post_types ) ) {
-			add_meta_box(
-				$this->id,
-				$this->title,
-				array( $this, 'render' ),
-				$post_type,
-				$this->context,
-				$this->priority,
-				$this->callback_args,
-			);
+	public function add_meta_box( WP_Comment $comment ): void {
+		$this->set_comment( $comment->comment_ID );
+		add_meta_box(
+			$this->id,
+			$this->title,
+			array( $this, 'render' ),
+			'comment',
+			'normal',
+			$this->priority,
+			$this->callback_args,
+		);
+	}
+
+	public function set_comment( int $comment_id ): void {
+		if ( empty( $this->comment_id ) ) {
+			$this->comment_id = $comment_id;
 		}
 	}
 
-	public function set_post( WP_Post $post ): void {
-		if ( empty( $this->post ) ) {
-			$this->post = $post;
-		}
-	}
-
-	public function save_meta_box( int $post_id, WP_Post $post ): bool|int {
+	public function save_meta_box( int $comment_id, array $data ): bool|int {
 		if ( ! isset( $_POST[ $this->nonce ] ) ) {
-			return $post_id;
+			return $comment_id;
 		}
 
 		$nonce = sanitize_text_field( wp_unslash( $_POST[ $this->nonce ] ) );
 
 		if ( ! wp_verify_nonce( $nonce, $this->id ) ) {
-			return $post_id;
+			return $comment_id;
 		}
 
-		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-			return $post_id;
-		}
-
-		if ( isset( $_POST['post_type'] ) && ! in_array( $_POST['post_type'], $this->post_types ) ) {
-			return $post_id;
-		}
-
-		if ( ! current_user_can( 'edit_post', $post_id ) ) {
-			return $post_id;
-		}
-
-		$this->set_post( $post );
+		$this->set_comment( $comment_id );
 
 		$items = $this->normalize_items( $this->items );
 
@@ -148,12 +125,12 @@ class Metabox extends Integration {
 		}
 	}
 
-	public function render( WP_Post $post ): void {
+	public function render( WP_Comment $comment ): void {
 		$items = $this->normalize_items( $this->items );
 
-		$this->set_post( $post );
+		$this->set_comment( $comment->comment_ID );
 		$this->enqueue();
-		$this->print_app( 'metabox', $this->tabs );
+		$this->print_app( 'comment', $this->tabs );
 
 		wp_nonce_field( $this->id, $this->nonce );
 
@@ -164,17 +141,17 @@ class Metabox extends Integration {
 
 	public function get_field( string $name, $item = array() ) {
 		if ( ! empty( $item['callback_get'] ) ) {
-			return call_user_func( $item['callback_get'], $item, $this->post->ID );
+			return call_user_func( $item['callback_get'], $item, $this->comment_id );
 		} else {
-			return get_post_meta( $this->post->ID, $name, true );
+			return get_comment_meta( $this->comment_id, $name, true );
 		}
 	}
 
 	public function set_field( string $name, $value, $item = array() ) {
 		if ( ! empty( $item['callback_set'] ) ) {
-			return call_user_func( $item['callback_set'], $item, $this->post->ID, $value );
+			return call_user_func( $item['callback_set'], $item, $this->comment_id, $value );
 		} else {
-			return update_post_meta( $this->post->ID, $name, wp_slash( $value ) );
+			return update_comment_meta( $this->comment_id, $name, wp_slash( $value ) );
 		}
 	}
 }

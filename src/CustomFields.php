@@ -3,6 +3,7 @@
 namespace Wpify\CustomFields;
 
 use Wpify\CustomFields\exceptions\MissingArgumentException;
+use Wpify\CustomFields\Integrations\Comment;
 use Wpify\CustomFields\Integrations\GutenbergBlock;
 use Wpify\CustomFields\Integrations\Metabox;
 use Wpify\CustomFields\Integrations\Options;
@@ -176,6 +177,10 @@ class CustomFields {
 
 	public function create_gutenberg_block( $args = array() ): GutenbergBlock {
 		return new GutenbergBlock( $args, $this );
+	}
+
+	public function create_comment_metabox( $args = array() ): Comment {
+		return new Comment( $args, $this );
 	}
 
 	public function get_js_asset( string $item ): array {
