@@ -157,7 +157,12 @@ abstract class Integration {
 	public function print_field( array $item, array $data_attributes = array(), string $tag = 'span', string $class = '' ): void {
 		$item['name']  = empty( $this->option_name ) ? $item['id'] : $this->option_name . '[' . $item['id'] . ']';
 		$item['value'] = $this->get_field( $item['id'], $item ) ?? $item['default'];
-		$item['loop']  = $data_attributes['loop'] ?? '';
+
+		if ( is_string( $item['value'] ) ) {
+			$item['value'] = html_entity_decode( $item['value'] );
+		}
+
+		$item['loop'] = $data_attributes['loop'] ?? '';
 		?>
 		<<?php echo $tag ?> data-item="<?php echo esc_attr( wp_json_encode( $item ) ) ?>"
 		data-integration-id="<?php echo esc_attr( $this->id . $item['loop'] ) ?>"
