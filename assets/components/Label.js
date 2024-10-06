@@ -29,7 +29,7 @@ export function Label ({
     </label>
   );
 
-  if (context === 'options' && node) {
+  if (['options', 'site-options'].includes(context) && node) {
     return maybePortal(markup, node.closest('tr')?.querySelector('th[scope="row"]'));
   }
 

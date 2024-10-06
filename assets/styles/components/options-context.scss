@@ -1,4 +1,5 @@
-form:has([data-context="options"]) {
+form:has([data-context="options"]),
+form:has([data-context="site-options"]) {
   // hide the whole row if the field is hidden
   tr:has(td > .wpifycf-field > [data-hide-field="true"]) {
     display: none;

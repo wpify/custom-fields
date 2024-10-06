@@ -10,6 +10,7 @@ use Wpify\CustomFields\Integrations\Options;
 use Wpify\CustomFields\Integrations\OrderMetabox;
 use Wpify\CustomFields\Integrations\ProductOptions;
 use Wpify\CustomFields\Integrations\ProductVariationOptions;
+use Wpify\CustomFields\Integrations\SiteOptions;
 use Wpify\CustomFields\Integrations\Taxonomy;
 use function FakerPress\ThirdParty\Symfony\Component\Translation\t;
 
@@ -181,6 +182,10 @@ class CustomFields {
 
 	public function create_comment_metabox( $args = array() ): Comment {
 		return new Comment( $args, $this );
+	}
+
+	public function create_site_options( $args = array() ) {
+		return new SiteOptions( $args, $this );
 	}
 
 	public function get_js_asset( string $item ): array {
