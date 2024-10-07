@@ -3,26 +3,29 @@
 namespace Wpify\CustomFields\Integrations;
 
 use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
+use Closure;
+use WC_Order;
+use WC_Order_Refund;
 use Wpify\CustomFields\CustomFields;
-use Wpify\CustomFields\exceptions\MissingArgumentException;
+use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
 class OrderMetabox extends Integration {
-	public readonly string            $id;
-	public int                        $order_id;
-	public readonly string            $title;
-	public readonly string            $context;
-	public readonly string            $priority;
-	public readonly string            $capability;
-	public readonly array|string|null $callback;
-	public readonly array             $args;
-	public readonly string            $hook_suffix;
-	public readonly int               $hook_priority;
-	public                            $display;
-	public readonly string            $option_name;
-	public readonly array             $items;
-	public readonly array             $sections;
-	public readonly array             $tabs;
-	public readonly string            $nonce;
+	public readonly string                    $id;
+	public int                                $order_id;
+	public readonly string                    $title;
+	public readonly string                    $context;
+	public readonly string                    $priority;
+	public readonly string                    $capability;
+	public readonly Closure|array|string|null $callback;
+	public readonly array                     $args;
+	public readonly string                    $hook_suffix;
+	public readonly int                       $hook_priority;
+	public                                    $display;
+	public readonly string                    $option_name;
+	public readonly array                     $items;
+	public readonly array                     $sections;
+	public readonly array                     $tabs;
+	public readonly string                    $nonce;
 
 	/**
 	 * @throws MissingArgumentException
@@ -54,7 +57,7 @@ class OrderMetabox extends Integration {
 		}
 
 
-		if ( is_callable( $args['display'] ) ) {
+		if ( isset( $args['display'] ) && is_callable( $args['display'] ) ) {
 			$this->display = $args['display'];
 		} else {
 			$this->display = function () use ( $args ) {
@@ -69,29 +72,25 @@ class OrderMetabox extends Integration {
 		$this->items         = $args['items'] ?? array();
 		$this->capability    = $args['capability'] ?? 'manage_woocommerce';
 		$this->callback      = $args['callback'] ?? null;
-		$this->tabs          = $args['tabs'] ?? [];
-
-
-		$this->id = sanitize_title(
+		$this->tabs          = $args['tabs'] ?? array();
+		$this->id            = sanitize_title(
 			join(
 				'-',
 				array(
 					'order-meta',
-					$this->hook_priority
+					$this->hook_priority,
+					$this->title,
 				),
 			),
 		);
+		$this->nonce         = $this->id . '-nonce';
 
-		$this->nonce = $this->id . '-nonce';
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 		add_action( 'woocommerce_update_order', array( $this, 'save' ) );
 	}
 
 
-	/**
-	 * @param string $post_type
-	 */
-	public function add_meta_box( $post_type ) {
+	public function add_meta_box( string $post_type ): void {
 		if ( ! $this->display ) {
 			return;
 		}
@@ -110,50 +109,40 @@ class OrderMetabox extends Integration {
 			array( $this, 'render' ),
 			$screen,
 			$this->context,
-			$this->priority
+			$this->priority,
 		);
 	}
 
-	/**
-	 * @param \WC_Order $order
-	 */
-	public function render( \WC_Order $order ) {
+	public function render( WC_Order $order ): void {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
 
 		$this->order_id = $order->get_id();
 		$this->enqueue();
-		$items = $this->normalize_items( $this->items );
-		?>
 
-		<?php
+		$items = $this->normalize_items( $this->items );
+
 		if ( is_callable( $this->callback ) ) {
 			call_user_func( $this->callback );
-		} ?>
+		}
 
-		<?php $this->print_app( 'order-meta', $this->tabs ); ?>
-
-		<?php foreach ( $items as $item ) { ?>
-            <p class="form-field">
-				<?php $this->print_field( $item ); ?>
-            </p>
-
-		<?php } ?>
-		<?php
 		wp_nonce_field( $this->id, $this->nonce );
+		$this->print_app( 'order-meta', $this->tabs );
+
+		foreach ( $items as $item ) {
+			?>
+			<div class="form-field">
+				<?php $this->print_field( $item ); ?>
+			</div>
+			<?php
+		}
 	}
 
-
-	public function get_order(): bool|\WC_Order|\WC_Order_Refund {
+	public function get_order(): bool|WC_Order|WC_Order_Refund {
 		return wc_get_order( $this->order_id );
 	}
 
-	/**
-	 * @param string $name
-	 *
-	 * @return mixed
-	 */
 	public function get_field( $name, $item = array() ): mixed {
 		if ( ! empty( $item['callback_get'] ) ) {
 			return call_user_func( $item['callback_get'], $item, $this->order_id );
@@ -163,18 +152,14 @@ class OrderMetabox extends Integration {
 		}
 	}
 
-	/**
-	 * @param number $post_id
-	 *
-	 * @return mixed
-	 */
-	public function save( $post_id ): mixed {
+	public function save( int $post_id ): int {
 		remove_action( 'woocommerce_update_order', array( $this, 'save' ) );
+
 		if ( ! isset( $_POST[ $this->nonce ] ) ) {
 			return $post_id;
 		}
 
-		$nonce = $_POST[ $this->nonce ];
+		$nonce = sanitize_text_field( wp_unslash( $_POST[ $this->nonce ] ) );
 
 		if ( ! wp_verify_nonce( $nonce, $this->id ) ) {
 			return $post_id;
@@ -185,31 +170,31 @@ class OrderMetabox extends Integration {
 		}
 
 		$this->order_id = $post_id;
+		$items          = $this->normalize_items( $this->items );
 
-		foreach ( $this->items as $item ) {
+		foreach ( $items as $item ) {
 			if ( ! isset( $_POST[ $item['id'] ] ) ) {
 				continue;
 			}
-			$value = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $_POST[ $item['id'] ], $item );
 
-			$this->set_field( $item['id'], $value, $item );
+			$this->set_field(
+				$item['id'],
+				$this->get_sanitized_post_item_value( $item ),
+				$item,
+			);
 		}
+
+		return $post_id;
 	}
 
-	/**
-	 * @param string $name
-	 * @param $value
-	 *
-	 * @return bool|int
-	 */
 	public function set_field( string $name, $value, $item = array() ): bool|int {
 		if ( ! empty( $item['callback_set'] ) ) {
 			return call_user_func( $item['callback_set'], $item, $this->order_id, $value );
 		} else {
-			$o = $this->get_order();
-			$o->update_meta_data( $name, $value );
+			$order = $this->get_order();
+			$order->update_meta_data( $name, $value );
 
-			return $o->save();
+			return $order->save();
 		}
 	}
 }

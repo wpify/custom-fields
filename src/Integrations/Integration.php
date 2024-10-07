@@ -207,11 +207,13 @@ abstract class Integration {
 	}
 
 	public function get_sanitized_post_item_value( array $item ) {
+		// Nonce should be verified by caller.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
 		if ( isset( $_POST[ $item['id'] ] ) ) {
 			$wp_type = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
 
-			// Sanitization is done via a filter to allow for custom sanitization.
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			// Sanitization is done via a filter to allow for custom sanitization. Nonce should be verified by caller.
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
 			$value = $wp_type === 'string' ? wp_unslash( $_POST[ $item['id'] ] ) : json_decode( wp_unslash( $_POST[ $item['id'] ] ), ARRAY_A );
 
 			if ( $wp_type === 'string' ) {

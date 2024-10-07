@@ -128,6 +128,8 @@ class Taxonomy extends Integration {
 		$items         = $this->normalize_items( $this->items );
 
 		foreach ( $items as $item ) {
+			// Nonce verification already done by WordPress.
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing
 			if ( ! isset( $_POST[ $item['id'] ] ) ) {
 				continue;
 			}

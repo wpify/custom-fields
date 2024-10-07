@@ -2,12 +2,13 @@
 
 namespace Wpify\CustomFields\Integrations;
 
+use WC_Product;
 use Wpify\CustomFields\CustomFields;
-use Wpify\CustomFields\exceptions\MissingArgumentException;
+use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
 class ProductOptions extends Integration {
 	public readonly string            $id;
-	public int            $product_id;
+	public int                        $product_id;
 	public readonly array             $tab;
 	public readonly string            $capability;
 	public readonly array|string|null $callback;
@@ -52,11 +53,11 @@ class ProductOptions extends Integration {
 			);
 		}
 
-		if ( is_callable( $args['display'] ) ) {
+		if ( isset( $args['display'] ) && is_callable( $args['display'] ) ) {
 			$this->display = $args['display'];
 		} else {
 			$this->display = function () use ( $args ) {
-				return $args['display'];
+				return $args['display'] ?? true;
 			};
 		}
 
@@ -65,37 +66,59 @@ class ProductOptions extends Integration {
 		$this->hook_priority = $args['hook_priority'] ?? 10;
 		$this->help_tabs     = $args['help_tabs'] ?? array();
 		$this->help_sidebar  = $args['help_sidebar'] ?? '';
-		$this->display       = $args['display'] ?? null;
 		$this->items         = $args['items'] ?? array();
 		$this->option_name   = $args['option_name'] ?? '';
 		$this->tabs          = $args['tabs'] ?? array();
-		$this->tab           = $args['tab'] ?? [];
 		$this->is_new_tab    = false;
 
-		$this->id = sanitize_title(
+		$tab = $args['tab'] ?? array();
+
+		if ( empty( $tab['label'] ) ) {
+			throw new MissingArgumentException(
+				sprintf(
+				/* translators: %1$s is the class name. */
+					esc_html( __( 'Missing argument $tab["label"] in class %2$s.', 'wpify-custom-fields' ) ),
+					__CLASS__,
+				),
+			);
+		}
+
+		if ( empty( $tab['id'] ) ) {
+			$tab['id'] = sanitize_title( $tab['label'] );
+		}
+
+		if ( empty( $tab['target'] ) ) {
+			$tab['target'] = $tab['id'];
+		}
+
+		if ( empty( $tab['priority'] ) ) {
+			$tab['priority'] = 100;
+		}
+
+		if ( empty( $tab['class'] ) ) {
+			$tab['class'] = array();
+		}
+
+		$this->tab = $tab;
+		$this->id  = sanitize_title(
 			join(
 				'-',
 				array(
 					'product-options',
 					$this->tab['id'],
 					sanitize_title( $this->tab['label'] ),
-					$this->hook_priority
+					$this->hook_priority,
 				),
 			),
 		);
 
 		add_filter( 'woocommerce_product_data_tabs', array( $this, 'woocommerce_product_data_tabs' ), 98 );
 		add_action( 'woocommerce_product_data_panels', array( $this, 'render_data_panels' ) );
-		add_action( 'woocommerce_product_options_' . $this->tab['target'], array( $this, 'render_custom_fields' ) );
+		add_action( 'woocommerce_product_options_' . $this->tab['target'] ?? $this->tab['id'], array( $this, 'render' ) );
 		add_action( 'woocommerce_process_product_meta', array( $this, 'save' ) );
-		add_action( 'init', array( $this, 'register_meta' ), $args['init_priority'] );
+		add_action( 'init', array( $this, 'register_meta' ), $this->hook_priority );
 	}
 
-	/**
-	 * @param array $tabs
-	 *
-	 * @return array
-	 */
 	public function woocommerce_product_data_tabs( array $tabs ): array {
 		if ( isset( $tabs[ $this->tab['id'] ] ) ) {
 			if ( ! empty( $this->tab['label'] ) ) {
@@ -120,53 +143,42 @@ class ProductOptions extends Integration {
 	}
 
 
-	/**
-	 * @return void
-	 */
 	public function render_data_panels(): void {
-		//if ( $this->is_new_tab ) {
 		?>
-        <div id="<?php echo esc_attr( $this->tab['target'] ) ?>" class="panel woocommerce_options_panel">
+		<div id="<?php echo esc_attr( $this->tab['target'] ) ?>" class="panel woocommerce_options_panel">
 			<?php do_action( 'woocommerce_product_options_' . $this->tab['target'] ); ?>
-        </div>
+		</div>
 		<?php
-		//}
 	}
-
-	/**
-	 * @return void
-	 */
-	public function render_custom_fields(): void {
-		$this->render();
-	}
-
 
 	public function render(): void {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
+
 		global $post;
+
 		$this->product_id = $post->ID;
 		$this->enqueue();
 		$items = $this->normalize_items( $this->items );
-		?>
 
-		<?php
 		if ( is_callable( $this->callback ) ) {
 			call_user_func( $this->callback );
 		}
 		?>
+		<div class="options_group">
+			<?php
+			$this->print_app( 'product-options', $this->tabs );
 
-        <div class="options_group">
-            <?php $this->print_app( 'product-options', $this->tabs ); ?>
-
-			<?php foreach ( $items as $item ) { ?>
-                <p class="form-field">
+			foreach ( $items as $item ) {
+				?>
+				<div class="form-field">
 					<?php $this->print_field( $item ); ?>
-                </p>
-
-			<?php } ?>
-        </div>
+				</div>
+				<?php
+			}
+			?>
+		</div>
 		<?php
 	}
 
@@ -182,29 +194,57 @@ class ProductOptions extends Integration {
 		if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
 			return call_user_func( $item['callback_set'], $item, $value );
 		}
-        $p = $this->get_product();
+		$product = $this->get_product();
 
-		$p->update_meta_data( $name, $value );
-        $p->save();
+		$product->update_meta_data( $name, $value );
+
+		return $product->save();
 	}
 
-	public function get_product(): bool|\WC_Product|null {
+	public function get_product(): bool|WC_Product|null {
 		return wc_get_product( $this->product_id );
 	}
 
-	/**
-	 * @param number $post_id
-	 */
 	public function save( $post_id ): void {
-		foreach ( $this->items as $item ) {
+		$items = $this->normalize_items( $this->items );
+
+		foreach ( $items as $item ) {
+			// Nonce already verified by WordPress.
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing
 			if ( ! isset( $_POST[ $item['id'] ] ) ) {
 				continue;
 			}
 
 			$this->product_id = $post_id;
-			$value            = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $_POST[ $item['id'] ], $item );
 
-			$this->set_field( $item['id'], $value, $item );
+			$this->set_field(
+				$item['id'],
+				$this->get_sanitized_post_item_value( $item ),
+				$item,
+			);
+		}
+	}
+
+	public function register_meta(): void {
+		$items = $this->normalize_items( $this->items );
+
+		foreach ( $items as $item ) {
+			$wp_type          = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
+			$wp_default_value = apply_filters( 'wpifycf_field_' . $wp_type . '_default_value', '', $item );
+			$sanitizer        = fn( $value ) => apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $value, $item );
+
+			register_post_meta(
+				'product',
+				$item['id'],
+				array(
+					'type'              => $wp_type,
+					'description'       => $item['label'],
+					'single'            => true,
+					'default'           => $item['default'] ?? $wp_default_value,
+					'sanitize_callback' => $sanitizer,
+					'show_in_rest'      => false,
+				),
+			);
 		}
 	}
 }

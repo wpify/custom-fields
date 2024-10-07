@@ -277,11 +277,13 @@ class SiteOptions extends Integration {
 		$items = $this->normalize_items( $this->items );
 
 		if ( ! empty( $this->option_name ) ) {
+			// Nonce verification already done by WordPress.
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing
 			if ( isset( $_POST[ $this->option_name ] ) ) {
 				$data = $this->get_field( $this->option_name );
 
-				// Sanitization is done via a filter to allow for custom sanitization.
-				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				// Sanitization is done via a filter to allow for custom sanitization. Nonce verification already done by WordPress.
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
 				$post_data = apply_filters( 'wpifycf_sanitize_option', wp_unslash( $_POST[ $this->option_name ] ), $items );
 
 				foreach ( $items as $item ) {
@@ -298,6 +300,8 @@ class SiteOptions extends Integration {
 			}
 		} else {
 			foreach ( $items as $item ) {
+				// Nonce verification already done by WordPress.
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing
 				if ( ! isset( $_POST[ $item['id'] ] ) ) {
 					continue;
 				}

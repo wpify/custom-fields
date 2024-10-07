@@ -125,15 +125,17 @@ class User extends Integration {
 		$items         = $this->normalize_items( $this->items );
 
 		foreach ( $items as $item ) {
+			// Nonce verification is already done by WordPress.
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing
 			if ( ! isset( $_POST[ $item['id'] ] ) ) {
 				continue;
 			}
 
-			// Sanitization is done via a filter to allow for custom sanitization.
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-			$value = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], wp_unslash( $_POST[ $item['id'] ] ), $item );
-
-			$this->set_field( $item['id'], $value, $item );
+			$this->set_field(
+				$item['id'],
+				$this->get_sanitized_post_item_value( $item ),
+				$item,
+			);
 		}
 	}
 }

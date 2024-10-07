@@ -113,9 +113,7 @@ class Metabox extends Integration {
 
 			$this->set_field(
 				$item['id'],
-				// Sanitization is done via filter to enable custom sanitization.
-				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-				apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], wp_unslash( $_POST[ $item['id'] ] ), $item ),
+				$this->get_sanitized_post_item_value( $item ),
 				$item,
 			);
 		}
