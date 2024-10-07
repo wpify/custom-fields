@@ -53,16 +53,16 @@ export function MultiSelect ({
   const handleChange = useCallback(newValue => onChange([newValue, ...value]), [onChange, value]);
 
   return (
-    <span className={clsx('wpifycf-field-multi-select', `wpifycf-field-multi-select--${id}`, className)}>
+    <div className={clsx('wpifycf-field-multi-select', `wpifycf-field-multi-select--${id}`, className)}>
       {usedOptions.length > 0 && (
-        <span className="wpifycf-field-multi-select__options" ref={containerRef}>
+        <div className="wpifycf-field-multi-select__options" ref={containerRef}>
           {usedOptions.map((option, index) => (
-            <span className="wpifycf-field-multi-select__option" key={option.value}>
+            <div className="wpifycf-field-multi-select__option" key={option.value}>
               <span>{option.label}</span>
               <IconButton icon="trash" onClick={remove(index)} />
-            </span>
+            </div>
           ))}
-        </span>
+        </div>
       )}
       {availableOptions.length > 0 && (
         <SelectControl
@@ -74,7 +74,7 @@ export function MultiSelect ({
           onInputChange={setSearch}
         />
       )}
-    </span>
+    </div>
   );
 }
 

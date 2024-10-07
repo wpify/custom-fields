@@ -36,13 +36,13 @@ export function FieldDescription({
   }
 
   return (
-    <span
+    <div
       className={clsx(
         'wpifycf-field__description',
         `wpifycf-field__description--${descriptionPosition}`,
       )}
     >
       {description}
-    </span>
+    </div>
   )
 }

@@ -1,5 +1,4 @@
 .wpifycf-field-wysiwyg {
-  display: block;
   flex: 1;
 
   &__buttons {
@@ -20,7 +19,6 @@
   }
 
   &__bubble {
-    display: block;
     background: white;
     padding: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
     border-radius: 5px;

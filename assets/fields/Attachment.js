@@ -32,7 +32,7 @@ function Attachment ({
   }, [setAttachment, onChange]);
 
   return (
-    <span
+    <div
       className={clsx('wpifycf-field-attachment', `wpifycf-field-attachment--${id}`, attributes.class, className)}
     >
       {attachment && (
@@ -43,7 +43,7 @@ function Attachment ({
           {__('Add attachment', 'wpify-custom-fields')}
         </Button>
       )}
-    </span>
+    </div>
   );
 }
 
@@ -62,31 +62,31 @@ export function AttachmentItem ({ attachment, remove }) {
   const icon = attachment?.icon;
 
   return (
-    <span
+    <div
       className={clsx('wpifycf-attachment-item', {
         ['wpifycf-attachment-item--has-thumbnail']: !!thumbnail,
         ['wpifycf-attachment-item--has-icon']: !thumbnail,
       })}
     >
       {thumbnail ? (
-        <span className="wpifycf-attachment-item__thumbnail">
+        <div className="wpifycf-attachment-item__thumbnail">
           <img src={thumbnail} alt={attachment.filename} width={150} height={150} />
-        </span>
+        </div>
       ) : (
-        <span className="wpifycf-attachment-item__icon">
+        <div className="wpifycf-attachment-item__icon">
           <img src={icon} alt={attachment.filename} width={50} />
-        </span>
+        </div>
       )}
       {!thumbnail && (
-        <span className="wpifycf-attachment-item__info">
+        <div className="wpifycf-attachment-item__info">
           {attachment.filename}
-        </span>
+        </div>
       )}
-      <span className="wpifycf-attachment-item__actions">
+      <div className="wpifycf-attachment-item__actions">
         <IconButton href={attachment.editLink} icon="edit" style="dark" />
         <IconButton onClick={remove} icon="trash" style="dark" />
-      </span>
-    </span>
+      </div>
+    </div>
   );
 }
 

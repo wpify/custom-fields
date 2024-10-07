@@ -53,9 +53,9 @@ export function MultiTerm ({
   }
 
   return (
-    <span className={clsx('wpifycf-field-term', `wpifycf-field-term--${id}`, className)}>
+    <div className={clsx('wpifycf-field-term', `wpifycf-field-term--${id}`, className)}>
       {content}
-    </span>
+    </div>
   );
 }
 

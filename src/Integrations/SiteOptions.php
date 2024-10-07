@@ -59,6 +59,8 @@ class SiteOptions extends Integration {
 			);
 		}
 
+		// Nonce verification not needed.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$this->blog_id         = empty( $_REQUEST['id'] ) ? 0 : absint( $_REQUEST['id'] );
 		$this->page_title      = $args['page_title'];
 		$this->menu_title      = $args['menu_title'];
@@ -160,8 +162,14 @@ class SiteOptions extends Integration {
 			return;
 		}
 
-		$id     = absint( $_REQUEST['id'] );
-		$site   = get_site( $id );
+		// Nonce verification not needed.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$id   = isset( $_REQUEST['id'] ) ? absint( $_REQUEST['id'] ) : 0;
+		$site = get_site( $id );
+
+		if ( empty( $site ) ) {
+			return;
+		}
 		$action = add_query_arg( 'action', $this::SAVE_ACTION, 'edit.php' );
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -176,13 +184,13 @@ class SiteOptions extends Integration {
 			<h1 id="edit-site">
 				<?php
 				/* translators: %s: Site title. */
-				printf( __( 'Edit Site: %s' ), esc_html( $site->blogname ) );
+				echo esc_html( sprintf( __( 'Edit Site: %s' ), $site->blogname ) );
 				?>
 			</h1>
 			<p class="edit-site-actions">
-				<a href="<?php echo esc_url( get_home_url( $id, '/' ) ); ?>"><?php _e( 'Visit' ); ?></a>
+				<a href="<?php echo esc_url( get_home_url( $id, '/' ) ); ?>"><?php echo esc_html( __( 'Visit' ) ); ?></a>
 				|
-				<a href="<?php echo esc_url( get_admin_url( $id ) ); ?>"><?php _e( 'Dashboard' ); ?></a>
+				<a href="<?php echo esc_url( get_admin_url( $id ) ); ?>"><?php echo esc_html( __( 'Dashboard' ) ); ?></a>
 			</p>
 			<?php
 			network_edit_site_nav(
@@ -412,7 +420,8 @@ class SiteOptions extends Integration {
 	public function set_page_title( WP_Screen $current_screen ): void {
 		if ( is_network_admin() && $current_screen->id === $this->hook_suffix ) {
 			global $title;
-			$site  = get_site( $this->blog_id );
+			$site = get_site( $this->blog_id );
+			/* translators: Blog name */
 			$title = sprintf( __( 'Edit Site: %s' ), esc_html( $site->blogname ) );
 		}
 	}

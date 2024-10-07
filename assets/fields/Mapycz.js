@@ -32,17 +32,17 @@ export function Mapycz ({
   const mapycz = useMapyCzApiKey();
 
   return (
-    <span className={clsx('wpifycf-field-mapycz', `wpifycf-field-mapycz--${id}`, className)}>
+    <div className={clsx('wpifycf-field-mapycz', `wpifycf-field-mapycz--${id}`, className)}>
       {mapycz.isFetching ? (
-        <span>{__('Loading MapyCZ field...', 'wpify-custom-field')}</span>
+        <div>{__('Loading MapyCZ field...', 'wpify-custom-field')}</div>
       ) : mapycz.isError ? (
-        <span>{__('Error in loading MapyCZ field...', 'wpify-custom-field')}</span>
+        <div>{__('Error in loading MapyCZ field...', 'wpify-custom-field')}</div>
       ) : mapycz.apiKey ? (
         <MapyczMap apiKey={mapycz.apiKey} value={value} onChange={onChange} lang={lang} />
       ) : (
         <SetApiKey mapycz={mapycz} htmlId={htmlId} />
       )}
-    </span>
+    </div>
   );
 }
 
@@ -61,7 +61,6 @@ function MapyczMap ({
   value = {},
   onChange,
   lang,
-  validity = [],
 }) {
   const [map, setMap] = useState(null);
   const latitude = value.latitude || defaultValue.latitude;
@@ -188,11 +187,11 @@ function MapyczMap ({
   }, [map]);
 
   return (
-    <span className="wpifycf-field-mapycz__map" ref={root}>
+    <div className="wpifycf-field-mapycz__map" ref={root}>
       <AutoComplete value={value} onChange={onChange} apiKey={apiKey} lang={lang} setCenter={setCenter} />
       {mapContainer}
       <Address value={value} className="wpifycf-field-mapycz__address" />
-    </span>
+    </div>
   );
 }
 
@@ -202,7 +201,7 @@ function Address ({ value, className }) {
   }
 
   return (
-    <span className={className}>
+    <div className={className}>
       {value.country && (
         <>
           {value.street}
@@ -220,7 +219,7 @@ function Address ({ value, className }) {
       )}
       <br />
       {parseFloat(value.latitude).toFixed(6)}, {parseFloat(value.longitude).toFixed(6)}
-    </span>
+    </div>
   );
 }
 
@@ -278,7 +277,7 @@ function AutoComplete ({ value, onChange, apiKey, lang, setCenter }) {
   }, []);
 
   return (
-    <span className="wpifycf-field-mapycz__autocomplete" ref={rootRef}>
+    <div className="wpifycf-field-mapycz__autocomplete" ref={rootRef}>
       <input
         value={query}
         onChange={handleTermChange}
@@ -288,7 +287,7 @@ function AutoComplete ({ value, onChange, apiKey, lang, setCenter }) {
         onMouseOver={() => setActive(0)}
       />
       {active !== null && suggestions.items.length > 0 && (
-        <span className="wpifycf-field-mapycz__suggestions">
+        <div className="wpifycf-field-mapycz__suggestions">
           {suggestions.items.map((suggestion, index) => (
             <button
               type="button"
@@ -307,15 +306,15 @@ function AutoComplete ({ value, onChange, apiKey, lang, setCenter }) {
               </small>
             </button>
           ))}
-          <span className="wpifycf-field-mapycz__suggestions-attribution">
+          <div className="wpifycf-field-mapycz__suggestions-attribution">
             {__('Powered by', 'wpify-custom-fields')}
             <a href="https://api.mapy.cz/" target="_blank" rel="noreferrer noopenner">
               <img src="https://api.mapy.cz/img/api/logo-small.svg" width={50} alt="Mapy.cz" />
             </a>
-          </span>
-        </span>
+          </div>
+        </div>
       )}
-    </span>
+    </div>
   );
 }
 
@@ -346,7 +345,7 @@ function SetApiKey ({ mapycz, htmlId }) {
   }, [mapycz, apiKey]);
 
   return (
-    <span className="wpifycf-field-mapycz__set-key">
+    <div className="wpifycf-field-mapycz__set-key">
       <label
         htmlFor={htmlId}
         dangerouslySetInnerHTML={{
@@ -363,7 +362,7 @@ function SetApiKey ({ mapycz, htmlId }) {
       <Button onClick={handleApiKeyUpdate}>
         {__('Set API key', 'wpify-custom-fields')}
       </Button>
-    </span>
+    </div>
   );
 }
 

@@ -14,7 +14,7 @@ import {
   Flex,
   FlexItem,
 } from '@wordpress/components';
-import { fullscreen, edit } from '@wordpress/icons';
+import { fullscreen } from '@wordpress/icons';
 
 const VIEW_VISUAL = 'visual';
 const VIEW_HTML = 'html';
@@ -31,8 +31,8 @@ export function Wysiwyg ({
   const { context } = useContext(AppContext);
 
   return (
-    <span className={clsx('wpifycf-field-wysiwyg', `wpifycf-field-wysiwyg--${id}`, className)}>
-      <span className="wpifycf-field-wysiwyg__tabs">
+    <div className={clsx('wpifycf-field-wysiwyg', `wpifycf-field-wysiwyg--${id}`, className)}>
+      <div className="wpifycf-field-wysiwyg__tabs">
         <button
           type="button"
           className={clsx('wpifycf-field-wysiwyg__tab', view === VIEW_VISUAL && 'active')}
@@ -47,7 +47,7 @@ export function Wysiwyg ({
         >
           {__('HTML', 'wpify-custom-fields')}
         </button>
-      </span>
+      </div>
       {view === VIEW_VISUAL && (
         context === 'gutenberg' ? (
           <GutenbergTinyMCE
@@ -76,7 +76,7 @@ export function Wysiwyg ({
           theme="light"
         />
       )}
-    </span>
+    </div>
   );
 }
 

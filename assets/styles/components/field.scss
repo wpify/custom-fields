@@ -24,7 +24,6 @@
   }
 
   &__description {
-    display: block;
     max-width: 95%;
     color: #646970;
     font-size: 14px;
@@ -57,16 +56,11 @@
   }
 
   &__error {
-    display: block;
     color: red;
     padding-left: var(--wpifycf-gap-1);
     padding-right: var(--wpifycf-gap-1);
     font-size: 0.9em;
     font-weight: 500;
-  }
-
-  &--options {
-	display: block;
   }
 
   .sortable-ghost {

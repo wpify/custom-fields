@@ -1,6 +1,4 @@
 .wpifycf-field-link {
-  display: block;
-
   &__field-label {
     display: block;
   }
@@ -20,10 +18,6 @@
 	&-col-span-2 {
 		grid-column: span 2 / span 2;
 	}
-  }
-
-  &__field-option {
-    display: block;
   }
 
   &__fields {

@@ -42,20 +42,20 @@ export function MultiField ({
   const fieldsValidity = validity?.reduce((acc, item) => typeof item === 'object' ? { ...acc, ...item } : acc, {});
 
   return (
-    <span className={clsx('wpifycf-multi-field', `wpifycf-multi-field--${type}`, className)}>
+    <div className={clsx('wpifycf-multi-field', `wpifycf-multi-field--${type}`, className)}>
       {name && <input type="hidden" name={name} value={JSON.stringify(value)} />}
-      <span className="wpifycf-multi-field-items" ref={containerRef}>
+      <div className="wpifycf-multi-field-items" ref={containerRef}>
         {Array.isArray(value) && value.map((value, index) => (
-          <span
+          <div
             className={clsx('wpifycf-multi-field-item')}
             key={keyPrefix + '.' + index}
           >
             {canMove && (
-              <span className="wpifycf-multi-field-item__sort">
+              <div className="wpifycf-multi-field-item__sort">
                 <IconButton icon="move" className="wpifycf-sort" />
-              </span>
+              </div>
             )}
-            <span className="wpifycf-multi-field-item-field">
+            <div className="wpifycf-multi-field-item-field">
               <Field
                 {...props}
                 type={type}
@@ -67,9 +67,9 @@ export function MultiField ({
                 renderOptions={{ noLabel: true, noWrapper: true }}
                 fieldPath={`${fieldPath}[${index}]`}
               />
-            </span>
+            </div>
             {canRemove && (
-              <span className="wpifycf-multi-field-item-actions">
+              <div className="wpifycf-multi-field-item-actions">
               {buttons.remove ? (
                 <Button onClick={remove(index)}>
                   {buttons.remove}
@@ -77,13 +77,13 @@ export function MultiField ({
               ) : (
                 <IconButton icon="trash" onClick={remove(index)} />
               )}
-            </span>
+            </div>
             )}
-          </span>
+          </div>
         ))}
-      </span>
+      </div>
       {canAdd && (
-        <span className="wpifycf-multi-field-item-buttons-after">
+        <div className="wpifycf-multi-field-item-buttons-after">
           {buttons.add ? (
             <Button onClick={add}>
               {buttons.add}
@@ -91,8 +91,8 @@ export function MultiField ({
           ) : (
             <IconButton icon="plus" onClick={add} size={24} />
           )}
-        </span>
+        </div>
       )}
-    </span>
+    </div>
   );
 }

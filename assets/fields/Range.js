@@ -18,8 +18,8 @@ export function Range ({
   const isValid = !isNaN(parseFloat(value));
 
   return (
-    <span className={clsx('wpifycf-field-range', `wpifycf-field-range--${id}`, attributes.class, className)}>
-      {min && <span className="wpifycf-field-range__minmax">{min}</span>}
+    <div className={clsx('wpifycf-field-range', `wpifycf-field-range--${id}`, attributes.class, className)}>
+      {min && <div className="wpifycf-field-range__minmax">{min}</div>}
       <input
         type="range"
         id={htmlId}
@@ -30,9 +30,9 @@ export function Range ({
         step={step}
         {...attributes}
       />
-      {max && <span className="wpifycf-field-range__minmax">{max}</span>}
-      {isValid && <span className="wpifycf-field-range__value">{value}</span>}
-    </span>
+      {max && <div className="wpifycf-field-range__minmax">{max}</div>}
+      {isValid && <div className="wpifycf-field-range__value">{value}</div>}
+    </div>
   );
 }
 

@@ -10,7 +10,6 @@
   }
 
   &__item {
-    display: block;
     background: rgba(255, 255, 255, 0.5);
     border: 1px solid var(--wpifycf-border-color);
     max-width: 100%;
@@ -28,10 +27,6 @@
   &__item--invalid &__item-header {
     border: 1px solid red;
     color: red;
-  }
-
-  &__header-actions {
-    display: block;
   }
 
   &__title {

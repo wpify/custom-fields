@@ -15,18 +15,18 @@ function MultiToggle ({
   const handleChange = useCallback(optionValue => checked => onChange({ ...value, [optionValue]: checked }), [onChange, value]);
 
   return (
-    <span className={clsx('wpifycf-field-multi-toggle', `wpifycf-field-multi-toggle--${id}`, className)}>
+    <div className={clsx('wpifycf-field-multi-toggle', `wpifycf-field-multi-toggle--${id}`, className)}>
       {options.map(option => (
-        <span className={`wpifycf-field-multi-toggle__item wpifycf-field-multi-checkbox__item--${option.value}`} key={option.value}>
+        <div className={`wpifycf-field-multi-toggle__item wpifycf-field-multi-checkbox__item--${option.value}`} key={option.value}>
           <ToggleControl
             id={`${htmlId}-${option.value}`}
             onChange={handleChange(option.value)}
             checked={value[option.value]}
             label={option.label}
           />
-        </span>
+        </div>
       ))}
-    </span>
+    </div>
   );
 }
 

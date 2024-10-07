@@ -129,6 +129,8 @@ class User extends Integration {
 				continue;
 			}
 
+			// Sanitization is done via a filter to allow for custom sanitization.
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			$value = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], wp_unslash( $_POST[ $item['id'] ] ), $item );
 
 			$this->set_field( $item['id'], $value, $item );

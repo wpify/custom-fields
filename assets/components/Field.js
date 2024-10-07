@@ -77,9 +77,9 @@ export function Field ({
           )}
           <ErrorBoundary
             fallback={(
-              <span className="wpifycf-error-boundary">
+              <div className="wpifycf-error-boundary">
                 {sprintf(__('An error occurred while rendering the field of type %s.', 'wpify-custom-fields'), type)}
-              </span>
+              </div>
             )}
           >
             <FieldComponent

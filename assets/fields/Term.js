@@ -54,9 +54,9 @@ export function Term ({
   }
 
   return (
-    <span className={clsx('wpifycf-field-term', `wpifycf-field-term--${id}`, className)}>
+    <div className={clsx('wpifycf-field-term', `wpifycf-field-term--${id}`, className)}>
       {content}
-    </span>
+    </div>
   );
 }
 
@@ -64,7 +64,7 @@ Term.checkValidity = checkValidityNonZeroIntegerType;
 
 export function CategoryTree ({ categories = [], value = [], onChange, htmlId, type }) {
   return (
-    <span className="wpifycf-term-items">
+    <div className="wpifycf-term-items">
       {categories.map(category => (
         <CategoryItem
           key={category.id}
@@ -75,7 +75,7 @@ export function CategoryTree ({ categories = [], value = [], onChange, htmlId, t
           type={type}
         />
       ))}
-    </span>
+    </div>
   );
 }
 
@@ -103,15 +103,15 @@ function CategoryItem ({ htmlId, category, value = [], onChange, type }) {
   }, [type, onChange, value]);
 
   return (
-    <span className="wpifycf-term-item">
-      <span className="wpifycf-term-item__name">
+    <div className="wpifycf-term-item">
+      <div className="wpifycf-term-item__name">
         <input
           type={type}
           name={htmlId}
           onChange={handleSelect(category.id)}
           checked={value.includes(category.id)}
         />
-        <span
+        <div
           onClick={category.children ? handleToggleExpanded : handleSelect(category.id)}
           dangerouslySetInnerHTML={{ __html: category.name }}
         />
@@ -121,9 +121,9 @@ function CategoryItem ({ htmlId, category, value = [], onChange, type }) {
             onClick={handleToggleExpanded}
           />
         )}
-      </span>
+      </div>
       {isExpanded && category.children && (
-        <span className="wpifycf-term-item__children">
+        <div className="wpifycf-term-item__children">
           {category.children.map(child => (
             <CategoryItem
               key={child.id}
@@ -134,9 +134,9 @@ function CategoryItem ({ htmlId, category, value = [], onChange, type }) {
               htmlId={htmlId}
             />
           ))}
-        </span>
+        </div>
       )}
-    </span>
+    </div>
   );
 }
 

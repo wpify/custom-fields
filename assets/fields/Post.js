@@ -17,7 +17,7 @@ export function Post ({
   const handleDelete = useCallback(() => onChange(null), [onChange]);
 
   return (
-    <span className={clsx('wpifycf-field-post', `wpifycf-field-post--${id}`, className)}>
+    <div className={clsx('wpifycf-field-post', `wpifycf-field-post--${id}`, className)}>
       <PostSelect
         value={value}
         onChange={onChange}
@@ -27,7 +27,7 @@ export function Post ({
       {selected && (
         <PostPreview post={selected} onDelete={handleDelete} />
       )}
-    </span>
+    </div>
   );
 }
 
@@ -35,7 +35,7 @@ Post.checkValidity = checkValidityNumberType;
 
 export function PostPreview ({ post, onDelete }) {
   return (
-    <span className="wpifycf-post-preview">
+    <div className="wpifycf-post-preview">
       {post && (
         <>
           <img
@@ -46,16 +46,16 @@ export function PostPreview ({ post, onDelete }) {
             width="100"
             height="100"
           />
-          <span className="wpifycf-post-preview__title">
+          <div className="wpifycf-post-preview__title">
             <a href={post.permalink} target="_blank">
               {post.id}: {post.title}
             </a>
-          </span>
-          <span className="wpifycf-post-preview__excerpt">{post.excerpt.length > 125 ? post.excerpt.substring(0, 125) + '...' : post.excerpt}</span>
+          </div>
+          <div className="wpifycf-post-preview__excerpt">{post.excerpt.length > 125 ? post.excerpt.substring(0, 125) + '...' : post.excerpt}</div>
         </>
       )}
       <IconButton icon="trash" className="wpifycf-post-preview__delete" onClick={onDelete} />
-    </span>
+    </div>
   );
 }
 

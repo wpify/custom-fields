@@ -20,7 +20,7 @@ function Group ({
   const fieldValidity = validity?.reduce((acc, item) => typeof item === 'object' ? { ...acc, ...item } : acc, {});
 
   return (
-    <span
+    <div
       className={clsx('wpifycf-field-group', `wpifycf-field-group--${id}`, attributes.class, className)}
     >
       {items.map(field => (
@@ -34,7 +34,7 @@ function Group ({
           fieldPath={`${fieldPath}.${field.id}`}
         />
       ))}
-    </span>
+    </div>
   );
 }
 

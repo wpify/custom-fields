@@ -52,10 +52,10 @@ function MultiGroup ({
   const fieldsValidity = validity?.reduce((acc, item) => typeof item === 'object' ? { ...acc, ...item } : acc, {});
 
   return (
-    <span className={clsx('wpifycf-field-multi-group', `wpifycf-field-multi-group--${props.id}`, props.attributes?.class, className)}>
-      <span className="wpifycf-field-multi-group__items" ref={containerRef}>
+    <div className={clsx('wpifycf-field-multi-group', `wpifycf-field-multi-group--${props.id}`, props.attributes?.class, className)}>
+      <div className="wpifycf-field-multi-group__items" ref={containerRef}>
         {Array.isArray(value) && value.map((value, index) => (
-          <span
+          <div
             className={clsx(
               'wpifycf-field-multi-group__item',
               collapsed[index] && 'wpifycf-field-multi-group__item--collapsed',
@@ -63,18 +63,18 @@ function MultiGroup ({
             )}
             key={keyPrefix + '.' + index}
           >
-            <span className="wpifycf-field-multi-group__item-header wpifycf__move-handle">
+            <div className="wpifycf-field-multi-group__item-header wpifycf__move-handle">
               {canMove && (
-                <span className="wpifycf-field-multi-group__sort" onClick={toggleCollapsed(index)}>
+                <div className="wpifycf-field-multi-group__sort" onClick={toggleCollapsed(index)}>
                   <IconButton icon="move" className="wpifycf-sort" />
-                </span>
+                </div>
               )}
-              <span className="wpifycf-field-multi-group__title" onClick={toggleCollapsed(index)}>
+              <div className="wpifycf-field-multi-group__title" onClick={toggleCollapsed(index)}>
                 <Group.Title field={props} value={value} index={index} />
-              </span>
-              <span className={clsx('wpifycf-field-multi-group__header-actions')}>
+              </div>
+              <div className={clsx('wpifycf-field-multi-group__header-actions')}>
                 {canDuplicate && (
-                  <span className="wpifycf-field-multi-group__duplicate">
+                  <div className="wpifycf-field-multi-group__duplicate">
                     {buttons.duplicate ? (
                       <Button onClick={duplicate(index)}>
                         {buttons.duplicate}
@@ -82,10 +82,10 @@ function MultiGroup ({
                     ) : (
                       <IconButton icon="duplicate" onClick={duplicate(index)} />
                     )}
-                  </span>
+                  </div>
                 )}
                 {canRemove && (
-                  <span className="wpifycf-field-multi-group__remove">
+                  <div className="wpifycf-field-multi-group__remove">
                     {buttons.remove ? (
                       <Button onClick={remove(index)}>
                         {buttons.remove}
@@ -93,11 +93,11 @@ function MultiGroup ({
                     ) : (
                       <IconButton icon="trash" onClick={remove(index)} />
                     )}
-                  </span>
+                  </div>
                 )}
-              </span>
-            </span>
-            <span className="wpifycf-field-multi-group__content">
+              </div>
+            </div>
+            <div className="wpifycf-field-multi-group__content">
               <Field
                 {...props}
                 value={value}
@@ -109,18 +109,18 @@ function MultiGroup ({
                 fieldPath={`${fieldPath}[${index}]`}
                 renderOptions={{ noLabel: true, noWrapper: true }}
               />
-            </span>
-          </span>
+            </div>
+          </div>
         ))}
-      </span>
+      </div>
       {canAdd && (
-        <span className="wpifycf-field-multi-group__actions">
+        <div className="wpifycf-field-multi-group__actions">
           <Button onClick={add}>
             {buttons.add || __('Add item', 'wpify-custom-fields')}
           </Button>
-        </span>
+        </div>
       )}
-    </span>
+    </div>
   );
 }
 

@@ -81,9 +81,9 @@ export function Link ({
   }, [resolvedUrlTitle, onChange, value.label, blurUrl]);
 
   return (
-    <span className={clsx('wpifycf-field-link', `wpifycf-field-link--${id}`, className)}>
-      <span className="wpifycf-field-link__fields">
-        <span className="wpifycf-field-link__field-label">
+    <div className={clsx('wpifycf-field-link', `wpifycf-field-link--${id}`, className)}>
+      <div className="wpifycf-field-link__fields">
+        <div className="wpifycf-field-link__field-label">
           {postTypes.length > 0 ? (
             <select value={value.post_type} onChange={handlePostTypeChange}>
               <option value="">{__('URL', 'wpify-custom-fields')}</option>
@@ -98,11 +98,11 @@ export function Link ({
               {__('URL', 'wpify-custom-fields')}
             </label>
           )}
-        </span>
+        </div>
         {value.post_type && (
           <PostSelect postType={value.post_type} value={value.post} onSelect={handlePostChange} />
         )}
-		<span className={`wpifycf-field-link__field-value${value.post_type ? ' wpifycf-field-link__field-value-col-span-2' : ''}`}>
+		<div className={`wpifycf-field-link__field-value${value.post_type ? ' wpifycf-field-link__field-value-col-span-2' : ''}`}>
           {value.post_type && (
             <label htmlFor={htmlId + '.url'}>
               {__('URL', 'wpify-custom-fields')}
@@ -113,15 +113,15 @@ export function Link ({
             <input type="checkbox" checked={value?.target === '_blank'} onChange={handleTargetChange} />
             {__('Open in a new tab', 'wpify-custom-fields')}
           </label>
-        </span>
+        </div>
         <label className="wpifycf-field-link__field-label" htmlFor={htmlId + '.label'}>
           {__('Label', 'wpify-custom-fields')}
         </label>
-        <span className="wpifycf-field-link__field-value">
+        <div className="wpifycf-field-link__field-value">
           <input type="text" value={value?.label || ''} id={htmlId + '.label'} onChange={handleLabelChange} />
-        </span>
-    </span>
-  </span>
+        </div>
+    </div>
+  </div>
   );
 }
 

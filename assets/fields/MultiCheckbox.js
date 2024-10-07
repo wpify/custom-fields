@@ -19,9 +19,9 @@ function MultiCheckbox ({
   }, [onChange, value]);
 
   return (
-    <span className={clsx('wpifycf-field-multi-checkbox', `wpifycf-field-multi-checkbox--${id}`, className)}>
+    <div className={clsx('wpifycf-field-multi-checkbox', `wpifycf-field-multi-checkbox--${id}`, className)}>
       {options.map(option => (
-        <span className={`wpifycf-field-multi-checkbox__item wpifycf-field-multi-checkbox__item--${option.value}`} key={option.value}>
+        <div className={`wpifycf-field-multi-checkbox__item wpifycf-field-multi-checkbox__item--${option.value}`} key={option.value}>
           <input
             type="checkbox"
             id={`${htmlId}-${option.value}`}
@@ -35,9 +35,9 @@ function MultiCheckbox ({
           >
             {option.label}
           </label>
-        </span>
+        </div>
       ))}
-    </span>
+    </div>
   );
 }
 

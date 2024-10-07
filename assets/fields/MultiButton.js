@@ -7,14 +7,14 @@ function MultiButton ({
   buttons = [],
 }) {
   return (
-    <span className={clsx('wpifycf-field-multi-button', className)}>
+    <div className={clsx('wpifycf-field-multi-button', className)}>
       {buttons.map((button, index) => (
         <Button
           key={index}
           {...button}
         />
       ))}
-    </span>
+    </div>
   );
 }
 

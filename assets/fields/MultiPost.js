@@ -30,14 +30,14 @@ export function MultiPost ({
   });
 
   return (
-    <span className={clsx('wpifycf-field-multi-post', `wpifycf-field-multi-post--${id}`, className)}>
+    <div className={clsx('wpifycf-field-multi-post', `wpifycf-field-multi-post--${id}`, className)}>
       <PostSelect
         value={null}
         exclude={value}
         onChange={handleAdd}
         postType={postType}
       />
-      <span className="wpifycf-field-multi-post__items" ref={containerRef}>
+      <div className="wpifycf-field-multi-post__items" ref={containerRef}>
         {value.map((id, index) => (
           <PostPreview
             key={index + '-' + id}
@@ -45,8 +45,8 @@ export function MultiPost ({
             onDelete={remove(index)}
           />
         ))}
-      </span>
-    </span>
+      </div>
+    </div>
   );
 }
 

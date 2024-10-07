@@ -13,8 +13,8 @@ export function FieldWrapper ({ renderOptions = {}, children }) {
   }
 
   return (
-    <span className="wpifycf-field__wrapper">
+    <div className="wpifycf-field__wrapper">
       {children}
-    </span>
+    </div>
   );
 }

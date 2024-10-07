@@ -1,5 +1,4 @@
 .wpifycf-field-mapycz {
-  display: block;
   min-width: max(100%, 600px);
 
   &__set-key {
@@ -21,7 +20,6 @@
   }
 
   &__autocomplete {
-    display: block;
     position: relative;
   }
 
@@ -72,7 +70,6 @@
   }
 
   &__address {
-    display: block;
     background: var(--wpifycf-border-color);
     padding: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
   }
