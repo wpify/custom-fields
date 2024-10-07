@@ -12,6 +12,7 @@ use Wpify\CustomFields\Integrations\ProductOptions;
 use Wpify\CustomFields\Integrations\ProductVariationOptions;
 use Wpify\CustomFields\Integrations\SiteOptions;
 use Wpify\CustomFields\Integrations\Taxonomy;
+use Wpify\CustomFields\Integrations\User;
 use function FakerPress\ThirdParty\Symfony\Component\Translation\t;
 
 class CustomFields {
@@ -184,8 +185,12 @@ class CustomFields {
 		return new Comment( $args, $this );
 	}
 
-	public function create_site_options( $args = array() ) {
+	public function create_site_options( $args = array() ): SiteOptions {
 		return new SiteOptions( $args, $this );
+	}
+
+	public function create_user_options( array $array ): User {
+		return new User( $array, $this );
 	}
 
 	public function get_js_asset( string $item ): array {

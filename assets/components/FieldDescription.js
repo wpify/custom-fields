@@ -13,7 +13,7 @@ export function FieldDescription({
     return null;
   }
 
-  if (context === 'edit_term' && renderOptions.isRoot) {
+  if (['edit_term', 'user'].includes(context) && renderOptions.isRoot) {
     return (
       <p
         className={clsx(

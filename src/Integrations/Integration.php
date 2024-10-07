@@ -150,7 +150,6 @@ abstract class Integration {
 				printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );
 			} ?>
 		></div>
-
 		<?php
 	}
 

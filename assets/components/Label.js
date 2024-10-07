@@ -29,8 +29,8 @@ export function Label ({
     </label>
   );
 
-  if (['options', 'site-options'].includes(context) && node) {
-    return maybePortal(markup, node.closest('tr')?.querySelector('th[scope="row"]'));
+  if (['options', 'site-options', 'user'].includes(context) && node) {
+    return maybePortal(markup, node.closest('tr')?.querySelector('th'));
   }
 
   if (context === 'edit_term' && renderOptions.isRoot) {
