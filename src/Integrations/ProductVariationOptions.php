@@ -69,7 +69,36 @@ class ProductVariationOptions extends Integration {
 		$this->help_sidebar  = $args['help_sidebar'] ?? '';
 		$this->items         = $args['items'] ?? array();
 		$this->tabs          = $args['tabs'] ?? array();
-		$this->tab           = $args['tab'] ?? [];
+
+		$tab = $args['tab'] ?? array();
+
+		if ( empty( $tab['label'] ) ) {
+			throw new MissingArgumentException(
+				sprintf(
+					/* translators: %1$s is the class name. */
+					esc_html( __( 'Missing argument $tab["label"] in class %2$s.', 'wpify-custom-fields' ) ),
+					__CLASS__,
+				),
+			);
+		}
+
+		if ( empty( $tab['id'] ) ) {
+			$tab['id'] = sanitize_title( $tab['label'] );
+		}
+
+		if ( empty( $tab['target'] ) ) {
+			$tab['target'] = $tab['id'];
+		}
+
+		if ( empty( $tab['priority'] ) ) {
+			$tab['priority'] = 100;
+		}
+
+		if ( empty( $tab['class'] ) ) {
+			$tab['class'] = array();
+		}
+
+		$this->tab           = $tab;
 		$this->is_new_tab    = false;
 		$this->id            = sanitize_title(
 			join(
@@ -142,9 +171,10 @@ class ProductVariationOptions extends Integration {
 		if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
 			return call_user_func( $item['callback_set'], $item, $value );
 		}
-		$product = $this->get_product();
 
+		$product = $this->get_product();
 		$product->update_meta_data( $name, $value );
+
 		return $product->save();
 	}
 
@@ -168,6 +198,8 @@ class ProductVariationOptions extends Integration {
 			// Sanitization is done in the filter to allow custom sanitization. Nonce is already verified by WooCommerce.
 			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
 			$value = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], wp_unslash( $_POST[ $item['id'] ][ $loop ] ), $item );
+
+			bdump( [ $product_variation_id, $value, $loop ] );
 
 			$this->set_field(
 				$item['id'],
