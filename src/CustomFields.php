@@ -11,6 +11,7 @@ use Wpify\CustomFields\Integrations\OrderMetabox;
 use Wpify\CustomFields\Integrations\ProductOptions;
 use Wpify\CustomFields\Integrations\ProductVariationOptions;
 use Wpify\CustomFields\Integrations\SiteOptions;
+use Wpify\CustomFields\Integrations\SubscriptionMetabox;
 use Wpify\CustomFields\Integrations\Taxonomy;
 use Wpify\CustomFields\Integrations\User;
 use function FakerPress\ThirdParty\Symfony\Component\Translation\t;
@@ -175,6 +176,16 @@ class CustomFields {
 	 */
 	public function create_order_metabox( $args = array() ): OrderMetabox {
 		return new OrderMetabox( $args, $this );
+	}
+
+	/**
+	 * @param array $args
+	 *
+	 * @return SubscriptionMetabox
+	 * @throws MissingArgumentException
+	 */
+	public function create_subscription_metabox( $args = array() ): SubscriptionMetabox {
+		return new SubscriptionMetabox( $args, $this );
 	}
 
 	public function create_gutenberg_block( $args = array() ): GutenbergBlock {
