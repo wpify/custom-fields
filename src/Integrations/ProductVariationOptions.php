@@ -142,11 +142,7 @@ class ProductVariationOptions extends Integration {
 			$this->print_app( 'product-variation', $this->tabs, array( 'loop' => $loop ) );
 
 			foreach ( $items as $item ) {
-				?>
-				<div class="form-field">
-					<?php $this->print_field( $item, array( 'loop' => $loop ) ); ?>
-				</div>
-				<?php
+				$this->print_field( $item, array( 'loop' => $loop ), 'div', 'form-field' );
 			}
 			?>
 		</div>
