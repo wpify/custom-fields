@@ -46,11 +46,14 @@ function loadGutenbergBlocks (event) {
         context="gutenberg"
         config={config}
         tabs={event.detail.tabs}
-        fields={event.detail.items}
       >
         <QueryClientProvider client={queryClient}>
           <StrictMode>
-            <GutenbergBlock {...props} args={event.detail.args} />
+            <GutenbergBlock
+              {...props}
+              fields={event.detail.items}
+              args={event.detail.args}
+            />
           </StrictMode>
         </QueryClientProvider>
       </AppContextProvider>
