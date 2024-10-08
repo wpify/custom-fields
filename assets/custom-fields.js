@@ -24,13 +24,11 @@ function loadCustomFields () {
         context={container.dataset.context}
         config={config}
         tabs={JSON.parse(container.dataset.tabs)}
+        integrationId={container.dataset.integrationId}
       >
         <QueryClientProvider client={queryClient}>
           <StrictMode>
-            <App
-              integrationId={container.dataset.integrationId}
-              form={container.closest('form')}
-            />
+            <App form={container.closest('form')} />
           </StrictMode>
         </QueryClientProvider>
       </AppContextProvider>,
@@ -48,14 +46,11 @@ function loadGutenbergBlocks (event) {
         context="gutenberg"
         config={config}
         tabs={event.detail.tabs}
+        fields={event.detail.items}
       >
         <QueryClientProvider client={queryClient}>
           <StrictMode>
-            <GutenbergBlock
-              {...props}
-              args={event.detail.args}
-              items={event.detail.items}
-            />
+            <GutenbergBlock {...props} args={event.detail.args} />
           </StrictMode>
         </QueryClientProvider>
       </AppContextProvider>

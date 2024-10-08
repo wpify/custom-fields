@@ -1,10 +1,10 @@
 import { useMemo, useContext } from 'react';
-import { useFields, useValidity } from '@/helpers/hooks';
+import { useValidity } from '@/helpers/hooks';
 import { AppContext } from '@/custom-fields';
 import { RootFields } from '@/components/RootFields';
 
-export function App ({ integrationId, form }) {
-  const { fields, values, updateValue } = useFields(integrationId);
+export function App ({ form }) {
+  const { fields, values, updateValue } = useContext(AppContext);
   const { validity, validate, handleValidityChange } = useValidity({ form });
   const { context } = useContext(AppContext);
 

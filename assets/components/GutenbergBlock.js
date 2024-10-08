@@ -11,11 +11,13 @@ import { RootFields } from '@/components/RootFields';
 const RENDERED_VIEW = 'view';
 const EDITOR_VIEW = 'edit';
 
-export function GutenbergBlock ({ attributes, setAttributes, name, args, items }) {
+export function GutenbergBlock ({ attributes, setAttributes, name, args }) {
   const props = useBlockProps();
   const [view, setView] = useState(RENDERED_VIEW);
   const switchToRenderedView = useCallback(() => setView(RENDERED_VIEW), []);
   const switchToEditorView = useCallback(() => setView(EDITOR_VIEW), []);
+  const { fields } = useContext(AppContext);
+  const updateValue = useCallback(key => value => setAttributes({ [key]: value }), [setAttributes]);
 
   return (
     <div {...props}>
@@ -47,9 +49,9 @@ export function GutenbergBlock ({ attributes, setAttributes, name, args, items }
         )}
         {view === EDITOR_VIEW && (
           <EditorView
-            fields={items}
+            fields={fields}
             values={attributes}
-            updateValue={key => value => setAttributes({ [key]: value })}
+            updateValue={updateValue}
           />
         )}
       </div>

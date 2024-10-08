@@ -8,48 +8,6 @@ import '@wordpress/core-data';
 import { evaluateConditions } from '@/helpers/functions';
 import { AppContext } from '@/custom-fields';
 
-export function useFields (integrationId) {
-  const {
-    values,
-    setValues,
-    updateValue,
-  } = useContext(AppContext);
-
-  const defs = useMemo(
-    () => Array.from(document.querySelectorAll('.wpifycf-field[data-integration-id="' + integrationId + '"]'))
-      .map(node => {
-        const dataset = { ...JSON.parse(node.dataset.item), node };
-        if (dataset.loop || dataset.loop === 0) {
-          dataset.id = `${dataset.id}[${dataset.loop}]`;
-          dataset.name = `${dataset.name}[${dataset.loop}]`;
-        }
-
-        return dataset;
-      }),
-    [integrationId],
-  );
-
-  const fields = useMemo(
-    () => defs.map(({ value, ...props }) => props),
-    [defs],
-  );
-
-  const initialValues = useMemo(
-    () => defs.reduce((acc, { id, value }) => ({ ...acc, [id]: value }), {}),
-    [defs],
-  );
-
-  useEffect(() => {
-    setValues(initialValues);
-  }, [setValues, initialValues]);
-
-  return {
-    fields,
-    values,
-    updateValue,
-  };
-}
-
 export function useTabs () {
   const { context, tabs = {} } = useContext(AppContext);
   const [currentTab, setCurrentTab] = useState(() => {
