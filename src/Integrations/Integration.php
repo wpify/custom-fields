@@ -134,36 +134,38 @@ abstract class Integration {
 			'window.' . $handle . '=' . wp_json_encode( $data ) . ';',
 			'before',
 		);
-
-		wp_enqueue_style( 'wp-components' );
 	}
 
 	public function print_app( string $context, array $tabs, array $data_attributes = array() ): void {
-		$loop = $data_attributes['loop'] ?? '';
+		$loop           = $data_attributes['loop'] ?? '';
+		$integration_id = isset( $data_attributes['loop'] ) ? $this->id . '__' . $loop : $this->id;
 		?>
 		<div class="wpifycf-app"
 		     data-loaded="false"
-		     data-integration-id="<?php echo esc_attr( $this->id . $loop ) ?>"
+		     data-integration-id="<?php echo esc_attr( $integration_id ) ?>"
 		     data-tabs="<?php echo esc_attr( wp_json_encode( $tabs ) ) ?>"
 		     data-context="<?php echo esc_attr( $context ) ?>"
-			<?php foreach ( $data_attributes as $key => $value ) {
+			<?php
+			foreach ( $data_attributes as $key => $value ) {
 				printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );
-			} ?>
+			}
+			?>
 		></div>
 		<?php
 	}
 
 	public function print_field( array $item, array $data_attributes = array(), string $tag = 'div', string $class = '' ): void {
-		$item['name']  = empty( $this->option_name ) ? $item['id'] : $this->option_name . '[' . $item['id'] . ']';
-		$item['value'] = $this->get_field( $item['id'], $item ) ?? $item['default'];
-		$item['loop']  = $data_attributes['loop'] ?? '';
+		$item['name']   = empty( $this->option_name ) ? $item['id'] : $this->option_name . '[' . $item['id'] . ']';
+		$item['value']  = $this->get_field( $item['id'], $item ) ?? $item['default'];
+		$item['loop']   = $data_attributes['loop'] ?? '';
+		$integration_id = isset( $data_attributes['loop'] ) ? $this->id . '__' . $data_attributes['loop'] : $this->id;
 
 		if ( is_string( $item['value'] ) ) {
 			$item['value'] = html_entity_decode( $item['value'] );
 		}
 		?>
 		<<?php echo esc_attr( $tag ) ?> data-item="<?php echo esc_attr( wp_json_encode( $item ) ) ?>"
-		data-integration-id="<?php echo esc_attr( $this->id . $item['loop'] ) ?>"
+		data-integration-id="<?php echo esc_attr( $integration_id ) ?>"
 		class="wpifycf-field wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?><?php echo esc_attr( $class ) ?>"
 		<?php
 		foreach ( $data_attributes as $key => $value ) {

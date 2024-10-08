@@ -2,7 +2,6 @@ import { Tabs } from '@/components/Tabs';
 import { Field } from '@/components/Field';
 
 export function RootFields({
-  tabs,
   fields,
   values,
   updateValue,
@@ -13,7 +12,7 @@ export function RootFields({
 }) {
   return (
     <>
-      <Tabs tabs={tabs} />
+      <Tabs />
       {fields.map(field => (
         <Field
           key={field.id}

@@ -3,6 +3,8 @@
 namespace Wpify\CustomFields\Integrations;
 
 use Closure;
+use WC_Product;
+use WP_Post;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\exceptions\MissingArgumentException;
 
@@ -104,7 +106,7 @@ class ProductVariationOptions extends Integration {
 			join(
 				'-',
 				array(
-					'product-options',
+					'variation-options',
 					$this->tab['id'],
 					sanitize_title( $this->tab['label'] ),
 					$this->hook_priority,
@@ -113,9 +115,9 @@ class ProductVariationOptions extends Integration {
 		);
 
 		if ( in_array( $this->after, array( 'pricing', 'inventory', 'dimensions', 'download' ) ) ) {
-			add_action( 'woocommerce_variation_options_' . $this->after, array( $this, 'render_custom_fields', ), 10, 3 );
+			add_action( 'woocommerce_variation_options_' . $this->after, array( $this, 'render', ), 10, 3 );
 		} else {
-			add_action( 'woocommerce_product_after_variable_attributes', array( $this, 'render_custom_fields', ), 10, 3 );
+			add_action( 'woocommerce_product_after_variable_attributes', array( $this, 'render', ), 10, 3 );
 		}
 
 		add_action( 'woocommerce_save_product_variation', array( $this, 'save' ), 10, 2 );
@@ -123,20 +125,12 @@ class ProductVariationOptions extends Integration {
 		add_action( 'admin_footer', array( $this, 'maybe_enqueue' ) );
 	}
 
-	/**
-	 * @return void
-	 */
-	public function render_custom_fields( $loop, $variation_data, $variation ) {
-		$this->render( $variation->ID, $loop );
-	}
-
-
-	public function render( $variation_id, $loop ): void {
+	public function render( int $loop, array $variation_data, WP_Post $variation ): void {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
 
-		$this->variation_id = $variation_id;
+		$this->variation_id = $variation->ID;
 		$items              = $this->normalize_items( $this->items );
 
 		if ( is_callable( $this->callback ) ) {
@@ -145,12 +139,12 @@ class ProductVariationOptions extends Integration {
 		?>
 		<div class="options_group">
 			<?php
-			$this->print_app( 'product-options', $this->tabs, [ 'loop' => $loop ] );
+			$this->print_app( 'product-variation', $this->tabs, array( 'loop' => $loop ) );
 
 			foreach ( $items as $item ) {
 				?>
 				<div class="form-field">
-					<?php $this->print_field( $item, [ 'loop' => $loop ] ); ?>
+					<?php $this->print_field( $item, array( 'loop' => $loop ) ); ?>
 				</div>
 				<?php
 			}
@@ -159,7 +153,7 @@ class ProductVariationOptions extends Integration {
 		<?php
 	}
 
-	public function get_field( $name, $item = array() ): mixed {
+	public function get_field( string $name, $item = array() ): mixed {
 		if ( isset( $item['callback_get'] ) && is_callable( $item['callback_get'] ) ) {
 			return call_user_func( $item['callback_get'], $item );
 		}
@@ -167,7 +161,7 @@ class ProductVariationOptions extends Integration {
 		return $this->get_product()->get_meta( $name );
 	}
 
-	public function set_field( $name, $value, $item = array() ) {
+	public function set_field( string $name, $value, $item = array() ) {
 		if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
 			return call_user_func( $item['callback_set'], $item, $value );
 		}
@@ -178,13 +172,10 @@ class ProductVariationOptions extends Integration {
 		return $product->save();
 	}
 
-	public function get_product(): bool|\WC_Product|null {
+	public function get_product(): bool|WC_Product|null {
 		return wc_get_product( $this->variation_id );
 	}
 
-	/**
-	 * @param number $product_variation_id
-	 */
 	public function save( $product_variation_id, $loop ): void {
 		$items = $this->normalize_items( $this->items );
 

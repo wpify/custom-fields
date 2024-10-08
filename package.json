@@ -43,7 +43,6 @@
     "react-phone-number-input": "^3.4.8",
     "react-select": "^5.8.0",
     "sortablejs": "^1.15.3",
-    "uuid": "^10.0.0",
-    "zustand": "^4.5.5"
+    "uuid": "^10.0.0"
   }
 }

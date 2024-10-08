@@ -1,5 +1,4 @@
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { create } from 'zustand';
 import Sortable from 'sortablejs';
 import { v4 as uuidv4 } from 'uuid';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -7,16 +6,15 @@ import { get, post } from '@/helpers/api.js';
 import { useSelect } from '@wordpress/data';
 import '@wordpress/core-data';
 import { evaluateConditions } from '@/helpers/functions';
-import { persist } from 'zustand/middleware';
 import { AppContext } from '@/custom-fields';
 
-export const useValues = create(set => ({
-  values: {},
-  setValues: values => set(() => ({ initialized: true, values })),
-  updateValue: id => value => set(state => ({ values: { ...state.values, [id]: value } })),
-}));
-
 export function useFields (integrationId) {
+  const {
+    values,
+    setValues,
+    updateValue,
+  } = useContext(AppContext);
+
   const defs = useMemo(
     () => Array.from(document.querySelectorAll('.wpifycf-field[data-integration-id="' + integrationId + '"]'))
       .map(node => {
@@ -41,13 +39,9 @@ export function useFields (integrationId) {
     [defs],
   );
 
-  const setValues = useValues(state => state.setValues);
-  const values = useValues(state => state.values);
-  const updateValue = useValues(state => state.updateValue);
-
   useEffect(() => {
     setValues(initialValues);
-  }, [initialValues]);
+  }, [setValues, initialValues]);
 
   return {
     fields,
@@ -56,69 +50,53 @@ export function useFields (integrationId) {
   };
 }
 
-export const useTabsStore = create(
-  persist(
-    (set, get) => ({
-      tab: '',
-      setTab: (tab) => set(() => ({ tab })),
-      isCurrent: (tab) => !tab || !get().tab || get().tab === tab,
-    }),
-    {
-      name: 'tab',
-      storage: {
-        getItem: (name) => {
-          const searchParams = new URLSearchParams(location.hash.slice(1));
-          const value = searchParams.get(name);
-          return {
-            state: { tab: value || '' },
-          };
-        },
-        setItem: (name, value) => {
-          const searchParams = new URLSearchParams(location.hash.slice(1));
-          searchParams.set(name, value.state.tab || '');
-          location.hash = searchParams.toString();
-        },
-        removeItem: (name) => {
-          const searchParams = new URLSearchParams(location.hash.slice(1));
-          searchParams.delete(name);
-          location.hash = searchParams.toString();
-        },
-      },
-    },
-  ),
-);
+export function useTabs () {
+  const { context, tabs = {} } = useContext(AppContext);
+  const [currentTab, setCurrentTab] = useState(() => {
+    const searchParams = new URLSearchParams(window.location.hash.slice(1));
+    const currentTab = searchParams.get('tab');
 
-export function useTabs (args = {}) {
-  const { tab, tabs } = args;
-  const currentTab = useTabsStore((state) => state.tab);
-  const setTab = useTabsStore((state) => state.setTab);
-  const isCurrent = useTabsStore((state) => state.isCurrent);
-  const { context } = useContext(AppContext);
-
-  useEffect(() => {
-    if (tabs && Object.keys(tabs).length > 0 && !currentTab) {
-      setTab(Object.keys(tabs)[0]);
+    if (
+      (!currentTab && Object.keys(tabs).length > 0) ||
+      (currentTab && !tabs[currentTab])
+    ) {
+      return Object.keys(tabs)[0];
     }
-  }, [currentTab, tabs]);
+
+    return currentTab;
+  });
+
+  const setTab = useCallback((tab) => {
+    setCurrentTab(tab);
+    const searchParams = new URLSearchParams(window.location.hash.slice(1));
+    searchParams.set('tab', tab);
+    window.location.hash = searchParams.toString();
+  }, []);
+
+  const isCurrentTab = useCallback(tab => !tab || !currentTab || currentTab === tab, [currentTab]);
 
   const updateTabFromHash = useCallback(() => {
     const searchParams = new URLSearchParams(window.location.hash.slice(1));
     const hashTab = searchParams.get('tab');
-
-    if (hashTab && hashTab !== currentTab) setTab(hashTab);
-  }, [currentTab, setTab]);
+    if (hashTab && hashTab !== currentTab) {
+      setCurrentTab(hashTab);
+    }
+  }, [currentTab]);
 
   useEffect(() => {
-    if (context === 'gutenberg') return;
+    if (context !== 'gutenberg') {
+      window.addEventListener('hashchange', updateTabFromHash);
+      updateTabFromHash();
+    }
 
-    window.addEventListener('hashchange', updateTabFromHash);
-    updateTabFromHash();
     return () => {
-      window.removeEventListener('hashchange', updateTabFromHash);
+      if (context !== 'gutenberg') {
+        window.removeEventListener('hashchange', updateTabFromHash);
+      }
     };
-  }, [currentTab, context]);
+  }, [currentTab, context, updateTabFromHash]);
 
-  return { tab: currentTab, setTab, isCurrentTab: isCurrent(tab) };
+  return { tab: currentTab, tabs, setTab, isCurrentTab };
 }
 
 export function useSortableList ({ containerRef, draggable, handle, items, setItems }) {
@@ -516,7 +494,7 @@ export function useValidity ({ form } = {}) {
 }
 
 export function useConditions ({ conditions = [], fieldPath = '' }) {
-  const { values } = useValues();
+  const { values } = useContext(AppContext);
 
   return useMemo(() => {
     if (Object.keys(values).length === 0 || !conditions || conditions.length === 0 || !fieldPath) {

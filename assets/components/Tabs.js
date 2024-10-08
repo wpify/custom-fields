@@ -1,30 +1,22 @@
 import { useTabs } from '@/helpers/hooks';
 import clsx from 'clsx';
-import { useCallback, useContext } from 'react';
-import { AppContext } from '@/custom-fields';
+import { useCallback } from 'react';
 
-export function Tabs ({ tabs }) {
-  const { tab: currentTab, setTab } = useTabs({ tabs });
-  const { context } = useContext(AppContext);
-
-  const handleClick = useCallback(tab => event => {
-    if (context === 'gutenberg') {
-      setTab(tab);
-      event.preventDefault();
-    }
-  }, [context]);
+export function Tabs () {
+  const { tab: currentTab, setTab, tabs } = useTabs();
+  const handleClick = useCallback(tab => () => setTab(tab), []);
 
   return Object.keys(tabs).length > 1 ? (
     <nav className="nav-tab-wrapper">
       {Object.keys(tabs).map(tab => (
-        <a
+        <button
           key={tab}
           className={clsx('nav-tab', { ['nav-tab-active']: tab === currentTab })}
-          href={`#tab=${tab}`}
           onClick={handleClick(tab)}
+          type="button"
         >
           {tabs[tab]}
-        </a>
+        </button>
       ))}
     </nav>
   ) : null;

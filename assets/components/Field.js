@@ -26,9 +26,9 @@ export function Field ({
   ...props
 }) {
   const FieldComponent = useMemo(() => applyFilters('wpifycf_field_' + type, Text, props), [type, props]);
-  const { isCurrentTab } = useTabs({ tab });
+  const { isCurrentTab } = useTabs();
   const shown = useConditions({ conditions, fieldPath });
-  const isHidden = !shown || !isCurrentTab;
+  const isHidden = !shown || !isCurrentTab(tab);
 
   const validity = useMemo(
     () => !isHidden && typeof FieldComponent.checkValidity === 'function'

@@ -3,7 +3,7 @@ import { useFields, useValidity } from '@/helpers/hooks';
 import { AppContext } from '@/custom-fields';
 import { RootFields } from '@/components/RootFields';
 
-export function App ({ integrationId, tabs, form }) {
+export function App ({ integrationId, form }) {
   const { fields, values, updateValue } = useFields(integrationId);
   const { validity, validate, handleValidityChange } = useValidity({ form });
   const { context } = useContext(AppContext);
@@ -16,7 +16,6 @@ export function App ({ integrationId, tabs, form }) {
 
   return (
     <RootFields
-      tabs={tabs}
       fields={fields}
       values={values}
       updateValue={updateValue}
