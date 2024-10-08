@@ -8,55 +8,6 @@ import '@wordpress/core-data';
 import { evaluateConditions } from '@/helpers/functions';
 import { AppContext } from '@/custom-fields';
 
-export function useTabs () {
-  const { context, tabs = {} } = useContext(AppContext);
-  const [currentTab, setCurrentTab] = useState(() => {
-    const searchParams = new URLSearchParams(window.location.hash.slice(1));
-    const currentTab = searchParams.get('tab');
-
-    if (
-      (!currentTab && Object.keys(tabs).length > 0) ||
-      (currentTab && !tabs[currentTab])
-    ) {
-      return Object.keys(tabs)[0];
-    }
-
-    return currentTab;
-  });
-
-  const setTab = useCallback((tab) => {
-    setCurrentTab(tab);
-    const searchParams = new URLSearchParams(window.location.hash.slice(1));
-    searchParams.set('tab', tab);
-    window.location.hash = searchParams.toString();
-  }, []);
-
-  const isCurrentTab = useCallback(tab => !tab || !currentTab || currentTab === tab, [currentTab]);
-
-  const updateTabFromHash = useCallback(() => {
-    const searchParams = new URLSearchParams(window.location.hash.slice(1));
-    const hashTab = searchParams.get('tab');
-    if (hashTab && hashTab !== currentTab) {
-      setCurrentTab(hashTab);
-    }
-  }, [currentTab]);
-
-  useEffect(() => {
-    if (context !== 'gutenberg') {
-      window.addEventListener('hashchange', updateTabFromHash);
-      updateTabFromHash();
-    }
-
-    return () => {
-      if (context !== 'gutenberg') {
-        window.removeEventListener('hashchange', updateTabFromHash);
-      }
-    };
-  }, [currentTab, context, updateTabFromHash]);
-
-  return { tab: currentTab, tabs, setTab, isCurrentTab };
-}
-
 export function useSortableList ({ containerRef, draggable, handle, items, setItems }) {
   const onEnd = useCallback((event) => {
     const nextItems = [...items];

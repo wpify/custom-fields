@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AppContext } from '@/custom-fields';
 
 export function AppContextProvider ({ context, config, tabs, integrationId, children }) {
@@ -28,6 +28,55 @@ export function AppContextProvider ({ context, config, tabs, integrationId, chil
 
   const updateValue = useCallback(id => value => setValues(values => ({ ...values, [id]: value })), []);
 
+  const [currentTab, setCurrentTab] = useState(() => {
+    let tab = null;
+
+    if (context !== 'gutenberg') {
+      const searchParams = new URLSearchParams(window.location.hash.slice(1));
+      tab = searchParams.get('tab');
+    }
+
+    if (
+      (!tab && Object.keys(tabs).length > 0) ||
+      (tab && !tabs[tab])
+    ) {
+      tab = Object.keys(tabs)[0];
+    }
+
+    return tab;
+  });
+
+  const setTab = useCallback(tab => {
+    setCurrentTab(tab);
+
+    if (context !== 'gutenberg') {
+      const searchParams = new URLSearchParams(window.location.hash.slice(1));
+      searchParams.set('tab', tab);
+      window.location.hash = searchParams.toString();
+    }
+  }, [setCurrentTab]);
+
+  const updateTabFromHash = useCallback(() => {
+    const searchParams = new URLSearchParams(window.location.hash.slice(1));
+    const hashTab = searchParams.get('tab');
+    if (hashTab && hashTab !== currentTab) {
+      setCurrentTab(hashTab);
+    }
+  }, [currentTab]);
+
+  useEffect(() => {
+    if (context !== 'gutenberg') {
+      window.addEventListener('hashchange', updateTabFromHash);
+      updateTabFromHash();
+    }
+
+    return () => {
+      if (context !== 'gutenberg') {
+        window.removeEventListener('hashchange', updateTabFromHash);
+      }
+    };
+  }, [context, updateTabFromHash]);
+
   return (
     <AppContext.Provider
       value={{
@@ -37,6 +86,8 @@ export function AppContextProvider ({ context, config, tabs, integrationId, chil
         fields,
         values,
         updateValue,
+        currentTab,
+        setTab,
       }}
     >
       {children}

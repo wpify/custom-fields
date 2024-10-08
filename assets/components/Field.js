@@ -4,12 +4,13 @@ import { __, sprintf } from '@wordpress/i18n';
 import { Text } from '@/fields/Text.js';
 import { Label } from '@/components/Label';
 import clsx from 'clsx';
-import { useConditions, useTabs } from '@/helpers/hooks';
-import { useEffect, useMemo } from 'react';
+import { useConditions } from '@/helpers/hooks';
+import { useContext, useEffect, useMemo } from 'react';
 import { FieldWrapper } from '@/components/FieldWrapper';
 import { ControlWrapper } from '@/components/ControlWrapper';
 import { FieldDescription } from '@/components/FieldDescription';
 import { maybePortal } from '@/helpers/functions';
+import { AppContext } from '@/custom-fields';
 
 export function Field ({
   type,
@@ -26,9 +27,10 @@ export function Field ({
   ...props
 }) {
   const FieldComponent = useMemo(() => applyFilters('wpifycf_field_' + type, Text, props), [type, props]);
-  const { isCurrentTab } = useTabs();
+  const { currentTab } = useContext(AppContext);
   const shown = useConditions({ conditions, fieldPath });
-  const isHidden = !shown || !isCurrentTab(tab);
+  const isCurrentTab = !tab || !currentTab || currentTab === tab;
+  const isHidden = !shown || !isCurrentTab;
 
   const validity = useMemo(
     () => !isHidden && typeof FieldComponent.checkValidity === 'function'

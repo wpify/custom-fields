@@ -1,10 +1,10 @@
-import { useTabs } from '@/helpers/hooks';
 import clsx from 'clsx';
-import { useCallback } from 'react';
+import { useCallback, useContext } from 'react';
+import { AppContext } from '@/custom-fields';
 
 export function Tabs () {
-  const { tab: currentTab, setTab, tabs } = useTabs();
-  const handleClick = useCallback(tab => () => setTab(tab), []);
+  const { currentTab, setTab, tabs } = useContext(AppContext);
+  const handleClick = useCallback(tab => () => setTab(tab), [setTab]);
 
   return Object.keys(tabs).length > 1 ? (
     <nav className="nav-tab-wrapper">
