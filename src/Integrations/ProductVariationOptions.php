@@ -186,7 +186,9 @@ class ProductVariationOptions extends Integration {
 	 * @param number $product_variation_id
 	 */
 	public function save( $product_variation_id, $loop ): void {
-		foreach ( $this->items as $item ) {
+		$items = $this->normalize_items( $this->items );
+
+		foreach ( $items as $item ) {
 			// Nonce is already verified by WooCommerce.
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing
 			if ( ! isset( $_POST[ $item['id'] ][ $loop ] ) ) {
@@ -198,8 +200,6 @@ class ProductVariationOptions extends Integration {
 			// Sanitization is done in the filter to allow custom sanitization. Nonce is already verified by WooCommerce.
 			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
 			$value = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], wp_unslash( $_POST[ $item['id'] ][ $loop ] ), $item );
-
-			bdump( [ $product_variation_id, $value, $loop ] );
 
 			$this->set_field(
 				$item['id'],
