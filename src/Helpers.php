@@ -74,7 +74,7 @@ class Helpers {
 			$posts[] = $post;
 		}
 
-		$placeholder = plugin_dir_url( dirname( __FILE__ ) ) . 'assets/images/placeholder-image.svg';
+		$placeholder = plugin_dir_url( __DIR__ ) . 'assets/images/placeholder-image.svg';
 
 		return array_map(
 			fn( \WP_Post $post ) => array(

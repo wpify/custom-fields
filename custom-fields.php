@@ -22,8 +22,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 if ( class_exists( 'Tracy\Debugger' ) ) {
 	define( 'WPIFY_TRACY_ENABLE', true );
-	Debugger::$dumpTheme     = 'dark';
-	Debugger::$editor        = 'phpstorm://open?file=%file&line=%line';
+	Debugger::$dumpTheme = 'dark';
+	Debugger::$editor    = 'phpstorm://open?file=%file&line=%line';
 
 	if ( defined( 'DEV_LOCAL_PATH' ) ) {
 		Debugger::$editorMapping = array(

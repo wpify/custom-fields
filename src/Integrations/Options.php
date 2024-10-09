@@ -13,30 +13,30 @@ class Options extends Integration {
 	const ALLOWED_TYPES       = array( self::TYPE_OPTIONS, self::TYPE_NETWORK, self::TYPE_USER_SUBMENU, self::TYPE_USER );
 	const NETWORK_SAVE_ACTION = 'wpifycf-save-network-options';
 
-	public readonly string         $id;
-	public readonly string         $type;
-	public readonly string|null    $parent_slug;
-	public readonly string         $page_title;
-	public readonly string         $menu_title;
-	public readonly string         $capability;
-	public readonly string         $menu_slug;
-	public readonly array|string   $callback;
-	public readonly string|null    $icon_url;
+	public readonly string $id;
+	public readonly string $type;
+	public readonly string|null $parent_slug;
+	public readonly string $page_title;
+	public readonly string $menu_title;
+	public readonly string $capability;
+	public readonly string $menu_slug;
+	public readonly array|string $callback;
+	public readonly string|null $icon_url;
 	public readonly int|float|null $position;
-	public readonly array          $args;
-	public readonly string         $hook_suffix;
-	public readonly int            $hook_priority;
-	public readonly array          $help_tabs;
-	public readonly string         $help_sidebar;
-	public array|string|null       $display;
-	public string|array|bool       $submit_button;
-	public readonly string         $option_group;
-	public readonly string         $option_name;
-	public readonly array          $items;
-	public readonly array          $sections;
-	public readonly string         $default_section;
-	public readonly array          $tabs;
-	public readonly string         $success_message;
+	public readonly array $args;
+	public readonly string $hook_suffix;
+	public readonly int $hook_priority;
+	public readonly array $help_tabs;
+	public readonly string $help_sidebar;
+	public array|string|null $display;
+	public string|array|bool $submit_button;
+	public readonly string $option_group;
+	public readonly string $option_name;
+	public readonly array $items;
+	public readonly array $sections;
+	public readonly string $default_section;
+	public readonly array $tabs;
+	public readonly string $success_message;
 
 	/**
 	 * @throws MissingArgumentException
@@ -119,7 +119,12 @@ class Options extends Integration {
 
 		if ( empty( $sections ) ) {
 			$sections = array(
-				'default' => array( 'id' => 'default', 'title' => '', 'callback' => '__return_true', 'page' => $this->menu_slug ),
+				'default' => array(
+					'id'       => 'default',
+					'title'    => '',
+					'callback' => '__return_true',
+					'page'     => $this->menu_slug,
+				),
 			);
 		}
 
@@ -232,7 +237,7 @@ class Options extends Integration {
 				$action = add_query_arg( 'action', $this::NETWORK_SAVE_ACTION, 'edit.php' );
 			}
 			?>
-			<form action="<?php echo esc_attr( $action ) ?>" method="POST">
+			<form action="<?php echo esc_attr( $action ); ?>" method="POST">
 				<?php
 				if ( $this->type === $this::TYPE_NETWORK ) {
 					wp_nonce_field( $this::NETWORK_SAVE_ACTION );
@@ -271,7 +276,11 @@ class Options extends Integration {
 		foreach ( $this->help_tabs as $key => $tab ) {
 			$tab = wp_parse_args(
 				$tab,
-				array( 'id' => '', 'title' => '', 'content' => '' ),
+				array(
+					'id'      => '',
+					'title'   => '',
+					'content' => '',
+				),
 			);
 
 			if ( empty( $tab['id'] ) ) {
@@ -396,7 +405,10 @@ class Options extends Integration {
 				array( $this, 'print_field' ),
 				$this->menu_slug,
 				$section,
-				array( 'label_for' => $item['id'], ...$item ),
+				array(
+					'label_for' => $item['id'],
+					...$item,
+				),
 			);
 		}
 	}
@@ -424,14 +436,12 @@ class Options extends Integration {
 			} else {
 				return get_network_option( get_current_network_id(), $name, null );
 			}
-		} else {
-			if ( ! empty( $this->option_name ) ) {
+		} elseif ( ! empty( $this->option_name ) ) {
 				$data = get_option( $this->option_name, array() );
 
 				return $data[ $name ] ?? null;
-			} else {
-				return get_option( $name, null );
-			}
+		} else {
+			return get_option( $name, null );
 		}
 	}
 
@@ -449,15 +459,13 @@ class Options extends Integration {
 			} else {
 				return update_network_option( get_current_network_id(), $name, $value );
 			}
-		} else {
-			if ( ! empty( $this->option_name ) ) {
+		} elseif ( ! empty( $this->option_name ) ) {
 				$data          = get_option( $this->option_name, array() );
 				$data[ $name ] = $value;
 
 				return update_option( $this->option_name, $data );
-			} else {
-				return update_option( $name, $value );
-			}
+		} else {
+			return update_option( $name, $value );
 		}
 	}
 
@@ -467,7 +475,7 @@ class Options extends Integration {
 		if ( isset( $_GET['updated'] ) && isset( $_GET['page'] ) && $this->menu_slug === $_GET['page'] ) {
 			?>
 			<div id="message" class="updated notice is-dismissible">
-				<p><?php echo esc_html( $this->success_message ) ?></p>
+				<p><?php echo esc_html( $this->success_message ); ?></p>
 			</div>
 			<?php
 		}

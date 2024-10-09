@@ -9,26 +9,26 @@ use Wpify\CustomFields\Exceptions\MissingArgumentException;
 class SiteOptions extends Integration {
 	const SAVE_ACTION = 'wpifycf-save-site-options';
 
-	public readonly int               $blog_id;
-	public readonly string            $id;
-	public readonly string            $page_title;
-	public readonly string            $menu_title;
-	public readonly string            $capability;
-	public readonly string            $menu_slug;
+	public readonly int $blog_id;
+	public readonly string $id;
+	public readonly string $page_title;
+	public readonly string $menu_title;
+	public readonly string $capability;
+	public readonly string $menu_slug;
 	public readonly array|string|null $callback;
-	public readonly string            $hook_suffix;
-	public readonly int               $hook_priority;
-	public readonly array             $help_tabs;
-	public readonly string            $help_sidebar;
-	public array|string|null          $display;
-	public string|array|bool          $submit_button;
-	public readonly string            $option_group;
-	public readonly string            $option_name;
-	public readonly array             $items;
-	public readonly array             $sections;
-	public readonly string            $default_section;
-	public readonly array             $tabs;
-	public readonly string            $success_message;
+	public readonly string $hook_suffix;
+	public readonly int $hook_priority;
+	public readonly array $help_tabs;
+	public readonly string $help_sidebar;
+	public array|string|null $display;
+	public string|array|bool $submit_button;
+	public readonly string $option_group;
+	public readonly string $option_name;
+	public readonly array $items;
+	public readonly array $sections;
+	public readonly string $default_section;
+	public readonly array $tabs;
+	public readonly string $success_message;
 
 	/**
 	 * @throws MissingArgumentException
@@ -96,7 +96,12 @@ class SiteOptions extends Integration {
 
 		if ( empty( $sections ) ) {
 			$sections = array(
-				'default' => array( 'id' => 'default', 'title' => '', 'callback' => '__return_true', 'page' => $this->menu_slug ),
+				'default' => array(
+					'id'       => 'default',
+					'title'    => '',
+					'callback' => '__return_true',
+					'page'     => $this->menu_slug,
+				),
 			);
 		}
 
@@ -209,14 +214,14 @@ class SiteOptions extends Integration {
 			}
 			?>
 			<form action="<?php echo esc_attr( $action ); ?>" method="POST" name="form" data-context="site-options">
-				<input type="hidden" name="id" value="<?php echo esc_attr( $id ) ?>" />
+				<input type="hidden" name="id" value="<?php echo esc_attr( $id ); ?>" />
 				<?php
 				// Just showing the success message, no need to check for the nonce.
 				// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				if ( isset( $_GET['updated'] ) && isset( $_GET['page'] ) && $this->menu_slug === $_GET['page'] ) {
 					?>
 					<div id="message" class="updated notice is-dismissible">
-						<p><?php echo esc_html( $this->success_message ) ?></p>
+						<p><?php echo esc_html( $this->success_message ); ?></p>
 					</div>
 					<?php
 				}
@@ -250,7 +255,11 @@ class SiteOptions extends Integration {
 		foreach ( $this->help_tabs as $key => $tab ) {
 			$tab = wp_parse_args(
 				$tab,
-				array( 'id' => '', 'title' => '', 'content' => '' ),
+				array(
+					'id'      => '',
+					'title'   => '',
+					'content' => '',
+				),
 			);
 
 			if ( empty( $tab['id'] ) ) {
@@ -377,7 +386,10 @@ class SiteOptions extends Integration {
 				array( $this, 'print_field' ),
 				$this->menu_slug,
 				$section,
-				array( 'label_for' => $item['id'], ...$item ),
+				array(
+					'label_for' => $item['id'],
+					...$item,
+				),
 			);
 		}
 	}

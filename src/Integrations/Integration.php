@@ -7,7 +7,7 @@ use WP_REST_Server;
 use Wpify\CustomFields\CustomFields;
 
 abstract class Integration {
-	public readonly array  $items;
+	public readonly array $items;
 	public readonly string $id;
 
 	public function __construct(
@@ -86,7 +86,10 @@ abstract class Integration {
 
 		foreach ( $options as $key => $value ) {
 			if ( is_string( $key ) ) {
-				$next_options[] = array( 'label' => $value, 'value' => $key );
+				$next_options[] = array(
+					'label' => $value,
+					'value' => $key,
+				);
 			} else {
 				$next_options[] = $value;
 			}
@@ -141,10 +144,10 @@ abstract class Integration {
 		$integration_id = isset( $data_attributes['loop'] ) ? $this->id . '__' . $loop : $this->id;
 		?>
 		<div class="wpifycf-app"
-		     data-loaded="false"
-		     data-integration-id="<?php echo esc_attr( $integration_id ) ?>"
-		     data-tabs="<?php echo esc_attr( wp_json_encode( $tabs ) ) ?>"
-		     data-context="<?php echo esc_attr( $context ) ?>"
+			data-loaded="false"
+			data-integration-id="<?php echo esc_attr( $integration_id ); ?>"
+			data-tabs="<?php echo esc_attr( wp_json_encode( $tabs ) ); ?>"
+			data-context="<?php echo esc_attr( $context ); ?>"
 			<?php
 			foreach ( $data_attributes as $key => $value ) {
 				printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );
@@ -164,15 +167,15 @@ abstract class Integration {
 			$item['value'] = html_entity_decode( $item['value'] );
 		}
 		?>
-		<<?php echo esc_attr( $tag ) ?> data-item="<?php echo esc_attr( wp_json_encode( $item ) ) ?>"
-		data-integration-id="<?php echo esc_attr( $integration_id ) ?>"
-		class="wpifycf-field wpifycf-field--type-<?php echo esc_attr( $item['id'] ) ?><?php echo $class ? ' ' . esc_attr( $class ) : '' ?>"
+		<<?php echo esc_attr( $tag ); ?> data-item="<?php echo esc_attr( wp_json_encode( $item ) ); ?>"
+		data-integration-id="<?php echo esc_attr( $integration_id ); ?>"
+		class="wpifycf-field wpifycf-field--type-<?php echo esc_attr( $item['id'] ); ?><?php echo $class ? ' ' . esc_attr( $class ) : ''; ?>"
 		<?php
 		foreach ( $data_attributes as $key => $value ) {
 			printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );
 		}
 		?>
-		></<?php echo esc_attr( $tag ) ?>>
+		></<?php echo esc_attr( $tag ); ?>>
 		<?php
 	}
 
@@ -228,7 +231,7 @@ abstract class Integration {
 		return null;
 	}
 
-	public abstract function get_field( string $name, $item = array() );
+	abstract public function get_field( string $name, $item = array() );
 
-	public abstract function set_field( string $name, $value, $item = array() );
+	abstract public function set_field( string $name, $value, $item = array() );
 }

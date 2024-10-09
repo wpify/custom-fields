@@ -6,13 +6,13 @@ use Closure;
 use Wpify\CustomFields\CustomFields;
 
 class User extends Integration {
-	public int|null                           $user_id;
-	public readonly array                     $items;
+	public int|null $user_id;
+	public readonly array $items;
 	public readonly array|string|Closure|null $display;
-	public readonly string                    $title;
-	public readonly array                     $tabs;
-	public readonly string                    $id;
-	public readonly int                       $init_priority;
+	public readonly string $title;
+	public readonly array $tabs;
+	public readonly string $id;
+	public readonly int $init_priority;
 
 	public function __construct( array $args, CustomFields $custom_fields ) {
 		parent::__construct( $custom_fields );

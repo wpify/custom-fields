@@ -7,22 +7,22 @@ use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
 class WcMembershipPlanOptions extends Integration {
-	public readonly string            $id;
-	public int                        $membership_plan_id;
-	public readonly array             $tab;
-	public readonly string            $capability;
+	public readonly string $id;
+	public int $membership_plan_id;
+	public readonly array $tab;
+	public readonly string $capability;
 	public readonly array|string|null $callback;
-	public readonly array             $args;
-	public readonly string            $hook_suffix;
-	public readonly int               $hook_priority;
-	public readonly array             $help_tabs;
-	public readonly string            $help_sidebar;
-	public                            $display;
-	public readonly string            $option_name;
-	public readonly array             $items;
-	public readonly array             $sections;
-	public readonly array             $tabs;
-	public bool                       $is_new_tab;
+	public readonly array $args;
+	public readonly string $hook_suffix;
+	public readonly int $hook_priority;
+	public readonly array $help_tabs;
+	public readonly string $help_sidebar;
+	public $display;
+	public readonly string $option_name;
+	public readonly array $items;
+	public readonly array $sections;
+	public readonly array $tabs;
+	public bool $is_new_tab;
 
 	/**
 	 * @throws MissingArgumentException
@@ -114,10 +114,13 @@ class WcMembershipPlanOptions extends Integration {
 
 		add_filter( 'wc_membership_plan_data_tabs', array( $this, 'wc_membership_plan_data_tabs' ), 98 );
 		add_action( 'wc_membership_plan_data_panels', array( $this, 'render_data_panels' ) );
-		add_action( 'wc_membership_plan_options_' . $this->tab['target'] ?? $this->tab['id'], array(
-			$this,
-			'render'
-		) );
+		add_action(
+			'wc_membership_plan_options_' . $this->tab['target'] ?? $this->tab['id'],
+			array(
+				$this,
+				'render',
+			)
+		);
 
 		add_action( 'wc_memberships_save_meta_box', array( $this, 'save' ) );
 		add_action( 'init', array( $this, 'register_meta' ), $this->hook_priority );
@@ -149,9 +152,9 @@ class WcMembershipPlanOptions extends Integration {
 
 	public function render_data_panels(): void {
 		?>
-        <div id="<?php echo esc_attr( $this->tab['target'] ) ?>" class="panel woocommerce_options_panel">
+		<div id="<?php echo esc_attr( $this->tab['target'] ); ?>" class="panel woocommerce_options_panel">
 			<?php do_action( 'wc_membership_plan_options_' . $this->tab['target'] ); ?>
-        </div>
+		</div>
 		<?php
 	}
 
@@ -170,19 +173,19 @@ class WcMembershipPlanOptions extends Integration {
 			call_user_func( $this->callback );
 		}
 		?>
-        <div class="options_group">
+		<div class="options_group">
 			<?php
 			$this->print_app( 'product-options', $this->tabs );
 
 			foreach ( $items as $item ) {
 				?>
-                <div class="form-field">
+				<div class="form-field">
 					<?php $this->print_field( $item ); ?>
-                </div>
+				</div>
 				<?php
 			}
 			?>
-        </div>
+		</div>
 		<?php
 	}
 

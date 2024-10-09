@@ -7,22 +7,22 @@ use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
 class ProductOptions extends Integration {
-	public readonly string            $id;
-	public int                        $product_id;
-	public readonly array             $tab;
-	public readonly string            $capability;
+	public readonly string $id;
+	public int $product_id;
+	public readonly array $tab;
+	public readonly string $capability;
 	public readonly array|string|null $callback;
-	public readonly array             $args;
-	public readonly string            $hook_suffix;
-	public readonly int               $hook_priority;
-	public readonly array             $help_tabs;
-	public readonly string            $help_sidebar;
-	public                            $display;
-	public readonly string            $option_name;
-	public readonly array             $items;
-	public readonly array             $sections;
-	public readonly array             $tabs;
-	public bool                       $is_new_tab;
+	public readonly array $args;
+	public readonly string $hook_suffix;
+	public readonly int $hook_priority;
+	public readonly array $help_tabs;
+	public readonly string $help_sidebar;
+	public $display;
+	public readonly string $option_name;
+	public readonly array $items;
+	public readonly array $sections;
+	public readonly array $tabs;
+	public bool $is_new_tab;
 
 	/**
 	 * @throws MissingArgumentException
@@ -145,7 +145,7 @@ class ProductOptions extends Integration {
 
 	public function render_data_panels(): void {
 		?>
-		<div id="<?php echo esc_attr( $this->tab['target'] ) ?>" class="panel woocommerce_options_panel">
+		<div id="<?php echo esc_attr( $this->tab['target'] ); ?>" class="panel woocommerce_options_panel">
 			<?php do_action( 'woocommerce_product_options_' . $this->tab['target'] ); ?>
 		</div>
 		<?php

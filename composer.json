@@ -14,13 +14,24 @@
   "config": {
     "platform": {
         "php": "8.1"
+    },
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
     }
+  },
+  "scripts": {
+    "phpcs": "phpcs -ps . -d memory_limit=1G",
+    "phpcbf": "phpcbf -ps . -d memory_limit=1G"
   },
   "require": {
     "php": "^8.1.0",
     "ext-json": "*"
   },
   "require-dev": {
-    "wpify/tracy": "^1.0"
+    "wpify/tracy": "^1.0",
+    "wp-coding-standards/wpcs": "^3.0",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+    "phpcompatibility/phpcompatibility-wp": "*",
+    "squizlabs/php_codesniffer": "^3.10"
   }
 }

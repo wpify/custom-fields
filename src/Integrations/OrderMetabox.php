@@ -10,22 +10,22 @@ use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
 class OrderMetabox extends Integration {
-	public readonly string                    $id;
-	public int                                $order_id;
-	public readonly string                    $title;
-	public readonly string                    $context;
-	public readonly string                    $priority;
-	public readonly string                    $capability;
+	public readonly string $id;
+	public int $order_id;
+	public readonly string $title;
+	public readonly string $context;
+	public readonly string $priority;
+	public readonly string $capability;
 	public readonly Closure|array|string|null $callback;
-	public readonly array                     $args;
-	public readonly string                    $hook_suffix;
-	public readonly int                       $hook_priority;
-	public                                    $display;
-	public readonly string                    $option_name;
-	public readonly array                     $items;
-	public readonly array                     $sections;
-	public readonly array                     $tabs;
-	public readonly string                    $nonce;
+	public readonly array $args;
+	public readonly string $hook_suffix;
+	public readonly int $hook_priority;
+	public $display;
+	public readonly string $option_name;
+	public readonly array $items;
+	public readonly array $sections;
+	public readonly array $tabs;
+	public readonly string $nonce;
 
 	/**
 	 * @throws MissingArgumentException
@@ -55,7 +55,6 @@ class OrderMetabox extends Integration {
 				),
 			);
 		}
-
 
 		if ( isset( $args['display'] ) && is_callable( $args['display'] ) ) {
 			$this->display = $args['display'];

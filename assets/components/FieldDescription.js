@@ -13,7 +13,7 @@ export function FieldDescription({
     return null;
   }
 
-  if (['edit_term', 'user'].includes(context) && renderOptions.isRoot) {
+  if (['edit_term', 'user', 'add_term'].includes(context) && renderOptions.isRoot) {
     return (
       <p
         className={clsx(
@@ -25,14 +25,6 @@ export function FieldDescription({
         {description}
       </p>
     );
-  }
-
-  if (context === 'add_term' && renderOptions.isRoot) {
-    return (
-      <p>
-        {description}
-      </p>
-    )
   }
 
   return (

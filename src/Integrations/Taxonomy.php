@@ -9,11 +9,11 @@ use Wpify\CustomFields\Exceptions\MissingArgumentException;
 class Taxonomy extends Integration {
 	public readonly string $id;
 	public readonly string $taxonomy;
-	public readonly array  $tabs;
-	public readonly array  $items;
-	public readonly int    $hook_priority;
-	public readonly int    $init_priority;
-	public readonly int    $term_id;
+	public readonly array $tabs;
+	public readonly array $items;
+	public readonly int $hook_priority;
+	public readonly int $init_priority;
+	public readonly int $term_id;
 
 	/**
 	 * @throws MissingArgumentException
@@ -68,7 +68,7 @@ class Taxonomy extends Integration {
 		?>
 		<tr class="form-field">
 			<td colspan="2">
-				<?php $this->print_app( 'edit_term', $this->tabs ) ?>
+				<?php $this->print_app( 'edit_term', $this->tabs ); ?>
 			</td>
 		</tr>
 		<?php

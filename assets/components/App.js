@@ -9,7 +9,7 @@ export function App ({ form }) {
   const { context } = useContext(AppContext);
 
   const renderOptions = useMemo(() => ({
-    noFieldWrapper: ['options', 'edit_term'].includes(context),
+    noFieldWrapper: ['options', 'edit_term', 'add_term'].includes(context),
     noControlWrapper: false,
     isRoot: true,
   }), [context]);

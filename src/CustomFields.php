@@ -15,12 +15,12 @@ use Wpify\CustomFields\Integrations\SubscriptionMetabox;
 use Wpify\CustomFields\Integrations\Taxonomy;
 use Wpify\CustomFields\Integrations\User;
 use Wpify\CustomFields\Integrations\WcMembershipPlanOptions;
-use function FakerPress\ThirdParty\Symfony\Component\Translation\t;
+use Wpify\CustomFields\Integrations\WooCommerceSettings;
 
 class CustomFields {
-	public readonly Helpers        $helpers;
-	public readonly Api            $api;
-	public readonly Sanitizers     $sanitizers;
+	public readonly Helpers $helpers;
+	public readonly Api $api;
+	public readonly Sanitizers $sanitizers;
 	public readonly WordPressTypes $wordpress_types;
 
 	public function __construct() {
@@ -41,97 +41,31 @@ class CustomFields {
 		add_filter( 'wpifycf_sanitize_field_type_email', 'sanitize_email' );
 		add_filter( 'wpifycf_sanitize_field_type_group', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
 		add_filter( 'wpifycf_sanitize_field_type_html', 'sanitize_text_field' );
-		add_filter( 'wpifycf_sanitize_field_type_inner_blocks', array(
-			$this->sanitizers,
-			'sanitize_multi_field'
-		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_inner_blocks', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
 		add_filter( 'wpifycf_sanitize_field_type_link', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
 		add_filter( 'wpifycf_sanitize_field_type_mapycz', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
 		add_filter( 'wpifycf_sanitize_field_type_month', 'sanitize_text_field' );
-		add_filter( 'wpifycf_sanitize_field_type_multi_attachment', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_checkbox', array(
-			$this->sanitizers,
-			'sanitize_multi_checkbox',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_color', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_date', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_datetime', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_email', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_group', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_link', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_mapycz', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_month', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_number', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_post', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_select', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_tel', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_term', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_text', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_textarea', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_time', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_toggle', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_url', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
-		add_filter( 'wpifycf_sanitize_field_type_multi_week', array(
-			$this->sanitizers,
-			'sanitize_multi_field',
-		),          10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_attachment', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_checkbox', array( $this->sanitizers, 'sanitize_multi_checkbox' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_color', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_date', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_datetime', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_email', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_group', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_link', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_mapycz', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_month', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_number', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_post', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_select', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_tel', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_term', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_text', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_textarea', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_time', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_toggle', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_url', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
+		add_filter( 'wpifycf_sanitize_field_type_multi_week', array( $this->sanitizers, 'sanitize_multi_field' ), 10, 2 );
 		add_filter( 'wpifycf_sanitize_field_type_number', 'floatval' );
 		add_filter( 'wpifycf_sanitize_field_type_password', 'strval' );
 		add_filter( 'wpifycf_sanitize_field_type_post', 'intval' );
@@ -205,9 +139,6 @@ class CustomFields {
 		add_filter( 'wpifycf_field_object_default_value', array( $this->wordpress_types, 'object_default_value' ) );
 	}
 
-	/**
-	 * @throws MissingArgumentException
-	 */
 	public function create_options_page( array $args ): Options {
 		return new Options( $args, $this );
 	}
@@ -220,37 +151,18 @@ class CustomFields {
 		return new Taxonomy( $args, $this );
 	}
 
-	/**
-	 * @throws MissingArgumentException
-	 */
 	public function create_product_options( array $args ): ProductOptions {
 		return new ProductOptions( $args, $this );
 	}
 
-	/**
-	 * @throws MissingArgumentException
-	 */
 	public function create_product_variation_options( array $args ): ProductVariationOptions {
 		return new ProductVariationOptions( $args, $this );
 	}
 
-
-	/**
-	 * @param array $args
-	 *
-	 * @return OrderMetabox
-	 * @throws MissingArgumentException
-	 */
 	public function create_order_metabox( $args = array() ): OrderMetabox {
 		return new OrderMetabox( $args, $this );
 	}
 
-	/**
-	 * @param array $args
-	 *
-	 * @return SubscriptionMetabox
-	 * @throws MissingArgumentException
-	 */
 	public function create_subscription_metabox( $args = array() ): SubscriptionMetabox {
 		return new SubscriptionMetabox( $args, $this );
 	}
@@ -271,33 +183,34 @@ class CustomFields {
 		return new User( $array, $this );
 	}
 
-
-	/**
-	 * @param array $args
-	 *
-	 * @return WcMembershipPlanOptions
-	 */
 	public function create_membership_plan_options( $args = array() ): WcMembershipPlanOptions {
 		return new WcMembershipPlanOptions( $args, $this );
 	}
 
+	public function create_woocommerce_settings( $args = array() ): WooCommerceSettings {
+		return new WooCommerceSettings( $args, $this );
+	}
+
 	public function get_js_asset( string $item ): array {
-		$build_path = plugin_dir_path( dirname( __FILE__ ) ) . 'build/';
+		$build_path = plugin_dir_path( __DIR__ ) . 'build/';
 		$asset_php  = $build_path . $item . '.asset.php';
 
 		if ( file_exists( $asset_php ) ) {
 			$asset = require $asset_php;
 		} else {
-			$asset = array( 'dependencies' => array(), 'version' => false );
+			$asset = array(
+				'dependencies' => array(),
+				'version'      => false,
+			);
 		}
 
-		$asset['src'] = plugin_dir_url( dirname( __FILE__ ) ) . 'build/' . $item . '.js';
+		$asset['src'] = plugin_dir_url( __DIR__ ) . 'build/' . $item . '.js';
 
 		return $asset;
 	}
 
 	public function get_css_asset( string $item ): array|string {
-		$build_path = plugin_dir_path( dirname( __FILE__ ) ) . 'build/';
+		$build_path = plugin_dir_path( __DIR__ ) . 'build/';
 		$asset_php  = $build_path . $item . '.asset.php';
 
 		if ( file_exists( $asset_php ) ) {
@@ -307,7 +220,7 @@ class CustomFields {
 		$src = add_query_arg(
 			'ver',
 			$asset['version'],
-			plugin_dir_url( dirname( __FILE__ ) ) . 'build/' . $item . '.css',
+			plugin_dir_url( __DIR__ ) . 'build/' . $item . '.css',
 		);
 
 		if ( file_exists( $build_path . 'style-' . $item . '.css' ) ) {
@@ -316,7 +229,7 @@ class CustomFields {
 				add_query_arg(
 					'ver',
 					$asset['version'],
-					plugin_dir_url( dirname( __FILE__ ) ) . 'build/style-' . $item . '.css',
+					plugin_dir_url( __DIR__ ) . 'build/style-' . $item . '.css',
 				),
 			);
 		}

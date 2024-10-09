@@ -9,22 +9,22 @@ use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\exceptions\MissingArgumentException;
 
 class ProductVariationOptions extends Integration {
-	public readonly string                    $id;
-	public int                                $variation_id;
-	public readonly array                     $tab;
-	public readonly string                    $after;
-	public readonly string                    $capability;
+	public readonly string $id;
+	public int $variation_id;
+	public readonly array $tab;
+	public readonly string $after;
+	public readonly string $capability;
 	public readonly Closure|array|string|null $callback;
-	public readonly array                     $args;
-	public readonly string                    $hook_suffix;
-	public readonly int                       $hook_priority;
-	public readonly array                     $help_tabs;
-	public readonly string                    $help_sidebar;
-	public                                    $display;
-	public readonly array                     $items;
-	public readonly array                     $sections;
-	public readonly array                     $tabs;
-	public bool                               $is_new_tab;
+	public readonly array $args;
+	public readonly string $hook_suffix;
+	public readonly int $hook_priority;
+	public readonly array $help_tabs;
+	public readonly string $help_sidebar;
+	public $display;
+	public readonly array $items;
+	public readonly array $sections;
+	public readonly array $tabs;
+	public bool $is_new_tab;
 
 	/**
 	 * @throws MissingArgumentException
@@ -100,9 +100,9 @@ class ProductVariationOptions extends Integration {
 			$tab['class'] = array();
 		}
 
-		$this->tab           = $tab;
-		$this->is_new_tab    = false;
-		$this->id            = sanitize_title(
+		$this->tab        = $tab;
+		$this->is_new_tab = false;
+		$this->id         = sanitize_title(
 			join(
 				'-',
 				array(
@@ -115,9 +115,9 @@ class ProductVariationOptions extends Integration {
 		);
 
 		if ( in_array( $this->after, array( 'pricing', 'inventory', 'dimensions', 'download' ) ) ) {
-			add_action( 'woocommerce_variation_options_' . $this->after, array( $this, 'render', ), 10, 3 );
+			add_action( 'woocommerce_variation_options_' . $this->after, array( $this, 'render' ), 10, 3 );
 		} else {
-			add_action( 'woocommerce_product_after_variable_attributes', array( $this, 'render', ), 10, 3 );
+			add_action( 'woocommerce_product_after_variable_attributes', array( $this, 'render' ), 10, 3 );
 		}
 
 		add_action( 'woocommerce_save_product_variation', array( $this, 'save' ), 10, 2 );

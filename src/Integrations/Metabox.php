@@ -15,17 +15,17 @@ class Metabox extends Integration {
 	const PRIORITY_LOW     = 'low';
 	const PRIORITY_DEFAULT = 'default';
 
-	public readonly string                      $id;
-	public readonly string                      $title;
+	public readonly string $id;
+	public readonly string $title;
 	public readonly null|string|array|WP_Screen $screen;
-	public readonly string                      $context;
-	public readonly string                      $priority;
-	public readonly array                       $callback_args;
-	public readonly WP_Post                     $post;
-	public readonly string                      $nonce;
-	public readonly array                       $post_types;
-	public readonly array                       $tabs;
-	public readonly array                       $items;
+	public readonly string $context;
+	public readonly string $priority;
+	public readonly array $callback_args;
+	public readonly WP_Post $post;
+	public readonly string $nonce;
+	public readonly array $post_types;
+	public readonly array $tabs;
+	public readonly array $items;
 
 	public function __construct(
 		array $args,

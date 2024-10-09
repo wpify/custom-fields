@@ -14,12 +14,12 @@ class Comment extends Integration {
 	public readonly string $id;
 	public readonly string $title;
 	public readonly string $priority;
-	public readonly array  $callback_args;
-	public readonly int    $comment_id;
+	public readonly array $callback_args;
+	public readonly int $comment_id;
 	public readonly string $nonce;
-	public readonly array  $post_types;
-	public readonly array  $tabs;
-	public readonly array  $items;
+	public readonly array $post_types;
+	public readonly array $tabs;
+	public readonly array $items;
 
 	public function __construct(
 		array $args,
