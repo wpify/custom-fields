@@ -7,26 +7,23 @@ use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
 class WcMembershipPlanOptions extends Integration {
-	public readonly string $id;
-	public int $membership_plan_id;
-	public readonly array $tab;
-	public readonly string $capability;
+	public readonly string            $id;
+	public int                        $membership_plan_id;
+	public readonly array             $tab;
+	public readonly string            $capability;
 	public readonly array|string|null $callback;
-	public readonly array $args;
-	public readonly string $hook_suffix;
-	public readonly int $hook_priority;
-	public readonly array $help_tabs;
-	public readonly string $help_sidebar;
-	public $display;
-	public readonly string $option_name;
-	public readonly array $items;
-	public readonly array $sections;
-	public readonly array $tabs;
-	public bool $is_new_tab;
+	public readonly array             $args;
+	public readonly string            $hook_suffix;
+	public readonly int               $hook_priority;
+	public readonly array             $help_tabs;
+	public readonly string            $help_sidebar;
+	public                            $display;
+	public readonly string            $option_name;
+	public readonly array             $items;
+	public readonly array             $sections;
+	public readonly array             $tabs;
+	public bool                       $is_new_tab;
 
-	/**
-	 * @throws MissingArgumentException
-	 */
 	public function __construct(
 		array $args,
 		CustomFields $custom_fields,
@@ -104,7 +101,7 @@ class WcMembershipPlanOptions extends Integration {
 			join(
 				'-',
 				array(
-					'product-options',
+					'wc_membership_plan_options',
 					$this->tab['id'],
 					sanitize_title( $this->tab['label'] ),
 					$this->hook_priority,
@@ -119,7 +116,7 @@ class WcMembershipPlanOptions extends Integration {
 			array(
 				$this,
 				'render',
-			)
+			),
 		);
 
 		add_action( 'wc_memberships_save_meta_box', array( $this, 'save' ) );
@@ -212,14 +209,20 @@ class WcMembershipPlanOptions extends Integration {
 	public function save( $post_id ): void {
 		$items = $this->normalize_items( $this->items );
 
+		// Nonce already verified by WordPress.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$this->membership_plan_id = sanitize_text_field( wp_unslash( $_POST['post_ID'] ?? '' ) );
+
+		if ( ! $this->membership_plan_id ) {
+			return;
+		}
+
 		foreach ( $items as $item ) {
 			// Nonce already verified by WordPress.
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing
 			if ( ! isset( $_POST[ $item['id'] ] ) ) {
 				continue;
 			}
-
-			$this->membership_plan_id = $_POST['post_ID'];
 
 			$this->set_field(
 				$item['id'],
