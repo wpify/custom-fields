@@ -191,7 +191,7 @@ abstract class Integration {
 		<div class="wpifycf-app"
 			data-loaded="false"
 			data-integration-id="<?php echo esc_attr( $integration_id ); ?>"
-			data-tabs="<?php echo esc_attr( wp_json_encode( $tabs ) ); ?>"
+			data-tabs="<?php echo esc_attr( htmlentities( wp_json_encode( $tabs ) ) ); ?>"
 			data-context="<?php echo esc_attr( $context ); ?>"
 			<?php
 			foreach ( $data_attributes as $key => $value ) {
@@ -215,12 +215,8 @@ abstract class Integration {
 		$item['value']  = $this->get_field( $item['id'], $item ) ?? $item['default'];
 		$item['loop']   = $data_attributes['loop'] ?? '';
 		$integration_id = isset( $data_attributes['loop'] ) ? $this->id . '__' . $data_attributes['loop'] : $this->id;
-
-		if ( is_string( $item['value'] ) ) {
-			$item['value'] = html_entity_decode( $item['value'] );
-		}
 		?>
-		<<?php echo esc_attr( $tag ); ?> data-item="<?php echo esc_attr( wp_json_encode( $item ) ); ?>"
+		<<?php echo esc_attr( $tag ); ?> data-item="<?php echo esc_attr( htmlentities( wp_json_encode( $item ) ) ); ?>"
 		data-integration-id="<?php echo esc_attr( $integration_id ); ?>"
 		class="wpifycf-field wpifycf-field--type-<?php echo esc_attr( $item['id'] ); ?><?php echo $class ? ' ' . esc_attr( $class ) : ''; ?>"
 		<?php
@@ -293,10 +289,6 @@ abstract class Integration {
 			// Nonce should be verified by caller.
 			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
 			$value = $wp_type === 'string' ? wp_unslash( $_POST[ $item['id'] ] ) : json_decode( wp_unslash( $_POST[ $item['id'] ] ), ARRAY_A );
-
-			if ( $wp_type === 'string' ) {
-				$value = html_entity_decode( $value );
-			}
 
 			return $this->custom_fields->sanitize_item_value( $item )( $value );
 		}

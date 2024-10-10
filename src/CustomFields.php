@@ -20,7 +20,7 @@ use Wpify\CustomFields\Integrations\WooCommerceSettings;
 
 class CustomFields {
 	public readonly Helpers $helpers;
-	public readonly Api $api;
+	public readonly Api     $api;
 
 	public function __construct() {
 		$this->helpers = new Helpers();
@@ -137,8 +137,7 @@ class CustomFields {
 
 	public function sanitize_item_value( array $item ): Closure {
 		return function ( mixed $value ) use ( $item ): mixed {
-			$sanitized_value = null;
-			$original_value  = $value;
+			$original_value = $value;
 
 			if ( in_array( $item['type'], array( 'attachment', 'post', 'term' ), true ) ) {
 				$sanitized_value = absint( $value );
@@ -153,22 +152,22 @@ class CustomFields {
 			} elseif ( 'email' === $item['type'] ) {
 				$sanitized_value = sanitize_email( $value );
 			} elseif ( 'group' === $item['type'] ) {
-				$sanitized_value = array();
 				$value           = (array) $value;
+				$sanitized_value = array();
 				foreach ( $item['items'] as $sub_item ) {
 					$sanitized_value[ $sub_item['id'] ] = $this->sanitize_item_value( $sub_item )( $value[ $sub_item['id'] ] ?? null );
 				}
 			} elseif ( 'link' === $item['type'] ) {
-				$sanitized_value              = array();
 				$value                        = (array) $value;
+				$sanitized_value              = array();
 				$sanitized_value['post']      = absint( $value['post'] ?? 0 );
 				$sanitized_value['label']     = sanitize_text_field( $value['label'] ?? '' );
 				$sanitized_value['url']       = esc_url( $value['url'] ?? '' );
 				$sanitized_value['target']    = sanitize_text_field( $value['target'] ?? '' );
 				$sanitized_value['post_type'] = sanitize_text_field( $value['post_type'] ?? '' );
 			} elseif ( 'mapycz' === $item['type'] ) {
-				$sanitized_value              = array();
 				$value                        = (array) $value;
+				$sanitized_value              = array();
 				$sanitized_value['latitude']  = floatval( $value['latitude'] ?? 0 );
 				$sanitized_value['longitude'] = floatval( $value['longitude'] ?? 0 );
 				$sanitized_value['zoom']      = floatval( $value['zoom'] ?? 0 );
@@ -188,19 +187,32 @@ class CustomFields {
 				$sanitized_value = wp_kses_post( $value );
 			} elseif ( str_starts_with( $item['type'], 'multi_' ) ) {
 				$single_type     = substr( $item['type'], strlen( 'multi_' ) );
-				$sanitized_value = array();
 				$value           = (array) $value;
+				$sanitized_value = array();
 				foreach ( $value as $sub_value ) {
 					$sanitized_value[] = $this->sanitize_item_value(
 						array(
 							...$item,
 							'type' => $single_type,
-						)
+						),
 					)( $sub_value );
 				}
+			} else {
+				$sanitized_value = sanitize_textarea_field( $value );
 			}
 
 			return apply_filters( 'wpifycf_sanitize_' . $item['type'], $sanitized_value, $original_value, $item );
+		};
+	}
+
+	public function sanitize_option_value( array $items = array() ): Closure {
+		return function ( array $value = array() ) use ( $items ): array {
+			$next_value = array();
+			foreach ( $items as $item ) {
+				$next_value[ $item['id'] ] = $this->sanitize_item_value( $item )( $value[ $item['id'] ] ?? null );
+			}
+
+			return $next_value;
 		};
 	}
 

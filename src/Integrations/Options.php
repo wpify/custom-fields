@@ -336,16 +336,16 @@ class Options extends Integration {
 			if ( isset( $_POST[ $this->option_name ] ) ) {
 				$data = $this->get_field( $this->option_name );
 
-				// Sanitization is done via a filter to allow for custom sanitization.
+				// Sanitization is done via custom sanitizer.
 				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-				$post_data = apply_filters( 'wpifycf_sanitize_option', wp_unslash( $_POST[ $this->option_name ] ), $items );
+				$post_data = $this->custom_fields->sanitize_option_value( $items )( wp_unslash( $_POST[ $this->option_name ] ) );
 
 				foreach ( $items as $item ) {
 					if ( isset( $post_data[ $item['id'] ] ) ) {
 						if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
 							$data[ $item['id'] ] = call_user_func( $item['callback_set'], $item, $post_data[ $item['id'] ] );
 						} else {
-							$data[ $item['id'] ] = $this->custom_fields->sanitize_item_value( $item )( $post_data[ $item['id'] ] );
+							$data[ $item['id'] ] = $post_data[ $item['id'] ];
 						}
 					}
 				}
@@ -402,7 +402,7 @@ class Options extends Integration {
 				array(
 					'type'              => 'object',
 					'label'             => $this->page_title,
-					'sanitize_callback' => fn( $value ) => apply_filters( 'wpifycf_sanitize_option', $value, $items ),
+					'sanitize_callback' => $this->custom_fields->sanitize_option_value( $items ),
 					'show_in_rest'      => false,
 					'default'           => array(),
 				),

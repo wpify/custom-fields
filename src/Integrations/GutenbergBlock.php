@@ -183,7 +183,7 @@ class GutenbergBlock extends Integration {
 
 	public function get_field( string $name, $item = array() ): mixed {
 		// Implementation not needed.
-		return;
+		return '';
 	}
 
 	public function set_field( string $name, $value, $item = array() ) {
