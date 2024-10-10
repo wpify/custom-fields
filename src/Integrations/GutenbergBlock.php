@@ -43,7 +43,10 @@ class GutenbergBlock extends Integration {
 	/**
 	 * @throws MissingArgumentException
 	 */
-	public function __construct( array $args, CustomFields $custom_fields ) {
+	public function __construct(
+		array $args,
+		private CustomFields $custom_fields
+	) {
 		parent::__construct( $custom_fields );
 
 		if ( empty( $args['name'] ) || empty( $args['title'] ) ) {
@@ -158,12 +161,9 @@ class GutenbergBlock extends Integration {
 		$attributes = array();
 
 		foreach ( $items as $item ) {
-			$wp_type          = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
-			$wp_default_value = apply_filters( 'wpifycf_field_' . $wp_type . '_default_value', '', $item );
-
 			$attributes[ $item['id'] ] = array(
-				'type'    => $wp_type,
-				'default' => $item['default'] ?? $wp_default_value,
+				'type'    => $this->custom_fields->get_wp_type( $item ),
+				'default' => $this->custom_fields->get_default_value( $item ),
 			);
 		}
 
@@ -181,8 +181,9 @@ class GutenbergBlock extends Integration {
 		return call_user_func( $this->render_callback, $attributes, $content, $block );
 	}
 
-	public function get_field( string $name, $item = array() ) {
+	public function get_field( string $name, $item = array() ): mixed {
 		// Implementation not needed.
+		return;
 	}
 
 	public function set_field( string $name, $value, $item = array() ) {

@@ -29,7 +29,7 @@ class ProductOptions extends Integration {
 	 */
 	public function __construct(
 		array $args,
-		CustomFields $custom_fields,
+		private CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 
@@ -229,19 +229,15 @@ class ProductOptions extends Integration {
 		$items = $this->normalize_items( $this->items );
 
 		foreach ( $items as $item ) {
-			$wp_type          = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
-			$wp_default_value = apply_filters( 'wpifycf_field_' . $wp_type . '_default_value', '', $item );
-			$sanitizer        = fn( $value ) => apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $value, $item );
-
 			register_post_meta(
 				'product',
 				$item['id'],
 				array(
-					'type'              => $wp_type,
+					'type'              => $this->custom_fields->get_wp_type( $item ),
 					'description'       => $item['label'],
 					'single'            => true,
-					'default'           => $item['default'] ?? $wp_default_value,
-					'sanitize_callback' => $sanitizer,
+					'default'           => $this->custom_fields->get_default_value( $item ),
+					'sanitize_callback' => $this->custom_fields->sanitize_item_value( $item ),
 					'show_in_rest'      => false,
 				),
 			);

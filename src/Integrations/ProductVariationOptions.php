@@ -31,7 +31,7 @@ class ProductVariationOptions extends Integration {
 	 */
 	public function __construct(
 		array $args,
-		CustomFields $custom_fields,
+		private CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 
@@ -184,9 +184,10 @@ class ProductVariationOptions extends Integration {
 
 			$this->variation_id = $product_variation_id;
 
-			// Sanitization is done in the filter to allow custom sanitization. Nonce is already verified by WooCommerce.
+			// Sanitization is done in the custom function.
+			// Nonce is already verified by WooCommerce.
 			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
-			$value = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], wp_unslash( $_POST[ $item['id'] ][ $loop ] ), $item );
+			$value = $this->custom_fields->sanitize_item_value( $item )( wp_unslash( $_POST[ $item['id'] ][ $loop ] ) );
 
 			$this->set_field(
 				$item['id'],
@@ -207,19 +208,15 @@ class ProductVariationOptions extends Integration {
 		$items = $this->normalize_items( $this->items );
 
 		foreach ( $items as $item ) {
-			$wp_type          = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
-			$wp_default_value = apply_filters( 'wpifycf_field_' . $wp_type . '_default_value', '', $item );
-			$sanitizer        = fn( $value ) => apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $value, $item );
-
 			register_post_meta(
 				'product_variation',
 				$item['id'],
 				array(
-					'type'              => $wp_type,
+					'type'              => $this->custom_fields->get_wp_type( $item ),
 					'description'       => $item['label'],
 					'single'            => true,
-					'default'           => $item['default'] ?? $wp_default_value,
-					'sanitize_callback' => $sanitizer,
+					'default'           => $this->custom_fields->get_default_value( $item ),
+					'sanitize_callback' => $this->custom_fields->sanitize_item_value( $item ),
 					'show_in_rest'      => false,
 				),
 			);

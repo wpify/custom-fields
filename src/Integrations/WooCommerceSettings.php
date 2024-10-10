@@ -8,15 +8,15 @@ use WP_Screen;
 use Wpify\CustomFields\CustomFields;
 
 class WooCommerceSettings extends Integration {
-	public readonly array                     $tab;
-	public readonly array                     $section;
-	public readonly array                     $items;
-	public readonly string                    $class;
-	public bool                               $is_new_tab = false;
+	public readonly array $tab;
+	public readonly array $section;
+	public readonly array $items;
+	public readonly string $class;
+	public bool $is_new_tab = false;
 	public readonly Closure|array|string|null $display;
-	public readonly string                    $id;
-	public readonly array                     $tabs;
-	public readonly string                    $option_name;
+	public readonly string $id;
+	public readonly array $tabs;
+	public readonly string $option_name;
 
 	public function __construct( array $args, CustomFields $custom_fields ) {
 		parent::__construct( $custom_fields );
@@ -131,8 +131,8 @@ class WooCommerceSettings extends Integration {
 						);
 						?>
 						<li>
-							<a href="<?php echo esc_url( $url ) ?>"
-							   class="<?php echo $current_section == $id ? 'current' : ''; ?>"
+							<a href="<?php echo esc_url( $url ); ?>"
+								class="<?php echo $current_section == $id ? 'current' : ''; ?>"
 							>
 								<?php echo wp_kses_post( $label ); ?>
 							</a>
@@ -201,7 +201,7 @@ class WooCommerceSettings extends Integration {
 		}
 	}
 
-	public function get_field( string $name, $item = array() ) {
+	public function get_field( string $name, $item = array() ): mixed {
 		if ( isset( $item['callback_get'] ) && is_callable( $item['callback_get'] ) ) {
 			return call_user_func( $item['callback_get'], $item );
 		}

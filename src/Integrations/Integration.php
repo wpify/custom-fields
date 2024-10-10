@@ -6,17 +6,38 @@ use WP_REST_Request;
 use WP_REST_Server;
 use Wpify\CustomFields\CustomFields;
 
+/**
+ * Abstract class Integration
+ *
+ * Provides a foundation for custom field integrations in WordPress,
+ * including REST API registration and item normalization.
+ */
 abstract class Integration {
 	public readonly array $items;
 	public readonly string $id;
 
+	/**
+	 * Constructor.
+	 *
+	 * Registers the REST API options on initialization.
+	 *
+	 * @param CustomFields $custom_fields The custom fields object.
+	 */
 	public function __construct(
 		private readonly CustomFields $custom_fields,
 	) {
 		add_action( 'rest_api_init', array( $this, 'register_rest_options' ) );
 	}
 
-	protected function normalize_items( array $items, $global_id = '' ): array {
+	/**
+	 * Normalizes an array of items.
+	 *
+	 * @param array  $items     Items to normalize.
+	 * @param string $global_id Optional. A global identifier for items.
+	 *
+	 * @return array Normalized items.
+	 */
+	protected function normalize_items( array $items, string $global_id = '' ): array {
 		$next_items = array();
 
 		if ( empty( $global_id ) ) {
@@ -36,6 +57,13 @@ abstract class Integration {
 		return array_values( $next_items );
 	}
 
+	/**
+	 * Normalizes a single item.
+	 *
+	 * @param array  $item Item to normalize.
+	 * @param string $global_id A global identifier for the item.
+	 * @return array Normalized item.
+	 */
 	protected function normalize_item( array $item, string $global_id ): array {
 		$item['global_id'] = $global_id . '__' . $item['id'];
 
@@ -55,8 +83,7 @@ abstract class Integration {
 		}
 
 		if ( ! isset( $item['default'] ) ) {
-			$wp_type         = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
-			$item['default'] = apply_filters( 'wpifycf_field_' . $wp_type . '_default_value', '', $item );
+			$item['default'] = $this->custom_fields->get_default_value( $item );
 		}
 
 		if ( isset( $item['items'] ) ) {
@@ -81,6 +108,12 @@ abstract class Integration {
 		return $item;
 	}
 
+	/**
+	 * Normalizes an array of options.
+	 *
+	 * @param array $options Options to normalize.
+	 * @return array Normalized options.
+	 */
 	public function normalize_options( array $options ): array {
 		$next_options = array();
 
@@ -98,6 +131,11 @@ abstract class Integration {
 		return $next_options;
 	}
 
+	/**
+	 * Enqueues scripts and styles necessary for the integration.
+	 *
+	 * Only enqueues on the admin side.
+	 */
 	public function enqueue(): void {
 		if ( ! is_admin() ) {
 			return;
@@ -139,6 +177,13 @@ abstract class Integration {
 		);
 	}
 
+	/**
+	 * Prints the app container with specific data attributes.
+	 *
+	 * @param string $context The context in which the app is used.
+	 * @param array  $tabs Tabs data to be used in the app.
+	 * @param array  $data_attributes Optional. Additional data attributes.
+	 */
 	public function print_app( string $context, array $tabs, array $data_attributes = array() ): void {
 		$loop           = $data_attributes['loop'] ?? '';
 		$integration_id = isset( $data_attributes['loop'] ) ? $this->id . '__' . $loop : $this->id;
@@ -157,6 +202,14 @@ abstract class Integration {
 		<?php
 	}
 
+	/**
+	 * Prints a field element with specific data attributes.
+	 *
+	 * @param array  $item Item data to print as field.
+	 * @param array  $data_attributes Optional. Additional data attributes.
+	 * @param string $tag Optional. HTML tag to use.
+	 * @param string $class Optional. Additional CSS class for the field element.
+	 */
 	public function print_field( array $item, array $data_attributes = array(), string $tag = 'div', string $class = '' ): void {
 		$item['name']   = empty( $this->option_name ) ? $item['id'] : $this->option_name . '[' . $item['id'] . ']';
 		$item['value']  = $this->get_field( $item['id'], $item ) ?? $item['default'];
@@ -179,18 +232,31 @@ abstract class Integration {
 		<?php
 	}
 
+	/**
+	 * Registers REST API for options recursively.
+	 */
 	public function register_rest_options(): void {
 		$items = $this->normalize_items( $this->items );
 
 		$this->register_options_routes( $items );
 	}
 
+	/**
+	 * Registers option routes for an array of items.
+	 *
+	 * @param array $items Array of items to register routes for.
+	 */
 	public function register_options_routes( array $items = array() ): void {
 		foreach ( $items as $item ) {
 			$this->register_options_route( $item );
 		}
 	}
 
+	/**
+	 * Registers a REST API route for a single item.
+	 *
+	 * @param array $item Item for which to register the route.
+	 */
 	public function register_options_route( array $item ): void {
 		if ( ! empty( $item['options_key'] ) ) {
 			$this->custom_fields->api->register_rest_route(
@@ -211,13 +277,20 @@ abstract class Integration {
 		}
 	}
 
-	public function get_sanitized_post_item_value( array $item ) {
+	/**
+	 * Retrieves the sanitized value from a POST request for a given item.
+	 *
+	 * @param array $item The item to retrieve the value for.
+	 * @return mixed|null The sanitized value or null if not set.
+	 */
+	public function get_sanitized_post_item_value( array $item ): mixed {
 		// Nonce should be verified by caller.
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing
 		if ( isset( $_POST[ $item['id'] ] ) ) {
-			$wp_type = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
+			$wp_type = $this->custom_fields->get_wp_type( $item );
 
-			// Sanitization is done via a filter to allow for custom sanitization. Nonce should be verified by caller.
+			// Sanitization is done via custom function.
+			// Nonce should be verified by caller.
 			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
 			$value = $wp_type === 'string' ? wp_unslash( $_POST[ $item['id'] ] ) : json_decode( wp_unslash( $_POST[ $item['id'] ] ), ARRAY_A );
 
@@ -225,13 +298,27 @@ abstract class Integration {
 				$value = html_entity_decode( $value );
 			}
 
-			return apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $value, $item );
+			return $this->custom_fields->sanitize_item_value( $item )( $value );
 		}
 
 		return null;
 	}
 
-	abstract public function get_field( string $name, $item = array() );
+	/**
+	 * Gets the field value for a given name and item.
+	 *
+	 * @param string $name Field name.
+	 * @param array  $item Optional. Field item data.
+	 * @return mixed Field value.
+	 */
+	abstract public function get_field( string $name, array $item = array() ): mixed;
 
-	abstract public function set_field( string $name, $value, $item = array() );
+	/**
+	 * Sets the field value for a given name and item.
+	 *
+	 * @param string $name Field name.
+	 * @param mixed  $value Field value.
+	 * @param array  $item Optional. Field item data.
+	 */
+	abstract public function set_field( string $name, mixed $value, array $item = array() );
 }

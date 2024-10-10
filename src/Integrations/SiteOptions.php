@@ -35,7 +35,7 @@ class SiteOptions extends Integration {
 	 */
 	public function __construct(
 		array $args,
-		CustomFields $custom_fields,
+		private CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 
@@ -300,7 +300,7 @@ class SiteOptions extends Integration {
 						if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
 							$data[ $item['id'] ] = call_user_func( $item['callback_set'], $item, $post_data[ $item['id'] ] );
 						} else {
-							$data[ $item['id'] ] = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $post_data[ $item['id'] ], $item );
+							$data[ $item['id'] ] = $this->custom_fields->sanitize_item_value( $item )( $post_data[ $item['id'] ] );
 						}
 					}
 				}
@@ -337,19 +337,15 @@ class SiteOptions extends Integration {
 
 		if ( empty( $this->option_name ) ) {
 			foreach ( $items as $item ) {
-				$wp_type          = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
-				$wp_default_value = apply_filters( 'wpifycf_field_' . $wp_type . '_default_value', '', $item );
-				$sanitizer        = fn( $value ) => apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $value, $item );
-
 				register_setting(
 					$this->option_group,
 					$item['id'],
 					array(
-						'type'              => $wp_type,
+						'type'              => $this->custom_fields->get_wp_type( $item ),
 						'label'             => $item['label'] ?? '',
-						'sanitize_callback' => $sanitizer,
+						'sanitize_callback' => $this->custom_fields->sanitize_item_value( $item ),
 						'show_in_rest'      => false,
-						'default'           => $item['default'] ?? $wp_default_value,
+						'default'           => $this->custom_fields->get_default_value( $item ),
 					),
 				);
 			}

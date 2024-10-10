@@ -10,11 +10,14 @@ use Wpify\CustomFields\CustomFields;
 class MenuItem extends Integration {
 
 	public readonly string $id;
-	public string          $item_id;
-	public readonly array  $tabs;
-	public readonly array  $items;
+	public string $item_id;
+	public readonly array $tabs;
+	public readonly array $items;
 
-	public function __construct( array $args, CustomFields $custom_fields ) {
+	public function __construct(
+		array $args,
+		private CustomFields $custom_fields,
+	) {
 		parent::__construct( $custom_fields );
 
 		$this->id    = $args['id'] ?? 'menu_item__' . wp_generate_uuid4();
@@ -64,9 +67,10 @@ class MenuItem extends Integration {
 				continue;
 			}
 
-			// Sanitization is done in the filter to allow custom sanitization. Nonce is already verified by WooCommerce.
+			// Sanitization is done in a custom sanitizer function.
+			// Nonce is already verified by WooCommerce.
 			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
-			$value = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], wp_unslash( $_POST[ $item['id'] ][ $menu_item_db_id ] ), $item );
+			$value = $this->custom_fields->sanitize_item_value( $item )( wp_unslash( $_POST[ $item['id'] ][ $menu_item_db_id ] ), $item );
 
 			$this->set_field(
 				$item['id'],
@@ -76,7 +80,7 @@ class MenuItem extends Integration {
 		}
 	}
 
-	public function get_field( string $name, $item = array() ) {
+	public function get_field( string $name, $item = array() ): mixed {
 		if ( ! empty( $item['callback_get'] ) ) {
 			return call_user_func( $item['callback_get'], $item, $this->item_id );
 		} else {

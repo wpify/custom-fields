@@ -7,26 +7,26 @@ use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
 class WcMembershipPlanOptions extends Integration {
-	public readonly string            $id;
-	public int                        $membership_plan_id;
-	public readonly array             $tab;
-	public readonly string            $capability;
+	public readonly string $id;
+	public int $membership_plan_id;
+	public readonly array $tab;
+	public readonly string $capability;
 	public readonly array|string|null $callback;
-	public readonly array             $args;
-	public readonly string            $hook_suffix;
-	public readonly int               $hook_priority;
-	public readonly array             $help_tabs;
-	public readonly string            $help_sidebar;
-	public                            $display;
-	public readonly string            $option_name;
-	public readonly array             $items;
-	public readonly array             $sections;
-	public readonly array             $tabs;
-	public bool                       $is_new_tab;
+	public readonly array $args;
+	public readonly string $hook_suffix;
+	public readonly int $hook_priority;
+	public readonly array $help_tabs;
+	public readonly string $help_sidebar;
+	public $display;
+	public readonly string $option_name;
+	public readonly array $items;
+	public readonly array $sections;
+	public readonly array $tabs;
+	public bool $is_new_tab;
 
 	public function __construct(
 		array $args,
-		CustomFields $custom_fields,
+		private CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 
@@ -236,19 +236,15 @@ class WcMembershipPlanOptions extends Integration {
 		$items = $this->normalize_items( $this->items );
 
 		foreach ( $items as $item ) {
-			$wp_type          = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
-			$wp_default_value = apply_filters( 'wpifycf_field_' . $wp_type . '_default_value', '', $item );
-			$sanitizer        = fn( $value ) => apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $value, $item );
-
 			register_post_meta(
 				'product',
 				$item['id'],
 				array(
-					'type'              => $wp_type,
+					'type'              => $this->custom_fields->get_wp_type( $item ),
 					'description'       => $item['label'],
 					'single'            => true,
-					'default'           => $item['default'] ?? $wp_default_value,
-					'sanitize_callback' => $sanitizer,
+					'default'           => $this->custom_fields->get_default_value( $item ),
+					'sanitize_callback' => $this->custom_fields->sanitize_item_value( $item ),
 					'show_in_rest'      => false,
 				),
 			);

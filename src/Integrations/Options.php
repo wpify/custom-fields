@@ -5,6 +5,11 @@ namespace Wpify\CustomFields\Integrations;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\exceptions\MissingArgumentException;
 
+/**
+ * Class Options
+ *
+ * Handles the creation and management of custom options pages for WPify Custom Fields.
+ */
 class Options extends Integration {
 	const TYPE_NETWORK        = 'network';
 	const TYPE_USER_SUBMENU   = 'user_submenu';
@@ -39,11 +44,18 @@ class Options extends Integration {
 	public readonly string $success_message;
 
 	/**
-	 * @throws MissingArgumentException
+	 * Constructor.
+	 *
+	 * Initializes an Options object, validates required arguments, and sets up action hooks.
+	 *
+	 * @param array        $args          Arguments for the options page.
+	 * @param CustomFields $custom_fields The custom fields object.
+	 *
+	 * @throws MissingArgumentException If required arguments are missing or invalid.
 	 */
 	public function __construct(
 		array $args,
-		CustomFields $custom_fields,
+		private CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 
@@ -161,6 +173,9 @@ class Options extends Integration {
 		}
 	}
 
+	/**
+	 * Registers the settings page in the WordPress admin menu.
+	 */
 	public function register(): void {
 		if (
 			( $this->display && is_callable( $this->display ) && ! call_user_func( $this->display ) )
@@ -209,6 +224,9 @@ class Options extends Integration {
 		add_action( 'load-' . $this->hook_suffix, array( $this, 'render_help' ) );
 	}
 
+	/**
+	 * Renders the options page in the WordPress admin.
+	 */
 	public function render(): void {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
@@ -272,6 +290,9 @@ class Options extends Integration {
 		<?php
 	}
 
+	/**
+	 * Renders the help tabs and sidebar in the WordPress admin.
+	 */
 	public function render_help(): void {
 		foreach ( $this->help_tabs as $key => $tab ) {
 			$tab = wp_parse_args(
@@ -303,6 +324,9 @@ class Options extends Integration {
 		}
 	}
 
+	/**
+	 * Saves the options in the WordPress admin.
+	 */
 	public function save_network_options(): void {
 		check_admin_referer( $this::NETWORK_SAVE_ACTION );
 
@@ -321,7 +345,7 @@ class Options extends Integration {
 						if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
 							$data[ $item['id'] ] = call_user_func( $item['callback_set'], $item, $post_data[ $item['id'] ] );
 						} else {
-							$data[ $item['id'] ] = apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $post_data[ $item['id'] ], $item );
+							$data[ $item['id'] ] = $this->custom_fields->sanitize_item_value( $item )( $post_data[ $item['id'] ] );
 						}
 					}
 				}
@@ -351,24 +375,23 @@ class Options extends Integration {
 		exit;
 	}
 
+	/**
+	 * Registers the settings for the options page.
+	 */
 	public function register_settings(): void {
 		$items = $this->normalize_items( $this->items );
 
 		if ( empty( $this->option_name ) ) {
 			foreach ( $items as $item ) {
-				$wp_type          = apply_filters( 'wpifycf_field_type_' . $item['type'], 'string', $item );
-				$wp_default_value = apply_filters( 'wpifycf_field_' . $wp_type . '_default_value', '', $item );
-				$sanitizer        = fn( $value ) => apply_filters( 'wpifycf_sanitize_field_type_' . $item['type'], $value, $item );
-
 				register_setting(
 					$this->option_group,
 					$item['id'],
 					array(
-						'type'              => $wp_type,
+						'type'              => $this->custom_fields->get_wp_type( $item ),
 						'label'             => $item['label'] ?? '',
-						'sanitize_callback' => $sanitizer,
+						'sanitize_callback' => $this->custom_fields->sanitize_item_value( $item ),
 						'show_in_rest'      => false,
-						'default'           => $item['default'] ?? $wp_default_value,
+						'default'           => $this->custom_fields->get_default_value( $item ),
 					),
 				);
 			}
@@ -413,6 +436,11 @@ class Options extends Integration {
 		}
 	}
 
+	/**
+	 * Normalizes a field item.
+	 *
+	 * @param array $item The field item.
+	 */
 	protected function normalize_item( array $item, string $global_id = '' ): array {
 		$item = parent::normalize_item( $item, $global_id );
 
@@ -423,7 +451,12 @@ class Options extends Integration {
 		return $item;
 	}
 
-	public function get_field( string $name, $item = array() ): mixed {
+	/**
+	 * Gets the value of a field item from the database.
+	 *
+	 * @param array $item The field item.
+	 */
+	public function get_field( string $name, array $item = array() ): mixed {
 		if ( isset( $item['callback_get'] ) && is_callable( $item['callback_get'] ) ) {
 			return call_user_func( $item['callback_get'], $item );
 		}
@@ -437,15 +470,22 @@ class Options extends Integration {
 				return get_network_option( get_current_network_id(), $name, null );
 			}
 		} elseif ( ! empty( $this->option_name ) ) {
-				$data = get_option( $this->option_name, array() );
+			$data = get_option( $this->option_name, array() );
 
-				return $data[ $name ] ?? null;
+			return $data[ $name ] ?? null;
 		} else {
 			return get_option( $name, null );
 		}
 	}
 
-	public function set_field( string $name, $value, $item = array() ) {
+	/**
+	 * Sets the value of a field item in the database.
+	 *
+	 * @param string $name  The name of the field item.
+	 * @param mixed  $value The value to set.
+	 * @param array  $item  The field item.
+	 */
+	public function set_field( string $name, mixed $value, array $item = array() ) {
 		if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
 			return call_user_func( $item['callback_set'], $item, $value );
 		}
@@ -460,15 +500,18 @@ class Options extends Integration {
 				return update_network_option( get_current_network_id(), $name, $value );
 			}
 		} elseif ( ! empty( $this->option_name ) ) {
-				$data          = get_option( $this->option_name, array() );
-				$data[ $name ] = $value;
+			$data          = get_option( $this->option_name, array() );
+			$data[ $name ] = $value;
 
-				return update_option( $this->option_name, $data );
+			return update_option( $this->option_name, $data );
 		} else {
 			return update_option( $name, $value );
 		}
 	}
 
+	/**
+	 * Shows the network admin notices.
+	 */
 	public function show_network_admin_notices(): void {
 		// Just showing the success message, no need to check for the nonce.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
