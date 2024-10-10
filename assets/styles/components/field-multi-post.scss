@@ -1,0 +1,15 @@
+.wpifycf-field-multi-post {
+  display: flex;
+  flex-flow: column;
+  gap: var(--wpifycf-gap-1);
+
+  &__items {
+    display: flex;
+    flex-flow: row wrap;
+    gap: var(--wpifycf-gap-1);
+  }
+
+  .wpifycf-post-preview {
+    cursor: move;
+  }
+}

@@ -1,0 +1,14 @@
+.wpifycf-multi-field-items {
+  display: flex;
+  flex-flow: column;
+  gap: var(--wpifycf-gap-2);
+}
+
+.wpifycf-multi-field-item {
+  display: flex;
+}
+
+.wpifycf-multi-field-item-field {
+  width: 600px;
+  max-width: 100%;
+}

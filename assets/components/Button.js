@@ -1,11 +1,19 @@
-import React from 'react';
-import classnames from 'classnames';
+import clsx from 'clsx';
 
-const Button = (props) => {
-	const { className, ...rest } = props;
+export function Button ({ onClick, href, className, children, ...rest }) {
+  const Tag = href ? 'a' : 'button';
+  const props = {};
+
+  if (href) {
+    props.href = href;
+    props.target = '_blank';
+  } else {
+    props.type = 'button';
+  }
+
   return (
-    <button type="button" className={classnames('button', className)} {...rest} />
+    <Tag {...props} {...rest} onClick={onClick} className={clsx('button wpifycf-button', className)}>
+      {children}
+    </Tag>
   );
-};
-
-export default Button;
+}
