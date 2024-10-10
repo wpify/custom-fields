@@ -86,3 +86,4 @@ function loadGutenbergBlocks (event) {
 document.addEventListener('DOMContentLoaded', loadCustomFields);
 document.addEventListener('wpifycf_register_block', loadGutenbergBlocks);
 jQuery(document).on('woocommerce_variations_loaded', loadCustomFields);
+jQuery(document).on('menu-item-added', loadCustomFields);

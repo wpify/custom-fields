@@ -5,6 +5,7 @@ namespace Wpify\CustomFields;
 use Wpify\CustomFields\exceptions\MissingArgumentException;
 use Wpify\CustomFields\Integrations\Comment;
 use Wpify\CustomFields\Integrations\GutenbergBlock;
+use Wpify\CustomFields\Integrations\MenuItem;
 use Wpify\CustomFields\Integrations\Metabox;
 use Wpify\CustomFields\Integrations\Options;
 use Wpify\CustomFields\Integrations\OrderMetabox;
@@ -189,6 +190,10 @@ class CustomFields {
 
 	public function create_woocommerce_settings( $args = array() ): WooCommerceSettings {
 		return new WooCommerceSettings( $args, $this );
+	}
+
+	public function create_menu_item_options( $args = array() ): MenuItem {
+		return new MenuItem( $args, $this );
 	}
 
 	public function get_js_asset( string $item ): array {

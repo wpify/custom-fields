@@ -65,7 +65,7 @@ class User extends Integration {
 	public function render_edit_form( $user ) {
 		$display_callback = $this->display;
 
-		if ( ! boolval( $display_callback() ) ) {
+		if ( ! $display_callback() ) {
 			return;
 		}
 
