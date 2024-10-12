@@ -16,7 +16,7 @@ class MenuItem extends Integration {
 
 	public function __construct(
 		array $args,
-		private CustomFields $custom_fields,
+		CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 
@@ -67,14 +67,9 @@ class MenuItem extends Integration {
 				continue;
 			}
 
-			// Sanitization is done in a custom sanitizer function.
-			// Nonce is already verified by WooCommerce.
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
-			$value = $this->custom_fields->sanitize_item_value( $item )( wp_unslash( $_POST[ $item['id'] ][ $menu_item_db_id ] ), $item );
-
 			$this->set_field(
 				$item['id'],
-				$value,
+				$this->get_sanitized_post_item_value( $item, $menu_item_db_id ),
 				$item,
 			);
 		}

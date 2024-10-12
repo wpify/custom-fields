@@ -20,7 +20,7 @@ use Wpify\CustomFields\Integrations\WooCommerceSettings;
 
 class CustomFields {
 	public readonly Helpers $helpers;
-	public readonly Api     $api;
+	public readonly Api $api;
 
 	public function __construct() {
 		$this->helpers = new Helpers();

@@ -55,7 +55,7 @@ class WooCommerceSettings extends Integration {
 		$tab              = sanitize_text_field( wp_unslash( $_REQUEST['tab'] ?? '' ) );
 		$section          = sanitize_text_field( wp_unslash( $_REQUEST['section'] ?? '' ) );
 		$settings_updated = sanitize_text_field( wp_unslash( $_REQUEST['settings-updated'] ?? '' ) );
-		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+		// phpcs:enable
 
 		if ( $tab === $this->tab['id'] && $section === $this->section['id'] && $settings_updated === '1' ) {
 			WC_Admin_Settings::add_message( __( 'Your settings have been saved.', 'woocommerce' ) );
@@ -166,7 +166,7 @@ class WooCommerceSettings extends Integration {
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended
 		$tab     = sanitize_text_field( wp_unslash( $_REQUEST['tab'] ?? '' ) );
 		$section = sanitize_text_field( wp_unslash( $_REQUEST['section'] ?? '' ) );
-		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+		// phpcs:enable
 
 		$items = $this->normalize_items( $this->items );
 

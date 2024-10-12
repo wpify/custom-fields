@@ -184,14 +184,9 @@ class ProductVariationOptions extends Integration {
 
 			$this->variation_id = $product_variation_id;
 
-			// Sanitization is done in the custom function.
-			// Nonce is already verified by WooCommerce.
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
-			$value = $this->custom_fields->sanitize_item_value( $item )( wp_unslash( $_POST[ $item['id'] ][ $loop ] ) );
-
 			$this->set_field(
 				$item['id'],
-				$value,
+				$this->get_sanitized_post_item_value( $item, $loop ),
 				$item,
 			);
 		}

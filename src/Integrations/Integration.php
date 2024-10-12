@@ -60,8 +60,9 @@ abstract class Integration {
 	/**
 	 * Normalizes a single item.
 	 *
-	 * @param array  $item Item to normalize.
+	 * @param array  $item      Item to normalize.
 	 * @param string $global_id A global identifier for the item.
+	 *
 	 * @return array Normalized item.
 	 */
 	protected function normalize_item( array $item, string $global_id ): array {
@@ -112,6 +113,7 @@ abstract class Integration {
 	 * Normalizes an array of options.
 	 *
 	 * @param array $options Options to normalize.
+	 *
 	 * @return array Normalized options.
 	 */
 	public function normalize_options( array $options ): array {
@@ -180,8 +182,8 @@ abstract class Integration {
 	/**
 	 * Prints the app container with specific data attributes.
 	 *
-	 * @param string $context The context in which the app is used.
-	 * @param array  $tabs Tabs data to be used in the app.
+	 * @param string $context         The context in which the app is used.
+	 * @param array  $tabs            Tabs data to be used in the app.
 	 * @param array  $data_attributes Optional. Additional data attributes.
 	 */
 	public function print_app( string $context, array $tabs, array $data_attributes = array() ): void {
@@ -205,10 +207,10 @@ abstract class Integration {
 	/**
 	 * Prints a field element with specific data attributes.
 	 *
-	 * @param array  $item Item data to print as field.
+	 * @param array  $item            Item data to print as field.
 	 * @param array  $data_attributes Optional. Additional data attributes.
-	 * @param string $tag Optional. HTML tag to use.
-	 * @param string $class Optional. Additional CSS class for the field element.
+	 * @param string $tag             Optional. HTML tag to use.
+	 * @param string $class           Optional. Additional CSS class for the field element.
 	 */
 	public function print_field( array $item, array $data_attributes = array(), string $tag = 'div', string $class = '' ): void {
 		$item['name']   = empty( $this->option_name ) ? $item['id'] : $this->option_name . '[' . $item['id'] . ']';
@@ -277,21 +279,29 @@ abstract class Integration {
 	 * Retrieves the sanitized value from a POST request for a given item.
 	 *
 	 * @param array $item The item to retrieve the value for.
+	 *
 	 * @return mixed|null The sanitized value or null if not set.
 	 */
-	public function get_sanitized_post_item_value( array $item ): mixed {
-		// Nonce should be verified by caller.
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing
-		if ( isset( $_POST[ $item['id'] ] ) ) {
+	public function get_sanitized_post_item_value( array $item, ?int $index = null ): mixed {
+		/**
+		 * Nonce is verified by the caller.
+		 * phpcs:disable WordPress.Security.NonceVerification.Missing
+		 *
+		 * Sanitization is handled by method \Wpify\CustomFields\CustomFields::sanitize_item_value().
+		 * phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		 */
+		if ( ( $index === null && isset( $_POST[ $item['id'] ] ) ) || isset( $_POST[ $item['id'] ][ $index ] ) ) {
 			$wp_type = $this->custom_fields->get_wp_type( $item );
+			$value   = wp_unslash( $index === null ? $_POST[ $item['id'] ] : $_POST[ $item['id'] ][ $index ] );
 
-			// Sanitization is done via custom function.
-			// Nonce should be verified by caller.
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
-			$value = $wp_type === 'string' ? wp_unslash( $_POST[ $item['id'] ] ) : json_decode( wp_unslash( $_POST[ $item['id'] ] ), ARRAY_A );
+			if ( $wp_type !== 'string' ) {
+				$value = json_decode( $value, ARRAY_A );
+			}
 
 			return $this->custom_fields->sanitize_item_value( $item )( $value );
 		}
+
+		// phpcs:enable
 
 		return null;
 	}
@@ -301,6 +311,7 @@ abstract class Integration {
 	 *
 	 * @param string $name Field name.
 	 * @param array  $item Optional. Field item data.
+	 *
 	 * @return mixed Field value.
 	 */
 	abstract public function get_field( string $name, array $item = array() ): mixed;
@@ -308,9 +319,9 @@ abstract class Integration {
 	/**
 	 * Sets the field value for a given name and item.
 	 *
-	 * @param string $name Field name.
+	 * @param string $name  Field name.
 	 * @param mixed  $value Field value.
-	 * @param array  $item Optional. Field item data.
+	 * @param array  $item  Optional. Field item data.
 	 */
 	abstract public function set_field( string $name, mixed $value, array $item = array() );
 }
