@@ -13,7 +13,7 @@ use Wpify\CustomFields\CustomFields;
  * including REST API registration and item normalization.
  */
 abstract class Integration {
-	public readonly array $items;
+	public readonly array  $items;
 	public readonly string $id;
 
 	/**
@@ -73,9 +73,8 @@ abstract class Integration {
 			unset( $item['custom_attributes'] );
 		}
 
-		if ( isset( $item['title'] ) ) {
+		if ( isset( $item['title'] ) && ! empty( $item['label'] ) ) {
 			$item['label'] = $item['title'];
-			unset( $item['title'] );
 		}
 
 		if ( isset( $item['desc'] ) ) {
@@ -191,10 +190,10 @@ abstract class Integration {
 		$integration_id = isset( $data_attributes['loop'] ) ? $this->id . '__' . $loop : $this->id;
 		?>
 		<div class="wpifycf-app"
-			data-loaded="false"
-			data-integration-id="<?php echo esc_attr( $integration_id ); ?>"
-			data-tabs="<?php echo esc_attr( htmlentities( wp_json_encode( $tabs ) ) ); ?>"
-			data-context="<?php echo esc_attr( $context ); ?>"
+		     data-loaded="false"
+		     data-integration-id="<?php echo esc_attr( $integration_id ); ?>"
+		     data-tabs="<?php echo esc_attr( htmlentities( wp_json_encode( $tabs ) ) ); ?>"
+		     data-context="<?php echo esc_attr( $context ); ?>"
 			<?php
 			foreach ( $data_attributes as $key => $value ) {
 				printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );

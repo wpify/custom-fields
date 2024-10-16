@@ -10,18 +10,22 @@ function Checkbox ({
   value = false,
   attributes = {},
   className,
+  title,
 }) {
   const handleChange = useCallback(event => onChange(event.target.checked), [onChange]);
 
   return (
-    <input
-      type="checkbox"
-      id={htmlId}
-      onChange={handleChange}
-      className={clsx('wpifycf-field-checkbox', `wpifycf-field-checkbox--${id}`, attributes.class, className)}
-      checked={value}
-      {...attributes}
-    />
+    <label>
+      <input
+        type="checkbox"
+        id={htmlId}
+        onChange={handleChange}
+        className={clsx('wpifycf-field-checkbox', `wpifycf-field-checkbox--${id}`, attributes.class, className)}
+        checked={value}
+        {...attributes}
+      />
+      {title && ' ' + title}
+    </label>
   );
 }
 

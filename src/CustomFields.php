@@ -20,7 +20,7 @@ use Wpify\CustomFields\Integrations\WooCommerceSettings;
 
 class CustomFields {
 	public readonly Helpers $helpers;
-	public readonly Api $api;
+	public readonly Api     $api;
 
 	public function __construct() {
 		$this->helpers = new Helpers();
@@ -152,13 +152,13 @@ class CustomFields {
 			} elseif ( 'email' === $item['type'] ) {
 				$sanitized_value = sanitize_email( $value );
 			} elseif ( 'group' === $item['type'] ) {
-				$value           = (array) $value;
+				$value           = is_string( $value ) ? json_decode( $value ) : (array) $value;
 				$sanitized_value = array();
 				foreach ( $item['items'] as $sub_item ) {
 					$sanitized_value[ $sub_item['id'] ] = $this->sanitize_item_value( $sub_item )( $value[ $sub_item['id'] ] ?? null );
 				}
 			} elseif ( 'link' === $item['type'] ) {
-				$value                        = (array) $value;
+				$value                        = is_string( $value ) ? json_decode( $value ) : (array) $value;
 				$sanitized_value              = array();
 				$sanitized_value['post']      = absint( $value['post'] ?? 0 );
 				$sanitized_value['label']     = sanitize_text_field( $value['label'] ?? '' );
@@ -166,7 +166,7 @@ class CustomFields {
 				$sanitized_value['target']    = sanitize_text_field( $value['target'] ?? '' );
 				$sanitized_value['post_type'] = sanitize_text_field( $value['post_type'] ?? '' );
 			} elseif ( 'mapycz' === $item['type'] ) {
-				$value                        = (array) $value;
+				$value                        = is_string( $value ) ? json_decode( $value ) : (array) $value;
 				$sanitized_value              = array();
 				$sanitized_value['latitude']  = floatval( $value['latitude'] ?? 0 );
 				$sanitized_value['longitude'] = floatval( $value['longitude'] ?? 0 );
@@ -187,7 +187,7 @@ class CustomFields {
 				$sanitized_value = wp_kses_post( $value );
 			} elseif ( str_starts_with( $item['type'], 'multi_' ) ) {
 				$single_type     = substr( $item['type'], strlen( 'multi_' ) );
-				$value           = (array) $value;
+				$value           = is_string( $value ) ? json_decode( $value ) : (array) $value;
 				$sanitized_value = array();
 				foreach ( $value as $sub_value ) {
 					$sanitized_value[] = $this->sanitize_item_value(
@@ -234,7 +234,7 @@ class CustomFields {
 		return apply_filters( 'wpifycf_wp_type_' . $item['type'], $type, $item );
 	}
 
-	public function get_default_value( array $item ): string {
+	public function get_default_value( array $item ): mixed {
 		if ( isset( $item['default'] ) ) {
 			$default_value = $item['default'];
 		} elseif ( in_array( $item['type'], array( 'attachment', 'post', 'term' ), true ) ) {

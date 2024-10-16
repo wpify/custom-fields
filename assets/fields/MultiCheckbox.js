@@ -26,7 +26,7 @@ function MultiCheckbox ({
             type="checkbox"
             id={`${htmlId}-${option.value}`}
             onChange={handleChange(option.value)}
-            checked={value[option.value]}
+            checked={value[option.value] || false}
             {...attributes}
           />
           <label

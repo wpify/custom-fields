@@ -9,7 +9,7 @@ export function Button (props) {
     id,
     href,
     action,
-    primary,
+    primary = false,
     attributes = {},
     className,
   } = props;

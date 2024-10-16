@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-export function Button ({ onClick, href, className, children, ...rest }) {
+export function Button ({ onClick, href, className, children, primary = false, ...rest }) {
   const Tag = href ? 'a' : 'button';
   const props = {};
 
@@ -12,7 +12,7 @@ export function Button ({ onClick, href, className, children, ...rest }) {
   }
 
   return (
-    <Tag {...props} {...rest} onClick={onClick} className={clsx('button wpifycf-button', className)}>
+    <Tag {...props} {...rest} onClick={onClick} className={clsx('button wpifycf-button', className, primary && 'button-primary')}>
       {children}
     </Tag>
   );

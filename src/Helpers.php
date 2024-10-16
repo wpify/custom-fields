@@ -3,6 +3,7 @@
 namespace Wpify\CustomFields;
 
 use DOMDocument;
+use WP_Post;
 
 class Helpers {
 	public function get_url_title( string $url ): string {
@@ -77,7 +78,7 @@ class Helpers {
 		$placeholder = plugin_dir_url( __DIR__ ) . 'assets/images/placeholder-image.svg';
 
 		return array_map(
-			fn( \WP_Post $post ) => array(
+			fn( WP_Post $post ) => array(
 				'id'                => $post->ID,
 				'title'             => $post->post_title,
 				'post_type'         => $post->post_type,
