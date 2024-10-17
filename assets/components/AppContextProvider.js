@@ -5,7 +5,7 @@ export function AppContextProvider ({ context, config, tabs, integrationId, chil
   const defs = useMemo(
     () => {
       const nodes = integrationId
-        ? Array.from(document.querySelectorAll('.wpifycf-field[data-integration-id="' + integrationId + '"]'))
+        ? Array.from(document.querySelectorAll('.wpifycf-field-parent[data-integration-id="' + integrationId + '"]'))
         : [];
 
       return nodes.map(node => {

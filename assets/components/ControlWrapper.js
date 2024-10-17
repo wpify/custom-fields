@@ -16,5 +16,9 @@ export function ControlWrapper ({ renderOptions = {}, children }) {
     );
   }
 
-  return children;
+  return (
+    <div className="wpifycf-field__control">
+      {children}
+    </div>
+  );
 }

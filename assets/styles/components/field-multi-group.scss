@@ -2,6 +2,7 @@
   display: flex;
   flex-flow: column;
   gap: var(--wpifycf-gap-2);
+  container-type: inline-size;
 
   &__items {
     display: flex;
@@ -22,6 +23,10 @@
     align-items: center;
     gap: var(--wpifycf-gap-2);
     background: white;
+  }
+
+  &__header-actions {
+    display: flex;
   }
 
   &__item--invalid &__item-header {

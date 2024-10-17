@@ -7,14 +7,14 @@ function Toggle ({
   id,
   htmlId,
   value = false,
-  item_label,
+  title,
   onChange,
   className,
 }) {
   return (
     <ToggleControl
       id={htmlId}
-      label={item_label}
+      label={title}
       checked={value}
       onChange={onChange}
       className={clsx('wpifycf-field-toggle', `wpifycf-field-toggle--${id}`, className)}

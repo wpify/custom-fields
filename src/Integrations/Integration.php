@@ -219,7 +219,7 @@ abstract class Integration {
 		?>
 		<<?php echo esc_attr( $tag ); ?> data-item="<?php echo esc_attr( htmlentities( wp_json_encode( $item ) ) ); ?>"
 		data-integration-id="<?php echo esc_attr( $integration_id ); ?>"
-		class="wpifycf-field wpifycf-field--type-<?php echo esc_attr( $item['id'] ); ?><?php echo $class ? ' ' . esc_attr( $class ) : ''; ?>"
+		class="wpifycf-field-parent<?php echo $class ? ' ' . esc_attr( $class ) : ''; ?>"
 		<?php
 		foreach ( $data_attributes as $key => $value ) {
 			printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );

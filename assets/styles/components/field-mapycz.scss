@@ -1,5 +1,6 @@
 .wpifycf-field-mapycz {
-  min-width: max(100%, 600px);
+  width: 600px;
+  max-width: 100%;
 
   &__set-key {
     display: flex;
@@ -13,7 +14,6 @@
   }
 
   &__map {
-    display: block;
     width: 100%;
     border: 1px solid var(--wpifycf-border-color);
     z-index: 0;

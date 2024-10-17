@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
 import { checkValidityNumberType } from '@/helpers/validators';
 
-export function Number ({
+export function NumberInput ({
   id,
   htmlId,
   onChange,
@@ -31,6 +31,6 @@ export function Number ({
   );
 }
 
-Number.checkValidity = checkValidityNumberType;
+NumberInput.checkValidity = checkValidityNumberType;
 
-addFilter('wpifycf_field_number', 'wpify_custom_fields', () => Number);
+addFilter('wpifycf_field_number', 'wpify_custom_fields', () => NumberInput);

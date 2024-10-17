@@ -85,43 +85,68 @@ export function Link ({
       <div className="wpifycf-field-link__fields">
         <div className="wpifycf-field-link__field-label">
           {postTypes.length > 0 ? (
-            <select value={value.post_type} onChange={handlePostTypeChange}>
-              <option value="">{__('URL', 'wpify-custom-fields')}</option>
-              {postTypes.map((currentPostType) => (
-                <option value={currentPostType.slug}>
-                  {currentPostType.labels.singular_name}
-                </option>
-              ))}
-            </select>
+            <PostTypes
+              value={value}
+              postTypes={postTypes}
+              onChange={handlePostTypeChange}
+            />
           ) : (
             <label htmlFor={htmlId + '.url'}>
               {__('URL', 'wpify-custom-fields')}
             </label>
           )}
         </div>
-        {value.post_type && (
-          <PostSelect postType={value.post_type} value={value.post} onSelect={handlePostChange} />
-        )}
-		<div className={`wpifycf-field-link__field-value${value.post_type ? ' wpifycf-field-link__field-value-col-span-2' : ''}`}>
+        <div className="wpifycf-field-link__field-input">
           {value.post_type && (
-            <label htmlFor={htmlId + '.url'}>
-              {__('URL', 'wpify-custom-fields')}
-            </label>
+            <PostSelect
+              postType={value.post_type}
+              value={value.post}
+              onSelect={handlePostChange}
+            />
           )}
-          <input type="url" value={value?.url || ''} id={htmlId + '.url'} onChange={handleUrlChange} onBlur={handleUrlBlur} />
-          <label className="wpifycf-field-link__field-option">
-            <input type="checkbox" checked={value?.target === '_blank'} onChange={handleTargetChange} />
-            {__('Open in a new tab', 'wpify-custom-fields')}
+          <UrlInput
+            value={value}
+            htmlId={htmlId}
+            onUrlChange={handleUrlChange}
+            onBlur={handleUrlBlur}
+            onTargetChange={handleTargetChange}
+          />
+        </div>
+        <div className="wpifycf-field-link__field-label">
+          <label htmlFor={htmlId + '.label'}>
+            {__('Label', 'wpify-custom-fields')}
           </label>
         </div>
-        <label className="wpifycf-field-link__field-label" htmlFor={htmlId + '.label'}>
-          {__('Label', 'wpify-custom-fields')}
-        </label>
-        <div className="wpifycf-field-link__field-value">
+        <div className="wpifycf-field-link__field-input">
           <input type="text" value={value?.label || ''} id={htmlId + '.label'} onChange={handleLabelChange} />
         </div>
+      </div>
     </div>
-  </div>
+  );
+}
+
+function PostTypes ({ onChange, postTypes, value }) {
+  return (
+    <select value={value.post_type} onChange={onChange}>
+      <option value="">{__('URL', 'wpify-custom-fields')}</option>
+      {postTypes.map((currentPostType) => (
+        <option value={currentPostType.slug} key={currentPostType.slug}>
+          {currentPostType.labels.singular_name}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function UrlInput ({ value = {}, htmlId, onUrlChange, onTargetChange, onBlur }) {
+  return (
+    <div className="wpifycf-field-link__url-input">
+      <input type="url" value={value.url || ''} id={htmlId + '.url'} onChange={onUrlChange} onBlur={onBlur} />
+      <label className="wpifycf-field-link__field-option">
+        <input type="checkbox" checked={value.target === '_blank'} onChange={onTargetChange} />
+        {__('Open in a new tab', 'wpify-custom-fields')}
+      </label>
+    </div>
   );
 }
 

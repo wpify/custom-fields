@@ -11,7 +11,7 @@ function Password ({
   attributes = {},
   className,
 }) {
-  const handleChange = useCallback(event => onChange(parseFloat(event.target.value)), [onChange]);
+  const handleChange = useCallback(event => onChange(String(event.target.value)), [onChange]);
 
   return (
     <input

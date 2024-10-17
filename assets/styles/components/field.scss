@@ -6,6 +6,10 @@
 	}
 }
 
+.wpifycf-field-parent {
+  container-type: inline-size;
+}
+
 .wpifycf-field {
   flex: 1;
 
@@ -19,8 +23,17 @@
 
   &__wrapper {
     display: flex;
-    flex-flow: row wrap;
-    gap: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
+    flex-flow: column;
+    gap: var(--wpifycf-gap-1);
+
+    @container (inline-size > 600px) {
+      flex-flow: row wrap;
+      gap: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
+    }
+  }
+
+  &__control {
+    flex: 1;
   }
 
   &__description {

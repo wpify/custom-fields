@@ -1,11 +1,13 @@
 .wpifycf-multi-field-items {
   display: flex;
   flex-flow: column;
-  gap: var(--wpifycf-gap-2);
+  gap: var(--wpifycf-gap-1);
 }
 
 .wpifycf-multi-field-item {
   display: flex;
+  border-bottom: 1px solid var(--wpifycf-border-color);
+  padding-bottom: var(--wpifycf-gap-1);
 }
 
 .wpifycf-multi-field-item-field {

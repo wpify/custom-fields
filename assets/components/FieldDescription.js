@@ -21,9 +21,8 @@ export function FieldDescription({
           'wpifycf-field__description',
           `wpifycf-field__description--${descriptionPosition}`,
         )}
-      >
-        {description}
-      </p>
+        dangerouslySetInnerHTML={{ __html: description }}
+      />
     );
   }
 
@@ -33,8 +32,7 @@ export function FieldDescription({
         'wpifycf-field__description',
         `wpifycf-field__description--${descriptionPosition}`,
       )}
-    >
-      {description}
-    </div>
+      dangerouslySetInnerHTML={{ __html: description }}
+    />
   )
 }

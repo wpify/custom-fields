@@ -107,7 +107,7 @@ function MultiGroup ({
                 htmlId={htmlId + '.' + index}
                 validity={fieldsValidity[index]}
                 fieldPath={`${fieldPath}[${index}]`}
-                renderOptions={{ noLabel: true, noWrapper: true }}
+                renderOptions={{ noLabel: true, noFieldWrapper: true, noControlWrapper: true }}
               />
             </div>
           </div>
