@@ -10,10 +10,15 @@ export function Tel ({
   htmlId,
   onChange,
   value = '',
+  defaultValue = '',
   attributes = {},
   default_country: defaultCountry = 'US',
   className,
 }) {
+  if (typeof value !== 'string') {
+    value = '';
+  }
+
   return (
     <PhoneInput
       international

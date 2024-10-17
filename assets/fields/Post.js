@@ -13,7 +13,6 @@ export function Post ({
   className,
 }) {
   const [selected, setSelected] = useState(null);
-
   const handleDelete = useCallback(() => onChange(null), [onChange]);
 
   return (
@@ -24,7 +23,7 @@ export function Post ({
         onSelect={setSelected}
         postType={postType}
       />
-      {selected && (
+      {value > 0 && (
         <PostPreview post={selected} onDelete={handleDelete} />
       )}
     </div>
