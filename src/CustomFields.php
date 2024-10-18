@@ -2,253 +2,255 @@
 
 namespace Wpify\CustomFields;
 
-use Wpify\CustomFields\Implementations\AbstractImplementation;
-use Wpify\CustomFields\Implementations\Comment;
-use Wpify\CustomFields\Implementations\GutenbergBlock;
-use Wpify\CustomFields\Implementations\Metabox;
-use Wpify\CustomFields\Implementations\Options;
-use Wpify\CustomFields\Implementations\OrderMetabox;
-use Wpify\CustomFields\Implementations\ProductOptions;
-use Wpify\CustomFields\Implementations\ProductVariationOptions;
-use Wpify\CustomFields\Implementations\SiteOptions;
-use Wpify\CustomFields\Implementations\SubscriptionMetabox;
-use Wpify\CustomFields\Implementations\Taxonomy;
-use Wpify\CustomFields\Implementations\User;
-use Wpify\CustomFields\Implementations\WcMembershipPlanOptions;
-use Wpify\CustomFields\Implementations\WooCommerceSettings;
+use Closure;
+use Wpify\CustomFields\Integrations\Comment;
+use Wpify\CustomFields\Integrations\GutenbergBlock;
+use Wpify\CustomFields\Integrations\MenuItem;
+use Wpify\CustomFields\Integrations\Metabox;
+use Wpify\CustomFields\Integrations\Options;
+use Wpify\CustomFields\Integrations\OrderMetabox;
+use Wpify\CustomFields\Integrations\ProductOptions;
+use Wpify\CustomFields\Integrations\ProductVariationOptions;
+use Wpify\CustomFields\Integrations\SiteOptions;
+use Wpify\CustomFields\Integrations\SubscriptionMetabox;
+use Wpify\CustomFields\Integrations\Taxonomy;
+use Wpify\CustomFields\Integrations\User;
+use Wpify\CustomFields\Integrations\WcMembershipPlanOptions;
+use Wpify\CustomFields\Integrations\WooCommerceSettings;
 
-/**
- * Class CustomFields
- * @package CustomFields
- */
-final class CustomFields {
-	/** @var Assets */
-	private $assets;
+class CustomFields {
+	public readonly Helpers $helpers;
+	public readonly Api     $api;
 
-	/** @var Sanitizer */
-	private $sanitizer;
-
-	/** @var Parser */
-	private $parser;
-
-	/** @var Api */
-	private $api;
-
-	/** @var callable[] */
-	public $api_callbacks = array();
-
-	/** @var AbstractImplementation[] */
-	public $registered = array();
-
-	/**
-	 * CustomFields constructor.
-	 */
-	public function __construct( string $wcf_url = '' ) {
-		$assets_path     = realpath( __DIR__ . '/../build' );
-		$this->assets    = new Assets( $assets_path, $wcf_url );
-		$this->sanitizer = new Sanitizer();
-		$this->parser    = new Parser();
-		$this->api       = new Api( $this );
+	public function __construct() {
+		$this->helpers = new Helpers();
+		$this->api     = new Api( $this, $this->helpers );
 	}
 
-	/**
-	 * @param array $args
-	 *
-	 * @return Options
-	 */
-	public function create_options_page( $args = array() ) {
-		$options            = new Options( $args, $this );
-		$this->registered[] = $options;
-
-		return $options;
+	public function create_options_page( array $args ): Options {
+		return new Options( $args, $this );
 	}
 
-	/**
-	 * @param array $args
-	 *
-	 * @return Options
-	 */
-	public function create_site_options( $args = array() ) {
-		$options            = new SiteOptions( $args, $this );
-		$this->registered[] = $options;
-
-		return $options;
+	public function create_metabox( array $args ): Metabox {
+		return new Metabox( $args, $this );
 	}
 
-	/**
-	 * @param array $args
-	 *
-	 * @return Metabox
-	 */
-	public function create_metabox( $args = array() ) {
-		$metabox            = new Metabox( $args, $this );
-		$this->registered[] = $metabox;
-
-		return $metabox;
+	public function create_taxonomy( array $args ): Taxonomy {
+		return new Taxonomy( $args, $this );
 	}
 
-	/**
-	 * @param array $args
-	 *
-	 * @return OrderMetabox
-	 */
-	public function create_order_metabox( $args = array() ) {
-		$metabox            = new OrderMetabox( $args, $this );
-		$this->registered[] = $metabox;
-
-		return $metabox;
+	public function create_product_options( array $args ): ProductOptions {
+		return new ProductOptions( $args, $this );
 	}
 
-	/**
-	 * @param array $args
-	 *
-	 * @return SubscriptionMetabox
-	 */
-	public function create_subscription_metabox( $args = array() ) {
-		$metabox            = new SubscriptionMetabox( $args, $this );
-		$this->registered[] = $metabox;
-
-		return $metabox;
+	public function create_product_variation_options( array $args ): ProductVariationOptions {
+		return new ProductVariationOptions( $args, $this );
 	}
 
-	/**
-	 * @param array $args
-	 *
-	 * @return Comment
-	 */
-	public function create_comment_metabox( $args = array() ) {
-		$metabox            = new Comment( $args, $this );
-		$this->registered[] = $metabox;
-
-		return $metabox;
+	public function create_order_metabox( $args = array() ): OrderMetabox {
+		return new OrderMetabox( $args, $this );
 	}
 
-	/**
-	 * @param array $args
-	 *
-	 * @return ProductOptions
-	 */
-	public function create_product_options( $args = array() ) {
-		$product_options    = new ProductOptions( $args, $this );
-		$this->registered[] = $product_options;
-
-		return $product_options;
+	public function create_subscription_metabox( $args = array() ): SubscriptionMetabox {
+		return new SubscriptionMetabox( $args, $this );
 	}
 
-	/**
-	 * @param array $args
-	 *
-	 * @return ProductVariationOptions
-	 */
-	public function create_product_variation_options( $args = array() ) {
-		$product_variation_options    = new ProductVariationOptions( $args, $this );
-		$this->registered[] = $product_variation_options;
-
-		return $product_variation_options;
+	public function create_gutenberg_block( $args = array() ): GutenbergBlock {
+		return new GutenbergBlock( $args, $this );
 	}
 
-	/**
-	 * @param array $args
-	 *
-	 * @return WcMembershipPlanOptions
-	 */
-	public function create_membership_plan_options( $args = array() ) {
-		$membership_plan_options = new WcMembershipPlanOptions( $args, $this );
-		$this->registered[]      = $membership_plan_options;
-
-		return $membership_plan_options;
+	public function create_comment_metabox( $args = array() ): Comment {
+		return new Comment( $args, $this );
 	}
 
-	/**
-	 * @param array $args
-	 *
-	 * @return Taxonomy
-	 */
-	public function create_taxonomy_options( $args = array() ) {
-		$taxonomy           = new Taxonomy( $args, $this );
-		$this->registered[] = $taxonomy;
-
-		return $taxonomy;
+	public function create_site_options( $args = array() ): SiteOptions {
+		return new SiteOptions( $args, $this );
 	}
 
-	/**
-	 * @param array $args
-	 *
-	 * @return User
-	 */
-	public function create_user_options( $args = array() ) {
-		$user               = new User( $args, $this );
-		$this->registered[] = $user;
-
-		return $user;
+	public function create_user_options( array $array ): User {
+		return new User( $array, $this );
 	}
 
-	/**
-	 * @param array $args
-	 *
-	 * @return WooCommerceSettings
-	 */
-	public function create_woocommerce_settings( $args = array() ) {
-		$woocommerce_settings = new WooCommerceSettings( $args, $this );
-		$this->registered[]   = $woocommerce_settings;
-
-		return $woocommerce_settings;
+	public function create_membership_plan_options( $args = array() ): WcMembershipPlanOptions {
+		return new WcMembershipPlanOptions( $args, $this );
 	}
 
-	/**
-	 * @param array $args
-	 *
-	 * @return GutenbergBlock
-	 */
-	public function create_gutenberg_block( $args = array() ) {
-		$gutenberg_block    = new GutenbergBlock( $args, $this );
-		$this->registered[] = $gutenberg_block;
-
-		return $gutenberg_block;
+	public function create_woocommerce_settings( $args = array() ): WooCommerceSettings {
+		return new WooCommerceSettings( $args, $this );
 	}
 
-	/**
-	 * @return Parser
-	 */
-	public function get_parser(): Parser {
-		return $this->parser;
+	public function create_menu_item_options( $args = array() ): MenuItem {
+		return new MenuItem( $args, $this );
 	}
 
-	/**
-	 * @return Sanitizer
-	 */
-	public function get_sanitizer(): Sanitizer {
-		return $this->sanitizer;
+	public function get_js_asset( string $item ): array {
+		$build_path = plugin_dir_path( __DIR__ ) . 'build/';
+		$asset_php  = $build_path . $item . '.asset.php';
+
+		if ( file_exists( $asset_php ) ) {
+			$asset = require $asset_php;
+		} else {
+			$asset = array(
+				'dependencies' => array(),
+				'version'      => false,
+			);
+		}
+
+		$asset['src'] = plugin_dir_url( __DIR__ ) . 'build/' . $item . '.js';
+
+		return $asset;
 	}
 
-	/**
-	 * @return Api
-	 */
-	public function get_api(): Api {
-		return $this->api;
+	public function get_css_asset( string $item ): array|string {
+		$build_path = plugin_dir_path( __DIR__ ) . 'build/';
+		$asset_php  = $build_path . $item . '.asset.php';
+
+		if ( file_exists( $asset_php ) ) {
+			$asset = require $asset_php;
+		}
+
+		$src = add_query_arg(
+			'ver',
+			$asset['version'],
+			plugin_dir_url( __DIR__ ) . 'build/' . $item . '.css',
+		);
+
+		if ( file_exists( $build_path . 'style-' . $item . '.css' ) ) {
+			$src = array(
+				$src,
+				add_query_arg(
+					'ver',
+					$asset['version'],
+					plugin_dir_url( __DIR__ ) . 'build/style-' . $item . '.css',
+				),
+			);
+		}
+
+		return $src;
 	}
 
-	/**
-	 * @return Assets
-	 */
-	public function get_assets(): Assets {
-		return $this->assets;
+	public function get_plugin_basename(): string {
+		$basename = plugin_basename( __FILE__ );
+
+		return substr( $basename, 0, strpos( $basename, '/' ) );
 	}
 
-	/**
-	 * @param $id
-	 * @param $callback
-	 */
-	public function set_api_callback( $id, $callback ) {
-		$this->api_callbacks[ $id ] = $callback;
+	public function sanitize_item_value( array $item ): Closure {
+		return function ( mixed $value ) use ( $item ): mixed {
+			$original_value = $value;
+
+			if ( in_array( $item['type'], array( 'attachment', 'post', 'term' ), true ) ) {
+				$sanitized_value = absint( $value );
+			} elseif ( in_array( $item['type'], array( 'checkbox', 'toggle' ), true ) ) {
+				$sanitized_value = filter_var( $value, FILTER_VALIDATE_BOOLEAN );
+			} elseif ( 'code' === $item['type'] ) {
+				$sanitized_value = $value;
+			} elseif ( 'color' === $item['type'] ) {
+				$sanitized_value = sanitize_hex_color( $value );
+			} elseif ( in_array( $item['type'], array( 'date', 'datetime', 'month', 'password', 'select', 'tel', 'text', 'time', 'week' ), true ) ) {
+				$sanitized_value = sanitize_text_field( $value );
+			} elseif ( 'email' === $item['type'] ) {
+				$sanitized_value = sanitize_email( $value );
+			} elseif ( 'group' === $item['type'] ) {
+				$value           = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
+				$sanitized_value = array();
+				foreach ( $item['items'] as $sub_item ) {
+					$sanitized_value[ $sub_item['id'] ] = $this->sanitize_item_value( $sub_item )( $value[ $sub_item['id'] ] ?? null );
+				}
+			} elseif ( 'link' === $item['type'] ) {
+				$value                        = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
+				$sanitized_value              = array();
+				$sanitized_value['post']      = absint( $value['post'] ?? 0 );
+				$sanitized_value['label']     = sanitize_text_field( $value['label'] ?? '' );
+				$sanitized_value['url']       = esc_url( $value['url'] ?? '' );
+				$sanitized_value['target']    = sanitize_text_field( $value['target'] ?? '' );
+				$sanitized_value['post_type'] = sanitize_text_field( $value['post_type'] ?? '' );
+			} elseif ( 'mapycz' === $item['type'] ) {
+				$value                        = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
+				$sanitized_value              = array();
+				$sanitized_value['latitude']  = floatval( $value['latitude'] ?? 0 );
+				$sanitized_value['longitude'] = floatval( $value['longitude'] ?? 0 );
+				$sanitized_value['zoom']      = floatval( $value['zoom'] ?? 0 );
+				$sanitized_value['street']    = sanitize_text_field( $value['street'] );
+				$sanitized_value['number']    = sanitize_text_field( $value['number'] );
+				$sanitized_value['zip']       = sanitize_text_field( $value['zip'] );
+				$sanitized_value['city']      = sanitize_text_field( $value['city'] );
+				$sanitized_value['cityPart']  = sanitize_text_field( $value['cityPart'] );
+				$sanitized_value['country']   = sanitize_text_field( $value['country'] );
+			} elseif ( in_array( $item['type'], array( 'number', 'range' ), true ) ) {
+				$sanitized_value = floatval( $value );
+			} elseif ( 'textarea' === $item['type'] ) {
+				$sanitized_value = sanitize_textarea_field( $value );
+			} elseif ( 'url' === $item['type'] ) {
+				$sanitized_value = esc_url( $value );
+			} elseif ( 'wysiwyg' === $item['type'] ) {
+				$sanitized_value = wp_kses_post( $value );
+			} elseif ( str_starts_with( $item['type'], 'multi_' ) ) {
+				$single_type = substr( $item['type'], strlen( 'multi_' ) );
+				$value       = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
+				$sanitized_value = array();
+				foreach ( $value as $sub_key => $sub_value ) {
+					$sanitized_value[ $sub_key ] = $this->sanitize_item_value(
+						array(
+							...$item,
+							'type' => $single_type,
+						),
+					)( $sub_value );
+				}
+			} else {
+				$sanitized_value = sanitize_textarea_field( $value );
+			}
+
+			return apply_filters( 'wpifycf_sanitize_' . $item['type'], $sanitized_value, $original_value, $item );
+		};
 	}
 
-	/**
-	 * @param $id
-	 *
-	 * @return callable
-	 */
-	public function get_api_callback( $id ) {
-		return $this->api_callbacks[ $id ] ?? null;
+	public function sanitize_option_value( array $items = array() ): Closure {
+		return function ( array $value = array() ) use ( $items ): array {
+			$next_value = array();
+			foreach ( $items as $item ) {
+				$next_value[ $item['id'] ] = $this->sanitize_item_value( $item )( $value[ $item['id'] ] ?? null );
+			}
+
+			return $next_value;
+		};
+	}
+
+	public function get_wp_type( array $item ): string {
+		if ( in_array( $item['type'], array( 'attachment', 'post', 'term' ), true ) ) {
+			$type = 'integer';
+		} elseif ( in_array( $item['type'], array( 'number', 'range' ), true ) ) {
+			$type = 'number';
+		} elseif ( in_array( $item['type'], array( 'checkbox', 'toggle' ), true ) ) {
+			$type = 'boolean';
+		} elseif ( in_array( $item['type'], array( 'group', 'link', 'mapycz' ), true ) ) {
+			$type = 'object';
+		} elseif ( str_starts_with( $item['type'], 'multi_' ) ) {
+			$type = 'array';
+		} else {
+			$type = 'string';
+		}
+
+		return apply_filters( 'wpifycf_wp_type_' . $item['type'], $type, $item );
+	}
+
+	public function get_default_value( array $item ): mixed {
+		if ( isset( $item['default'] ) ) {
+			$default_value = $item['default'];
+		} elseif ( in_array( $item['type'], array( 'attachment', 'post', 'term' ), true ) ) {
+			$default_value = 0;
+		} elseif ( in_array( $item['type'], array( 'number', 'range' ), true ) ) {
+			$default_value = 0.0;
+		} elseif ( in_array( $item['type'], array( 'checkbox', 'toggle' ), true ) ) {
+			$default_value = false;
+		} elseif ( in_array( $item['type'], array( 'group', 'link', 'mapycz' ), true ) ) {
+			$default_value = array();
+		} elseif ( str_starts_with( $item['type'], 'multi_' ) ) {
+			$default_value = array();
+		} else {
+			$default_value = '';
+		}
+
+		return apply_filters( 'wpifycf_default_value_' . $item['type'], $default_value, $item );
 	}
 }
