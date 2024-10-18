@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
 import PhoneInput from 'react-phone-number-input';
@@ -15,9 +15,11 @@ export function Tel ({
   default_country: defaultCountry = 'US',
   className,
 }) {
-  if (typeof value !== 'string') {
-    value = '';
-  }
+  useEffect(() => {
+    if (typeof value !== 'string') {
+      onChange('');
+    }
+  }, [value, onChange]);
 
   return (
     <PhoneInput

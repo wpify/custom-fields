@@ -5,10 +5,14 @@
   --wpifycf-border-color: #ddd;
 }
 
+@import "components/context-options";
+@import "components/context-gutenberg-block";
+@import "components/context-comment-metabox";
 @import "components/field";
 @import "components/field-attachment";
 @import "components/field-checkbox";
 @import "components/field-group";
+@import "components/field-inner-blocks";
 @import "components/field-link";
 @import "components/field-mapycz";
 @import "components/field-multi-button";
@@ -31,7 +35,6 @@
 @import "components/field-code";
 @import "components/icon-button";
 @import "components/multi-field";
-@import "components/options-context";
 @import "components/post-preview";
 @import "components/select";
 @import "components/nav-tab";

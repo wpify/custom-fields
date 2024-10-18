@@ -7,6 +7,7 @@ import { desktop, edit, Icon } from '@wordpress/icons';
 import { useValidity } from '@/helpers/hooks';
 import { AppContext } from '@/custom-fields';
 import { RootFields } from '@/components/RootFields';
+import { Tabs } from '@/components/Tabs';
 
 const RENDERED_VIEW = 'view';
 const EDITOR_VIEW = 'edit';
@@ -83,15 +84,20 @@ function EditorView ({ fields, values, updateValue }) {
   }), [context]);
 
   return (
-    <RootFields
-      fields={fields}
-      values={values}
-      updateValue={updateValue}
-      renderOptions={renderOptions}
-      handleValidityChange={handleValidityChange}
-      validate={validate}
-      validity={validity}
-    />
+    <>
+      <Tabs />
+      <div className="wpifycf-gutenberg-block__fields">
+        <RootFields
+          fields={fields}
+          values={values}
+          updateValue={updateValue}
+          renderOptions={renderOptions}
+          handleValidityChange={handleValidityChange}
+          validate={validate}
+          validity={validity}
+        />
+      </div>
+    </>
   );
 }
 

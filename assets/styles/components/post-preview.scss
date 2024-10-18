@@ -27,6 +27,7 @@
 
   &__excerpt {
     grid-area: excerpt;
+    overflow: hidden;
   }
 
   &__delete {

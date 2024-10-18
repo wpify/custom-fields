@@ -1,0 +1,24 @@
+.wpifycf-gutenberg-block {
+  .wpifycf-post-preview__thumbnail {
+    height: 100px;
+    width: 100px;
+    max-width: unset;
+  }
+
+  .wpifycf-attachment-item__thumbnail img {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__fields {
+    border: 1px solid #c3c4c7;
+    background: #fff;
+    position: relative;
+    top: -1px;
+    padding: var(--wpifycf-gap-2);
+    display: flex;
+    flex-flow: column;
+    gap: var(--wpifycf-gap-2);
+    container-type: inline-size;
+  }
+}

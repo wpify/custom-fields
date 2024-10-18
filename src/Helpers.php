@@ -46,6 +46,10 @@ class Helpers {
 		$ensured_posts = array();
 		$added_posts   = array();
 
+		if ( ! is_array( $exclude ) ) {
+			$exclude = array();
+		}
+
 		if ( ! empty( $ensure ) ) {
 			$ensured_posts = get_posts(
 				array(

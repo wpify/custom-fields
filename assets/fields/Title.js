@@ -4,7 +4,7 @@ import clsx from 'clsx';
 function Title ({ title, className }) {
   return (
     <div className={clsx('wpify-field-title', className)}>
-      {title && <h2 dangerouslySetInnerHTML={{ __html: title }} />}
+      {title && <h1 dangerouslySetInnerHTML={{ __html: title }} />}
     </div>
   );
 }

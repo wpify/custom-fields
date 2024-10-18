@@ -7,6 +7,7 @@ import { __ } from '@wordpress/i18n';
 import { IconButton } from '@/components/IconButton';
 import { checkValidityMultiGroupType } from '@/helpers/validators';
 import { Field } from '@/components/Field';
+import { useEffect } from 'react';
 
 function MultiGroup ({
   value = [],
@@ -22,9 +23,11 @@ function MultiGroup ({
   fieldPath,
   ...props
 }) {
-  if (!Array.isArray(value)) {
-    value = [];
-  }
+  useEffect(() => {
+    if (!Array.isArray(value)) {
+      onChange([]);
+    }
+  }, [value, onChange]);
 
   const {
     add,

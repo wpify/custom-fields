@@ -1,5 +1,5 @@
 import { addFilter } from '@wordpress/hooks';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { PostSelect } from '@/components/PostSelect';
 import { PostPreview } from '@/fields/Post';
 import { useMulti, usePosts } from '@/helpers/hooks';
@@ -13,15 +13,17 @@ export function MultiPost ({
   post_type: postType,
   className,
 }) {
-  if (!Array.isArray(value)) {
-    value = [];
-  }
+  useEffect(() => {
+    if (!Array.isArray(value)) {
+      onChange([]);
+    }
+  }, [value, onChange]);
 
   const handleAdd = useCallback(newValue => onChange([newValue, ...value]), [onChange, value]);
   const { data: posts } = usePosts({
     postType: postType,
-    enabled: value.length > 0,
-    include: [...value].sort(),
+    enabled: Array.isArray(value) && value.length > 0,
+    include: Array.isArray(value) ? [...value].sort() : [],
   });
 
   const { containerRef, remove } = useMulti({
@@ -38,7 +40,7 @@ export function MultiPost ({
         postType={postType}
       />
       <div className="wpifycf-field-multi-post__items" ref={containerRef}>
-        {value.map((id, index) => (
+        {Array.isArray(value) && value.map((id, index) => (
           <PostPreview
             key={index + '-' + id}
             post={posts.find(post => post.id === id)}

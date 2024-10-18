@@ -11,7 +11,7 @@ export function InnerBlocks({
   orientation,
 }) {
   return (
-    <div className={clsx('wpifycf-field-link', `wpifycf-field-link--${id}`, className)}>
+    <div className={clsx('wpifycf-field-inner-blocks', `wpifycf-field-link--${id}`, className)}>
       <InnerBlocksEditor
         allowedBlocks={allowed_blocks}
         template={template}

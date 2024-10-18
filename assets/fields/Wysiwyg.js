@@ -95,7 +95,7 @@ function GutenbergTinyMCE ({ htmlId, value, onChange, height }) {
         className="wpifycf-field-wysiwyg__raw-wrapper"
         style={{ height: height + 94 }}
       >
-        <RawHTML className="wpifycf-field-wysiwyg__raw">
+        <RawHTML className="wpifycf-field-wysiwyg__raw" onClick={handleOpen}>
           {value}
         </RawHTML>
         <Button

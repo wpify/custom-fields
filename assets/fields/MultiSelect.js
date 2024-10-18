@@ -1,7 +1,7 @@
 import { addFilter } from '@wordpress/hooks';
 import { Select as SelectControl } from '@/components/Select.js';
 import { useMulti, useOptions } from '@/helpers/hooks';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { IconButton } from '@/components/IconButton';
 import { checkValidityMultiStringType } from '@/helpers/validators';
 import clsx from 'clsx';
@@ -14,9 +14,11 @@ export function MultiSelect ({
   options_key: optionsKey,
   className,
 }) {
-  if (!Array.isArray(value)) {
-    value = [];
-  }
+  useEffect(() => {
+    if (!Array.isArray(value)) {
+      onChange([]);
+    }
+  }, [value, onChange])
 
   const [search, setSearch] = useState('');
 
@@ -38,7 +40,9 @@ export function MultiSelect ({
   );
 
   const usedOptions = useMemo(
-    () => value.map(value => realOptions.find(option => String(option.value) === String(value)) || { value, label: value }),
+    () => Array.isArray(value)
+      ? value.map(value => realOptions.find(option => String(option.value) === String(value)) || { value, label: value })
+      : [],
     [realOptions, value],
   );
 

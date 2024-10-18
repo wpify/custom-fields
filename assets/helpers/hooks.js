@@ -10,6 +10,7 @@ import { AppContext } from '@/custom-fields';
 
 export function useSortableList ({ containerRef, draggable, handle, items, setItems }) {
   const onEnd = useCallback((event) => {
+    event.stopPropagation();
     const nextItems = [...items];
     const [movedItem] = nextItems.splice(event.oldIndex, 1);
     nextItems.splice(event.newIndex, 0, movedItem);
@@ -18,7 +19,7 @@ export function useSortableList ({ containerRef, draggable, handle, items, setIt
 
   useEffect(() => {
     if (containerRef.current) {
-      const options = { animation: 150, onEnd };
+      const options = { animation: 150, onEnd, forceFallback: true };
       if (draggable) options.draggable = draggable;
       if (handle) options.handle = handle;
       const sortable = Sortable.create(containerRef.current, options);
