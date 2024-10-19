@@ -29,6 +29,7 @@
   &__tabs {
     display: flex;
     gap: var(--wpifycf-gap-1);
+    border-bottom: 1px solid var(--wpifycf-border-color);
   }
 
   &__tab {
@@ -42,6 +43,8 @@
       border: 1px solid var(--wpifycf-border-color);
       border-bottom: 0;
       background: #f6f7f7;
+      position: relative;
+      top: 1px;
     }
   }
 
@@ -62,5 +65,11 @@
     position: absolute;
     bottom: 10px;
     right: 10px;
+  }
+
+  .mce-tinymce,
+  .wpifycf-field-code {
+    border: 1px solid var(--wpifycf-border-color);
+    border-top: none;
   }
 }

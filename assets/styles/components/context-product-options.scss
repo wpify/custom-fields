@@ -1,0 +1,11 @@
+.woocommerce_options_panel {
+  .wpifycf-field-parent label {
+    margin-left: unset;
+    float: unset;
+  }
+
+  .wpifycf-field-parent,
+  .wpifycf-app {
+    padding: 0 12px;
+  }
+}

@@ -171,12 +171,12 @@ class CustomFields {
 				$sanitized_value['latitude']  = floatval( $value['latitude'] ?? 0 );
 				$sanitized_value['longitude'] = floatval( $value['longitude'] ?? 0 );
 				$sanitized_value['zoom']      = floatval( $value['zoom'] ?? 0 );
-				$sanitized_value['street']    = sanitize_text_field( $value['street'] );
-				$sanitized_value['number']    = sanitize_text_field( $value['number'] );
-				$sanitized_value['zip']       = sanitize_text_field( $value['zip'] );
-				$sanitized_value['city']      = sanitize_text_field( $value['city'] );
-				$sanitized_value['cityPart']  = sanitize_text_field( $value['cityPart'] );
-				$sanitized_value['country']   = sanitize_text_field( $value['country'] );
+				$sanitized_value['street']    = sanitize_text_field( $value['street'] ?? '' );
+				$sanitized_value['number']    = sanitize_text_field( $value['number'] ?? '' );
+				$sanitized_value['zip']       = sanitize_text_field( $value['zip'] ?? '' );
+				$sanitized_value['city']      = sanitize_text_field( $value['city'] ?? '' );
+				$sanitized_value['cityPart']  = sanitize_text_field( $value['cityPart'] ?? '' );
+				$sanitized_value['country']   = sanitize_text_field( $value['country'] ?? '' );
 			} elseif ( in_array( $item['type'], array( 'number', 'range' ), true ) ) {
 				$sanitized_value = floatval( $value );
 			} elseif ( 'textarea' === $item['type'] ) {

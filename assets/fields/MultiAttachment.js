@@ -74,15 +74,17 @@ function MultiAttachment ({
       <Button className="wpifycf-button__add" onClick={openMediaLibrary}>
         {__('Add attachments', 'wpify-custom-fields')}
       </Button>
-      <div className="wpifycf-field-multi-attachment__items" ref={containerRef}>
-        {attachments.map((attachment) => (
-          <AttachmentItem
-            key={attachment.id}
-            attachment={attachment}
-            remove={remove(attachment.id)}
-          />
-        ))}
-      </div>
+      {attachments.length > 0 && (
+        <div className="wpifycf-field-multi-attachment__items" ref={containerRef}>
+          {attachments.map((attachment) => (
+            <AttachmentItem
+              key={attachment.id}
+              attachment={attachment}
+              remove={remove(attachment.id)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
