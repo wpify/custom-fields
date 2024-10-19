@@ -54,6 +54,7 @@ export function PostSelect ({
       className="wpifycf-select"
       classNamePrefix="wpifycf-select"
       onChange={handleChange}
+      menuPortalTarget={document.body}
     />
   );
 }

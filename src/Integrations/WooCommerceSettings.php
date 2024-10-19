@@ -50,7 +50,7 @@ class WooCommerceSettings extends Integration {
 		add_action( 'woocommerce_settings_' . $this->tab['id'], array( $this, 'render' ), 11 );
 		add_action( 'woocommerce_settings_save_' . $this->tab['id'], array( $this, 'save' ) );
 
-		// Nonce verification is not needed here, we are just displaying a message.
+		// Nonce verification is not needed here, we are just setting a current tab, section and displaying message.
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended
 		$tab              = sanitize_text_field( wp_unslash( $_REQUEST['tab'] ?? '' ) );
 		$section          = sanitize_text_field( wp_unslash( $_REQUEST['section'] ?? '' ) );

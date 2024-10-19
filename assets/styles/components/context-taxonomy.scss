@@ -1,0 +1,6 @@
+#addtag,
+#edittag {
+  .wpifycf-field-parent:has(input[data-hide-field='true']) {
+    display: none;
+  }
+}

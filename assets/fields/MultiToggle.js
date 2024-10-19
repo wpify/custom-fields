@@ -21,7 +21,7 @@ function MultiToggle ({
           <ToggleControl
             id={`${htmlId}-${option.value}`}
             onChange={handleChange(option.value)}
-            checked={value[option.value]}
+            checked={value[option.value] || false}
             label={option.label}
           />
         </div>

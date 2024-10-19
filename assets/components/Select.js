@@ -15,6 +15,7 @@ export function Select ({ value, onChange, options, filterOption, onInputChange,
       classNamePrefix="wpifycf-select"
       filterOption={filterOption}
       onInputChange={onInputChange}
+      menuPortalTarget={document.body}
       {...rest}
     />
   );

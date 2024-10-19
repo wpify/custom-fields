@@ -74,7 +74,7 @@ class WcMembershipPlanOptions extends Integration {
 			throw new MissingArgumentException(
 				sprintf(
 				/* translators: %1$s is the class name. */
-					esc_html( __( 'Missing argument $tab["label"] in class %2$s.', 'wpify-custom-fields' ) ),
+					esc_html( __( 'Missing argument $tab["label"] in class %1$s.', 'wpify-custom-fields' ) ),
 					__CLASS__,
 				),
 			);

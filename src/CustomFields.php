@@ -186,8 +186,8 @@ class CustomFields {
 			} elseif ( 'wysiwyg' === $item['type'] ) {
 				$sanitized_value = wp_kses_post( $value );
 			} elseif ( str_starts_with( $item['type'], 'multi_' ) ) {
-				$single_type = substr( $item['type'], strlen( 'multi_' ) );
-				$value       = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
+				$single_type     = substr( $item['type'], strlen( 'multi_' ) );
+				$value           = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
 				$sanitized_value = array();
 				foreach ( $value as $sub_key => $sub_value ) {
 					$sanitized_value[ $sub_key ] = $this->sanitize_item_value(
@@ -235,21 +235,14 @@ class CustomFields {
 	}
 
 	public function get_default_value( array $item ): mixed {
-		if ( isset( $item['default'] ) ) {
-			$default_value = $item['default'];
-		} elseif ( in_array( $item['type'], array( 'attachment', 'post', 'term' ), true ) ) {
-			$default_value = 0;
-		} elseif ( in_array( $item['type'], array( 'number', 'range' ), true ) ) {
-			$default_value = 0.0;
-		} elseif ( in_array( $item['type'], array( 'checkbox', 'toggle' ), true ) ) {
-			$default_value = false;
-		} elseif ( in_array( $item['type'], array( 'group', 'link', 'mapycz' ), true ) ) {
-			$default_value = array();
-		} elseif ( str_starts_with( $item['type'], 'multi_' ) ) {
-			$default_value = array();
-		} else {
-			$default_value = '';
-		}
+		$wp_type       = $this->get_wp_type( $item );
+		$default_value = match ( $wp_type ) {
+			'integer' => 0,
+			'number' => 0.0,
+			'boolean' => false,
+			'object', 'array' => array(),
+			default => '',
+		};
 
 		return apply_filters( 'wpifycf_default_value_' . $item['type'], $default_value, $item );
 	}
