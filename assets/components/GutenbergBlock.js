@@ -12,12 +12,12 @@ import { Tabs } from '@/components/Tabs';
 const RENDERED_VIEW = 'view';
 const EDITOR_VIEW = 'edit';
 
-export function GutenbergBlock ({ attributes, setAttributes, fields, name, args }) {
+export function GutenbergBlock ({ name, args }) {
   const props = useBlockProps();
   const [view, setView] = useState(RENDERED_VIEW);
   const switchToRenderedView = useCallback(() => setView(RENDERED_VIEW), []);
   const switchToEditorView = useCallback(() => setView(EDITOR_VIEW), []);
-  const updateValue = useCallback(key => value => setAttributes({ [key]: value }), [setAttributes]);
+  const { fields, values, updateValue } = useContext(AppContext);
 
   return (
     <div {...props}>
@@ -44,13 +44,13 @@ export function GutenbergBlock ({ attributes, setAttributes, fields, name, args 
           <RenderedView
             title={args.title}
             name={name}
-            attributes={attributes}
+            attributes={values}
           />
         )}
         {view === EDITOR_VIEW && (
           <EditorView
             fields={fields}
-            values={attributes}
+            values={values}
             updateValue={updateValue}
           />
         )}

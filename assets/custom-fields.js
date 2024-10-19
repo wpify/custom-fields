@@ -1,5 +1,5 @@
 import '@/styles/custom-fields.scss';
-import { StrictMode, createContext } from 'react';
+import { StrictMode, createContext, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from '@/components/App';
 import { addStyleSheet } from '@/helpers/functions';
@@ -13,18 +13,29 @@ require('@/helpers/field-types');
 export const AppContext = createContext({});
 const config = { ...window.wpifycf };
 const queryClient = new QueryClient();
-const render = (container, jsx) => createRoot(container).render(jsx);
 
 function loadCustomFields () {
   addStyleSheet(config.stylesheet);
   document.querySelectorAll('.wpifycf-app[data-loaded=false]').forEach(container => {
-    render(
-      container,
+    const nodes = Array.from(document.querySelectorAll('.wpifycf-field-parent[data-integration-id="' + container.dataset.integrationId + '"]'));
+    const defs = nodes.map(node => {
+      const dataset = { ...JSON.parse(node.dataset.item), node };
+      if (dataset.loop || dataset.loop === 0) {
+        dataset.id = `${dataset.id}[${dataset.loop}]`;
+        dataset.name = `${dataset.name}[${dataset.loop}]`;
+      }
+      return dataset;
+    });
+    const fields = defs.map(({ value, ...props }) => props);
+    const initialValues = defs.reduce((acc, { id, value }) => ({ ...acc, [id]: value }), {});
+
+    createRoot(container).render(
       <AppContextProvider
         context={container.dataset.context}
         config={config}
         tabs={JSON.parse(container.dataset.tabs)}
-        integrationId={container.dataset.integrationId}
+        fields={fields}
+        initialValues={initialValues}
       >
         <QueryClientProvider client={queryClient}>
           <StrictMode>
@@ -62,23 +73,32 @@ function loadGutenbergBlocks (event) {
   registerBlockType(event.detail, {
     ...event.detail.args,
     icon,
-    edit: props => (
-      <AppContextProvider
-        context="gutenberg"
-        config={config}
-        tabs={event.detail.tabs}
-      >
-        <QueryClientProvider client={queryClient}>
-          <StrictMode>
-            <GutenbergBlock
-              {...props}
-              fields={event.detail.items}
-              args={event.detail.args}
-            />
-          </StrictMode>
-        </QueryClientProvider>
-      </AppContextProvider>
-    ),
+    edit: ({ attributes, setAttributes, ...props }) => {
+      const updateValue = useCallback(key => value => setAttributes({ [key]: value }), [setAttributes]);
+
+      console.log(attributes);
+
+      return (
+        <AppContextProvider
+          context="gutenberg"
+          config={config}
+          tabs={event.detail.tabs}
+          fields={event.detail.items}
+          values={attributes}
+          updateValue={updateValue}
+        >
+          <QueryClientProvider client={queryClient}>
+            <StrictMode>
+              <GutenbergBlock
+                {...props}
+                name={event.detail.name}
+                args={event.detail.args}
+              />
+            </StrictMode>
+          </QueryClientProvider>
+        </AppContextProvider>
+      )
+    },
     save: SaveGutenbergBlock,
   });
 }

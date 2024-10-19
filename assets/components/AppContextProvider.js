@@ -1,45 +1,28 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { AppContext } from '@/custom-fields';
 
-export function AppContextProvider ({ context, config, tabs, integrationId, children }) {
-  const defs = useMemo(
-    () => {
-      const nodes = integrationId
-        ? Array.from(document.querySelectorAll('.wpifycf-field-parent[data-integration-id="' + integrationId + '"]'))
-        : [];
-
-      return nodes.map(node => {
-        const dataset = { ...JSON.parse(node.dataset.item), node };
-
-        if (dataset.loop || dataset.loop === 0) {
-          dataset.id = `${dataset.id}[${dataset.loop}]`;
-          dataset.name = `${dataset.name}[${dataset.loop}]`;
-        }
-
-        return dataset;
-      });
-    },
-    [integrationId],
-  );
-
-  const fields = useMemo(() => defs.map(({ value, ...props }) => props), [defs]);
-
-  const [values, setValues] = useState(() => defs.reduce((acc, { id, value }) => ({ ...acc, [id]: value }), {}));
-
+export function AppContextProvider ({
+  context,
+  config,
+  tabs,
+  fields,
+  values: passedValues,
+  updateValue: passedUpdateValue,
+  initialValues = {},
+  children,
+}) {
+  const [values, setValues] = useState(initialValues);
   const updateValue = useCallback(id => value => setValues(values => ({ ...values, [id]: value })), []);
 
   const [currentTab, setCurrentTab] = useState(() => {
-    let tab = null;
+    let tab = '';
 
     if (context !== 'gutenberg') {
       const searchParams = new URLSearchParams(window.location.hash.slice(1));
       tab = searchParams.get('tab');
     }
 
-    if (
-      (!tab && Object.keys(tabs).length > 0) ||
-      (tab && !tabs[tab])
-    ) {
+    if ((!tab && Object.keys(tabs).length > 0) || (tab && !tabs[tab])) {
       tab = Object.keys(tabs)[0];
     }
 
@@ -77,6 +60,9 @@ export function AppContextProvider ({ context, config, tabs, integrationId, chil
     };
   }, [context, updateTabFromHash]);
 
+  const usedValues = passedValues || values;
+  const usedUpdateValue = passedUpdateValue || updateValue;
+
   return (
     <AppContext.Provider
       value={{
@@ -84,13 +70,12 @@ export function AppContextProvider ({ context, config, tabs, integrationId, chil
         config,
         tabs,
         fields,
-        values,
-        updateValue,
+        values: usedValues,
+        updateValue: usedUpdateValue,
         currentTab,
         setTab,
       }}
-    >
-      {children}
-    </AppContext.Provider>
+      children={children}
+    />
   );
 }

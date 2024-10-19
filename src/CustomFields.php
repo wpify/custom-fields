@@ -3,6 +3,7 @@
 namespace Wpify\CustomFields;
 
 use Closure;
+use stdClass;
 use Wpify\CustomFields\Integrations\Comment;
 use Wpify\CustomFields\Integrations\GutenbergBlock;
 use Wpify\CustomFields\Integrations\MenuItem;
@@ -223,7 +224,7 @@ class CustomFields {
 			$type = 'number';
 		} elseif ( in_array( $item['type'], array( 'checkbox', 'toggle' ), true ) ) {
 			$type = 'boolean';
-		} elseif ( in_array( $item['type'], array( 'group', 'link', 'mapycz' ), true ) ) {
+		} elseif ( in_array( $item['type'], array( 'group', 'link', 'mapycz', 'multi_toggle', 'multi_checkbox' ), true ) ) {
 			$type = 'object';
 		} elseif ( str_starts_with( $item['type'], 'multi_' ) ) {
 			$type = 'array';
@@ -240,7 +241,8 @@ class CustomFields {
 			'integer' => 0,
 			'number' => 0.0,
 			'boolean' => false,
-			'object', 'array' => array(),
+			'array' => array(),
+			'object' => new stdClass(),
 			default => '',
 		};
 

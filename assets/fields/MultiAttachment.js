@@ -36,16 +36,15 @@ function MultiAttachment ({
 
   useEffect(() => {
     if (value.length > 0) {
-      Promise.all(
-        value
-          .map((id) => parseInt(id, 10))
-          .filter(Boolean)
-          .map((id) => wp.media.attachment(id).fetch()),
-      )
-        .then(setAttachments)
-        .catch((error) =>
-          console.error(__('Failed to fetch attachments', 'wpify-custom-fields'), error),
-        );
+      Promise.allSettled(
+        value.map(id => wp.media.attachment(String(id)).fetch()),
+      ).then(
+        results => setAttachments(
+          results
+            .filter(r => r.status === 'fulfilled')
+            .map(r => r.value),
+        ),
+      );
     }
   }, [value]);
 
