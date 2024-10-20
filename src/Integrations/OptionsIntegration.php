@@ -136,6 +136,22 @@ abstract class OptionsIntegration extends BaseIntegration {
 		}
 	}
 
+	public function set_fields( string $option_name, array $sanitized_values, array $items ) {
+		$data = array();
+
+		foreach ( $items as $item ) {
+			if ( isset( $sanitized_values[ $item['id'] ] ) ) {
+				if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
+					$data[ $item['id'] ] = call_user_func( $item['callback_set'], $item, $sanitized_values[ $item['id'] ] );
+				} else {
+					$data[ $item['id'] ] = $sanitized_values[ $item['id'] ];
+				}
+			}
+		}
+
+		$this->set_option_value( $option_name, $data );
+	}
+
 	abstract public function get_option_value( string $name, mixed $default_value );
 
 	abstract public function set_option_value( string $name, mixed $value );

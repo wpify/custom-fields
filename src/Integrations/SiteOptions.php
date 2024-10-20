@@ -289,24 +289,11 @@ class SiteOptions extends OptionsIntegration {
 			// Nonce verification already done by WordPress.
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing
 			if ( isset( $_POST[ $this->option_name ] ) ) {
-				$data = $this->get_field( $this->option_name );
-
 				// Custom sanitization implemented.
 				// Nonce verification already done by WordPress.
 				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
 				$post_data = $this->custom_fields->sanitize_option_value( $items )( wp_unslash( $_POST[ $this->option_name ] ) );
-
-				foreach ( $items as $item ) {
-					if ( isset( $post_data[ $item['id'] ] ) ) {
-						if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
-							$data[ $item['id'] ] = call_user_func( $item['callback_set'], $item, $post_data[ $item['id'] ] );
-						} else {
-							$data[ $item['id'] ] = $post_data[ $item['id'] ];
-						}
-					}
-				}
-
-				update_blog_option( $this->blog_id, $this->option_name, $data );
+				$this->set_fields( $this->option_name, $post_data, $items );
 			}
 		} else {
 			foreach ( $items as $item ) {

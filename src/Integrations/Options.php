@@ -329,28 +329,14 @@ class Options extends OptionsIntegration {
 	 */
 	public function save_network_options(): void {
 		check_admin_referer( $this::NETWORK_SAVE_ACTION );
-
 		$items = $this->normalize_items( $this->items );
 
 		if ( ! empty( $this->option_name ) ) {
 			if ( isset( $_POST[ $this->option_name ] ) ) {
-				$data = $this->get_field( $this->option_name );
-
 				// Sanitization is done via custom sanitizer.
 				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				$post_data = $this->custom_fields->sanitize_option_value( $items )( wp_unslash( $_POST[ $this->option_name ] ) );
-
-				foreach ( $items as $item ) {
-					if ( isset( $post_data[ $item['id'] ] ) ) {
-						if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
-							$data[ $item['id'] ] = call_user_func( $item['callback_set'], $item, $post_data[ $item['id'] ] );
-						} else {
-							$data[ $item['id'] ] = $post_data[ $item['id'] ];
-						}
-					}
-				}
-
-				update_network_option( get_current_network_id(), $this->option_name, $data );
+				$this->set_fields( $this->option_name, $post_data, $items );
 			}
 		} else {
 			foreach ( $items as $item ) {
