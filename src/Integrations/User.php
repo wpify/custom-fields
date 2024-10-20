@@ -5,14 +5,15 @@ namespace Wpify\CustomFields\Integrations;
 use Closure;
 use Wpify\CustomFields\CustomFields;
 
-class User extends Integration {
-	public int|null $user_id;
-	public readonly array $items;
+class User extends ItemsIntegration {
+	public int|null                           $user_id;
+	public readonly string                    $option_name;
+	public readonly array                     $items;
 	public readonly array|string|Closure|null $display;
-	public readonly string $title;
-	public readonly array $tabs;
-	public readonly string $id;
-	public readonly int $init_priority;
+	public readonly string                    $title;
+	public readonly array                     $tabs;
+	public readonly string                    $id;
+	public readonly int                       $init_priority;
 
 	public function __construct(
 		array $args,
@@ -25,6 +26,7 @@ class User extends Integration {
 		$this->title         = $args['title'] ?? '';
 		$this->init_priority = $args['init_priority'] ?? 10;
 		$this->tabs          = $args['tabs'] ?? array();
+		$this->option_name   = $args['meta_key'] ?? '';
 
 		if ( isset( $args['display'] ) && is_callable( $args['display'] ) ) {
 			$this->display = $args['display'];
@@ -103,22 +105,6 @@ class User extends Integration {
 		<?php
 	}
 
-	public function get_field( string $name, $item = array() ): mixed {
-		if ( ! empty( $item['callback_get'] ) ) {
-			return call_user_func( $item['callback_get'], $item, $this->user_id );
-		} else {
-			return get_user_meta( $this->user_id, $name, \true );
-		}
-	}
-
-	public function set_field( $name, $value, $item = array() ) {
-		if ( ! empty( $item['callback_set'] ) ) {
-			return call_user_func( $item['callback_set'], $item, $this->user_id, $value );
-		} else {
-			return update_user_meta( $this->user_id, $name, $value );
-		}
-	}
-
 	public function save( $user_id ) {
 		$this->user_id = $user_id;
 		$items         = $this->normalize_items( $this->items );
@@ -136,5 +122,17 @@ class User extends Integration {
 				$item,
 			);
 		}
+	}
+
+	public function get_option_value( string $name, mixed $default_value ) {
+		return get_user_meta( $this->get_item_id(), $name, true ) ?? $default_value;
+	}
+
+	public function set_option_value( string $name, mixed $value ) {
+		return update_user_meta( $this->get_item_id(), $name, $value );
+	}
+
+	function get_item_id(): int {
+		return $this->user_id;
 	}
 }

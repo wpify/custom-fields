@@ -9,30 +9,30 @@ use WC_Order_Refund;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
-class OrderMetabox extends Integration {
-	public readonly string $id;
-	public int $order_id;
-	public readonly string $title;
-	public readonly string $context;
-	public readonly string $priority;
-	public readonly string $capability;
+class OrderMetabox extends ItemsIntegration {
+	public readonly string                    $id;
+	public int                                $order_id;
+	public readonly string                    $title;
+	public readonly string                    $context;
+	public readonly string                    $priority;
+	public readonly string                    $capability;
 	public readonly Closure|array|string|null $callback;
-	public readonly array $args;
-	public readonly string $hook_suffix;
-	public readonly int $hook_priority;
-	public $display;
-	public readonly string $option_name;
-	public readonly array $items;
-	public readonly array $sections;
-	public readonly array $tabs;
-	public readonly string $nonce;
+	public readonly array                     $args;
+	public readonly string                    $hook_suffix;
+	public readonly int                       $hook_priority;
+	public                                    $display;
+	public readonly string                    $option_name;
+	public readonly array                     $items;
+	public readonly array                     $sections;
+	public readonly array                     $tabs;
+	public readonly string                    $nonce;
 
 	/**
 	 * @throws MissingArgumentException
 	 */
 	public function __construct(
 		array $args,
-		CustomFields $custom_fields,
+		public CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 
@@ -68,6 +68,7 @@ class OrderMetabox extends Integration {
 		$this->context       = $args['context'] ?? 'advanced';
 		$this->hook_priority = 10;
 		$this->priority      = $args['priority'] ?? 'default';
+		$this->option_name   = $args['meta_key'] ?? '';
 		$this->items         = $args['items'] ?? array();
 		$this->capability    = $args['capability'] ?? 'manage_woocommerce';
 		$this->callback      = $args['callback'] ?? null;
@@ -142,15 +143,6 @@ class OrderMetabox extends Integration {
 		return wc_get_order( $this->order_id );
 	}
 
-	public function get_field( $name, $item = array() ): mixed {
-		if ( ! empty( $item['callback_get'] ) ) {
-			return call_user_func( $item['callback_get'], $item, $this->order_id );
-		} else {
-
-			return $this->get_order()->get_meta( $name );
-		}
-	}
-
 	public function save( int $post_id ): int {
 		remove_action( 'woocommerce_update_order', array( $this, 'save' ) );
 
@@ -186,14 +178,19 @@ class OrderMetabox extends Integration {
 		return $post_id;
 	}
 
-	public function set_field( string $name, $value, $item = array() ): bool|int {
-		if ( ! empty( $item['callback_set'] ) ) {
-			return call_user_func( $item['callback_set'], $item, $this->order_id, $value );
-		} else {
-			$order = $this->get_order();
-			$order->update_meta_data( $name, $value );
+	public function get_option_value( string $name, mixed $default_value ) {
+		return $this->get_order()->get_meta( $name ) ?? $default_value;
+	}
 
-			return $order->save();
-		}
+	public function set_option_value( string $name, mixed $value ) {
+		$order = $this->get_order();
+		$order->update_meta_data( $name, $value );
+
+		return $order->save();
+
+	}
+
+	function get_item_id(): int {
+		return $this->order_id;
 	}
 }

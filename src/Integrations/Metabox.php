@@ -6,7 +6,7 @@ use WP_Post;
 use WP_Screen;
 use Wpify\CustomFields\CustomFields;
 
-class Metabox extends Integration {
+class Metabox extends ItemsIntegration {
 	const CONTEXT_NORMAL   = 'normal';
 	const CONTEXT_ADVANCED = 'advanced';
 	const CONTEXT_SIDE     = 'side';
@@ -15,17 +15,18 @@ class Metabox extends Integration {
 	const PRIORITY_LOW     = 'low';
 	const PRIORITY_DEFAULT = 'default';
 
-	public readonly string $id;
-	public readonly string $title;
+	public readonly string                      $id;
+	public readonly string                      $title;
 	public readonly null|string|array|WP_Screen $screen;
-	public readonly string $context;
-	public readonly string $priority;
-	public readonly array $callback_args;
-	public readonly WP_Post $post;
-	public readonly string $nonce;
-	public readonly array $post_types;
-	public readonly array $tabs;
-	public readonly array $items;
+	public readonly string                      $context;
+	public readonly string                      $priority;
+	public readonly array                       $callback_args;
+	public readonly WP_Post                     $post;
+	public readonly string                      $nonce;
+	public readonly array                       $post_types;
+	public readonly array                       $tabs;
+	public readonly string                      $option_name;
+	public readonly array                       $items;
 
 	public function __construct(
 		array $args,
@@ -50,6 +51,7 @@ class Metabox extends Integration {
 			),
 		);
 		$this->nonce         = $this->id . '_nonce';
+		$this->option_name   = $args['meta_key'] ?? '';
 		$this->items         = $args['items'] ?? array();
 		$this->post_types    = $args['post_types'] ?? array();
 		$this->tabs          = $args['tabs'] ?? array();
@@ -156,19 +158,15 @@ class Metabox extends Integration {
 		}
 	}
 
-	public function get_field( string $name, $item = array() ): mixed {
-		if ( ! empty( $item['callback_get'] ) ) {
-			return call_user_func( $item['callback_get'], $item, $this->post->ID );
-		} else {
-			return get_post_meta( $this->post->ID, $name, true );
-		}
+	public function get_option_value( string $name, mixed $default_value ) {
+		return get_post_meta( $this->get_item_id(), $name, true ) ?? $default_value;
 	}
 
-	public function set_field( string $name, $value, $item = array() ) {
-		if ( ! empty( $item['callback_set'] ) ) {
-			return call_user_func( $item['callback_set'], $item, $this->post->ID, $value );
-		} else {
-			return update_post_meta( $this->post->ID, $name, wp_slash( $value ) );
-		}
+	public function set_option_value( string $name, mixed $value ) {
+		return update_post_meta( $this->get_item_id(), $name, $value );
+	}
+
+	function get_item_id(): int {
+		return $this->post->ID;
 	}
 }

@@ -10,7 +10,7 @@ use Wpify\CustomFields\exceptions\MissingArgumentException;
  *
  * Handles the creation and management of custom options pages for WPify Custom Fields.
  */
-class Options extends Integration {
+class Options extends OptionsIntegration {
 	const TYPE_NETWORK        = 'network';
 	const TYPE_USER_SUBMENU   = 'user_submenu';
 	const TYPE_USER           = 'user';
@@ -18,30 +18,30 @@ class Options extends Integration {
 	const ALLOWED_TYPES       = array( self::TYPE_OPTIONS, self::TYPE_NETWORK, self::TYPE_USER_SUBMENU, self::TYPE_USER );
 	const NETWORK_SAVE_ACTION = 'wpifycf-save-network-options';
 
-	public readonly string $id;
-	public readonly string $type;
-	public readonly string|null $parent_slug;
-	public readonly string $page_title;
-	public readonly string $menu_title;
-	public readonly string $capability;
-	public readonly string $menu_slug;
-	public readonly array|string $callback;
-	public readonly string|null $icon_url;
+	public readonly string         $id;
+	public readonly string         $type;
+	public readonly string|null    $parent_slug;
+	public readonly string         $page_title;
+	public readonly string         $menu_title;
+	public readonly string         $capability;
+	public readonly string         $menu_slug;
+	public readonly array|string   $callback;
+	public readonly string|null    $icon_url;
 	public readonly int|float|null $position;
-	public readonly array $args;
-	public readonly string $hook_suffix;
-	public readonly int $hook_priority;
-	public readonly array $help_tabs;
-	public readonly string $help_sidebar;
-	public array|string|null $display;
-	public string|array|bool $submit_button;
-	public readonly string $option_group;
-	public readonly string $option_name;
-	public readonly array $items;
-	public readonly array $sections;
-	public readonly string $default_section;
-	public readonly array $tabs;
-	public readonly string $success_message;
+	public readonly array          $args;
+	public readonly string         $hook_suffix;
+	public readonly int            $hook_priority;
+	public readonly array          $help_tabs;
+	public readonly string         $help_sidebar;
+	public array|string|null       $display;
+	public string|array|bool       $submit_button;
+	public readonly string         $option_group;
+	public readonly string         $option_name;
+	public readonly array          $items;
+	public readonly array          $sections;
+	public readonly string         $default_section;
+	public readonly array          $tabs;
+	public readonly string         $success_message;
 
 	/**
 	 * Constructor.
@@ -452,64 +452,6 @@ class Options extends Integration {
 	}
 
 	/**
-	 * Gets the value of a field item from the database.
-	 *
-	 * @param array $item The field item.
-	 */
-	public function get_field( string $name, array $item = array() ): mixed {
-		if ( isset( $item['callback_get'] ) && is_callable( $item['callback_get'] ) ) {
-			return call_user_func( $item['callback_get'], $item );
-		}
-
-		if ( $this->type === $this::TYPE_NETWORK ) {
-			if ( ! empty( $this->option_name ) ) {
-				$data = get_network_option( get_current_network_id(), $this->option_name, array() );
-
-				return $data[ $name ] ?? null;
-			} else {
-				return get_network_option( get_current_network_id(), $name, null );
-			}
-		} elseif ( ! empty( $this->option_name ) ) {
-			$data = get_option( $this->option_name, array() );
-
-			return $data[ $name ] ?? null;
-		} else {
-			return get_option( $name, null );
-		}
-	}
-
-	/**
-	 * Sets the value of a field item in the database.
-	 *
-	 * @param string $name  The name of the field item.
-	 * @param mixed  $value The value to set.
-	 * @param array  $item  The field item.
-	 */
-	public function set_field( string $name, mixed $value, array $item = array() ) {
-		if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
-			return call_user_func( $item['callback_set'], $item, $value );
-		}
-
-		if ( $this->type === $this::TYPE_NETWORK ) {
-			if ( ! empty( $this->option_name ) ) {
-				$data          = get_network_option( get_current_network_id(), $this->option_name, array() );
-				$data[ $name ] = $value;
-
-				return update_network_option( get_current_network_id(), $this->option_name, $data );
-			} else {
-				return update_network_option( get_current_network_id(), $name, $value );
-			}
-		} elseif ( ! empty( $this->option_name ) ) {
-			$data          = get_option( $this->option_name, array() );
-			$data[ $name ] = $value;
-
-			return update_option( $this->option_name, $data );
-		} else {
-			return update_option( $name, $value );
-		}
-	}
-
-	/**
 	 * Shows the network admin notices.
 	 */
 	public function show_network_admin_notices(): void {
@@ -521,6 +463,22 @@ class Options extends Integration {
 				<p><?php echo esc_html( $this->success_message ); ?></p>
 			</div>
 			<?php
+		}
+	}
+
+	public function get_option_value( string $name, mixed $default_value ) {
+		if ( $this->type === $this::TYPE_NETWORK ) {
+			return get_network_option( get_current_network_id(), $name, $default_value );
+		} else {
+			return get_option( $name );
+		}
+	}
+
+	public function set_option_value( string $name, mixed $value ) {
+		if ( $this->type === $this::TYPE_NETWORK ) {
+			return update_network_option( get_current_network_id(), $name, $value );
+		} else {
+			return update_option( $name, $value );
 		}
 	}
 }

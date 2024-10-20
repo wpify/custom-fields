@@ -7,45 +7,45 @@ use WP_Block;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
-class GutenbergBlock extends Integration {
-	public readonly string $id;
-	public readonly string $name;
-	public readonly string $api_version;
-	public readonly string $title;
-	public readonly string|null $category;
-	public readonly array|null $parent;
-	public readonly array|null $ancestor;
-	public readonly array|null $allowed_blocks;
-	public readonly string|null $icon;
-	public readonly string $description;
-	public readonly array $keywords;
-	public readonly string|null $textdomain;
-	public readonly array $styles;
-	public readonly array $variations;
-	public readonly array $selectors;
-	public readonly array|null $supports;
-	public readonly array|null $example;
+class GutenbergBlock extends BaseIntegration {
+	public readonly string                    $id;
+	public readonly string                    $name;
+	public readonly string                    $api_version;
+	public readonly string                    $title;
+	public readonly string|null               $category;
+	public readonly array|null                $parent;
+	public readonly array|null                $ancestor;
+	public readonly array|null                $allowed_blocks;
+	public readonly string|null               $icon;
+	public readonly string                    $description;
+	public readonly array                     $keywords;
+	public readonly string|null               $textdomain;
+	public readonly array                     $styles;
+	public readonly array                     $variations;
+	public readonly array                     $selectors;
+	public readonly array|null                $supports;
+	public readonly array|null                $example;
 	public readonly Closure|array|string|null $render_callback;
 	public readonly Closure|array|string|null $variation_callback;
-	public readonly array|null $attributes;
-	public readonly array $uses_context;
-	public readonly array|null $provides_context;
-	public readonly array $block_hooks;
-	public readonly array $editor_script_handles;
-	public readonly array $script_handles;
-	public readonly array $view_script_handles;
-	public readonly array $editor_style_handles;
-	public readonly array $style_handles;
-	public readonly array $view_style_handles;
-	public readonly array $items;
-	public readonly array $tabs;
+	public readonly array|null                $attributes;
+	public readonly array                     $uses_context;
+	public readonly array|null                $provides_context;
+	public readonly array                     $block_hooks;
+	public readonly array                     $editor_script_handles;
+	public readonly array                     $script_handles;
+	public readonly array                     $view_script_handles;
+	public readonly array                     $editor_style_handles;
+	public readonly array                     $style_handles;
+	public readonly array                     $view_style_handles;
+	public readonly array                     $items;
+	public readonly array                     $tabs;
 
 	/**
 	 * @throws MissingArgumentException
 	 */
 	public function __construct(
 		array $args,
-		private CustomFields $custom_fields
+		private readonly CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 
@@ -179,14 +179,5 @@ class GutenbergBlock extends Integration {
 		}
 
 		return call_user_func( $this->render_callback, $attributes, $content, $block );
-	}
-
-	public function get_field( string $name, $item = array() ): mixed {
-		// Implementation not needed.
-		return '';
-	}
-
-	public function set_field( string $name, $value, $item = array() ) {
-		// Implementation not needed.
 	}
 }

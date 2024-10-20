@@ -76,8 +76,6 @@ function loadGutenbergBlocks (event) {
     edit: ({ attributes, setAttributes, ...props }) => {
       const updateValue = useCallback(key => value => setAttributes({ [key]: value }), [setAttributes]);
 
-      console.log(attributes);
-
       return (
         <AppContextProvider
           context="gutenberg"

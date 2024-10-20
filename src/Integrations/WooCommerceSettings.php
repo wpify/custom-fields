@@ -7,25 +7,29 @@ use WC_Admin_Settings;
 use WP_Screen;
 use Wpify\CustomFields\CustomFields;
 
-class WooCommerceSettings extends Integration {
-	public readonly array $tab;
-	public readonly array $section;
-	public readonly array $items;
-	public readonly string $class;
-	public bool $is_new_tab = false;
+class WooCommerceSettings extends OptionsIntegration {
+	public readonly array                     $tab;
+	public readonly array                     $section;
+	public readonly array                     $items;
+	public readonly string                    $class;
+	public bool                               $is_new_tab = false;
 	public readonly Closure|array|string|null $display;
-	public readonly string $id;
-	public readonly array $tabs;
-	public readonly string $option_name;
+	public readonly string                    $id;
+	public readonly array                     $tabs;
+	public readonly string                    $option_name;
 
-	public function __construct( array $args, CustomFields $custom_fields ) {
+	public function __construct(
+		array $args,
+		public CustomFields $custom_fields,
+	) {
 		parent::__construct( $custom_fields );
 
-		$this->tab     = $args['tab'] ?? array();
-		$this->section = $args['section'] ?? array();
-		$this->class   = $args['class'] ?? '';
-		$this->items   = $args['items'] ?? array();
-		$this->tabs    = $args['tabs'] ?? array();
+		$this->tab         = $args['tab'] ?? array();
+		$this->section     = $args['section'] ?? array();
+		$this->class       = $args['class'] ?? '';
+		$this->items       = $args['items'] ?? array();
+		$this->tabs        = $args['tabs'] ?? array();
+		$this->option_name = $args['option_name'] ?? '';
 
 		if ( isset( $args['display'] ) && is_callable( $args['display'] ) ) {
 			$this->display = $args['display'];
@@ -58,7 +62,7 @@ class WooCommerceSettings extends Integration {
 		// phpcs:enable
 
 		if ( $tab === $this->tab['id'] && $section === $this->section['id'] && $settings_updated === '1' ) {
-			WC_Admin_Settings::add_message( __( 'Your settings have been saved.', 'woocommerce' ) );
+			WC_Admin_Settings::add_message( __( 'Your settings have been saved.', 'wpify-custom-fields' ) );
 		}
 	}
 
@@ -132,7 +136,7 @@ class WooCommerceSettings extends Integration {
 						?>
 						<li>
 							<a href="<?php echo esc_url( $url ); ?>"
-								class="<?php echo $current_section == $id ? 'current' : ''; ?>"
+							   class="<?php echo $current_section == $id ? 'current' : ''; ?>"
 							>
 								<?php echo wp_kses_post( $label ); ?>
 							</a>
@@ -201,32 +205,11 @@ class WooCommerceSettings extends Integration {
 		}
 	}
 
-	public function get_field( string $name, $item = array() ): mixed {
-		if ( isset( $item['callback_get'] ) && is_callable( $item['callback_get'] ) ) {
-			return call_user_func( $item['callback_get'], $item );
-		}
-
-		if ( ! empty( $this->option_name ) ) {
-			$data = get_option( $this->option_name, array() );
-
-			return $data[ $name ] ?? null;
-		} else {
-			return get_option( $name, null );
-		}
+	public function get_option_value( string $name, mixed $default_value ) {
+		return get_option( $name, $default_value );
 	}
 
-	public function set_field( string $name, $value, $item = array() ) {
-		if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
-			return call_user_func( $item['callback_set'], $item, $value );
-		}
-
-		if ( ! empty( $this->option_name ) ) {
-			$data          = get_option( $this->option_name, array() );
-			$data[ $name ] = $value;
-
-			return update_option( $this->option_name, $data );
-		} else {
-			return update_option( $name, $value );
-		}
+	public function set_option_value( string $name, mixed $value ) {
+		return update_option( $name, $value );
 	}
 }

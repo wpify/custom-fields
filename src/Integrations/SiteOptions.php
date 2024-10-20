@@ -6,29 +6,29 @@ use WP_Screen;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
-class SiteOptions extends Integration {
+class SiteOptions extends OptionsIntegration {
 	const SAVE_ACTION = 'wpifycf-save-site-options';
 
-	public readonly int $blog_id;
-	public readonly string $id;
-	public readonly string $page_title;
-	public readonly string $menu_title;
-	public readonly string $capability;
-	public readonly string $menu_slug;
+	public readonly int               $blog_id;
+	public readonly string            $id;
+	public readonly string            $page_title;
+	public readonly string            $menu_title;
+	public readonly string            $capability;
+	public readonly string            $menu_slug;
 	public readonly array|string|null $callback;
-	public readonly string $hook_suffix;
-	public readonly int $hook_priority;
-	public readonly array $help_tabs;
-	public readonly string $help_sidebar;
-	public array|string|null $display;
-	public string|array|bool $submit_button;
-	public readonly string $option_group;
-	public readonly string $option_name;
-	public readonly array $items;
-	public readonly array $sections;
-	public readonly string $default_section;
-	public readonly array $tabs;
-	public readonly string $success_message;
+	public readonly string            $hook_suffix;
+	public readonly int               $hook_priority;
+	public readonly array             $help_tabs;
+	public readonly string            $help_sidebar;
+	public array|string|null          $display;
+	public string|array|bool          $submit_button;
+	public readonly string            $option_group;
+	public readonly string            $option_name;
+	public readonly array             $items;
+	public readonly array             $sections;
+	public readonly string            $default_section;
+	public readonly array             $tabs;
+	public readonly string            $success_message;
 
 	/**
 	 * @throws MissingArgumentException
@@ -189,13 +189,13 @@ class SiteOptions extends Integration {
 			<h1 id="edit-site">
 				<?php
 				/* translators: %s: Site title. */
-				echo esc_html( sprintf( __( 'Edit Site: %s' ), $site->blogname ) );
+				echo esc_html( sprintf( __( 'Edit Site: %s', 'wpify-custom-fields' ), $site->blogname ) );
 				?>
 			</h1>
 			<p class="edit-site-actions">
-				<a href="<?php echo esc_url( get_home_url( $id, '/' ) ); ?>"><?php echo esc_html( __( 'Visit' ) ); ?></a>
+				<a href="<?php echo esc_url( get_home_url( $id, '/' ) ); ?>"><?php echo esc_html( __( 'Visit', 'wpify-custom-fields' ) ); ?></a>
 				|
-				<a href="<?php echo esc_url( get_admin_url( $id ) ); ?>"><?php echo esc_html( __( 'Dashboard' ) ); ?></a>
+				<a href="<?php echo esc_url( get_admin_url( $id ) ); ?>"><?php echo esc_html( __( 'Dashboard', 'wpify-custom-fields' ) ); ?></a>
 			</p>
 			<?php
 			network_edit_site_nav(
@@ -401,41 +401,20 @@ class SiteOptions extends Integration {
 		return $item;
 	}
 
-	public function get_field( string $name, $item = array() ): mixed {
-		if ( isset( $item['callback_get'] ) && is_callable( $item['callback_get'] ) ) {
-			return call_user_func( $item['callback_get'], $item );
-		}
-
-		if ( ! empty( $this->option_name ) ) {
-			$data = get_blog_option( $this->blog_id, $this->option_name, array() );
-
-			return $data[ $name ] ?? null;
-		} else {
-			return get_blog_option( $this->blog_id, $name, null );
-		}
-	}
-
-	public function set_field( string $name, $value, $item = array() ): bool {
-		if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
-			return call_user_func( $item['callback_set'], $item, $value );
-		}
-
-		if ( ! empty( $this->option_name ) ) {
-			$data          = get_blog_option( $this->blog_id, $this->option_name, array() );
-			$data[ $name ] = $value;
-
-			return update_blog_option( $this->blog_id, $this->option_name, $data );
-		} else {
-			return update_blog_option( $this->blog_id, $name, $value );
-		}
-	}
-
 	public function set_page_title( WP_Screen $current_screen ): void {
 		if ( is_network_admin() && $current_screen->id === $this->hook_suffix ) {
 			global $title;
 			$site = get_site( $this->blog_id );
 			/* translators: Blog name */
-			$title = sprintf( __( 'Edit Site: %s' ), esc_html( $site->blogname ) );
+			$title = sprintf( __( 'Edit Site: %s', 'wpify-custom-fields' ), esc_html( $site->blogname ) );
 		}
+	}
+
+	public function get_option_value( string $name, mixed $default_value ) {
+		return get_blog_option( $this->blog_id, $name, $default_value );
+	}
+
+	public function set_option_value( string $name, mixed $value ) {
+		return update_blog_option( $this->blog_id, $name, $value );
 	}
 }

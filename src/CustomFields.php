@@ -236,15 +236,19 @@ class CustomFields {
 	}
 
 	public function get_default_value( array $item ): mixed {
-		$wp_type       = $this->get_wp_type( $item );
-		$default_value = match ( $wp_type ) {
-			'integer' => 0,
-			'number' => 0.0,
-			'boolean' => false,
-			'array' => array(),
-			'object' => new stdClass(),
-			default => '',
-		};
+		if ( isset( $item['default'] ) ) {
+			$default_value = $item['default'];
+		} else {
+			$wp_type       = $this->get_wp_type( $item );
+			$default_value = match ( $wp_type ) {
+				'integer' => 0,
+				'number' => 0.0,
+				'boolean' => false,
+				'array' => array(),
+				'object' => new stdClass(),
+				default => '',
+			};
+		}
 
 		return apply_filters( 'wpifycf_default_value_' . $item['type'], $default_value, $item );
 	}

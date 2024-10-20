@@ -6,23 +6,23 @@ use WC_Product;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
-class ProductOptions extends Integration {
-	public readonly string $id;
-	public int $product_id;
-	public readonly array $tab;
-	public readonly string $capability;
+class ProductOptions extends ItemsIntegration {
+	public readonly string            $id;
+	public int                        $product_id;
+	public readonly array             $tab;
+	public readonly string            $capability;
 	public readonly array|string|null $callback;
-	public readonly array $args;
-	public readonly string $hook_suffix;
-	public readonly int $hook_priority;
-	public readonly array $help_tabs;
-	public readonly string $help_sidebar;
-	public $display;
-	public readonly string $option_name;
-	public readonly array $items;
-	public readonly array $sections;
-	public readonly array $tabs;
-	public bool $is_new_tab;
+	public readonly array             $args;
+	public readonly string            $hook_suffix;
+	public readonly int               $hook_priority;
+	public readonly array             $help_tabs;
+	public readonly string            $help_sidebar;
+	public                            $display;
+	public readonly string            $option_name;
+	public readonly array             $items;
+	public readonly array             $sections;
+	public readonly array             $tabs;
+	public bool                       $is_new_tab;
 
 	/**
 	 * @throws MissingArgumentException
@@ -67,7 +67,7 @@ class ProductOptions extends Integration {
 		$this->help_tabs     = $args['help_tabs'] ?? array();
 		$this->help_sidebar  = $args['help_sidebar'] ?? '';
 		$this->items         = $args['items'] ?? array();
-		$this->option_name   = $args['option_name'] ?? '';
+		$this->option_name   = $args['meta_key'] ?? '';
 		$this->tabs          = $args['tabs'] ?? array();
 		$this->is_new_tab    = false;
 
@@ -182,27 +182,8 @@ class ProductOptions extends Integration {
 		<?php
 	}
 
-	public function get_field( $name, $item = array() ): mixed {
-		if ( isset( $item['callback_get'] ) && is_callable( $item['callback_get'] ) ) {
-			return call_user_func( $item['callback_get'], $item );
-		}
-
-		return $this->get_product()->get_meta( $name );
-	}
-
-	public function set_field( $name, $value, $item = array() ) {
-		if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
-			return call_user_func( $item['callback_set'], $item, $value );
-		}
-		$product = $this->get_product();
-
-		$product->update_meta_data( $name, $value );
-
-		return $product->save();
-	}
-
 	public function get_product(): bool|WC_Product|null {
-		return wc_get_product( $this->product_id );
+		return wc_get_product( $this->get_item_id() );
 	}
 
 	public function save( $post_id ): void {
@@ -242,5 +223,20 @@ class ProductOptions extends Integration {
 				),
 			);
 		}
+	}
+
+	public function get_option_value( string $name, mixed $default_value ) {
+		return $this->get_product()->get_meta( $name ) ?? $default_value;
+	}
+
+	public function set_option_value( string $name, mixed $value ) {
+		$product = $this->get_product();
+		$product->update_meta_data( $name, $value );
+
+		return $product->save();
+	}
+
+	function get_item_id(): int {
+		return $this->product_id;
 	}
 }

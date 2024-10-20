@@ -6,14 +6,15 @@ use WP_Term;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
-class Taxonomy extends Integration {
+class Taxonomy extends ItemsIntegration {
 	public readonly string $id;
 	public readonly string $taxonomy;
-	public readonly array $tabs;
-	public readonly array $items;
-	public readonly int $hook_priority;
-	public readonly int $init_priority;
-	public readonly int $term_id;
+	public readonly array  $tabs;
+	public readonly string $option_name;
+	public readonly array  $items;
+	public readonly int    $hook_priority;
+	public readonly int    $init_priority;
+	public readonly int    $term_id;
 
 	/**
 	 * @throws MissingArgumentException
@@ -42,6 +43,7 @@ class Taxonomy extends Integration {
 		$this->hook_priority = $args['hook_priority'] ?? 10;
 		$this->init_priority = $args['init_priority'] ?? 10;
 		$this->tabs          = $args['tabs'] ?? array();
+		$this->option_name   = $args['meta_key'] ?? '';
 
 		add_action( $this->taxonomy . '_add_form_fields', array( $this, 'render_add_form' ), $this->hook_priority );
 		add_action( $this->taxonomy . '_edit_form_fields', array( $this, 'render_edit_form' ), $this->hook_priority );
@@ -77,26 +79,6 @@ class Taxonomy extends Integration {
 
 		foreach ( $items as $item ) {
 			$this->print_field( $item, array(), 'tr' );
-		}
-	}
-
-	public function get_field( string $name, $item = array() ): mixed {
-		if ( ! empty( $item['callback_get'] ) ) {
-			return call_user_func( $item['callback_get'], $item, $this->term_id );
-		} elseif ( $this->term_id ) {
-			return get_term_meta( $this->term_id, $name, true );
-		} elseif ( $item['default'] ) {
-			return $item['default'];
-		} else {
-			return '';
-		}
-	}
-
-	public function set_field( string $name, $value, $item = array() ) {
-		if ( ! empty( $item['callback_set'] ) ) {
-			return call_user_func( $item['callback_set'], $item, $this->term_id, $value );
-		} else {
-			return update_term_meta( $this->term_id, $name, wp_slash( $value ) );
 		}
 	}
 
@@ -136,5 +118,21 @@ class Taxonomy extends Integration {
 				$item,
 			);
 		}
+	}
+
+	public function get_option_value( string $name, mixed $default_value ) {
+		if ( $this->get_item_id() ) {
+			return get_term_meta( $this->get_item_id(), $name, true ) ?? $default_value;
+		} else {
+			return $default_value;
+		}
+	}
+
+	public function set_option_value( string $name, mixed $value ) {
+		return update_term_meta( $this->get_item_id(), $name, $value );
+	}
+
+	function get_item_id(): int {
+		return $this->term_id;
 	}
 }

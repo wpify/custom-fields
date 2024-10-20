@@ -7,12 +7,12 @@ use WP_Post;
 use WP_Screen;
 use Wpify\CustomFields\CustomFields;
 
-class MenuItem extends Integration {
-
+class MenuItem extends ItemsIntegration {
 	public readonly string $id;
-	public string $item_id;
-	public readonly array $tabs;
-	public readonly array $items;
+	public string          $item_id;
+	public readonly array  $tabs;
+	public readonly string $option_name;
+	public readonly array  $items;
 
 	public function __construct(
 		array $args,
@@ -20,9 +20,10 @@ class MenuItem extends Integration {
 	) {
 		parent::__construct( $custom_fields );
 
-		$this->id    = $args['id'] ?? 'menu_item__' . wp_generate_uuid4();
-		$this->tabs  = $args['tabs'] ?? array();
-		$this->items = $args['items'] ?? array();
+		$this->id          = $args['id'] ?? 'menu_item__' . wp_generate_uuid4();
+		$this->tabs        = $args['tabs'] ?? array();
+		$this->option_name = $args['meta_key'] ?? '';
+		$this->items       = $args['items'] ?? array();
 
 		add_action( 'wp_nav_menu_item_custom_fields', array( $this, 'render' ), 10, 5 );
 		add_action( 'wp_update_nav_menu_item', array( $this, 'save' ), 10, 3 );
@@ -75,19 +76,15 @@ class MenuItem extends Integration {
 		}
 	}
 
-	public function get_field( string $name, $item = array() ): mixed {
-		if ( ! empty( $item['callback_get'] ) ) {
-			return call_user_func( $item['callback_get'], $item, $this->item_id );
-		} else {
-			return get_post_meta( $this->item_id, $name, true );
-		}
+	public function get_option_value( string $name, mixed $default_value ) {
+		return get_post_meta( $this->get_item_id(), $name, true ) ?? $default_value;
 	}
 
-	public function set_field( string $name, $value, $item = array() ) {
-		if ( ! empty( $item['callback_set'] ) ) {
-			return call_user_func( $item['callback_set'], $item, $this->item_id, $value );
-		} else {
-			return update_post_meta( $this->item_id, $name, $value );
-		}
+	public function set_option_value( string $name, mixed $value ) {
+		return update_post_meta( $this->get_item_id(), $name, $value );
+	}
+
+	function get_item_id(): int {
+		return $this->item_id;
 	}
 }

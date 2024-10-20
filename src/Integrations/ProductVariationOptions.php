@@ -8,23 +8,24 @@ use WP_Post;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\exceptions\MissingArgumentException;
 
-class ProductVariationOptions extends Integration {
-	public readonly string $id;
-	public int $variation_id;
-	public readonly array $tab;
-	public readonly string $after;
-	public readonly string $capability;
+class ProductVariationOptions extends ItemsIntegration {
+	public readonly string                    $id;
+	public int                                $variation_id;
+	public readonly array                     $tab;
+	public readonly string                    $after;
+	public readonly string                    $capability;
 	public readonly Closure|array|string|null $callback;
-	public readonly array $args;
-	public readonly string $hook_suffix;
-	public readonly int $hook_priority;
-	public readonly array $help_tabs;
-	public readonly string $help_sidebar;
-	public $display;
-	public readonly array $items;
-	public readonly array $sections;
-	public readonly array $tabs;
-	public bool $is_new_tab;
+	public readonly array                     $args;
+	public readonly string                    $hook_suffix;
+	public readonly int                       $hook_priority;
+	public readonly array                     $help_tabs;
+	public readonly string                    $help_sidebar;
+	public                                    $display;
+	public readonly string                    $option_name;
+	public readonly array                     $items;
+	public readonly array                     $sections;
+	public readonly array                     $tabs;
+	public bool                               $is_new_tab;
 
 	/**
 	 * @throws MissingArgumentException
@@ -69,6 +70,7 @@ class ProductVariationOptions extends Integration {
 		$this->hook_priority = $args['hook_priority'] ?? 10;
 		$this->help_tabs     = $args['help_tabs'] ?? array();
 		$this->help_sidebar  = $args['help_sidebar'] ?? '';
+		$this->option_name   = $args['meta_key'] ?? '';
 		$this->items         = $args['items'] ?? array();
 		$this->tabs          = $args['tabs'] ?? array();
 
@@ -77,7 +79,7 @@ class ProductVariationOptions extends Integration {
 		if ( empty( $tab['label'] ) ) {
 			throw new MissingArgumentException(
 				sprintf(
-					/* translators: %1$s is the class name. */
+				/* translators: %1$s is the class name. */
 					esc_html( __( 'Missing argument $tab["label"] in class %2$s.', 'wpify-custom-fields' ) ),
 					__CLASS__,
 				),
@@ -149,27 +151,8 @@ class ProductVariationOptions extends Integration {
 		<?php
 	}
 
-	public function get_field( string $name, $item = array() ): mixed {
-		if ( isset( $item['callback_get'] ) && is_callable( $item['callback_get'] ) ) {
-			return call_user_func( $item['callback_get'], $item );
-		}
-
-		return $this->get_product()->get_meta( $name );
-	}
-
-	public function set_field( string $name, $value, $item = array() ) {
-		if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
-			return call_user_func( $item['callback_set'], $item, $value );
-		}
-
-		$product = $this->get_product();
-		$product->update_meta_data( $name, $value );
-
-		return $product->save();
-	}
-
 	public function get_product(): bool|WC_Product|null {
-		return wc_get_product( $this->variation_id );
+		return wc_get_product( $this->get_item_id() );
 	}
 
 	public function save( $product_variation_id, $loop ): void {
@@ -216,5 +199,20 @@ class ProductVariationOptions extends Integration {
 				),
 			);
 		}
+	}
+
+	public function get_option_value( string $name, mixed $default_value ) {
+		return $this->get_product()->get_meta( $name ) ?? $default_value;
+	}
+
+	public function set_option_value( string $name, mixed $value ) {
+		$product = $this->get_product();
+		$product->update_meta_data( $name, $value );
+
+		return $product->save();
+	}
+
+	function get_item_id(): int {
+		return $this->variation_id;
 	}
 }

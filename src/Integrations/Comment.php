@@ -5,7 +5,7 @@ namespace Wpify\CustomFields\Integrations;
 use WP_Comment;
 use Wpify\CustomFields\CustomFields;
 
-class Comment extends Integration {
+class Comment extends ItemsIntegration {
 	const PRIORITY_HIGH    = 'high';
 	const PRIORITY_CORE    = 'core';
 	const PRIORITY_LOW     = 'low';
@@ -14,16 +14,17 @@ class Comment extends Integration {
 	public readonly string $id;
 	public readonly string $title;
 	public readonly string $priority;
-	public readonly array $callback_args;
-	public readonly int $comment_id;
+	public readonly array  $callback_args;
+	public readonly int    $comment_id;
 	public readonly string $nonce;
-	public readonly array $post_types;
-	public readonly array $tabs;
-	public readonly array $items;
+	public readonly array  $post_types;
+	public readonly string $option_name;
+	public readonly array  $tabs;
+	public readonly array  $items;
 
 	public function __construct(
 		array $args,
-		private CustomFields $custom_fields,
+		private readonly CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 
@@ -41,6 +42,7 @@ class Comment extends Integration {
 			),
 		);
 		$this->nonce         = $this->id . '_nonce';
+		$this->option_name   = $args['meta_key'] ?? '';
 		$this->items         = $args['items'] ?? array();
 		$this->post_types    = $args['post_types'] ?? array();
 		$this->tabs          = $args['tabs'] ?? array();
@@ -133,19 +135,15 @@ class Comment extends Integration {
 		}
 	}
 
-	public function get_field( string $name, $item = array() ): mixed {
-		if ( ! empty( $item['callback_get'] ) ) {
-			return call_user_func( $item['callback_get'], $item, $this->comment_id );
-		} else {
-			return get_comment_meta( $this->comment_id, $name, true );
-		}
+	public function get_option_value( string $name, mixed $default_value ) {
+		return get_comment_meta( $this->comment_id, $name, true ) ?? $default_value;
 	}
 
-	public function set_field( string $name, $value, $item = array() ) {
-		if ( ! empty( $item['callback_set'] ) ) {
-			return call_user_func( $item['callback_set'], $item, $this->comment_id, $value );
-		} else {
-			return update_comment_meta( $this->comment_id, $name, wp_slash( $value ) );
-		}
+	public function set_option_value( string $name, mixed $value, array $item = array() ) {
+		return update_comment_meta( $this->comment_id, $name, $value );
+	}
+
+	function get_item_id(): int {
+		return $this->comment_id;
 	}
 }
