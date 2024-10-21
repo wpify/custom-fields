@@ -28,7 +28,7 @@ jobs:
 
       # Run PHPCS (PHP CodeSniffer) to check code standards
       - name: Run PHP CodeSniffer
-        run: phpcs -ps .
+        run: vendor/bin/phpcs -ps .
 
       # Optional: Fail the workflow if PHPCS finds issues
       - name: Fail if issues found
