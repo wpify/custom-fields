@@ -7,13 +7,44 @@ use WP_Post;
 use WP_Screen;
 use Wpify\CustomFields\CustomFields;
 
+/**
+ * Class MenuItem
+ *
+ * Represents a menu item and integrates with custom fields.
+ */
 class MenuItem extends ItemsIntegration {
-	public readonly string $id;
-	public string          $item_id;
-	public readonly array  $tabs;
-	public readonly string $option_name;
-	public readonly array  $items;
 
+	/**
+	 * ID of the custom fields options instance.
+	 *
+	 * @var string
+	 */
+	public readonly string $id;
+	public string $item_id;
+
+	/**
+	 * Tabs used for the custom fields.
+	 *
+	 * @var array
+	 */
+	public readonly array $tabs;
+	public readonly string $option_name;
+
+	/**
+	 * List of the fields to be shown.
+	 *
+	 * @var array
+	 */
+	public readonly array $items;
+
+	/**
+	 * Constructor for the class.
+	 *
+	 * @param array        $args Array of arguments for initializing the object.
+	 * @param CustomFields $custom_fields Instance of the CustomFields class.
+	 *
+	 * @return void
+	 */
 	public function __construct(
 		array $args,
 		CustomFields $custom_fields,
@@ -30,6 +61,13 @@ class MenuItem extends ItemsIntegration {
 		add_action( 'current_screen', array( $this, 'maybe_enqueue' ) );
 	}
 
+	/**
+	 * Maybe enqueue scripts and styles based on the current screen.
+	 *
+	 * @param WP_Screen $current_screen The current screen object.
+	 *
+	 * @return void
+	 */
 	public function maybe_enqueue( WP_Screen $current_screen ): void {
 		if ( 'nav-menus' !== $current_screen->id ) {
 			return;
@@ -38,6 +76,17 @@ class MenuItem extends ItemsIntegration {
 		$this->enqueue();
 	}
 
+	/**
+	 * Renders the menu item with the specified configurations.
+	 *
+	 * @param string        $item_id The ID of the menu item.
+	 * @param WP_Post       $menu_item The WordPress post object representing the menu item.
+	 * @param int           $depth The depth of the menu item in the hierarchy.
+	 * @param stdClass|null $args Additional arguments for rendering the menu item.
+	 * @param int           $current_object_id The ID of the current object.
+	 *
+	 * @return void
+	 */
 	public function render( string $item_id, WP_Post $menu_item, int $depth, stdClass|null $args, int $current_object_id ) {
 		$this->item_id = $item_id;
 		$this->enqueue();
@@ -57,6 +106,15 @@ class MenuItem extends ItemsIntegration {
 		}
 	}
 
+	/**
+	 * Saves the menu item with the specified configurations.
+	 *
+	 * @param int   $menu_id The ID of the menu.
+	 * @param int   $menu_item_db_id The ID of the menu item in the database.
+	 * @param array $args Additional arguments for saving the menu item.
+	 *
+	 * @return void
+	 */
 	public function save( int $menu_id, int $menu_item_db_id, array $args ) {
 		$this->item_id = $menu_item_db_id;
 		$items         = $this->normalize_items( $this->items );
@@ -76,14 +134,33 @@ class MenuItem extends ItemsIntegration {
 		}
 	}
 
+	/**
+	 * Retrieves the value of a specified option, or returns a default value if the option is not set.
+	 *
+	 * @param string $name The name of the option to retrieve.
+	 * @param mixed  $default_value The default value to return if the option is not set.
+	 */
 	public function get_option_value( string $name, mixed $default_value ) {
 		return get_post_meta( $this->get_item_id(), $name, true ) ?? $default_value;
 	}
 
+	/**
+	 * Sets the value of a specified option.
+	 *
+	 * @param string $name The name of the option to set.
+	 * @param mixed  $value The value to set for the option.
+	 *
+	 * @return bool True on success, false on failure.
+	 */
 	public function set_option_value( string $name, mixed $value ) {
 		return update_post_meta( $this->get_item_id(), $name, $value );
 	}
 
+	/**
+	 * Retrieves the ID of the item.
+	 *
+	 * @return int The ID of the item.
+	 */
 	function get_item_id(): int {
 		return $this->item_id;
 	}

@@ -9,26 +9,55 @@ use WC_Order_Refund;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
+/**
+ * Class OrderMetabox
+ *
+ * Handles the creation, display, and saving of order metaboxes in WooCommerce.
+ */
 class OrderMetabox extends ItemsIntegration {
-	public readonly string                    $id;
-	public int                                $order_id;
-	public readonly string                    $title;
-	public readonly string                    $context;
-	public readonly string                    $priority;
-	public readonly string                    $capability;
-	public readonly Closure|array|string|null $callback;
-	public readonly array                     $args;
-	public readonly string                    $hook_suffix;
-	public readonly int                       $hook_priority;
-	public                                    $display;
-	public readonly string                    $option_name;
-	public readonly array                     $items;
-	public readonly array                     $sections;
-	public readonly array                     $tabs;
-	public readonly string                    $nonce;
 
 	/**
-	 * @throws MissingArgumentException
+	 * ID of the custom fields options instance.
+	 *
+	 * @var string
+	 */
+	public readonly string $id;
+	public int $order_id;
+	public readonly string $title;
+	public readonly string $context;
+	public readonly string $priority;
+	public readonly string $capability;
+	public readonly Closure|array|string|null $callback;
+	public readonly array $args;
+	public readonly string $hook_suffix;
+	public readonly int $hook_priority;
+	public $display;
+	public readonly string $option_name;
+
+	/**
+	 * List of the fields to be shown.
+	 *
+	 * @var array
+	 */
+	public readonly array $items;
+	public readonly array $sections;
+
+	/**
+	 * Tabs used for the custom fields.
+	 *
+	 * @var array
+	 */
+	public readonly array $tabs;
+	public readonly string $nonce;
+
+	/**
+	 * Constructor for the class.
+	 *
+	 * @param array        $args Configuration arguments including 'items', 'title', and other optional settings.
+	 * @param CustomFields $custom_fields Instance of CustomFields.
+	 *
+	 * @return void
+	 * @throws MissingArgumentException If required arguments are missing.
 	 */
 	public function __construct(
 		array $args,
@@ -90,6 +119,13 @@ class OrderMetabox extends ItemsIntegration {
 	}
 
 
+	/**
+	 * Adds a meta box to the specified post type.
+	 *
+	 * @param string $post_type The post type to which the meta box will be added.
+	 *
+	 * @return void
+	 */
 	public function add_meta_box( string $post_type ): void {
 		if ( ! $this->display ) {
 			return;
@@ -113,6 +149,13 @@ class OrderMetabox extends ItemsIntegration {
 		);
 	}
 
+	/**
+	 * Renders the order meta and associated items.
+	 *
+	 * @param WC_Order $order Order object.
+	 *
+	 * @return void
+	 */
 	public function render( WC_Order $order ): void {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
@@ -139,10 +182,22 @@ class OrderMetabox extends ItemsIntegration {
 		}
 	}
 
+	/**
+	 * Retrieves the order associated with the current order ID.
+	 *
+	 * @return bool|WC_Order|WC_Order_Refund Returns the order object if found, or false otherwise.
+	 */
 	public function get_order(): bool|WC_Order|WC_Order_Refund {
 		return wc_get_order( $this->order_id );
 	}
 
+	/**
+	 * Saves the order metadata and updates the order items.
+	 *
+	 * @param int $post_id The post ID of the order being saved.
+	 *
+	 * @return int The post ID after save operation.
+	 */
 	public function save( int $post_id ): int {
 		remove_action( 'woocommerce_update_order', array( $this, 'save' ) );
 
@@ -178,18 +233,38 @@ class OrderMetabox extends ItemsIntegration {
 		return $post_id;
 	}
 
+	/**
+	 * Retrieves the value of a specified option from the order metadata.
+	 *
+	 * @param string $name The name of the option whose value is to be retrieved.
+	 * @param mixed  $default_value The default value to return if the option is not found.
+	 *
+	 * @return mixed The value of the specified option, or the default value if the option is not found.
+	 */
 	public function get_option_value( string $name, mixed $default_value ) {
 		return $this->get_order()->get_meta( $name ) ?? $default_value;
 	}
 
+	/**
+	 * Sets the value of a specified option in the order metadata.
+	 *
+	 * @param string $name The name of the option to set.
+	 * @param mixed  $value The value to assign to the specified option.
+	 *
+	 * @return bool Returns true if the metadata was successfully saved, false otherwise.
+	 */
 	public function set_option_value( string $name, mixed $value ) {
 		$order = $this->get_order();
 		$order->update_meta_data( $name, $value );
 
 		return $order->save();
-
 	}
 
+	/**
+	 * Retrieves the item ID associated with the order.
+	 *
+	 * @return int The item ID.
+	 */
 	function get_item_id(): int {
 		return $this->order_id;
 	}

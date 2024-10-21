@@ -4,20 +4,50 @@ namespace Wpify\CustomFields\Integrations;
 
 use Closure;
 use WC_Admin_Settings;
-use WP_Screen;
 use Wpify\CustomFields\CustomFields;
 
+/**
+ * Class WooCommerceSettings
+ *
+ * Handles the display, saving, and management of WooCommerce settings tabs and sections.
+ */
 class WooCommerceSettings extends OptionsIntegration {
-	public readonly array                     $tab;
-	public readonly array                     $section;
-	public readonly array                     $items;
-	public readonly string                    $class;
-	public bool                               $is_new_tab = false;
-	public readonly Closure|array|string|null $display;
-	public readonly string                    $id;
-	public readonly array                     $tabs;
-	public readonly string                    $option_name;
+	public readonly array $tab;
+	public readonly array $section;
 
+	/**
+	 * List of the fields to be shown.
+	 *
+	 * @var array
+	 */
+	public readonly array $items;
+	public readonly string $class;
+	public bool $is_new_tab = false;
+	public readonly Closure|array|string|null $display;
+
+	/**
+	 * ID of the custom fields options instance.
+	 *
+	 * @var string
+	 */
+	public readonly string $id;
+
+	/**
+	 * Tabs used for the custom fields.
+	 *
+	 * @var array
+	 */
+	public readonly array $tabs;
+	public readonly string $option_name;
+
+	/**
+	 * Constructor method.
+	 *
+	 * @param array        $args Configuration arguments for the class instance.
+	 * @param CustomFields $custom_fields An instance of the CustomFields class.
+	 *
+	 * @return void
+	 */
 	public function __construct(
 		array $args,
 		public CustomFields $custom_fields,
@@ -66,7 +96,14 @@ class WooCommerceSettings extends OptionsIntegration {
 		}
 	}
 
-	public function woocommerce_settings_tabs_array( $tabs ) {
+	/**
+	 * Filters the WooCommerce settings tabs array to add a custom tab if necessary.
+	 *
+	 * @param array $tabs The existing array of WooCommerce settings tabs.
+	 *
+	 * @return array The modified array of WooCommerce settings tabs.
+	 */
+	public function woocommerce_settings_tabs_array( $tabs ): array {
 		$display_callback = $this->display;
 
 		if ( ! $display_callback() ) {
@@ -81,7 +118,14 @@ class WooCommerceSettings extends OptionsIntegration {
 		return $tabs;
 	}
 
-	public function woocommerce_get_sections( $sections ) {
+	/**
+	 * Adds or updates WooCommerce sections based on the instance configuration.
+	 *
+	 * @param array $sections An array of existing sections.
+	 *
+	 * @return array Modified array of sections.
+	 */
+	public function woocommerce_get_sections( array $sections ): array {
 		$display_callback = $this->display;
 
 		if ( ! boolval( $display_callback() ) ) {
@@ -107,7 +151,12 @@ class WooCommerceSettings extends OptionsIntegration {
 		return $sections;
 	}
 
-	public function render() {
+	/**
+	 * Render the settings page or section.
+	 *
+	 * @return void
+	 */
+	public function render(): void {
 		global $current_section;
 
 		$display_callback = $this->display;
@@ -136,7 +185,7 @@ class WooCommerceSettings extends OptionsIntegration {
 						?>
 						<li>
 							<a href="<?php echo esc_url( $url ); ?>"
-							   class="<?php echo $current_section == $id ? 'current' : ''; ?>"
+								class="<?php echo $current_section == $id ? 'current' : ''; ?>"
 							>
 								<?php echo wp_kses_post( $label ); ?>
 							</a>
@@ -165,7 +214,12 @@ class WooCommerceSettings extends OptionsIntegration {
 		}
 	}
 
-	public function save() {
+	/**
+	 * Save the settings for the specified tab and section.
+	 *
+	 * @return void
+	 */
+	public function save(): void {
 		// Nonce verification is not needed here, nonce already verified in WooCommerce.
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended
 		$tab     = sanitize_text_field( wp_unslash( $_REQUEST['tab'] ?? '' ) );
@@ -205,11 +259,27 @@ class WooCommerceSettings extends OptionsIntegration {
 		}
 	}
 
-	public function get_option_value( string $name, mixed $default_value ) {
+	/**
+	 * Retrieves the value of the specified option.
+	 *
+	 * @param string $name The name of the option to retrieve.
+	 * @param mixed  $default_value The default value to return if the option does not exist.
+	 *
+	 * @return mixed The value of the option or the default value if the option does not exist.
+	 */
+	public function get_option_value( string $name, mixed $default_value ): mixed {
 		return get_option( $name, $default_value );
 	}
 
-	public function set_option_value( string $name, mixed $value ) {
+	/**
+	 * Sets the value of the specified option.
+	 *
+	 * @param string $name The name of the option to set.
+	 * @param mixed  $value The value to set for the option.
+	 *
+	 * @return bool True on success, false on failure.
+	 */
+	public function set_option_value( string $name, mixed $value ): bool {
 		return update_option( $name, $value );
 	}
 }

@@ -9,26 +9,56 @@ use WC_Order_Refund;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
+/**
+ * Class SubscriptionMetabox
+ *
+ * This class manages the creation and display of a custom meta box for WooCommerce subscription orders.
+ * It integrates with WooCommerce using hooks and provides methods to render, save, and fetch custom fields.
+ */
 class SubscriptionMetabox extends ItemsIntegration {
-	public readonly string                    $id;
-	public int                                $order_id;
-	public readonly string                    $title;
-	public readonly string                    $context;
-	public readonly string                    $priority;
-	public readonly string                    $capability;
-	public readonly Closure|array|string|null $callback;
-	public readonly array                     $args;
-	public readonly string                    $hook_suffix;
-	public readonly int                       $hook_priority;
-	public                                    $display;
-	public readonly string                    $option_name;
-	public readonly array                     $items;
-	public readonly array                     $sections;
-	public readonly array                     $tabs;
-	public readonly string                    $nonce;
 
 	/**
-	 * @throws MissingArgumentException
+	 * ID of the custom fields options instance.
+	 *
+	 * @var string
+	 */
+	public readonly string $id;
+	public int $order_id;
+	public readonly string $title;
+	public readonly string $context;
+	public readonly string $priority;
+	public readonly string $capability;
+	public readonly Closure|array|string|null $callback;
+	public readonly array $args;
+	public readonly string $hook_suffix;
+	public readonly int $hook_priority;
+	public $display;
+	public readonly string $option_name;
+
+	/**
+	 * List of the fields to be shown.
+	 *
+	 * @var array
+	 */
+	public readonly array $items;
+	public readonly array $sections;
+
+	/**
+	 * Tabs used for the custom fields.
+	 *
+	 * @var array
+	 */
+	public readonly array $tabs;
+	public readonly string $nonce;
+
+	/**
+	 * Constructor for initializing the class with custom fields and arguments.
+	 *
+	 * @param array        $args Array of arguments, including 'items', 'title', 'display', 'context', 'priority', 'meta_key', 'capability', 'callback', and 'tabs'.
+	 * @param CustomFields $custom_fields An instance of the CustomFields class.
+	 *
+	 * @return void
+	 * @throws MissingArgumentException If required arguments 'items' or 'title' are missing.
 	 */
 	public function __construct(
 		array $args,
@@ -90,6 +120,13 @@ class SubscriptionMetabox extends ItemsIntegration {
 	}
 
 
+	/**
+	 * Adds a meta box to the specified post type screen.
+	 *
+	 * @param string $post_type The post type to which the meta box is added.
+	 *
+	 * @return void
+	 */
 	public function add_meta_box( string $post_type ): void {
 		if ( ! $this->display ) {
 			return;
@@ -113,6 +150,13 @@ class SubscriptionMetabox extends ItemsIntegration {
 		);
 	}
 
+	/**
+	 * Renders the order meta details.
+	 *
+	 * @param WC_Order $order The order object containing order details.
+	 *
+	 * @return void
+	 */
 	public function render( WC_Order $order ): void {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
@@ -139,10 +183,23 @@ class SubscriptionMetabox extends ItemsIntegration {
 		}
 	}
 
+	/**
+	 * Retrieves the order, which could be a standard order or a refund.
+	 *
+	 * @return bool|WC_Order|WC_Order_Refund Returns the order object on success
+	 * or false on failure.
+	 */
 	public function get_order(): bool|WC_Order|WC_Order_Refund {
 		return wc_get_order( $this->get_item_id() );
 	}
 
+	/**
+	 * Saves the order details.
+	 *
+	 * @param int $post_id The ID of the post (order) being saved.
+	 *
+	 * @return int The ID of the post (order) that was saved.
+	 */
 	public function save( int $post_id ): int {
 		remove_action( 'woocommerce_update_order', array( $this, 'save' ) );
 
@@ -178,18 +235,38 @@ class SubscriptionMetabox extends ItemsIntegration {
 		return $post_id;
 	}
 
-	public function get_option_value( string $name, mixed $default_value ) {
+	/**
+	 * Retrieves the value of a specified option.
+	 *
+	 * @param string $name The name of the option to retrieve.
+	 * @param mixed  $default_value The default value to return if the option is not found.
+	 *
+	 * @return mixed The value of the specified option, or the default value if the option is not found.
+	 */
+	public function get_option_value( string $name, mixed $default_value ): mixed {
 		return $this->get_order()->get_meta( $name ) ?? $default_value;
 	}
 
-	public function set_option_value( string $name, mixed $value ) {
+	/**
+	 * Sets the value of a specified option.
+	 *
+	 * @param string $name The name of the option to set.
+	 * @param mixed  $value The value to set for the specified option.
+	 *
+	 * @return bool True on success, false on failure.
+	 */
+	public function set_option_value( string $name, mixed $value ): bool {
 		$order = $this->get_order();
 		$order->update_meta_data( $name, $value );
 
 		return $order->save();
-
 	}
 
+	/**
+	 * Retrieves the item ID.
+	 *
+	 * @return int The ID of the item.
+	 */
 	function get_item_id(): int {
 		return $this->order_id;
 	}

@@ -6,24 +6,56 @@ use WC_Product;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
+/**
+ * Class WcMembershipPlanOptions handles the membership plan options for WooCommerce.
+ *
+ * This class integrates additional custom fields and options into WooCommerce membership plans.
+ * It manages the necessary tabs, metadata registration, and rendering for membership plan options.
+ */
 class WcMembershipPlanOptions extends ItemsIntegration {
-	public readonly string            $id;
-	public int                        $membership_plan_id;
-	public readonly array             $tab;
-	public readonly string            $capability;
-	public readonly array|string|null $callback;
-	public readonly array             $args;
-	public readonly string            $hook_suffix;
-	public readonly int               $hook_priority;
-	public readonly array             $help_tabs;
-	public readonly string            $help_sidebar;
-	public                            $display;
-	public readonly string            $option_name;
-	public readonly array             $items;
-	public readonly array             $sections;
-	public readonly array             $tabs;
-	public bool                       $is_new_tab;
 
+	/**
+	 * ID of the custom fields options instance.
+	 *
+	 * @var string
+	 */
+	public readonly string $id;
+	public int $membership_plan_id;
+	public readonly array $tab;
+	public readonly string $capability;
+	public readonly array|string|null $callback;
+	public readonly array $args;
+	public readonly string $hook_suffix;
+	public readonly int $hook_priority;
+	public readonly array $help_tabs;
+	public readonly string $help_sidebar;
+	public $display;
+	public readonly string $option_name;
+
+	/**
+	 * List of the fields to be shown.
+	 *
+	 * @var array
+	 */
+	public readonly array $items;
+	public readonly array $sections;
+
+	/**
+	 * Tabs used for the custom fields.
+	 *
+	 * @var array
+	 */
+	public readonly array $tabs;
+	public bool $is_new_tab;
+
+	/**
+	 * Constructor method for initializing class with provided arguments and custom fields.
+	 *
+	 * @param array        $args Arguments for setup, including 'tab' and 'items' as required parameters.
+	 * @param CustomFields $custom_fields Instance of the CustomFields class to handle custom fields.
+	 *
+	 * @throws MissingArgumentException
+	 */
 	public function __construct(
 		array $args,
 		private CustomFields $custom_fields,
@@ -116,6 +148,13 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 		add_action( 'init', array( $this, 'register_meta' ), $this->hook_priority );
 	}
 
+	/**
+	 * Updates or adds membership plan data tabs.
+	 *
+	 * @param array $tabs The existing tabs.
+	 *
+	 * @return array The modified tabs.
+	 */
 	public function wc_membership_plan_data_tabs( array $tabs ): array {
 		if ( isset( $tabs[ $this->tab['id'] ] ) ) {
 			if ( ! empty( $this->tab['label'] ) ) {
@@ -140,6 +179,13 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 	}
 
 
+	/**
+	 * Renders the data panels for the membership plan.
+	 *
+	 * This method outputs the HTML for the data panels and triggers the associated actions for the specified tab target.
+	 *
+	 * @return void
+	 */
 	public function render_data_panels(): void {
 		?>
 		<div id="<?php echo esc_attr( $this->tab['target'] ); ?>" class="panel woocommerce_options_panel">
@@ -148,6 +194,11 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 		<?php
 	}
 
+	/**
+	 * Renders the membership plan product options and associated form fields.
+	 *
+	 * @return void
+	 */
 	public function render(): void {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
@@ -179,11 +230,23 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 		<?php
 	}
 
+	/**
+	 * Retrieves the product associated with the item.
+	 *
+	 * @return bool|WC_Product|null The retrieved product, false if not found, or null on failure.
+	 */
 	public function get_product(): bool|WC_Product|null {
 		return wc_get_product( $this->get_item_id() );
 	}
 
-	public function save( $post_id ): void {
+	/**
+	 * Saves the membership plan data.
+	 *
+	 * @param int $post_id The ID of the post being saved.
+	 *
+	 * @return void
+	 */
+	public function save( int $post_id ): void {
 		$items = $this->normalize_items( $this->items );
 
 		// Nonce already verified by WordPress.
@@ -209,6 +272,15 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 		}
 	}
 
+	/**
+	 * Registers meta fields for a custom post type 'product'.
+	 *
+	 * This method normalizes and registers each item as a post meta
+	 * for the 'product' post type, setting various properties such as type,
+	 * description, default value, and sanitize callback.
+	 *
+	 * @return void
+	 */
 	public function register_meta(): void {
 		$items = $this->normalize_items( $this->items );
 
@@ -228,14 +300,35 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 		}
 	}
 
-	public function get_option_value( string $name, mixed $default_value ) {
+	/**
+	 * Retrieves an option value for a given post meta field.
+	 *
+	 * @param string $name The name of the meta field.
+	 * @param mixed  $default_value The default value to return if the meta field does not exist.
+	 *
+	 * @return mixed The value of the meta field or the default value if the field does not exist.
+	 */
+	public function get_option_value( string $name, mixed $default_value ): mixed {
 		return get_post_meta( $this->get_item_id(), $name, true ) ?? $default_value;
 	}
 
-	public function set_option_value( string $name, mixed $value ) {
+	/**
+	 * Sets the value of a specified option.
+	 *
+	 * @param string $name The name of the option to be set.
+	 * @param mixed  $value The value to set for the option.
+	 *
+	 * @return bool|int True on success, false on failure.
+	 */
+	public function set_option_value( string $name, mixed $value ): bool|int {
 		return update_post_meta( $this->get_item_id(), $name, $value );
 	}
 
+	/**
+	 * Retrieves the membership plan item ID.
+	 *
+	 * @return int The membership plan item ID.
+	 */
 	function get_item_id(): int {
 		return $this->membership_plan_id;
 	}

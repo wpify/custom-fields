@@ -1,4 +1,12 @@
 <?php
+/**
+ * Abstract class BaseIntegration
+ *
+ * Provides a foundation for custom field integrations in WordPress,
+ * including REST API registration and item normalization.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields\Integrations;
 
@@ -7,13 +15,25 @@ use WP_REST_Server;
 use Wpify\CustomFields\CustomFields;
 
 /**
- * Abstract class Integration
+ * Abstract class BaseIntegration
  *
  * Provides a foundation for custom field integrations in WordPress,
  * including REST API registration and item normalization.
  */
 abstract class BaseIntegration {
-	public readonly array  $items;
+
+	/**
+	 * List of the fields to be shown.
+	 *
+	 * @var array
+	 */
+	public readonly array $items;
+
+	/**
+	 * ID of the custom fields options instance.
+	 *
+	 * @var string
+	 */
 	public readonly string $id;
 
 	/**
@@ -32,7 +52,7 @@ abstract class BaseIntegration {
 	/**
 	 * Normalizes an array of items.
 	 *
-	 * @param array  $items     Items to normalize.
+	 * @param array  $items Items to normalize.
 	 * @param string $global_id Optional. A global identifier for items.
 	 *
 	 * @return array Normalized items.
@@ -60,7 +80,7 @@ abstract class BaseIntegration {
 	/**
 	 * Normalizes a single item.
 	 *
-	 * @param array  $item      Item to normalize.
+	 * @param array  $item Item to normalize.
 	 * @param string $global_id A global identifier for the item.
 	 *
 	 * @return array Normalized item.
@@ -149,7 +169,7 @@ abstract class BaseIntegration {
 			'api_path'   => $this->custom_fields->api->get_rest_namespace(),
 		);
 
-		// Dependencies for WYSIWYG field
+		// Dependencies for WYSIWYG field.
 		$js['dependencies'][] = 'wp-tinymce';
 		$js['dependencies'][] = 'code-editor';
 
@@ -157,10 +177,10 @@ abstract class BaseIntegration {
 		wp_enqueue_script( 'wp-block-library' );
 		wp_tinymce_inline_scripts();
 
-		// Dependencies for Toggle field
+		// Dependencies for Toggle field.
 		wp_enqueue_style( 'wp-components' );
 
-		// Dependencies for Attachment field
+		// Dependencies for Attachment field.
 		wp_enqueue_media();
 
 		wp_enqueue_script(

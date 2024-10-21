@@ -6,26 +6,56 @@ use WC_Product;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
+/**
+ * Class ProductOptions
+ *
+ * Handles product options and custom fields integration for WooCommerce products.
+ */
 class ProductOptions extends ItemsIntegration {
-	public readonly string            $id;
-	public int                        $product_id;
-	public readonly array             $tab;
-	public readonly string            $capability;
-	public readonly array|string|null $callback;
-	public readonly array             $args;
-	public readonly string            $hook_suffix;
-	public readonly int               $hook_priority;
-	public readonly array             $help_tabs;
-	public readonly string            $help_sidebar;
-	public                            $display;
-	public readonly string            $option_name;
-	public readonly array             $items;
-	public readonly array             $sections;
-	public readonly array             $tabs;
-	public bool                       $is_new_tab;
 
 	/**
-	 * @throws MissingArgumentException
+	 * ID of the custom fields options instance.
+	 *
+	 * @var string
+	 */
+	public readonly string $id;
+	public int $product_id;
+	public readonly array $tab;
+	public readonly string $capability;
+	public readonly array|string|null $callback;
+	public readonly array $args;
+	public readonly string $hook_suffix;
+	public readonly int $hook_priority;
+
+	/**
+	 * Tabs used for the custom fields.
+	 *
+	 * @var array
+	 */
+	public readonly array $help_tabs;
+	public readonly string $help_sidebar;
+	public $display;
+	public readonly string $option_name;
+
+	/**
+	 * List of the fields to be shown.
+	 *
+	 * @var array
+	 */
+	public readonly array $items;
+	public readonly array $sections;
+	public readonly array $tabs;
+	public bool $is_new_tab;
+
+	/**
+	 * Constructor method for initializing the class.
+	 *
+	 * @param array        $args Arguments for initializing the class.
+	 * @param CustomFields $custom_fields An instance of the CustomFields class.
+	 *
+	 * @return void
+	 *
+	 * @throws MissingArgumentException If required arguments are missing.
 	 */
 	public function __construct(
 		array $args,
@@ -119,6 +149,13 @@ class ProductOptions extends ItemsIntegration {
 		add_action( 'init', array( $this, 'register_meta' ), $this->hook_priority );
 	}
 
+	/**
+	 * Modifies the WooCommerce product data tabs by updating existing tabs or adding new custom tabs.
+	 *
+	 * @param array $tabs An associative array of existing product data tabs.
+	 *
+	 * @return array The modified array of product data tabs.
+	 */
 	public function woocommerce_product_data_tabs( array $tabs ): array {
 		if ( isset( $tabs[ $this->tab['id'] ] ) ) {
 			if ( ! empty( $this->tab['label'] ) ) {
@@ -143,6 +180,14 @@ class ProductOptions extends ItemsIntegration {
 	}
 
 
+	/**
+	 * Renders the data panels for WooCommerce product options.
+	 *
+	 * This method outputs a div element with a specific ID and class, and triggers a custom WooCommerce action
+	 * based on the target attribute of the tab.
+	 *
+	 * @return void No return value.
+	 */
 	public function render_data_panels(): void {
 		?>
 		<div id="<?php echo esc_attr( $this->tab['target'] ); ?>" class="panel woocommerce_options_panel">
@@ -151,6 +196,15 @@ class ProductOptions extends ItemsIntegration {
 		<?php
 	}
 
+	/**
+	 * Renders the product options UI if the current user has the correct capabilities.
+	 *
+	 * The method validates the user's capability to render the UI. If validated,
+	 * it enqueues necessary assets, normalizes items, and invokes the callback if callable.
+	 * Finally, it prints the HTML structure for the product options with associated fields.
+	 *
+	 * @return void
+	 */
 	public function render(): void {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
@@ -182,10 +236,29 @@ class ProductOptions extends ItemsIntegration {
 		<?php
 	}
 
+	/**
+	 * Retrieves the WooCommerce product based on the item's ID.
+	 *
+	 * This method fetches the product using the item's ID and returns the corresponding
+	 * WooCommerce product object. If the product cannot be found, it returns null.
+	 *
+	 * @return bool|WC_Product|null The WooCommerce product object if found, false if the ID is invalid, or null if the product is not found.
+	 */
 	public function get_product(): bool|WC_Product|null {
 		return wc_get_product( $this->get_item_id() );
 	}
 
+	/**
+	 * Saves the product fields data for a given post.
+	 *
+	 * This function processes and saves custom fields associated with a product
+	 * for the specified post ID. The items are normalized and sanitized before
+	 * being stored.
+	 *
+	 * @param int $post_id The ID of the post being saved.
+	 *
+	 * @return void
+	 */
 	public function save( $post_id ): void {
 		$items = $this->normalize_items( $this->items );
 
@@ -206,6 +279,14 @@ class ProductOptions extends ItemsIntegration {
 		}
 	}
 
+	/**
+	 * Registers custom metadata for the products.
+	 *
+	 * This method normalizes the defined items and registers each as post meta for 'product'.
+	 * It sets the meta properties such as type, description, default value, and sanitize callback.
+	 *
+	 * @return void
+	 */
 	public function register_meta(): void {
 		$items = $this->normalize_items( $this->items );
 
@@ -225,17 +306,38 @@ class ProductOptions extends ItemsIntegration {
 		}
 	}
 
-	public function get_option_value( string $name, mixed $default_value ) {
+	/**
+	 * Retrieves an option value from the product meta data.
+	 *
+	 * @param string $name The name of the meta key to retrieve.
+	 * @param mixed  $default_value The default value to return if the meta key does not exist.
+	 *
+	 * @return mixed The value of the meta key if it exists, otherwise the default value.
+	 */
+	public function get_option_value( string $name, mixed $default_value ): mixed {
 		return $this->get_product()->get_meta( $name ) ?? $default_value;
 	}
 
-	public function set_option_value( string $name, mixed $value ) {
+	/**
+	 * Sets an option value in the product meta data.
+	 *
+	 * @param string $name The name of the meta key to set.
+	 * @param mixed  $value The value to be set for the meta key.
+	 *
+	 * @return bool True on success, false on failure.
+	 */
+	public function set_option_value( string $name, mixed $value ): bool {
 		$product = $this->get_product();
 		$product->update_meta_data( $name, $value );
 
 		return $product->save();
 	}
 
+	/**
+	 * Retrieves the item ID of the product.
+	 *
+	 * @return int The product's item ID.
+	 */
 	function get_item_id(): int {
 		return $this->product_id;
 	}

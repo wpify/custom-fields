@@ -6,6 +6,9 @@ use WP_Post;
 use WP_Screen;
 use Wpify\CustomFields\CustomFields;
 
+/**
+ * A class that handles the creation and management of custom meta boxes in WordPress.
+ */
 class Metabox extends ItemsIntegration {
 	const CONTEXT_NORMAL   = 'normal';
 	const CONTEXT_ADVANCED = 'advanced';
@@ -15,19 +18,45 @@ class Metabox extends ItemsIntegration {
 	const PRIORITY_LOW     = 'low';
 	const PRIORITY_DEFAULT = 'default';
 
-	public readonly string                      $id;
-	public readonly string                      $title;
-	public readonly null|string|array|WP_Screen $screen;
-	public readonly string                      $context;
-	public readonly string                      $priority;
-	public readonly array                       $callback_args;
-	public readonly WP_Post                     $post;
-	public readonly string                      $nonce;
-	public readonly array                       $post_types;
-	public readonly array                       $tabs;
-	public readonly string                      $option_name;
-	public readonly array                       $items;
 
+	/**
+	 * ID of the custom fields options instance.
+	 *
+	 * @var string
+	 */
+	public readonly string $id;
+	public readonly string $title;
+	public readonly null|string|array|WP_Screen $screen;
+	public readonly string $context;
+	public readonly string $priority;
+	public readonly array $callback_args;
+	public readonly WP_Post $post;
+	public readonly string $nonce;
+	public readonly array $post_types;
+
+	/**
+	 * Tabs used for the custom fields.
+	 *
+	 * @var array
+	 */
+	public readonly array $tabs;
+	public readonly string $option_name;
+
+	/**
+	 * List of the fields to be shown.
+	 *
+	 * @var array
+	 */
+	public readonly array $items;
+
+	/**
+	 * Constructor for the class.
+	 *
+	 * @param array        $args Array of arguments to initialize the object properties.
+	 * @param CustomFields $custom_fields Instance of CustomFields.
+	 *
+	 * @return void
+	 */
 	public function __construct(
 		array $args,
 		private CustomFields $custom_fields,
@@ -61,6 +90,13 @@ class Metabox extends ItemsIntegration {
 		add_action( 'init', array( $this, 'register_meta' ) );
 	}
 
+	/**
+	 * Adds a meta box to the specified post type.
+	 *
+	 * @param string $post_type The post type to which the meta box should be added.
+	 *
+	 * @return void
+	 */
 	public function add_meta_box( string $post_type ): void {
 		if ( in_array( $post_type, $this->post_types ) ) {
 			add_meta_box(
@@ -75,12 +111,27 @@ class Metabox extends ItemsIntegration {
 		}
 	}
 
+	/**
+	 * Sets the post property if it is not already set.
+	 *
+	 * @param WP_Post $post The post object to set.
+	 *
+	 * @return void
+	 */
 	public function set_post( WP_Post $post ): void {
 		if ( empty( $this->post ) ) {
 			$this->post = $post;
 		}
 	}
 
+	/**
+	 * Saves the meta box associated with a given post.
+	 *
+	 * @param int     $post_id The ID of the post to save the meta box for.
+	 * @param WP_Post $post The post object being saved.
+	 *
+	 * @return bool|int True on successful save, or the post ID if any checks fail.
+	 */
 	public function save_meta_box( int $post_id, WP_Post $post ): bool|int {
 		if ( ! isset( $_POST[ $this->nonce ] ) ) {
 			return $post_id;
@@ -123,6 +174,15 @@ class Metabox extends ItemsIntegration {
 		return true;
 	}
 
+	/**
+	 * Registers meta data for specified post types.
+	 *
+	 * This method normalizes items and registers each item as post meta for the
+	 * defined post types. Each item will have its type, description, default
+	 * value, and sanitize callback configured.
+	 *
+	 * @return void
+	 */
 	public function register_meta(): void {
 		$items = $this->normalize_items( $this->items );
 
@@ -144,6 +204,13 @@ class Metabox extends ItemsIntegration {
 		}
 	}
 
+	/**
+	 * Renders the metabox for a given post with the necessary components.
+	 *
+	 * @param WP_Post $post The post object for which the metabox is being rendered.
+	 *
+	 * @return void
+	 */
 	public function render( WP_Post $post ): void {
 		$items = $this->normalize_items( $this->items );
 
@@ -158,14 +225,35 @@ class Metabox extends ItemsIntegration {
 		}
 	}
 
+	/**
+	 * Retrieves the value of a specified option for the current item.
+	 *
+	 * @param string $name The name of the option to retrieve.
+	 * @param mixed  $default_value The default value to return if the option is not found.
+	 *
+	 * @return mixed The value of the specified option, or the default value if the option does not exist.
+	 */
 	public function get_option_value( string $name, mixed $default_value ) {
 		return get_post_meta( $this->get_item_id(), $name, true ) ?? $default_value;
 	}
 
+	/**
+	 * Sets the option value for a given item.
+	 *
+	 * @param string $name The name of the option to set.
+	 * @param mixed  $value The value to set for the option.
+	 *
+	 * @return bool True on success, false on failure.
+	 */
 	public function set_option_value( string $name, mixed $value ) {
 		return update_post_meta( $this->get_item_id(), $name, $value );
 	}
 
+	/**
+	 * Retrieves the ID of the current post.
+	 *
+	 * @return int The ID of the current post.
+	 */
 	function get_item_id(): int {
 		return $this->post->ID;
 	}

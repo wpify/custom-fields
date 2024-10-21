@@ -3,18 +3,48 @@
 namespace Wpify\CustomFields\Integrations;
 
 use Closure;
+use WP_User;
 use Wpify\CustomFields\CustomFields;
 
+/**
+ * Class User extends ItemsIntegration to manage custom fields and meta for user profiles in WordPress.
+ */
 class User extends ItemsIntegration {
-	public int|null                           $user_id;
-	public readonly string                    $option_name;
-	public readonly array                     $items;
-	public readonly array|string|Closure|null $display;
-	public readonly string                    $title;
-	public readonly array                     $tabs;
-	public readonly string                    $id;
-	public readonly int                       $init_priority;
+	public int|null $user_id;
+	public readonly string $option_name;
 
+	/**
+	 * List of the fields to be shown.
+	 *
+	 * @var array
+	 */
+	public readonly array $items;
+	public readonly array|string|Closure|null $display;
+	public readonly string $title;
+
+	/**
+	 * Tabs used for the custom fields.
+	 *
+	 * @var array
+	 */
+	public readonly array $tabs;
+
+	/**
+	 * ID of the custom fields options instance.
+	 *
+	 * @var string
+	 */
+	public readonly string $id;
+	public readonly int $init_priority;
+
+	/**
+	 * Constructor method.
+	 *
+	 * @param array        $args Configuration arguments, including items, user_id, title, init_priority, tabs, meta_key, display, and id.
+	 * @param CustomFields $custom_fields An instance of CustomFields used for custom field operations.
+	 *
+	 * @return void
+	 */
 	public function __construct(
 		array $args,
 		private CustomFields $custom_fields,
@@ -45,7 +75,15 @@ class User extends ItemsIntegration {
 		add_action( 'init', array( $this, 'register_meta' ), $this->init_priority );
 	}
 
-	public function register_meta() {
+	/**
+	 * Registers meta fields for user profiles.
+	 *
+	 * Normalizes the items and registers each meta field with specific properties
+	 * such as type, description, default value, and sanitize callback.
+	 *
+	 * @return void
+	 */
+	public function register_meta(): void {
 		$items = $this->normalize_items( $this->items );
 
 		foreach ( $items as $item ) {
@@ -63,7 +101,14 @@ class User extends ItemsIntegration {
 		}
 	}
 
-	public function render_edit_form( $user ) {
+	/**
+	 * Renders the edit form for a user.
+	 *
+	 * @param WP_User $user The user object whose profile is being edited.
+	 *
+	 * @return void
+	 */
+	public function render_edit_form( WP_User $user ): void {
 		$display_callback = $this->display;
 
 		if ( ! $display_callback() ) {
@@ -105,7 +150,14 @@ class User extends ItemsIntegration {
 		<?php
 	}
 
-	public function save( $user_id ) {
+	/**
+	 * Saves the custom field values for a user.
+	 *
+	 * @param int $user_id The ID of the user whose data is being saved.
+	 *
+	 * @return void
+	 */
+	public function save( $user_id ): void {
 		$this->user_id = $user_id;
 		$items         = $this->normalize_items( $this->items );
 
@@ -124,14 +176,36 @@ class User extends ItemsIntegration {
 		}
 	}
 
-	public function get_option_value( string $name, mixed $default_value ) {
+	/**
+	 * Retrieves an option value for a given name. If the option does not exist,
+	 * returns the provided default value.
+	 *
+	 * @param string $name The name of the option to retrieve.
+	 * @param mixed  $default_value The value to return if the option is not found.
+	 *
+	 * @return mixed The value of the option if it exists, otherwise the default value.
+	 */
+	public function get_option_value( string $name, mixed $default_value ): mixed {
 		return get_user_meta( $this->get_item_id(), $name, true ) ?? $default_value;
 	}
 
-	public function set_option_value( string $name, mixed $value ) {
+	/**
+	 * Sets a value for the specified option name.
+	 *
+	 * @param string $name The name of the option to set.
+	 * @param mixed  $value The value to set for the option.
+	 *
+	 * @return bool|int True on success, false on failure.
+	 */
+	public function set_option_value( string $name, mixed $value ): bool|int {
 		return update_user_meta( $this->get_item_id(), $name, $value );
 	}
 
+	/**
+	 * Retrieves the item ID.
+	 *
+	 * @return int The ID of the item.
+	 */
 	function get_item_id(): int {
 		return $this->user_id;
 	}

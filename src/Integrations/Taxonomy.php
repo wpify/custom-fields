@@ -6,18 +6,45 @@ use WP_Term;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
+/**
+ * A class that manages WordPress taxonomy integration with custom fields and items.
+ */
 class Taxonomy extends ItemsIntegration {
-	public readonly string $id;
-	public readonly string $taxonomy;
-	public readonly array  $tabs;
-	public readonly string $option_name;
-	public readonly array  $items;
-	public readonly int    $hook_priority;
-	public readonly int    $init_priority;
-	public readonly int    $term_id;
 
 	/**
-	 * @throws MissingArgumentException
+	 * ID of the custom fields options instance.
+	 *
+	 * @var string
+	 */
+	public readonly string $id;
+	public readonly string $taxonomy;
+
+	/**
+	 * Tabs used for the custom fields.
+	 *
+	 * @var array
+	 */
+	public readonly array $tabs;
+	public readonly string $option_name;
+
+	/**
+	 * List of the fields to be shown.
+	 *
+	 * @var array
+	 */
+	public readonly array $items;
+	public readonly int $hook_priority;
+	public readonly int $init_priority;
+	public readonly int $term_id;
+
+	/**
+	 * Constructor for initializing the class with arguments and custom fields.
+	 *
+	 * @param array        $args Array of arguments including taxonomy, items, id, hook_priority, init_priority, tabs, and meta_key.
+	 * @param CustomFields $custom_fields Instance of the CustomFields class used for field management.
+	 *
+	 * @return void
+	 * @throws MissingArgumentException If the required taxonomy argument is missing.
 	 */
 	public function __construct(
 		array $args,
@@ -52,7 +79,12 @@ class Taxonomy extends ItemsIntegration {
 		add_action( 'init', array( $this, 'register_meta' ), $this->init_priority );
 	}
 
-	public function render_add_form() {
+	/**
+	 * Renders the form for adding a new term.
+	 *
+	 * @return void
+	 */
+	public function render_add_form(): void {
 		$this->term_id = 0;
 		$this->enqueue();
 		$this->print_app( 'add_term', $this->tabs );
@@ -64,7 +96,14 @@ class Taxonomy extends ItemsIntegration {
 		}
 	}
 
-	public function render_edit_form( WP_Term $term ) {
+	/**
+	 * Renders the edit form for a given term.
+	 *
+	 * @param WP_Term $term The term object for which the edit form is being rendered.
+	 *
+	 * @return void
+	 */
+	public function render_edit_form( WP_Term $term ): void {
 		$this->term_id = $term->term_id;
 		$this->enqueue();
 		?>
@@ -82,7 +121,15 @@ class Taxonomy extends ItemsIntegration {
 		}
 	}
 
-	public function register_meta() {
+	/**
+	 * Registers custom metadata for the specified taxonomy using the provided items.
+	 *
+	 * This method normalizes the items and registers each one as term meta for the given taxonomy.
+	 * It sets various properties such as type, description, default value, and sanitize callback.
+	 *
+	 * @return void
+	 */
+	public function register_meta(): void {
 		$items = $this->normalize_items( $this->items );
 
 		foreach ( $items as $item ) {
@@ -101,7 +148,14 @@ class Taxonomy extends ItemsIntegration {
 		}
 	}
 
-	public function save( $term_id ) {
+	/**
+	 * Save method for handling term data and updating custom fields.
+	 *
+	 * @param int $term_id The ID of the term being saved.
+	 *
+	 * @return void
+	 */
+	public function save( $term_id ): void {
 		$this->term_id = $term_id;
 		$items         = $this->normalize_items( $this->items );
 
@@ -120,7 +174,15 @@ class Taxonomy extends ItemsIntegration {
 		}
 	}
 
-	public function get_option_value( string $name, mixed $default_value ) {
+	/**
+	 * Retrieves the value of a specified option, if available.
+	 *
+	 * @param string $name The name of the option to retrieve.
+	 * @param mixed  $default_value The default value to return if the option is not found.
+	 *
+	 * @return mixed The value of the specified option, or the default value if the option is not found.
+	 */
+	public function get_option_value( string $name, mixed $default_value ): mixed {
 		if ( $this->get_item_id() ) {
 			return get_term_meta( $this->get_item_id(), $name, true ) ?? $default_value;
 		} else {
@@ -128,10 +190,23 @@ class Taxonomy extends ItemsIntegration {
 		}
 	}
 
-	public function set_option_value( string $name, mixed $value ) {
+	/**
+	 * Sets the value of a specified option.
+	 *
+	 * @param string $name The name of the option to set.
+	 * @param mixed  $value The value to set for the specified option.
+	 *
+	 * @return \WP_Error|bool|int The result of attempting to update the option value. It returns true on success, false on failure, or an error object on error.
+	 */
+	public function set_option_value( string $name, mixed $value ): \WP_Error|bool|int {
 		return update_term_meta( $this->get_item_id(), $name, $value );
 	}
 
+	/**
+	 * Retrieves the item ID.
+	 *
+	 * @return int The ID of the item.
+	 */
 	function get_item_id(): int {
 		return $this->term_id;
 	}

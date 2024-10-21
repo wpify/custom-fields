@@ -8,27 +8,63 @@ use WP_Post;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\exceptions\MissingArgumentException;
 
+/**
+ * Class representing Product Variation Options.
+ *
+ * This class extends the ItemsIntegration and manages the configuration,
+ * rendering, and saving of product variation options in WooCommerce.
+ *
+ * @throws MissingArgumentException If required arguments are missing during initialization.
+ */
 class ProductVariationOptions extends ItemsIntegration {
-	public readonly string                    $id;
-	public int                                $variation_id;
-	public readonly array                     $tab;
-	public readonly string                    $after;
-	public readonly string                    $capability;
-	public readonly Closure|array|string|null $callback;
-	public readonly array                     $args;
-	public readonly string                    $hook_suffix;
-	public readonly int                       $hook_priority;
-	public readonly array                     $help_tabs;
-	public readonly string                    $help_sidebar;
-	public                                    $display;
-	public readonly string                    $option_name;
-	public readonly array                     $items;
-	public readonly array                     $sections;
-	public readonly array                     $tabs;
-	public bool                               $is_new_tab;
 
 	/**
-	 * @throws MissingArgumentException
+	 * ID of the custom fields options instance.
+	 *
+	 * @var string
+	 */
+	public readonly string $id;
+	public int $variation_id;
+	public readonly array $tab;
+	public readonly string $after;
+	public readonly string $capability;
+	public readonly Closure|array|string|null $callback;
+	public readonly array $args;
+	public readonly string $hook_suffix;
+	public readonly int $hook_priority;
+	public readonly array $help_tabs;
+	public readonly string $help_sidebar;
+	public $display;
+	public readonly string $option_name;
+
+	/**
+	 * List of the fields to be shown.
+	 *
+	 * @var array
+	 */
+	public readonly array $items;
+	public readonly array $sections;
+
+	/**
+	 * Tabs used for the custom fields.
+	 *
+	 * @var array
+	 */
+	public readonly array $tabs;
+	public bool $is_new_tab;
+
+	/**
+	 * Constructor for the class.
+	 *
+	 * This method initializes various properties and sets up necessary actions
+	 * and filters for the class. It validates required arguments and throws
+	 * exceptions if any required arguments are missing.
+	 *
+	 * @param array        $args An array of arguments to initialize class properties.
+	 * @param CustomFields $custom_fields An instance of CustomFields to be used.
+	 *
+	 * @return void
+	 * @throws MissingArgumentException If required arguments are missing.
 	 */
 	public function __construct(
 		array $args,
@@ -127,6 +163,15 @@ class ProductVariationOptions extends ItemsIntegration {
 		add_action( 'admin_footer', array( $this, 'maybe_enqueue' ) );
 	}
 
+	/**
+	 * Renders the variation options group for the product.
+	 *
+	 * @param int     $loop The current loop iteration.
+	 * @param array   $variation_data Data associated with the variation.
+	 * @param WP_Post $variation The WordPress post object for the variation.
+	 *
+	 * @return void
+	 */
 	public function render( int $loop, array $variation_data, WP_Post $variation ): void {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
@@ -151,10 +196,23 @@ class ProductVariationOptions extends ItemsIntegration {
 		<?php
 	}
 
+	/**
+	 * Retrieves the product object associated with the current item ID.
+	 *
+	 * @return bool|WC_Product|null The product object if found, false if not found, or null in case of failure.
+	 */
 	public function get_product(): bool|WC_Product|null {
 		return wc_get_product( $this->get_item_id() );
 	}
 
+	/**
+	 * Saves data for a product variation.
+	 *
+	 * @param int $product_variation_id The ID of the product variation.
+	 * @param int $loop The current loop iteration.
+	 *
+	 * @return void
+	 */
 	public function save( $product_variation_id, $loop ): void {
 		$items = $this->normalize_items( $this->items );
 
@@ -175,13 +233,27 @@ class ProductVariationOptions extends ItemsIntegration {
 		}
 	}
 
-	public function maybe_enqueue() {
+	/**
+	 * Conditionally enqueues scripts or styles based on the current screen.
+	 *
+	 * If the current screen is a product-related screen, it calls the enqueue method.
+	 *
+	 * @return void
+	 */
+	public function maybe_enqueue(): void {
 		$current_screen = get_current_screen();
 		if ( $current_screen->id === 'product' || $current_screen->id === 'product_page_product' ) {
 			$this->enqueue();
 		}
 	}
 
+	/**
+	 * Registers custom meta fields for product variations.
+	 *
+	 * Normalizes the items and registers each item as a post meta for product variations with specific type, description, and sanitization callbacks.
+	 *
+	 * @return void
+	 */
 	public function register_meta(): void {
 		$items = $this->normalize_items( $this->items );
 
@@ -201,17 +273,38 @@ class ProductVariationOptions extends ItemsIntegration {
 		}
 	}
 
-	public function get_option_value( string $name, mixed $default_value ) {
+	/**
+	 * Retrieves the value of a product option.
+	 *
+	 * @param string $name The name of the option to retrieve.
+	 * @param mixed  $default_value The default value to return if the option is not set.
+	 *
+	 * @return mixed The value of the specified option or the default value.
+	 */
+	public function get_option_value( string $name, mixed $default_value ): mixed {
 		return $this->get_product()->get_meta( $name ) ?? $default_value;
 	}
 
-	public function set_option_value( string $name, mixed $value ) {
+	/**
+	 * Sets the value of a product option and saves the product.
+	 *
+	 * @param string $name The name of the option to set.
+	 * @param mixed  $value The value to set for the option.
+	 *
+	 * @return bool True if the product was saved successfully, false otherwise.
+	 */
+	public function set_option_value( string $name, mixed $value ): bool {
 		$product = $this->get_product();
 		$product->update_meta_data( $name, $value );
 
 		return $product->save();
 	}
 
+	/**
+	 * Retrieves the ID of the item.
+	 *
+	 * @return int The ID of the item.
+	 */
 	function get_item_id(): int {
 		return $this->variation_id;
 	}

@@ -4,15 +4,38 @@ namespace Wpify\CustomFields\Integrations;
 
 use Wpify\CustomFields\CustomFields;
 
+/**
+ * Abstract class for integrating custom fields with items.
+ */
 abstract class ItemsIntegration extends OptionsIntegration {
+	/**
+	 * Constructor method for initializing the object with CustomFields.
+	 *
+	 * @param CustomFields $custom_fields An instance of CustomFields to initialize.
+	 *
+	 * @return void
+	 */
 	public function __construct(
 		private readonly CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 	}
 
+	/**
+	 * Abstract method to retrieve the item ID.
+	 *
+	 * @return int The ID of the item.
+	 */
 	abstract function get_item_id(): int;
 
+	/**
+	 * Retrieves the value of a specified field.
+	 *
+	 * @param string $name The name of the field to retrieve.
+	 * @param array  $item Optional. An array of item data which may include a 'callback_get' callable.
+	 *
+	 * @return mixed The value of the specified field.
+	 */
 	public function get_field( string $name, array $item = array() ): mixed {
 		if ( ! empty( $item['callback_get'] ) ) {
 			return call_user_func( $item['callback_get'], $item, $this->get_item_id() );
@@ -25,6 +48,15 @@ abstract class ItemsIntegration extends OptionsIntegration {
 		}
 	}
 
+	/**
+	 * Sets the value of a specified field.
+	 *
+	 * @param string $name The name of the field to set.
+	 * @param mixed  $value The value to set for the specified field.
+	 * @param array  $item Optional. An array of item data which may include a 'callback_set' callable.
+	 *
+	 * @return mixed The result of setting the specified field.
+	 */
 	public function set_field( string $name, mixed $value, array $item = array() ) {
 		if ( ! empty( $item['callback_set'] ) ) {
 			return call_user_func( $item['callback_set'], $item, $this->get_item_id(), $value );

@@ -1,37 +1,181 @@
 <?php
+/**
+ * Register settings and sections for the Site Options page.
+ *
+ * This method defines the settings and their structure and adds sections and fields
+ * to the settings page.
+ *
+ * @package WPify Custom Fields
+ *
+ * @return void
+ */
 
 namespace Wpify\CustomFields\Integrations;
 
+use Closure;
 use WP_Screen;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
+/**
+ * Handles site-specific options within a WordPress multisite network.
+ *
+ * This class extends the OptionsIntegration and provides functionalities to
+ * register, render, save, and manage site options within a network admin dashboard.
+ *
+ * @throws MissingArgumentException If required arguments are missing.
+ */
 class SiteOptions extends OptionsIntegration {
 	const SAVE_ACTION = 'wpifycf-save-site-options';
 
-	public readonly int               $blog_id;
-	public readonly string            $id;
-	public readonly string            $page_title;
-	public readonly string            $menu_title;
-	public readonly string            $capability;
-	public readonly string            $menu_slug;
-	public readonly array|string|null $callback;
-	public readonly string            $hook_suffix;
-	public readonly int               $hook_priority;
-	public readonly array             $help_tabs;
-	public readonly string            $help_sidebar;
-	public array|string|null          $display;
-	public string|array|bool          $submit_button;
-	public readonly string            $option_group;
-	public readonly string            $option_name;
-	public readonly array             $items;
-	public readonly array             $sections;
-	public readonly string            $default_section;
-	public readonly array             $tabs;
-	public readonly string            $success_message;
+	/**
+	 * Blog ID.
+	 *
+	 * @var int
+	 */
+	public readonly int $blog_id;
 
 	/**
-	 * @throws MissingArgumentException
+	 * ID of the custom fields options instance.
+	 *
+	 * @var string
+	 */
+	public readonly string $id;
+
+	/**
+	 * Page title of the site options.
+	 *
+	 * @var string
+	 */
+	public readonly string $page_title;
+
+	/**
+	 * Menu title of the site options.
+	 *
+	 * @var string
+	 */
+	public readonly string $menu_title;
+
+	/**
+	 * Capability for the site options.
+	 *
+	 * @var string
+	 */
+	public readonly string $capability;
+
+	/**
+	 * Menu slug for site options.
+	 *
+	 * @var string
+	 */
+	public readonly string $menu_slug;
+
+	/**
+	 * Callback that renders a content on the settings page.
+	 *
+	 * @var array|string|null
+	 */
+	public readonly array|string|null $callback;
+
+	/**
+	 * Generated hook suffix of the settings page.
+	 *
+	 * @var string
+	 */
+	public readonly string $hook_suffix;
+
+	/**
+	 * Hook priority for registering the settings page.
+	 *
+	 * @var int
+	 */
+	public readonly int $hook_priority;
+
+	/**
+	 * Tabs to be added to the settings page.
+	 *
+	 * @var array
+	 */
+	public readonly array $help_tabs;
+
+	/**
+	 * Text for the help sidebar to be added to the settings page.
+	 *
+	 * @var string
+	 */
+	public readonly string $help_sidebar;
+
+	/**
+	 * Callback returning boolean to decide if the settings screen can be displayed.
+	 *
+	 * @var array|string|Closure|null
+	 */
+	public array|string|Closure|null $display;
+
+	/**
+	 * Submit button definition.
+	 *
+	 * @var string|array|bool
+	 */
+	public string|array|bool $submit_button;
+
+	/**
+	 * Option group for the settings screen.
+	 *
+	 * @var string
+	 */
+	public readonly string $option_group;
+
+	/**
+	 * Option name where the custom fields will be stored.
+	 *
+	 * @var string
+	 */
+	public readonly string $option_name;
+
+	/**
+	 * List of the fields to be shown.
+	 *
+	 * @var array
+	 */
+	public readonly array $items;
+
+	/**
+	 * List of the sections to be defined.
+	 *
+	 * @var array
+	 */
+	public readonly array $sections;
+
+	/**
+	 * Default section name.
+	 *
+	 * @var string
+	 */
+	public readonly string $default_section;
+
+	/**
+	 * Tabs used for the custom fields.
+	 *
+	 * @var array
+	 */
+	public readonly array $tabs;
+
+	/**
+	 * Success message to be shown.
+	 *
+	 * @var string
+	 */
+	public readonly string $success_message;
+
+	/**
+	 * Constructor for initializing the class with required parameters.
+	 *
+	 * @param array        $args Contains page_title, menu_title, menu_slug, and other optional settings.
+	 * @param CustomFields $custom_fields An instance of CustomFields.
+	 *
+	 * @return void
+	 * @throws MissingArgumentException If required arguments are missing.
 	 */
 	public function __construct(
 		array $args,
@@ -130,6 +274,11 @@ class SiteOptions extends OptionsIntegration {
 		add_action( 'current_screen', array( $this, 'set_page_title' ) );
 	}
 
+	/**
+	 * Registers the submenu page and its related actions if the display condition is met.
+	 *
+	 * @return void
+	 */
 	public function register(): void {
 		if (
 			( $this->display && is_callable( $this->display ) && ! call_user_func( $this->display ) )
@@ -152,6 +301,13 @@ class SiteOptions extends OptionsIntegration {
 		add_action( 'load-' . $this->hook_suffix, array( $this, 'render_help' ) );
 	}
 
+	/**
+	 * Adds a new tab to the given tabs array.
+	 *
+	 * @param array $tabs The array of existing tabs.
+	 *
+	 * @return array The updated array of tabs including the newly added tab.
+	 */
 	public function create_tab( array $tabs ): array {
 		$tabs[ $this->menu_slug ] = array(
 			'label' => $this->menu_title,
@@ -162,6 +318,14 @@ class SiteOptions extends OptionsIntegration {
 		return $tabs;
 	}
 
+	/**
+	 * Renders the settings page for editing a site.
+	 *
+	 * This method checks user capabilities, retrieves the site details based on the provided ID,
+	 * and renders the settings page along with necessary actions and messages.
+	 *
+	 * @return void
+	 */
 	public function render(): void {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
@@ -230,7 +394,7 @@ class SiteOptions extends OptionsIntegration {
 				settings_fields( $this->option_group );
 				do_settings_sections( $this->menu_slug );
 
-				if ( $this->submit_button !== false ) {
+				if ( false !== $this->submit_button ) {
 					if ( is_array( $this->submit_button ) ) {
 						submit_button(
 							$this->submit_button['text'] ?? null,
@@ -251,6 +415,15 @@ class SiteOptions extends OptionsIntegration {
 		<?php
 	}
 
+	/**
+	 * Renders help tabs and sidebar for the current screen.
+	 *
+	 * This method iterates through the list of help tabs, assigning IDs and titles,
+	 * parsing the content, and adding them to the current screen. If a help sidebar
+	 * is defined, it sets that as well.
+	 *
+	 * @return void
+	 */
 	public function render_help(): void {
 		foreach ( $this->help_tabs as $key => $tab ) {
 			$tab = wp_parse_args(
@@ -282,6 +455,15 @@ class SiteOptions extends OptionsIntegration {
 		}
 	}
 
+	/**
+	 * Saves the site options.
+	 *
+	 * This method normalizes the items, processes the incoming POST data for either
+	 * a named option or individual items, sanitizes the data, and sets the fields accordingly.
+	 * It then redirects the user back to the referring page with a success flag.
+	 *
+	 * @return void
+	 */
 	public function save_site_options(): void {
 		$items = $this->normalize_items( $this->items );
 
@@ -320,6 +502,14 @@ class SiteOptions extends OptionsIntegration {
 		exit;
 	}
 
+	/**
+	 * Registers the settings for the custom fields.
+	 *
+	 * This method normalizes the items, registers individual or grouped settings based on the given configuration,
+	 * and adds the necessary sections and fields to the settings page.
+	 *
+	 * @return void
+	 */
 	public function register_settings(): void {
 		$items = $this->normalize_items( $this->items );
 
@@ -378,6 +568,17 @@ class SiteOptions extends OptionsIntegration {
 		}
 	}
 
+	/**
+	 * Normalizes an item by setting default values for its properties.
+	 *
+	 * This method overrides the parent function to provide additional normalization for the item.
+	 * If the 'section' property is not set, it defaults to 'general'.
+	 *
+	 * @param array  $item The item to be normalized.
+	 * @param string $global_id Optional. A global identifier that can be used during normalization. Default is an empty string.
+	 *
+	 * @return array The normalized item.
+	 */
 	protected function normalize_item( array $item, string $global_id = '' ): array {
 		$item = parent::normalize_item( $item, $global_id );
 
@@ -388,20 +589,44 @@ class SiteOptions extends OptionsIntegration {
 		return $item;
 	}
 
+	/**
+	 * Sets the page title for a network admin screen when editing a specific site.
+	 *
+	 * This method updates the global `$title` variable with a formatted string representing the current site's name.
+	 *
+	 * @param WP_Screen $current_screen The current screen object.
+	 *
+	 * @return void
+	 */
 	public function set_page_title( WP_Screen $current_screen ): void {
 		if ( is_network_admin() && $current_screen->id === $this->hook_suffix ) {
 			global $title;
 			$site = get_site( $this->blog_id );
+
 			/* translators: Blog name */
-			$title = sprintf( __( 'Edit Site: %s', 'wpify-custom-fields' ), esc_html( $site->blogname ) );
+			$title = sprintf( __( 'Edit Site: %s', 'wpify-custom-fields' ), esc_html( $site->blogname ) ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		}
 	}
 
-	public function get_option_value( string $name, mixed $default_value ) {
+	/**
+	 * Retrieves the value of a specified option for the current blog.
+	 *
+	 * @param string $name The name of the option to retrieve.
+	 * @param mixed  $default_value The default value to return if the option does not exist.
+	 */
+	public function get_option_value( string $name, mixed $default_value ): mixed {
 		return get_blog_option( $this->blog_id, $name, $default_value );
 	}
 
-	public function set_option_value( string $name, mixed $value ) {
+	/**
+	 * Sets the value of a specified option for the current blog.
+	 *
+	 * @param string $name The name of the option to set.
+	 * @param mixed  $value The value to set for the specified option.
+	 *
+	 * @return bool True if the option was successfully set, false otherwise.
+	 */
+	public function set_option_value( string $name, mixed $value ): bool {
 		return update_blog_option( $this->blog_id, $name, $value );
 	}
 }

@@ -20,8 +20,8 @@
     }
   },
   "scripts": {
-    "phpcs": "phpcs -ps . -d memory_limit=1G",
-    "phpcbf": "phpcbf -ps . -d memory_limit=1G"
+    "phpcs": "phpcs -ps .",
+    "phpcbf": "phpcbf -ps ."
   },
   "require": {
     "php": "^8.1.0",

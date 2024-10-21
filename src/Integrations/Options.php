@@ -6,9 +6,7 @@ use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\exceptions\MissingArgumentException;
 
 /**
- * Class Options
- *
- * Handles the creation and management of custom options pages for WPify Custom Fields.
+ * Options class for managing settings pages in the WordPress admin area.
  */
 class Options extends OptionsIntegration {
 	const TYPE_NETWORK        = 'network';
@@ -18,37 +16,55 @@ class Options extends OptionsIntegration {
 	const ALLOWED_TYPES       = array( self::TYPE_OPTIONS, self::TYPE_NETWORK, self::TYPE_USER_SUBMENU, self::TYPE_USER );
 	const NETWORK_SAVE_ACTION = 'wpifycf-save-network-options';
 
-	public readonly string         $id;
-	public readonly string         $type;
-	public readonly string|null    $parent_slug;
-	public readonly string         $page_title;
-	public readonly string         $menu_title;
-	public readonly string         $capability;
-	public readonly string         $menu_slug;
-	public readonly array|string   $callback;
-	public readonly string|null    $icon_url;
+
+	/**
+	 * ID of the custom fields options instance.
+	 *
+	 * @var string
+	 */
+	public readonly string $id;
+	public readonly string $type;
+	public readonly string|null $parent_slug;
+	public readonly string $page_title;
+	public readonly string $menu_title;
+	public readonly string $capability;
+	public readonly string $menu_slug;
+	public readonly array|string $callback;
+	public readonly string|null $icon_url;
 	public readonly int|float|null $position;
-	public readonly array          $args;
-	public readonly string         $hook_suffix;
-	public readonly int            $hook_priority;
-	public readonly array          $help_tabs;
-	public readonly string         $help_sidebar;
-	public array|string|null       $display;
-	public string|array|bool       $submit_button;
-	public readonly string         $option_group;
-	public readonly string         $option_name;
-	public readonly array          $items;
-	public readonly array          $sections;
-	public readonly string         $default_section;
-	public readonly array          $tabs;
-	public readonly string         $success_message;
+	public readonly array $args;
+	public readonly string $hook_suffix;
+	public readonly int $hook_priority;
+	public readonly array $help_tabs;
+	public readonly string $help_sidebar;
+	public array|string|null $display;
+	public string|array|bool $submit_button;
+	public readonly string $option_group;
+	public readonly string $option_name;
+
+	/**
+	 * List of the fields to be shown.
+	 *
+	 * @var array
+	 */
+	public readonly array $items;
+	public readonly array $sections;
+	public readonly string $default_section;
+
+	/**
+	 * Tabs used for the custom fields.
+	 *
+	 * @var array
+	 */
+	public readonly array $tabs;
+	public readonly string $success_message;
 
 	/**
 	 * Constructor.
 	 *
 	 * Initializes an Options object, validates required arguments, and sets up action hooks.
 	 *
-	 * @param array        $args          Arguments for the options page.
+	 * @param array        $args Arguments for the options page.
 	 * @param CustomFields $custom_fields The custom fields object.
 	 *
 	 * @throws MissingArgumentException If required arguments are missing or invalid.
@@ -174,7 +190,12 @@ class Options extends OptionsIntegration {
 	}
 
 	/**
-	 * Registers the settings page in the WordPress admin menu.
+	 * Registers the admin menu page or submenu page.
+	 *
+	 * This method will conditionally add the menu or submenu page based on the defined properties.
+	 * It also sets the action to render help content when the page is loaded.
+	 *
+	 * @return void
 	 */
 	public function register(): void {
 		if (
@@ -225,7 +246,9 @@ class Options extends OptionsIntegration {
 	}
 
 	/**
-	 * Renders the options page in the WordPress admin.
+	 * Renders the settings page for the WordPress admin with appropriate form and settings sections.
+	 *
+	 * @return void
 	 */
 	public function render(): void {
 		if ( ! current_user_can( $this->capability ) ) {
@@ -291,7 +314,9 @@ class Options extends OptionsIntegration {
 	}
 
 	/**
-	 * Renders the help tabs and sidebar in the WordPress admin.
+	 * Renders the help tabs and sidebar in the WordPress admin interface.
+	 *
+	 * @return void
 	 */
 	public function render_help(): void {
 		foreach ( $this->help_tabs as $key => $tab ) {
@@ -325,7 +350,11 @@ class Options extends OptionsIntegration {
 	}
 
 	/**
-	 * Saves the options in the WordPress admin.
+	 * Saves network options by sanitizing and setting the appropriate fields.
+	 *
+	 * Ensures data integrity and security by performing necessary checks and sanitizations on the input fields. Redirects the user upon completion.
+	 *
+	 * @return void
 	 */
 	public function save_network_options(): void {
 		check_admin_referer( $this::NETWORK_SAVE_ACTION );
@@ -362,7 +391,13 @@ class Options extends OptionsIntegration {
 	}
 
 	/**
-	 * Registers the settings for the options page.
+	 * Registers settings, sections, and fields for the WordPress options page.
+	 *
+	 * This method normalizes the items and registers each setting with the appropriate
+	 * validation and sanitization callbacks. It also adds settings sections and fields
+	 * to the options page menu.
+	 *
+	 * @return void
 	 */
 	public function register_settings(): void {
 		$items = $this->normalize_items( $this->items );
@@ -423,9 +458,15 @@ class Options extends OptionsIntegration {
 	}
 
 	/**
-	 * Normalizes a field item.
+	 * Normalizes an item by ensuring it has a 'section' identifier.
 	 *
-	 * @param array $item The field item.
+	 * If the 'section' key is missing from the item, it will default to 'general'.
+	 * Additionally, the method utilizes a parent class method for primary normalization.
+	 *
+	 * @param array  $item The item to be normalized.
+	 * @param string $global_id An optional global identifier.
+	 *
+	 * @return array The normalized item with a ensured 'section' key.
 	 */
 	protected function normalize_item( array $item, string $global_id = '' ): array {
 		$item = parent::normalize_item( $item, $global_id );
@@ -438,7 +479,11 @@ class Options extends OptionsIntegration {
 	}
 
 	/**
-	 * Shows the network admin notices.
+	 * Displays network admin notices on successful updates.
+	 *
+	 * Checks if the required URL parameters are set and match the expected menu slug, then displays a success message if conditions are met.
+	 *
+	 * @return void
 	 */
 	public function show_network_admin_notices(): void {
 		// Just showing the success message, no need to check for the nonce.
@@ -452,6 +497,14 @@ class Options extends OptionsIntegration {
 		}
 	}
 
+	/**
+	 * Retrieves an option value based on the context of the object. If the type is network, it fetches a network option; otherwise, it fetches a regular option.
+	 *
+	 * @param string $name The name of the option to retrieve.
+	 * @param mixed  $default_value The default value to return if the option does not exist.
+	 *
+	 * @return mixed The value of the option or the default value if the option does not exist.
+	 */
 	public function get_option_value( string $name, mixed $default_value ) {
 		if ( $this->type === $this::TYPE_NETWORK ) {
 			return get_network_option( get_current_network_id(), $name, $default_value );
@@ -460,6 +513,17 @@ class Options extends OptionsIntegration {
 		}
 	}
 
+	/**
+	 * Sets the value of an option, handling network-specific options if necessary.
+	 *
+	 * This function updates the value of an option, either at the network level
+	 * or at the regular single instance level, depending on the context of the type.
+	 *
+	 * @param string $name The name of the option to be updated.
+	 * @param mixed  $value The new value to set for the specified option.
+	 *
+	 * @return bool True if the option was successfully updated, false otherwise.
+	 */
 	public function set_option_value( string $name, mixed $value ) {
 		if ( $this->type === $this::TYPE_NETWORK ) {
 			return update_network_option( get_current_network_id(), $name, $value );
