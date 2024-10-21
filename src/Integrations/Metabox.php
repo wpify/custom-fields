@@ -120,7 +120,7 @@ class Metabox extends ItemsIntegration {
 	 */
 	public function __construct(
 		array $args,
-		private CustomFields $custom_fields,
+		private readonly CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 

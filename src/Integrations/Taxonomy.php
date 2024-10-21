@@ -7,6 +7,7 @@
 
 namespace Wpify\CustomFields\Integrations;
 
+use WP_Error;
 use WP_Term;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
@@ -82,7 +83,7 @@ class Taxonomy extends ItemsIntegration {
 	 */
 	public function __construct(
 		array $args,
-		private CustomFields $custom_fields,
+		private readonly CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 
@@ -189,7 +190,7 @@ class Taxonomy extends ItemsIntegration {
 	 *
 	 * @return void
 	 */
-	public function save( $term_id ): void {
+	public function save( int $term_id ): void {
 		$this->term_id = $term_id;
 		$items         = $this->normalize_items( $this->items );
 
@@ -230,9 +231,9 @@ class Taxonomy extends ItemsIntegration {
 	 * @param string $name The name of the option to set.
 	 * @param mixed  $value The value to set for the specified option.
 	 *
-	 * @return \WP_Error|bool|int The result of attempting to update the option value. It returns true on success, false on failure, or an error object on error.
+	 * @return WP_Error|bool|int The result of attempting to update the option value. It returns true on success, false on failure, or an error object on error.
 	 */
-	public function set_option_value( string $name, mixed $value ): \WP_Error|bool|int {
+	public function set_option_value( string $name, mixed $value ): WP_Error|bool|int {
 		return update_term_meta( $this->get_item_id(), $name, $value );
 	}
 

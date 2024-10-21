@@ -7,6 +7,7 @@
 
 namespace Wpify\CustomFields\Integrations;
 
+use Closure;
 use WC_Product;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
@@ -50,9 +51,9 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 	/**
 	 * The function to be called to output the content for this page.
 	 *
-	 * @var callable|null
+	 * @var Closure|array|string|null
 	 */
-	public readonly array|string|null $callback;
+	public readonly Closure|array|string|null $callback;
 
 	/**
 	 * Generated hook suffix of the page.
@@ -134,7 +135,7 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 	 */
 	public function __construct(
 		array $args,
-		private CustomFields $custom_fields,
+		private readonly CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 
@@ -219,7 +220,13 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 
 		add_filter( 'wc_membership_plan_data_tabs', array( $this, 'wc_membership_plan_data_tabs' ), 98 );
 		add_action( 'wc_membership_plan_data_panels', array( $this, 'render_data_panels' ) );
-		add_action( 'wc_membership_plan_options_' . $this->tab['target'] ?? $this->tab['id'], array( $this, 'render' ) );
+		add_action(
+			'wc_membership_plan_options_' . $this->tab['target'] ?? $this->tab['id'],
+			array(
+				$this,
+				'render',
+			)
+		);
 		add_action( 'wc_memberships_save_meta_box', array( $this, 'save' ) );
 		add_action( 'init', array( $this, 'register_meta' ), $this->hook_priority );
 	}
@@ -266,7 +273,7 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 		?>
 		<div id="<?php echo esc_attr( $this->tab['target'] ); ?>" class="panel woocommerce_options_panel">
 			<?php
-            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 			do_action( 'wc_membership_plan_options_' . $this->tab['target'] );
 			?>
 		</div>
@@ -321,16 +328,13 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 	/**
 	 * Saves the membership plan data.
 	 *
-	 * @param int $post_id The ID of the post being saved.
+	 * @param array $data Data from the form.
 	 *
 	 * @return void
 	 */
-	public function save( int $post_id ): void {
-		$items = $this->normalize_items( $this->items );
-
-		// Nonce already verified by WordPress.
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing
-		$this->membership_plan_id = sanitize_text_field( wp_unslash( $_POST['post_ID'] ?? '' ) );
+	public function save( array $data ): void {
+		$items                    = $this->normalize_items( $this->items );
+		$this->membership_plan_id = $data['post_ID'];
 
 		if ( ! $this->membership_plan_id ) {
 			return;

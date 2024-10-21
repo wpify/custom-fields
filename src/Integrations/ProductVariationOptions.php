@@ -61,7 +61,7 @@ class ProductVariationOptions extends ItemsIntegration {
 	/**
 	 * The function to be called to output the content for this page.
 	 *
-	 * @var callable|null
+	 * @var Closure|array|string|null
 	 */
 	public readonly Closure|array|string|null $callback;
 
@@ -150,7 +150,7 @@ class ProductVariationOptions extends ItemsIntegration {
 	 */
 	public function __construct(
 		array $args,
-		private CustomFields $custom_fields,
+		private readonly CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 

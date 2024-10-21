@@ -69,7 +69,7 @@ class OrderMetabox extends ItemsIntegration {
 	 * Function that fills the box with the desired content.
 	 * The function should echo its output.
 	 *
-	 * @var callable|null
+	 * @var Closure|array|string|null
 	 */
 	public readonly Closure|array|string|null $callback;
 

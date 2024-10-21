@@ -144,14 +144,15 @@ class GutenbergBlock extends BaseIntegration {
 	/**
 	 * Block type render callback.
 	 *
-	 * @var callable|null
+	 * @var Closure|array|string|null
 	 */
 	public readonly Closure|array|string|null $render_callback;
 
 	/**
 	 * Block type variations callback.
 	 *
-	 * @var callable|null */
+	 * @var Closure|array|string|null
+	 */
 	public readonly Closure|array|string|null $variation_callback;
 
 	/**

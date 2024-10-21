@@ -7,7 +7,6 @@
 
 namespace Wpify\CustomFields;
 
-use DOMDocument;
 use WP_Post;
 
 /**
@@ -122,7 +121,7 @@ class Helpers {
 	 *
 	 * @return array An array representing the hierarchical tree of terms.
 	 */
-	public function get_terms( $args ): array {
+	public function get_terms( array $args ): array {
 		$terms = get_terms(
 			array(
 				'hide_empty' => false,
@@ -146,7 +145,7 @@ class Helpers {
 
 		$tree = array();
 
-		foreach ( $terms_by_id as $id => &$term ) {
+		foreach ( $terms_by_id as &$term ) {
 			if ( 0 !== $term['parent'] && isset( $terms_by_id[ $term['parent'] ] ) ) {
 				$parent =& $terms_by_id[ $term['parent'] ];
 

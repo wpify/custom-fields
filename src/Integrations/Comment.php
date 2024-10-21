@@ -158,12 +158,11 @@ class Comment extends ItemsIntegration {
 	/**
 	 * Saves the meta box data for a given comment.
 	 *
-	 * @param int   $comment_id The ID of the comment being saved.
-	 * @param array $data Array of data to save.
+	 * @param int $comment_id The ID of the comment being saved.
 	 *
 	 * @return bool|int True on success, comment ID on failure.
 	 */
-	public function save_meta_box( int $comment_id, array $data ): bool|int {
+	public function save_meta_box( int $comment_id ): bool|int {
 		if ( ! isset( $_POST[ $this->nonce ] ) ) {
 			return $comment_id;
 		}

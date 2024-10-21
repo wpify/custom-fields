@@ -7,8 +7,6 @@
 
 namespace Wpify\CustomFields\Integrations;
 
-use stdClass;
-use WP_Post;
 use WP_Screen;
 use Wpify\CustomFields\CustomFields;
 
@@ -73,8 +71,8 @@ class MenuItem extends ItemsIntegration {
 		$this->option_name = $args['meta_key'] ?? '';
 		$this->items       = $args['items'] ?? array();
 
-		add_action( 'wp_nav_menu_item_custom_fields', array( $this, 'render' ), 10, 5 );
-		add_action( 'wp_update_nav_menu_item', array( $this, 'save' ), 10, 3 );
+		add_action( 'wp_nav_menu_item_custom_fields', array( $this, 'render' ) );
+		add_action( 'wp_update_nav_menu_item', array( $this, 'save' ), 10, 2 );
 		add_action( 'current_screen', array( $this, 'maybe_enqueue' ) );
 	}
 
@@ -96,15 +94,11 @@ class MenuItem extends ItemsIntegration {
 	/**
 	 * Renders the menu item with the specified configurations.
 	 *
-	 * @param string        $item_id The ID of the menu item.
-	 * @param WP_Post       $menu_item The WordPress post object representing the menu item.
-	 * @param int           $depth The depth of the menu item in the hierarchy.
-	 * @param stdClass|null $args Additional arguments for rendering the menu item.
-	 * @param int           $current_object_id The ID of the current object.
+	 * @param string $item_id The ID of the menu item.
 	 *
 	 * @return void
 	 */
-	public function render( string $item_id, WP_Post $menu_item, int $depth, stdClass|null $args, int $current_object_id ): void {
+	public function render( string $item_id ): void {
 		$this->item_id = $item_id;
 		$this->enqueue();
 		$this->print_app(
@@ -126,13 +120,12 @@ class MenuItem extends ItemsIntegration {
 	/**
 	 * Saves the menu item with the specified configurations.
 	 *
-	 * @param int   $menu_id The ID of the menu.
-	 * @param int   $menu_item_db_id The ID of the menu item in the database.
-	 * @param array $args Additional arguments for saving the menu item.
+	 * @param int $menu_id The ID of the menu.
+	 * @param int $menu_item_db_id The ID of the menu item in the database.
 	 *
 	 * @return void
 	 */
-	public function save( int $menu_id, int $menu_item_db_id, array $args ): void {
+	public function save( int $menu_id, int $menu_item_db_id ): void {
 		$this->item_id = $menu_item_db_id;
 		$items         = $this->normalize_items( $this->items );
 

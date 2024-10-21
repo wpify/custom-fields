@@ -76,9 +76,9 @@ class Options extends OptionsIntegration {
 	/**
 	 * The function to be called to output the content for this page.
 	 *
-	 * @var callable|null
+	 * @var Closure|array|string|null
 	 */
-	public readonly array|string|Closure|null $callback;
+	public readonly Closure|array|string|null $callback;
 
 	/**
 	 * The URL to the icon to be used for this menu.
@@ -129,9 +129,9 @@ class Options extends OptionsIntegration {
 	/**
 	 * Callback that returns boolean that defines if custom fields should be shown.
 	 *
-	 * @var callable|null
+	 * @var Closure|array|string|null
 	 */
-	public array|string|null $display;
+	public Closure|array|string|null $display;
 
 	/**
 	 * Submit button definition.
@@ -201,7 +201,7 @@ class Options extends OptionsIntegration {
 	 */
 	public function __construct(
 		array $args,
-		private CustomFields $custom_fields,
+		private readonly CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 
@@ -596,7 +596,7 @@ class Options extends OptionsIntegration {
 	 * @param array  $item The item to be normalized.
 	 * @param string $global_id An optional global identifier.
 	 *
-	 * @return array The normalized item with a ensured 'section' key.
+	 * @return array The normalized item with an ensured 'section' key.
 	 */
 	protected function normalize_item( array $item, string $global_id = '' ): array {
 		$item = parent::normalize_item( $item, $global_id );

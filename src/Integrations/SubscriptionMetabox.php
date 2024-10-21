@@ -69,7 +69,7 @@ class SubscriptionMetabox extends ItemsIntegration {
 	/**
 	 * The function to be called to output the content for this page.
 	 *
-	 * @var callable|null
+	 * @var Closure|array|string|null
 	 */
 	public readonly Closure|array|string|null $callback;
 

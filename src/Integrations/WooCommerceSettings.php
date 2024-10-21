@@ -48,7 +48,7 @@ class WooCommerceSettings extends OptionsIntegration {
 	/**
 	 * Callback that returns boolean that defines if custom fields should be shown.
 	 *
-	 * @var callable|null
+	 * @var Closure|array|string|null
 	 */
 	public readonly Closure|array|string|null $display;
 
@@ -135,7 +135,7 @@ class WooCommerceSettings extends OptionsIntegration {
 	 *
 	 * @return array The modified array of WooCommerce settings tabs.
 	 */
-	public function woocommerce_settings_tabs_array( $tabs ): array {
+	public function woocommerce_settings_tabs_array( array $tabs ): array {
 		$display_callback = $this->display;
 
 		if ( ! $display_callback() ) {
@@ -160,7 +160,7 @@ class WooCommerceSettings extends OptionsIntegration {
 	public function woocommerce_get_sections( array $sections ): array {
 		$display_callback = $this->display;
 
-		if ( ! boolval( $display_callback() ) ) {
+		if ( ! $display_callback() ) {
 			return $sections;
 		}
 
@@ -201,7 +201,7 @@ class WooCommerceSettings extends OptionsIntegration {
             // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 			$sections = apply_filters( 'woocommerce_get_sections_' . $this->tab['id'], array() );
 
-			if ( ! empty( $sections ) || count( $sections ) > 1 ) {
+			if ( is_array( $sections ) && count( $sections ) > 1 ) {
 				$array_keys = array_keys( $sections );
 				?>
 				<ul class="subsubsub">

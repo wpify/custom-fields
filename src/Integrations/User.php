@@ -39,9 +39,9 @@ class User extends ItemsIntegration {
 	/**
 	 * Callback that returns boolean that defines if custom fields should be shown.
 	 *
-	 * @var callable|null
+	 * @var Closure|array|string|null
 	 */
-	public readonly array|string|Closure|null $display;
+	public readonly Closure|array|string|null $display;
 
 	/**
 	 * Title of the custom fields.
@@ -81,7 +81,7 @@ class User extends ItemsIntegration {
 	 */
 	public function __construct(
 		array $args,
-		private CustomFields $custom_fields,
+		private readonly CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 
@@ -191,7 +191,7 @@ class User extends ItemsIntegration {
 	 *
 	 * @return void
 	 */
-	public function save( $user_id ): void {
+	public function save( int $user_id ): void {
 		$this->user_id = $user_id;
 		$items         = $this->normalize_items( $this->items );
 

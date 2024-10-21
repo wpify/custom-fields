@@ -261,13 +261,15 @@ class CustomFields {
 			$asset = require $asset_php;
 		}
 
-		$src = add_query_arg(
-			'ver',
-			$asset['version'],
-			plugin_dir_url( __DIR__ ) . 'build/' . $item . '.css',
-		);
+		$src = ! empty( $asset )
+			? add_query_arg(
+				'ver',
+				$asset['version'],
+				plugin_dir_url( __DIR__ ) . 'build/' . $item . '.css',
+			)
+			: plugin_dir_url( __DIR__ ) . 'build/' . $item . '.css';
 
-		if ( file_exists( $build_path . 'style-' . $item . '.css' ) ) {
+		if ( ! empty( $asset ) && file_exists( $build_path . 'style-' . $item . '.css' ) ) {
 			$src = array(
 				$src,
 				add_query_arg(

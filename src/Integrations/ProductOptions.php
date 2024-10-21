@@ -50,9 +50,9 @@ class ProductOptions extends ItemsIntegration {
 	/**
 	 * The function to be called to output the content for this page.
 	 *
-	 * @var callable|null
+	 * @var Closure|array|string|null
 	 */
-	public readonly array|string|Closure|null $callback;
+	public readonly Closure|array|string|null $callback;
 
 	/**
 	 * Generated hook suffix of the page.
@@ -136,7 +136,7 @@ class ProductOptions extends ItemsIntegration {
 	 */
 	public function __construct(
 		array $args,
-		private CustomFields $custom_fields,
+		private readonly CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 
@@ -339,7 +339,7 @@ class ProductOptions extends ItemsIntegration {
 	 *
 	 * @return void
 	 */
-	public function save( $post_id ): void {
+	public function save( int $post_id ): void {
 		$items = $this->normalize_items( $this->items );
 
 		foreach ( $items as $item ) {

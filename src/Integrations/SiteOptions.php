@@ -68,9 +68,9 @@ class SiteOptions extends OptionsIntegration {
 	/**
 	 * Callback that renders a content on the settings page.
 	 *
-	 * @var array|string|null
+	 * @var Closure|array|string|null
 	 */
-	public readonly array|string|Closure|null $callback;
+	public readonly Closure|array|string|null $callback;
 
 	/**
 	 * Generated hook suffix of the page.
@@ -103,9 +103,9 @@ class SiteOptions extends OptionsIntegration {
 	/**
 	 * Callback that returns boolean that defines if custom fields should be shown.
 	 *
-	 * @var callable|null
+	 * @var Closure|array|string|null
 	 */
-	public array|string|Closure|null $display;
+	public Closure|array|string|null $display;
 
 	/**
 	 * Submit button definition.
@@ -174,7 +174,7 @@ class SiteOptions extends OptionsIntegration {
 	 */
 	public function __construct(
 		array $args,
-		private CustomFields $custom_fields,
+		private readonly CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 
