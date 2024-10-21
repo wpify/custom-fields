@@ -20,7 +20,11 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'  # Specify the version of PHP you want to use
-          tools: phpcs
+          tools: composer, phpcs
+
+      # Install Composer dependencies, including dev dependencies
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist --no-interaction
 
       # Run PHPCS (PHP CodeSniffer) to check code standards
       - name: Run PHP CodeSniffer
