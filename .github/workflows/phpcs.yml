@@ -1,0 +1,41 @@
+name: PHPCS on Push
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/*'
+      - 'bugfix/*'
+
+jobs:
+  phpcs:
+    name: Run PHPCS
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up PHP with Composer
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'  # Specify the version of PHP you want to use
+          tools: composer
+
+      # Install Composer dependencies, including dev dependencies
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist --no-interaction
+
+      # Run PHPCS (PHP CodeSniffer) to check code standards
+      - name: Run PHP CodeSniffer
+        run: vendor/bin/phpcs -ps .
+
+      # Optional: Fail the workflow if PHPCS finds issues
+      - name: Fail if issues found
+        run: |
+          if [ $(vendor/bin/phpcs --report=summary . | grep -c "FOUND") -gt 0 ]; then
+            echo "PHPCS found issues, failing the job."
+            exit 1
+          fi
