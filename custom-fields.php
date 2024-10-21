@@ -15,29 +15,25 @@
  * @package WPify Custom Fields
  */
 
-use Tracy\Debugger;
-use Wpify\Tracy\Tracy;
+use Wpify\CustomFields\CustomFields;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-/**
- * This is only for development purposes, the condition is not resolved on production build.
- *
- * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
- * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
- * phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
- */
-if ( class_exists( 'Tracy\Debugger' ) ) {
-	define( 'WPIFY_TRACY_ENABLE', true );
-	Debugger::$dumpTheme = 'dark';
-	Debugger::$editor    = 'phpstorm://open?file=%file&line=%line';
+if ( ! function_exists( 'wpify_custom_fields' ) ) {
+	/**
+	 * Gets an instance of the WCF plugin
+	 *
+	 * @return CustomFields
+	 *
+	 * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
+	 */
+	function wpify_custom_fields(): CustomFields {
+		static $plugin;
 
-	if ( defined( 'DEV_LOCAL_PATH' ) ) {
-		Debugger::$editorMapping = array(
-			'/var/www/html' => DEV_LOCAL_PATH,
-		);
+		if ( empty( $plugin ) ) {
+			$plugin = new CustomFields;
+		}
+
+		return $plugin;
 	}
-
-	new Tracy();
 }
-// phpcs:enable
