@@ -28,10 +28,6 @@
     <exclude-pattern>*.scss</exclude-pattern>
     <exclude-pattern>*.css</exclude-pattern>
 
-    <!-- Exclude repository files -->
-    <exclude-pattern>/.gitignore</exclude-pattern>
-    <exclude-pattern>/.huskyrc.json</exclude-pattern>
-
     <!-- Strip the filepaths down to the relevant bit. -->
     <arg name="basepath" value="."/>
 
