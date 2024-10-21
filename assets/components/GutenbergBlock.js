@@ -1,88 +1,139 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import ServerSideRender from '@wordpress/server-side-render';
-import { BlockControls } from '@wordpress/block-editor';
+import { useState, useCallback, useMemo, useContext } from 'react';
+import { InnerBlocks, useBlockProps, BlockControls } from '@wordpress/block-editor';
 import { ToolbarButton, ToolbarGroup } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
+import ServerSideRender from '@wordpress/server-side-render';
+import { __, sprintf } from '@wordpress/i18n';
 import { desktop, edit, Icon } from '@wordpress/icons';
-import EditGutenbergBlock from './EditGutenbergBlock';
-import InspectorGutenbergBlock from './InspectorGutenbergBlock';
-import GutenbergRootWrapper from './GutenbergRootWrapper';
-import GutenbergBlockRow from './GutenbergBlockRow';
-import ScreenContext from './ScreenContext';
-import { useBlockProps } from '@wordpress/block-editor';
-import { applyFilters } from '@wordpress/hooks';
+import { useValidity } from '@/helpers/hooks';
+import { AppContext } from '@/custom-fields';
+import { RootFields } from '@/components/RootFields';
+import { Tabs } from '@/components/Tabs';
 
-const DESKTOP_VIEW = 'DESKTOP_VIEW';
-const EDIT_VIEW = 'EDIT_VIEW';
+const RENDERED_VIEW = 'view';
+const EDITOR_VIEW = 'edit';
 
-const GutenbergBlock = (props) => {
-	const { attributes, isSelected } = props;
-	const [view, setView] = useState(DESKTOP_VIEW);
+export function GutenbergBlock ({ name, args }) {
+  const props = useBlockProps();
+  const [view, setView] = useState(RENDERED_VIEW);
+  const switchToRenderedView = useCallback(() => setView(RENDERED_VIEW), []);
+  const switchToEditorView = useCallback(() => setView(EDITOR_VIEW), []);
+  const { fields, values, updateValue } = useContext(AppContext);
 
-	useEffect(() => {
-		if (!isSelected && view === EDIT_VIEW) {
-			// setView(DESKTOP_VIEW); Do not do that, because it breaks in the case of inner blocks
-		}
-	}, [isSelected, view]);
+  return (
+    <div {...props}>
+      <BlockControls>
+        <ToolbarGroup>
+          <ToolbarButton
+            isActive={view === RENDERED_VIEW}
+            onClick={switchToRenderedView}
+          >
+            <Icon icon={desktop} />
+            {__('View', 'wpify-custom-fields')}
+          </ToolbarButton>
+          <ToolbarButton
+            isActive={view === EDITOR_VIEW}
+            onClick={switchToEditorView}
+          >
+            <Icon icon={edit} />
+            {__('Edit', 'wpify-custom-fields')}
+          </ToolbarButton>
+        </ToolbarGroup>
+      </BlockControls>
+      <div className="wpifycf-gutenberg-block">
+        {view === RENDERED_VIEW && (
+          <RenderedView
+            title={args.title}
+            name={name}
+            attributes={values}
+          />
+        )}
+        {view === EDITOR_VIEW && (
+          <EditorView
+            fields={fields}
+            values={values}
+            updateValue={updateValue}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
 
-	const appContext = useMemo(() => {
-		const nextAppContext = applyFilters('wcf_definition', { ...props.appContext, data: attributes }, attributes);
+function RenderedView ({ name, attributes, title }) {
+  return useMemo(() => (
+    <ServerSideRender
+      block={name}
+      attributes={attributes}
+      className="wpifycf-gutenberg-block__ssr"
+      httpMethod="POST"
+      EmptyResponsePlaceholder={props => <EmptyResponse title={title} name={name} {...props} />}
+      ErrorResponsePlaceholder={props => <ErrorResponse title={title} name={name} {...props} />}
+      LoadingResponsePlaceholder={props => <LoadingResponse title={title} name={name} {...props} />}
+    />
+  ), [attributes, name, title]);
+}
 
-		if (JSON.stringify(nextAppContext) !== JSON.stringify(appContext)) {
-			return nextAppContext;
-		}
+function EditorView ({ fields, values, updateValue }) {
+  const { validity, validate, handleValidityChange } = useValidity();
+  const { context } = useContext(AppContext);
 
-		return props.appContext;
-	}, [applyFilters, props.appContext, attributes]);
+  const renderOptions = useMemo(() => ({
+    noFieldWrapper: false,
+    noControlWrapper: false,
+    isRoot: true,
+  }), [context]);
 
-	const showViewSwitch = appContext.items.filter(item => item.position !== 'inspector').length > 0;
-	const showInspector = appContext.items.filter(item => item.position === 'inspector').length > 0;
-	const blockProps = useBlockProps();
+  return (
+    <>
+      <Tabs />
+      <div className="wpifycf-gutenberg-block__fields">
+        <RootFields
+          fields={fields}
+          values={values}
+          updateValue={updateValue}
+          renderOptions={renderOptions}
+          handleValidityChange={handleValidityChange}
+          validate={validate}
+          validity={validity}
+        />
+      </div>
+    </>
+  );
+}
 
-	return (
-		<div {...blockProps}>
-			<ScreenContext.Provider value={{ RootWrapper: GutenbergRootWrapper, RowWrapper: GutenbergBlockRow }}>
-				{showViewSwitch && (
-					<BlockControls>
-						<ToolbarGroup>
-							<ToolbarButton
-								isActive={view === DESKTOP_VIEW}
-								onClick={() => setView(DESKTOP_VIEW)}
-							>
-								<div className="wcf-block-toolbar-button">
-									<Icon icon={desktop}/>
-									{__('View', 'wpify-custom-fields')}
-								</div>
-							</ToolbarButton>
-							<ToolbarButton
-								isActive={view === EDIT_VIEW}
-								onClick={() => setView(EDIT_VIEW)}
-							>
-								<div className="wcf-block-toolbar-button">
-									<Icon icon={edit}/>
-									{__('Edit', 'wpify-custom-fields')}
-								</div>
-							</ToolbarButton>
-						</ToolbarGroup>
-					</BlockControls>
-				)}
-				{view === DESKTOP_VIEW && (
-					<ServerSideRender
-						className="wcf-server-side-rendered"
-						block={appContext.name}
-						attributes={{ ...attributes }}
-						httpMethod="POST"
-					/>
-				)}
-				{view === EDIT_VIEW && (
-					<EditGutenbergBlock {...props} appContext={appContext} />
-				)}
-				{showInspector && (
-					<InspectorGutenbergBlock {...props} appContext={appContext} />
-				)}
-			</ScreenContext.Provider>
-		</div>
-	);
-};
+function EmptyResponse ({ title, name }) {
+  return (
+    <div
+      className="wpifycf-gutenberg-block__placeholder wpifycf-gutenberg-block__placeholder--empty"
+      dangerouslySetInnerHTML={{
+        __html: sprintf(__('The block <strong>%1$s</strong> (<code>%2$s</code>) has no content to display.'), title, name),
+      }}
+    />
+  );
+}
 
-export default GutenbergBlock;
+function ErrorResponse ({ title, name }) {
+  return (
+    <div
+      className="wpifycf-gutenberg-block__placeholder wpifycf-gutenberg-block__placeholder--error"
+      dangerouslySetInnerHTML={{
+        __html: sprintf(__('The block <strong>%1$s</strong> (<code>%2$s</code>) cannot been rendered.'), title, name),
+      }}
+    />
+  );
+}
+
+function LoadingResponse ({ title, name }) {
+  return (
+    <div
+      className="wpifycf-gutenberg-block__placeholder wpifycf-gutenberg-block__placeholder--loading"
+      dangerouslySetInnerHTML={{
+        __html: sprintf(__('Loading block <strong>%1$s</strong> (<code>%2$s</code>)...'), title, name),
+      }}
+    />
+  );
+}
+
+export function SaveGutenbergBlock () {
+  return <InnerBlocks.Content />;
+}

@@ -1,11 +1,8 @@
+.githooks         export-ignore
+.github           export-ignore
 assets            export-ignore
 docs              export-ignore
-.editorconfig     export-ignore
-.eslintignore     export-ignore
-.nvmrc            export-ignore
-.stylelintignore  export-ignore
-.gitlab-ci.yml    export-ignore
+.gitignore        export-ignore
 package.json      export-ignore
 package-lock.json export-ignore
 webpack.config.js export-ignore
-.github           export-ignore

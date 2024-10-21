@@ -1,0 +1,18 @@
+.wpifycf-term-item {
+  .wpifycf-icon-button {
+    padding: 0;
+  }
+
+  &__name {
+    display: flex;
+    gap: var(--wpifycf-gap-1);
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &__children {
+    display: flex;
+    flex-flow: column;
+    padding-left: var(--wpifycf-gap-3);
+  }
+}

@@ -1,0 +1,22 @@
+.wpifycf-field{
+	&--checkbox {
+		flex-grow: 0;
+	}
+}
+
+.wpifycf-field-multi-checkbox {
+  display: flex;
+  flex-flow: column;
+  gap: var(--wpifycf-gap-2);
+
+  input[type=checkbox] {
+    margin: 0;
+  }
+
+  &__item {
+    display: flex;
+    flex-flow: row wrap;
+    gap: var(--wpifycf-gap-2);
+    line-height: 1;
+  }
+}
