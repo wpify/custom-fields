@@ -17,4 +17,4 @@ WPify Custom Fields is a library where you can add a custom fields
 
 = 4.0.0 =
 
-* Rewrite
+* Rewrite the library.
