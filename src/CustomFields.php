@@ -220,8 +220,6 @@ class CustomFields {
 	/**
 	 * Get JavaScript asset details including its dependencies and version.
 	 *
-	 * phpcs:disable Generic.Commenting.Todo.TaskFound
-	 *
 	 * TODO: Make it more universal, now it can be only in plugins, it should be possible also for themes.
 	 *
 	 * @param string $item The name of the JavaScript file without the extension.
@@ -248,8 +246,6 @@ class CustomFields {
 
 	/**
 	 * Retrieves the CSS asset for the specified item.
-	 *
-	 * phpcs:disable Generic.Commenting.Todo.TaskFound
 	 *
 	 * TODO: Make it more universal, now it can be only in plugins, it should be possible also for themes.
 	 *
