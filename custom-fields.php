@@ -10,7 +10,7 @@
  * Domain Path: /languages/
  * Requires at least: 6.2
  * Requires PHP: 8.1
- * License: GPLv2 or later
+ * License: GPLv3 or later
  *
  * @package WPify Custom Fields
  */
