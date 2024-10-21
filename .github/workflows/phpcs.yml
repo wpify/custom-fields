@@ -3,9 +3,7 @@ name: PHPCS on Push
 on:
   push:
     branches:
-      - main
-      - 'feature/*'
-      - 'bugfix/*'
+      - '*'
 
 jobs:
   phpcs:
