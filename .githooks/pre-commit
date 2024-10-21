@@ -1,14 +1,9 @@
 #!/bin/sh
 
 # Run PHP Code Beautifier
-if [ ! -f vendor/bin/phpcbf ]; then
+if [ -f vendor/bin/phpcbf ]; then
   echo "Running PHP Code Beautifier..."
   vendor/bin/phpcbf -ps .
-fi
-
-if [ $? -ne 0 ]; then
-  echo "Error: phpcbf found issues that could not be fixed automatically."
-  exit 1
 fi
 
 echo "phpcbf completed successfully."

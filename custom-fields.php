@@ -31,7 +31,7 @@ if ( ! function_exists( 'wpify_custom_fields' ) ) {
 		static $plugin;
 
 		if ( empty( $plugin ) ) {
-			$plugin = new CustomFields;
+			$plugin = new CustomFields();
 		}
 
 		return $plugin;
