@@ -1,5 +1,8 @@
 {
   "hooks": {
-    "pre-commit": "vendor/bin/phpcbf -ps ."
+    "pre-commit": "vendor/bin/phpcbf -ps .",
+    "pre-push": "",
+    "prepare-commit-msg": "",
+    "post-commit": ""
   }
 }
