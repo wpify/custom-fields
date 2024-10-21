@@ -1,9 +1,6 @@
 <?php
 /**
- * Class representing a Gutenberg Block within the WordPress environment.
- *
- * This class extends the base integration class and provides additional functionalities
- * to handle Gutenberg blocks, including registration, asset enqueuing, and rendering.
+ * Class GutenbergBlock.
  *
  * @package WPify Custom Fields
  */
@@ -301,7 +298,7 @@ class GutenbergBlock extends BaseIntegration {
 	 *
 	 * @return void
 	 */
-	public function register_block() {
+	public function register_block(): void {
 		$args = array(
 			...$this->get_args(),
 			'variation_callback'    => $this->variation_callback,
@@ -349,7 +346,7 @@ class GutenbergBlock extends BaseIntegration {
 	 *
 	 * @return array The array of block configuration arguments, with empty values removed.
 	 */
-	public function get_args() {
+	public function get_args(): array {
 		$args = array(
 			'api_version'      => $this->api_version,
 			'title'            => $this->title,
@@ -390,7 +387,7 @@ class GutenbergBlock extends BaseIntegration {
 	 * @return array Associative array of attributes, with each key being an item ID and each value being
 	 *               an array containing 'type' and 'default' keys.
 	 */
-	public function get_attributes() {
+	public function get_attributes(): array {
 		$items      = $this->normalize_items( $this->items );
 		$attributes = array();
 
@@ -413,7 +410,7 @@ class GutenbergBlock extends BaseIntegration {
 	 *
 	 * @return string The rendered block content.
 	 */
-	public function render( array $attributes, string $content, WP_Block $block ) {
+	public function render( array $attributes, string $content, WP_Block $block ): string {
 		if (
 			( defined( 'REST_REQUEST' ) && REST_REQUEST && filter_input( INPUT_GET, 'context' ) !== 'edit' )
 			|| ( null === $this->render_callback )

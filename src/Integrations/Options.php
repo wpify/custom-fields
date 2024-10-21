@@ -1,7 +1,13 @@
 <?php
+/**
+ * Class Options.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields\Integrations;
 
+use Closure;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\exceptions\MissingArgumentException;
 
@@ -16,30 +22,136 @@ class Options extends OptionsIntegration {
 	const ALLOWED_TYPES       = array( self::TYPE_OPTIONS, self::TYPE_NETWORK, self::TYPE_USER_SUBMENU, self::TYPE_USER );
 	const NETWORK_SAVE_ACTION = 'wpifycf-save-network-options';
 
-
 	/**
 	 * ID of the custom fields options instance.
 	 *
 	 * @var string
 	 */
 	public readonly string $id;
+
+	/**
+	 * Type of the options page.
+	 * Possible values are 'options', 'network', 'user_submenu', 'user'.
+	 *
+	 * @var string
+	 */
 	public readonly string $type;
+
+	/**
+	 * The slug name for the parent menu (or the file name of a standard WordPress admin page).
+	 *
+	 * @var string|null
+	 */
 	public readonly string|null $parent_slug;
+
+	/**
+	 * The text to be displayed in the title tags of the page when the menu is selected.
+	 *
+	 * @var string
+	 */
 	public readonly string $page_title;
+
+	/**
+	 * The text to be used for the menu.
+	 *
+	 * @var string
+	 */
 	public readonly string $menu_title;
+
+	/**
+	 * The capability required for this menu to be displayed to the user.
+	 *
+	 * @var string
+	 */
 	public readonly string $capability;
+
+	/**
+	 * The slug name to refer to this menu by. Should be unique for this menu and only include lowercase alphanumeric,
+	 * dashes, and underscores characters to be compatible with sanitize_key() .
+	 *
+	 * @var string
+	 */
 	public readonly string $menu_slug;
-	public readonly array|string $callback;
+
+	/**
+	 * The function to be called to output the content for this page.
+	 *
+	 * @var callable|null
+	 */
+	public readonly array|string|Closure|null $callback;
+
+	/**
+	 * The URL to the icon to be used for this menu.
+	 *
+	 * Pass a base64-encoded SVG using a data URI, which will be colored to match the color scheme. This should begin with 'data:image/svg+xml;base64,'.
+	 * Pass the name of a Dashicons helper class to use a font icon, e.g. 'dashicons-chart-pie'.
+	 * Pass 'none' to leave div.wp-menu-image empty so an icon can be added via CSS.
+	 *
+	 * @var string|null
+	 */
 	public readonly string|null $icon_url;
+
+	/**
+	 * The position in the menu order this item should appear.
+	 *
+	 * @var int|float|null
+	 */
 	public readonly int|float|null $position;
-	public readonly array $args;
+
+	/**
+	 * Page’s hook_suffix.
+	 *
+	 * @var string
+	 */
 	public readonly string $hook_suffix;
+
+	/**
+	 * Hook priority.
+	 *
+	 * @var int
+	 */
 	public readonly int $hook_priority;
+
+	/**
+	 * Help tabs displayed on the screen.
+	 *
+	 * @var array
+	 */
 	public readonly array $help_tabs;
+
+	/**
+	 * Text for the help sidebar to be added to the settings page.
+	 *
+	 * @var string
+	 */
 	public readonly string $help_sidebar;
+
+	/**
+	 * Callback that returns boolean that defines if custom fields should be shown.
+	 *
+	 * @var callable|null
+	 */
 	public array|string|null $display;
+
+	/**
+	 * Submit button definition.
+	 *
+	 * @var string|array|bool
+	 */
 	public string|array|bool $submit_button;
+
+	/**
+	 * Option group for the settings screen.
+	 *
+	 * @var string
+	 */
 	public readonly string $option_group;
+
+	/**
+	 * Option Name used to store the custom fields values.
+	 *
+	 * @var string
+	 */
 	public readonly string $option_name;
 
 	/**
@@ -48,7 +160,19 @@ class Options extends OptionsIntegration {
 	 * @var array
 	 */
 	public readonly array $items;
+
+	/**
+	 * List of the sections to be defined.
+	 *
+	 * @var array
+	 */
 	public readonly array $sections;
+
+	/**
+	 * Default section name.
+	 *
+	 * @var string
+	 */
 	public readonly string $default_section;
 
 	/**
@@ -57,6 +181,12 @@ class Options extends OptionsIntegration {
 	 * @var array
 	 */
 	public readonly array $tabs;
+
+	/**
+	 * Success message to be shown.
+	 *
+	 * @var string
+	 */
 	public readonly string $success_message;
 
 	/**
@@ -95,7 +225,7 @@ class Options extends OptionsIntegration {
 			);
 		}
 
-		if ( ! empty( $args['type'] ) && ! in_array( $args['type'], $this::ALLOWED_TYPES ) ) {
+		if ( ! empty( $args['type'] ) && ! in_array( $args['type'], $this::ALLOWED_TYPES, true ) ) {
 			throw new MissingArgumentException(
 				sprintf(
 				/* translators: %1$s is the invalid argument type, %2$s is the class name, %3$s is a list of allowed types. */
@@ -292,7 +422,7 @@ class Options extends OptionsIntegration {
 
 				do_settings_sections( $this->menu_slug );
 
-				if ( $this->submit_button !== false ) {
+				if ( false !== $this->submit_button ) {
 					if ( is_array( $this->submit_button ) ) {
 						submit_button(
 							$this->submit_button['text'] ?? null,

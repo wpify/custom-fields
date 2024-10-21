@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class Api.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields;
 
@@ -71,7 +76,7 @@ class Api {
 		$this->register_rest_route(
 			'mapycz-api-key',
 			WP_REST_Server::READABLE,
-			fn( WP_REST_Request $request ) => get_option( 'wpifycf_mapycz_api_key' ),
+			fn() => get_option( 'wpifycf_mapycz_api_key' ),
 		);
 	}
 

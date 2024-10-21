@@ -1,11 +1,26 @@
 <?php
+/**
+ * Class Helpers.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields;
 
 use DOMDocument;
 use WP_Post;
 
+/**
+ * Class Helpers provides utility functions for interacting with URLs, posts, and terms within WordPress.
+ */
 class Helpers {
+	/**
+	 * Retrieves the title of the webpage specified by the given URL.
+	 *
+	 * @param string $url The URL of the webpage to retrieve the title from.
+	 *
+	 * @return string The title of the webpage, or an empty string if the title cannot be retrieved.
+	 */
 	public function get_url_title( string $url ): string {
 		$response = wp_remote_get( $url );
 
@@ -19,18 +34,22 @@ class Helpers {
 			return '';
 		}
 
-		$dom = new DOMDocument();
-		@$dom->loadHTML( $body );
+		preg_match( '/<title>(.*?)<\/title>/is', $body, $matches );
 
-		$title = $dom->getElementsByTagName( 'title' );
-
-		if ( ! $title->length ) {
-			return '';
+		if ( isset( $matches[1] ) ) {
+			return trim( $matches[1] );
 		}
 
-		return $title->item( 0 )->textContent;
+		return '';
 	}
 
+	/**
+	 * Retrieves posts based on specified arguments, ensuring some posts are included and others excluded.
+	 *
+	 * @param array $args Arguments for get_posts.
+	 *
+	 * @return array An array of post data arrays.
+	 */
 	public function get_posts( array $args = array() ): array {
 		if ( empty( $args['numberposts'] ) ) {
 			$args['numberposts'] = 50;
@@ -72,7 +91,7 @@ class Helpers {
 		}
 
 		foreach ( $raw_posts as $post ) {
-			if ( in_array( $post->ID, $exclude ) || in_array( $post->ID, $added_posts ) || count( $posts ) >= $args['numberposts'] ) {
+			if ( in_array( $post->ID, $exclude, true ) || in_array( $post->ID, $added_posts, true ) || count( $posts ) >= $args['numberposts'] ) {
 				continue;
 			}
 
@@ -89,13 +108,20 @@ class Helpers {
 				'post_status'       => $post->post_status,
 				'post_status_label' => get_post_status_object( $post->post_status )->label,
 				'permalink'         => get_permalink( $post ),
-				'thumbnail'         => get_the_post_thumbnail_url( $post ) ?: $placeholder,
+				'thumbnail'         => get_the_post_thumbnail_url( $post ) ?? $placeholder,
 				'excerpt'           => get_the_excerpt( $post ),
 			),
 			$posts,
 		);
 	}
 
+	/**
+	 * Retrieves terms based on the given arguments and arranges them into a hierarchical tree structure.
+	 *
+	 * @param array $args Arguments to be passed to the get_terms function.
+	 *
+	 * @return array An array representing the hierarchical tree of terms.
+	 */
 	public function get_terms( $args ): array {
 		$terms = get_terms(
 			array(
@@ -121,7 +147,7 @@ class Helpers {
 		$tree = array();
 
 		foreach ( $terms_by_id as $id => &$term ) {
-			if ( $term['parent'] !== 0 && isset( $terms_by_id[ $term['parent'] ] ) ) {
+			if ( 0 !== $term['parent'] && isset( $terms_by_id[ $term['parent'] ] ) ) {
 				$parent =& $terms_by_id[ $term['parent'] ];
 
 				if ( ! isset( $parent['children'] ) ) {

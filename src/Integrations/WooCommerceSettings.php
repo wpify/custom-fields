@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class WooCommerceSettings
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields\Integrations;
 
@@ -12,7 +17,18 @@ use Wpify\CustomFields\CustomFields;
  * Handles the display, saving, and management of WooCommerce settings tabs and sections.
  */
 class WooCommerceSettings extends OptionsIntegration {
+	/**
+	 * Tab definition where a new settings page will be created.
+	 *
+	 * @var array
+	 */
 	public readonly array $tab;
+
+	/**
+	 * Section definition in Tab where a new settings page will be created.
+	 *
+	 * @var array
+	 */
 	public readonly array $section;
 
 	/**
@@ -21,8 +37,19 @@ class WooCommerceSettings extends OptionsIntegration {
 	 * @var array
 	 */
 	public readonly array $items;
-	public readonly string $class;
+
+	/**
+	 * Defines if the current tab is a new tab.
+	 *
+	 * @var bool
+	 */
 	public bool $is_new_tab = false;
+
+	/**
+	 * Callback that returns boolean that defines if custom fields should be shown.
+	 *
+	 * @var callable|null
+	 */
 	public readonly Closure|array|string|null $display;
 
 	/**
@@ -38,6 +65,12 @@ class WooCommerceSettings extends OptionsIntegration {
 	 * @var array
 	 */
 	public readonly array $tabs;
+
+	/**
+	 * Option Name used to store the custom fields values.
+	 *
+	 * @var string
+	 */
 	public readonly string $option_name;
 
 	/**
@@ -56,7 +89,6 @@ class WooCommerceSettings extends OptionsIntegration {
 
 		$this->tab         = $args['tab'] ?? array();
 		$this->section     = $args['section'] ?? array();
-		$this->class       = $args['class'] ?? '';
 		$this->items       = $args['items'] ?? array();
 		$this->tabs        = $args['tabs'] ?? array();
 		$this->option_name = $args['option_name'] ?? '';
@@ -91,7 +123,7 @@ class WooCommerceSettings extends OptionsIntegration {
 		$settings_updated = sanitize_text_field( wp_unslash( $_REQUEST['settings-updated'] ?? '' ) );
 		// phpcs:enable
 
-		if ( $tab === $this->tab['id'] && $section === $this->section['id'] && $settings_updated === '1' ) {
+		if ( $tab === $this->tab['id'] && $section === $this->section['id'] && '1' === $settings_updated ) {
 			WC_Admin_Settings::add_message( __( 'Your settings have been saved.', 'wpify-custom-fields' ) );
 		}
 	}
@@ -166,6 +198,7 @@ class WooCommerceSettings extends OptionsIntegration {
 		}
 
 		if ( $this->is_new_tab ) {
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 			$sections = apply_filters( 'woocommerce_get_sections_' . $this->tab['id'], array() );
 
 			if ( ! empty( $sections ) || count( $sections ) > 1 ) {
@@ -177,7 +210,7 @@ class WooCommerceSettings extends OptionsIntegration {
 						$url = add_query_arg(
 							array(
 								'page'    => 'wc-settings',
-								'tab'     => urlencode( $this->tab['id'] ),
+								'tab'     => rawurlencode( $this->tab['id'] ),
 								'section' => sanitize_title( $id ),
 							),
 							admin_url( 'admin.php' ),
@@ -185,11 +218,11 @@ class WooCommerceSettings extends OptionsIntegration {
 						?>
 						<li>
 							<a href="<?php echo esc_url( $url ); ?>"
-								class="<?php echo $current_section == $id ? 'current' : ''; ?>"
+								class="<?php echo $current_section === $id ? 'current' : ''; ?>"
 							>
 								<?php echo wp_kses_post( $label ); ?>
 							</a>
-							<?php echo end( $array_keys ) == $id ? '' : '|'; ?>
+							<?php echo end( $array_keys ) === $id ? '' : '|'; ?>
 						</li>
 						<?php
 					}
@@ -243,7 +276,7 @@ class WooCommerceSettings extends OptionsIntegration {
 				);
 			}
 
-			wp_redirect(
+			wp_safe_redirect(
 				add_query_arg(
 					array(
 						'page'             => 'wc-settings',

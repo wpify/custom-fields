@@ -1,13 +1,8 @@
 <?php
 /**
- * Register settings and sections for the Site Options page.
- *
- * This method defines the settings and their structure and adds sections and fields
- * to the settings page.
+ * Class SiteOptions.
  *
  * @package WPify Custom Fields
- *
- * @return void
  */
 
 namespace Wpify\CustomFields\Integrations;
@@ -75,24 +70,24 @@ class SiteOptions extends OptionsIntegration {
 	 *
 	 * @var array|string|null
 	 */
-	public readonly array|string|null $callback;
+	public readonly array|string|Closure|null $callback;
 
 	/**
-	 * Generated hook suffix of the settings page.
+	 * Generated hook suffix of the page.
 	 *
 	 * @var string
 	 */
 	public readonly string $hook_suffix;
 
 	/**
-	 * Hook priority for registering the settings page.
+	 * Hook priority.
 	 *
 	 * @var int
 	 */
 	public readonly int $hook_priority;
 
 	/**
-	 * Tabs to be added to the settings page.
+	 * Help tabs displayed on the screen.
 	 *
 	 * @var array
 	 */
@@ -106,9 +101,9 @@ class SiteOptions extends OptionsIntegration {
 	public readonly string $help_sidebar;
 
 	/**
-	 * Callback returning boolean to decide if the settings screen can be displayed.
+	 * Callback that returns boolean that defines if custom fields should be shown.
 	 *
-	 * @var array|string|Closure|null
+	 * @var callable|null
 	 */
 	public array|string|Closure|null $display;
 
@@ -127,7 +122,7 @@ class SiteOptions extends OptionsIntegration {
 	public readonly string $option_group;
 
 	/**
-	 * Option name where the custom fields will be stored.
+	 * Option Name used to store the custom fields values.
 	 *
 	 * @var string
 	 */

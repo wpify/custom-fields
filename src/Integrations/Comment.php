@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class Comment.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields\Integrations;
 
@@ -18,17 +23,53 @@ class Comment extends ItemsIntegration {
 	const PRIORITY_DEFAULT = 'default';
 
 	/**
-	 * ID of the custom fields options instance.
+	 * Meta box ID (used in the 'id' attribute for the meta box).
 	 *
 	 * @var string
 	 */
 	public readonly string $id;
+
+	/**
+	 * Title of the meta box.
+	 *
+	 * @var string
+	 */
 	public readonly string $title;
+
+	/**
+	 * The priority within the context where the box should show.
+	 * Accepts 'high', 'core', 'default', or 'low'.
+	 *
+	 * @var string
+	 */
 	public readonly string $priority;
+
+	/**
+	 * Data that should be set as the $args property of the box array (which is the second parameter passed to your callback).
+	 *
+	 * @var array
+	 */
 	public readonly array $callback_args;
+
+	/**
+	 * ID of the current comment.
+	 *
+	 * @var int
+	 */
 	public readonly int $comment_id;
+
+	/**
+	 * Generated nonce.
+	 *
+	 * @var string
+	 */
 	public readonly string $nonce;
-	public readonly array $post_types;
+
+	/**
+	 * Meta key used to store the custom fields values.
+	 *
+	 * @var string
+	 */
 	public readonly string $option_name;
 
 	/**
@@ -75,7 +116,6 @@ class Comment extends ItemsIntegration {
 		$this->nonce         = $this->id . '_nonce';
 		$this->option_name   = $args['meta_key'] ?? '';
 		$this->items         = $args['items'] ?? array();
-		$this->post_types    = $args['post_types'] ?? array();
 		$this->tabs          = $args['tabs'] ?? array();
 
 		add_action( 'add_meta_boxes_comment', array( $this, 'add_meta_box' ) );
@@ -154,7 +194,7 @@ class Comment extends ItemsIntegration {
 	}
 
 	/**
-	 * Registers metadata for each item in the list of normalized items across specified post types.
+	 * Registers metadata for each item in the list of normalized items.
 	 *
 	 * This method iterates over the items, normalizes them, and registers post metadata
 	 * for each post type with detailed settings including type, description, default values,
@@ -166,20 +206,18 @@ class Comment extends ItemsIntegration {
 		$items = $this->normalize_items( $this->items );
 
 		foreach ( $items as $item ) {
-			foreach ( $this->post_types as $post_type ) {
-				register_post_meta(
-					$post_type,
-					$item['id'],
-					array(
-						'type'              => $this->custom_fields->get_wp_type( $item ),
-						'description'       => $item['label'],
-						'single'            => true,
-						'default'           => $this->custom_fields->get_default_value( $item ),
-						'sanitize_callback' => $this->custom_fields->sanitize_item_value( $item ),
-						'show_in_rest'      => false,
-					),
-				);
-			}
+			register_meta(
+				'comment',
+				$item['id'],
+				array(
+					'type'              => $this->custom_fields->get_wp_type( $item ),
+					'description'       => $item['label'],
+					'single'            => true,
+					'default'           => $this->custom_fields->get_default_value( $item ),
+					'sanitize_callback' => $this->custom_fields->sanitize_item_value( $item ),
+					'show_in_rest'      => false,
+				),
+			);
 		}
 	}
 
@@ -235,7 +273,7 @@ class Comment extends ItemsIntegration {
 	 *
 	 * @return int The ID of the item.
 	 */
-	function get_item_id(): int {
+	public function get_item_id(): int {
 		return $this->comment_id;
 	}
 }

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class Metabox.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields\Integrations;
 
@@ -25,13 +30,63 @@ class Metabox extends ItemsIntegration {
 	 * @var string
 	 */
 	public readonly string $id;
+
+	/**
+	 * Title of the meta box.
+	 *
+	 * @var string
+	 */
 	public readonly string $title;
+
+	/**
+	 * The screen or screens on which to show the box.
+	 *
+	 * @var string|array|WP_Screen|null
+	 */
 	public readonly null|string|array|WP_Screen $screen;
+
+	/**
+	 * The context within the screen where the box should display. Available contexts vary from screen to screen.
+	 * Post edit screen contexts include 'normal', 'side', and 'advanced'.
+	 *
+	 * @var string
+	 */
 	public readonly string $context;
+
+	/**
+	 * The priority within the context where the box should show.
+	 * Accepts 'high', 'core', 'default', or 'low'.
+	 *
+	 * @var string
+	 */
 	public readonly string $priority;
+
+	/**
+	 * Data that should be set as the $args property of the box array (which is the second parameter passed to your callback).
+	 *
+	 * @var array
+	 */
 	public readonly array $callback_args;
+
+	/**
+	 * Currently edited Post.
+	 *
+	 * @var WP_Post
+	 */
 	public readonly WP_Post $post;
+
+	/**
+	 * Generated nonce value.
+	 *
+	 * @var string
+	 */
 	public readonly string $nonce;
+
+	/**
+	 * Post Types where to show the custom fields.
+	 *
+	 * @var array
+	 */
 	public readonly array $post_types;
 
 	/**
@@ -40,6 +95,12 @@ class Metabox extends ItemsIntegration {
 	 * @var array
 	 */
 	public readonly array $tabs;
+
+	/**
+	 * Meta key used to store the custom fields values.
+	 *
+	 * @var string
+	 */
 	public readonly string $option_name;
 
 	/**
@@ -98,7 +159,7 @@ class Metabox extends ItemsIntegration {
 	 * @return void
 	 */
 	public function add_meta_box( string $post_type ): void {
-		if ( in_array( $post_type, $this->post_types ) ) {
+		if ( in_array( $post_type, $this->post_types, true ) ) {
 			add_meta_box(
 				$this->id,
 				$this->title,
@@ -147,7 +208,7 @@ class Metabox extends ItemsIntegration {
 			return $post_id;
 		}
 
-		if ( isset( $_POST['post_type'] ) && ! in_array( $_POST['post_type'], $this->post_types ) ) {
+		if ( isset( $_POST['post_type'] ) && ! in_array( $_POST['post_type'], $this->post_types, true ) ) {
 			return $post_id;
 		}
 
@@ -254,7 +315,7 @@ class Metabox extends ItemsIntegration {
 	 *
 	 * @return int The ID of the current post.
 	 */
-	function get_item_id(): int {
+	public function get_item_id(): int {
 		return $this->post->ID;
 	}
 }

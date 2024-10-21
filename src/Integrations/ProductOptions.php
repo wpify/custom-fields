@@ -1,7 +1,13 @@
 <?php
+/**
+ * Class ProductOptions.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields\Integrations;
 
+use Closure;
 use WC_Product;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
@@ -19,22 +25,75 @@ class ProductOptions extends ItemsIntegration {
 	 * @var string
 	 */
 	public readonly string $id;
+
+	/**
+	 * Currently edited Product ID.
+	 *
+	 * @var int
+	 */
 	public int $product_id;
+
+	/**
+	 * Tab definition where custom fields will be created.
+	 *
+	 * @var array
+	 */
 	public readonly array $tab;
+
+	/**
+	 * The capability required for custom fields to be displayed to the user.
+	 *
+	 * @var string
+	 */
 	public readonly string $capability;
-	public readonly array|string|null $callback;
-	public readonly array $args;
+
+	/**
+	 * The function to be called to output the content for this page.
+	 *
+	 * @var callable|null
+	 */
+	public readonly array|string|Closure|null $callback;
+
+	/**
+	 * Generated hook suffix of the page.
+	 *
+	 * @var string
+	 */
 	public readonly string $hook_suffix;
+
+	/**
+	 * Hook priority.
+	 *
+	 * @var int
+	 */
 	public readonly int $hook_priority;
 
 	/**
-	 * Tabs used for the custom fields.
+	 * Help tabs displayed on the screen.
 	 *
 	 * @var array
 	 */
 	public readonly array $help_tabs;
+
+	/**
+	 * Text for the help sidebar to be added to the settings page.
+	 *
+	 * @var string
+	 */
 	public readonly string $help_sidebar;
+
+	/**
+	 * Callback that returns boolean that defines if custom fields should be shown.
+	 *
+	 * @var callable|null
+	 */
 	public $display;
+
+	/**
+	 * Meta key used to store the custom fields values.
+	 *
+	 * @var string
+	 */
 	public readonly string $option_name;
 
 	/**
@@ -43,8 +102,26 @@ class ProductOptions extends ItemsIntegration {
 	 * @var array
 	 */
 	public readonly array $items;
+
+	/**
+	 * List of the sections to be defined.
+	 *
+	 * @var array
+	 */
 	public readonly array $sections;
+
+	/**
+	 * Tabs used for the custom fields.
+	 *
+	 * @var array
+	 */
 	public readonly array $tabs;
+
+	/**
+	 * Defines if the current tab is a new tab.
+	 *
+	 * @var bool
+	 */
 	public bool $is_new_tab;
 
 	/**
@@ -191,7 +268,10 @@ class ProductOptions extends ItemsIntegration {
 	public function render_data_panels(): void {
 		?>
 		<div id="<?php echo esc_attr( $this->tab['target'] ); ?>" class="panel woocommerce_options_panel">
-			<?php do_action( 'woocommerce_product_options_' . $this->tab['target'] ); ?>
+			<?php
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+			do_action( 'woocommerce_product_options_' . $this->tab['target'] );
+			?>
 		</div>
 		<?php
 	}
@@ -338,7 +418,7 @@ class ProductOptions extends ItemsIntegration {
 	 *
 	 * @return int The product's item ID.
 	 */
-	function get_item_id(): int {
+	public function get_item_id(): int {
 		return $this->product_id;
 	}
 }

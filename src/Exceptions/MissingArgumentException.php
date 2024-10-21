@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class MissingArgumentException.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields\Exceptions;
 

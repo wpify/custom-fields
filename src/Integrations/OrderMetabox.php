@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class OrderMetabox.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields\Integrations;
 
@@ -17,21 +22,76 @@ use Wpify\CustomFields\Exceptions\MissingArgumentException;
 class OrderMetabox extends ItemsIntegration {
 
 	/**
-	 * ID of the custom fields options instance.
+	 * Meta box ID (used in the 'id' attribute for the meta box).
 	 *
 	 * @var string
 	 */
 	public readonly string $id;
+
+	/**
+	 * Currently edited Order ID.
+	 *
+	 * @var int
+	 */
 	public int $order_id;
+
+	/**
+	 * Title of the meta box.
+	 *
+	 * @var string
+	 */
 	public readonly string $title;
+
+	/**
+	 * The context within the screen where the box should display. Available contexts vary from screen to screen.
+	 * Post edit screen contexts include 'normal', 'side', and 'advanced'.
+	 *
+	 * @var string
+	 */
 	public readonly string $context;
+
+	/**
+	 * The priority within the context where the box should show.
+	 * Accepts 'high', 'core', 'default', or 'low'.
+	 *
+	 * @var string
+	 */
 	public readonly string $priority;
+
+	/**
+	 * Capability needed for displaying the metabox.
+	 *
+	 * @var string
+	 */
 	public readonly string $capability;
+
+	/**
+	 * Function that fills the box with the desired content.
+	 * The function should echo its output.
+	 *
+	 * @var callable|null
+	 */
 	public readonly Closure|array|string|null $callback;
-	public readonly array $args;
-	public readonly string $hook_suffix;
+
+	/**
+	 * Hook priority.
+	 *
+	 * @var int
+	 */
 	public readonly int $hook_priority;
+
+	/**
+	 * Callback that returns boolean that defines if custom fields should be shown.
+	 *
+	 * @var callable|null
+	 */
 	public $display;
+
+	/**
+	 * Meta key used to store the custom fields values.
+	 *
+	 * @var string
+	 */
 	public readonly string $option_name;
 
 	/**
@@ -40,7 +100,6 @@ class OrderMetabox extends ItemsIntegration {
 	 * @var array
 	 */
 	public readonly array $items;
-	public readonly array $sections;
 
 	/**
 	 * Tabs used for the custom fields.
@@ -48,6 +107,12 @@ class OrderMetabox extends ItemsIntegration {
 	 * @var array
 	 */
 	public readonly array $tabs;
+
+	/**
+	 * Generated nonce value.
+	 *
+	 * @var string
+	 */
 	public readonly string $nonce;
 
 	/**
@@ -265,7 +330,7 @@ class OrderMetabox extends ItemsIntegration {
 	 *
 	 * @return int The item ID.
 	 */
-	function get_item_id(): int {
+	public function get_item_id(): int {
 		return $this->order_id;
 	}
 }

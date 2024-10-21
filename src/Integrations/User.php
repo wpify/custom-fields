@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class User.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields\Integrations;
 
@@ -10,7 +15,18 @@ use Wpify\CustomFields\CustomFields;
  * Class User extends ItemsIntegration to manage custom fields and meta for user profiles in WordPress.
  */
 class User extends ItemsIntegration {
+	/**
+	 * Currently edited User ID.
+	 *
+	 * @var int|null
+	 */
 	public int|null $user_id;
+
+	/**
+	 * Meta key used to store the custom fields values.
+	 *
+	 * @var string
+	 */
 	public readonly string $option_name;
 
 	/**
@@ -19,7 +35,19 @@ class User extends ItemsIntegration {
 	 * @var array
 	 */
 	public readonly array $items;
+
+	/**
+	 * Callback that returns boolean that defines if custom fields should be shown.
+	 *
+	 * @var callable|null
+	 */
 	public readonly array|string|Closure|null $display;
+
+	/**
+	 * Title of the custom fields.
+	 *
+	 * @var string
+	 */
 	public readonly string $title;
 
 	/**
@@ -35,6 +63,12 @@ class User extends ItemsIntegration {
 	 * @var string
 	 */
 	public readonly string $id;
+
+	/**
+	 * Hook Priority of initialization.
+	 *
+	 * @var int
+	 */
 	public readonly int $init_priority;
 
 	/**
@@ -206,7 +240,7 @@ class User extends ItemsIntegration {
 	 *
 	 * @return int The ID of the item.
 	 */
-	function get_item_id(): int {
+	public function get_item_id(): int {
 		return $this->user_id;
 	}
 }

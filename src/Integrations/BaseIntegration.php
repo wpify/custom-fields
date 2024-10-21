@@ -1,9 +1,6 @@
 <?php
 /**
- * Abstract class BaseIntegration
- *
- * Provides a foundation for custom field integrations in WordPress,
- * including REST API registration and item normalization.
+ * Abstract class BaseIntegration.
  *
  * @package WPify Custom Fields
  */

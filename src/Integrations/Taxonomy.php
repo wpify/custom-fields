@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class Taxonomy.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields\Integrations;
 
@@ -10,13 +15,18 @@ use Wpify\CustomFields\Exceptions\MissingArgumentException;
  * A class that manages WordPress taxonomy integration with custom fields and items.
  */
 class Taxonomy extends ItemsIntegration {
-
 	/**
 	 * ID of the custom fields options instance.
 	 *
 	 * @var string
 	 */
 	public readonly string $id;
+
+	/**
+	 * Taxonomy where to add the custom fields.
+	 *
+	 * @var string
+	 */
 	public readonly string $taxonomy;
 
 	/**
@@ -25,6 +35,12 @@ class Taxonomy extends ItemsIntegration {
 	 * @var array
 	 */
 	public readonly array $tabs;
+
+	/**
+	 * Meta key used to store the custom fields values.
+	 *
+	 * @var string
+	 */
 	public readonly string $option_name;
 
 	/**
@@ -33,8 +49,26 @@ class Taxonomy extends ItemsIntegration {
 	 * @var array
 	 */
 	public readonly array $items;
+
+	/**
+	 * Hook priority.
+	 *
+	 * @var int
+	 */
 	public readonly int $hook_priority;
+
+	/**
+	 * Initialization priority.
+	 *
+	 * @var int
+	 */
 	public readonly int $init_priority;
+
+	/**
+	 * Currently edited Term ID.
+	 *
+	 * @var int
+	 */
 	public readonly int $term_id;
 
 	/**
@@ -207,7 +241,7 @@ class Taxonomy extends ItemsIntegration {
 	 *
 	 * @return int The ID of the item.
 	 */
-	function get_item_id(): int {
+	public function get_item_id(): int {
 		return $this->term_id;
 	}
 }

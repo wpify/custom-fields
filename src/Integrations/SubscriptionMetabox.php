@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class SubscriptionMetabox.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields\Integrations;
 
@@ -23,16 +28,77 @@ class SubscriptionMetabox extends ItemsIntegration {
 	 * @var string
 	 */
 	public readonly string $id;
+
+	/**
+	 * Currently edited Order ID.
+	 *
+	 * @var int
+	 */
 	public int $order_id;
+
+	/**
+	 * Title of the meta box.
+	 *
+	 * @var string
+	 */
 	public readonly string $title;
+
+	/**
+	 * The context within the screen where the box should display. Available contexts vary from screen to screen.
+	 * Post edit screen contexts include 'normal', 'side', and 'advanced'.
+	 *
+	 * @var string
+	 */
 	public readonly string $context;
+
+	/**
+	 * The priority within the context where the box should show.
+	 * Accepts 'high', 'core', 'default', or 'low'.
+	 *
+	 * @var string
+	 */
 	public readonly string $priority;
+
+	/**
+	 * The capability required for custom fields to be displayed to the user.
+	 *
+	 * @var string
+	 */
 	public readonly string $capability;
+
+	/**
+	 * The function to be called to output the content for this page.
+	 *
+	 * @var callable|null
+	 */
 	public readonly Closure|array|string|null $callback;
-	public readonly array $args;
+
+	/**
+	 * Generated hook suffix of the page.
+	 *
+	 * @var string
+	 */
 	public readonly string $hook_suffix;
+
+	/**
+	 * Hook priority.
+	 *
+	 * @var int
+	 */
 	public readonly int $hook_priority;
+
+	/**
+	 * Callback that returns boolean that defines if custom fields should be shown.
+	 *
+	 * @var callable|null
+	 */
 	public $display;
+
+	/**
+	 * Meta key used to store the custom fields values.
+	 *
+	 * @var string
+	 */
 	public readonly string $option_name;
 
 	/**
@@ -41,6 +107,12 @@ class SubscriptionMetabox extends ItemsIntegration {
 	 * @var array
 	 */
 	public readonly array $items;
+
+	/**
+	 * List of the sections to be defined.
+	 *
+	 * @var array
+	 */
 	public readonly array $sections;
 
 	/**
@@ -49,6 +121,12 @@ class SubscriptionMetabox extends ItemsIntegration {
 	 * @var array
 	 */
 	public readonly array $tabs;
+
+	/**
+	 * Generated nonce.
+	 *
+	 * @var string
+	 */
 	public readonly string $nonce;
 
 	/**
@@ -118,7 +196,6 @@ class SubscriptionMetabox extends ItemsIntegration {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 		add_action( 'woocommerce_update_order', array( $this, 'save' ) );
 	}
-
 
 	/**
 	 * Adds a meta box to the specified post type screen.
@@ -267,7 +344,7 @@ class SubscriptionMetabox extends ItemsIntegration {
 	 *
 	 * @return int The ID of the item.
 	 */
-	function get_item_id(): int {
+	public function get_item_id(): int {
 		return $this->order_id;
 	}
 }

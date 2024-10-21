@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class WcMembershipPlanOptions.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields\Integrations;
 
@@ -20,16 +25,75 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 	 * @var string
 	 */
 	public readonly string $id;
+
+	/**
+	 * Currently edited Membership Plan ID.
+	 *
+	 * @var int
+	 */
 	public int $membership_plan_id;
+
+	/**
+	 * Tab definition where custom fields will be created.
+	 *
+	 * @var array
+	 */
 	public readonly array $tab;
+
+	/**
+	 * The capability required for custom fields to be displayed to the user.
+	 *
+	 * @var string
+	 */
 	public readonly string $capability;
+
+	/**
+	 * The function to be called to output the content for this page.
+	 *
+	 * @var callable|null
+	 */
 	public readonly array|string|null $callback;
-	public readonly array $args;
+
+	/**
+	 * Generated hook suffix of the page.
+	 *
+	 * @var string
+	 */
 	public readonly string $hook_suffix;
+
+	/**
+	 * Hook priority.
+	 *
+	 * @var int
+	 */
 	public readonly int $hook_priority;
+
+	/**
+	 * Help tabs displayed on the screen.
+	 *
+	 * @var array
+	 */
 	public readonly array $help_tabs;
+
+	/**
+	 * Text for the help sidebar to be added to the settings page.
+	 *
+	 * @var string
+	 */
 	public readonly string $help_sidebar;
+
+	/**
+	 * Callback that returns boolean that defines if custom fields should be shown.
+	 *
+	 * @var callable|null
+	 */
 	public $display;
+
+	/**
+	 * Meta key used to store the custom fields values.
+	 *
+	 * @var string
+	 */
 	public readonly string $option_name;
 
 	/**
@@ -38,6 +102,12 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 	 * @var array
 	 */
 	public readonly array $items;
+
+	/**
+	 * List of the sections to be defined.
+	 *
+	 * @var array
+	 */
 	public readonly array $sections;
 
 	/**
@@ -46,6 +116,12 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 	 * @var array
 	 */
 	public readonly array $tabs;
+
+	/**
+	 * Defines if the current tab is a new tab.
+	 *
+	 * @var bool
+	 */
 	public bool $is_new_tab;
 
 	/**
@@ -54,7 +130,7 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 	 * @param array        $args Arguments for setup, including 'tab' and 'items' as required parameters.
 	 * @param CustomFields $custom_fields Instance of the CustomFields class to handle custom fields.
 	 *
-	 * @throws MissingArgumentException
+	 * @throws MissingArgumentException Missing Argument.
 	 */
 	public function __construct(
 		array $args,
@@ -189,7 +265,10 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 	public function render_data_panels(): void {
 		?>
 		<div id="<?php echo esc_attr( $this->tab['target'] ); ?>" class="panel woocommerce_options_panel">
-			<?php do_action( 'wc_membership_plan_options_' . $this->tab['target'] ); ?>
+			<?php
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+			do_action( 'wc_membership_plan_options_' . $this->tab['target'] );
+			?>
 		</div>
 		<?php
 	}
@@ -329,7 +408,7 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 	 *
 	 * @return int The membership plan item ID.
 	 */
-	function get_item_id(): int {
+	public function get_item_id(): int {
 		return $this->membership_plan_id;
 	}
 }

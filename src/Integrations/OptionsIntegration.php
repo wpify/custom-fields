@@ -1,10 +1,8 @@
 <?php
 /**
- * Class OptionsIntegration
+ * Class OptionsIntegration.
  *
  * @package WPify Custom Fields
- *
- * This abstract class extends BaseIntegration, offering functionalities for handling custom fields.
  */
 
 namespace Wpify\CustomFields\Integrations;

@@ -12,7 +12,7 @@
  * Requires PHP: 8.1
  * License: GPLv2 or later
  *
- * @package WPify
+ * @package WPify Custom Fields
  */
 
 use Tracy\Debugger;
@@ -20,6 +20,13 @@ use Wpify\Tracy\Tracy;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+/**
+ * This is only for development purposes, the condition is not resolved on production build.
+ *
+ * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+ * phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+ * phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+ */
 if ( class_exists( 'Tracy\Debugger' ) ) {
 	define( 'WPIFY_TRACY_ENABLE', true );
 	Debugger::$dumpTheme = 'dark';
@@ -33,3 +40,4 @@ if ( class_exists( 'Tracy\Debugger' ) ) {
 
 	new Tracy();
 }
+// phpcs:enable

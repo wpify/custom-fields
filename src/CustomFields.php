@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class CustomFields.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields;
 
@@ -27,7 +32,18 @@ use Wpify\CustomFields\Integrations\WooCommerceSettings;
  * including options pages, metaboxes, taxonomies, product options, and other custom field functionalities.
  */
 class CustomFields {
+	/**
+	 * Helpers class.
+	 *
+	 * @var Helpers
+	 */
 	public readonly Helpers $helpers;
+
+	/**
+	 * Api class.
+	 *
+	 * @var Api
+	 */
 	public readonly Api $api;
 
 	/**
@@ -44,7 +60,7 @@ class CustomFields {
 	 * @param array $args The arguments to configure the options page.
 	 *
 	 * @return Options The created options page object.
-	 * @throws MissingArgumentException
+	 * @throws MissingArgumentException Missing arguments.
 	 */
 	public function create_options_page( array $args ): Options {
 		return new Options( $args, $this );
@@ -67,7 +83,7 @@ class CustomFields {
 	 * @param array $args The arguments to create the taxonomy.
 	 *
 	 * @return Taxonomy The created taxonomy instance.
-	 * @throws MissingArgumentException
+	 * @throws MissingArgumentException Missing arguments.
 	 */
 	public function create_taxonomy( array $args ): Taxonomy {
 		return new Taxonomy( $args, $this );
@@ -79,7 +95,7 @@ class CustomFields {
 	 * @param array $args An associative array of arguments for configuring the product options.
 	 *
 	 * @return ProductOptions An instance of the ProductOptions class configured with the provided arguments.
-	 * @throws MissingArgumentException
+	 * @throws MissingArgumentException Missing arguments.
 	 */
 	public function create_product_options( array $args ): ProductOptions {
 		return new ProductOptions( $args, $this );
@@ -91,7 +107,7 @@ class CustomFields {
 	 * @param array $args An associative array of arguments for creating product variation options.
 	 *
 	 * @return ProductVariationOptions The created product variation options instance.
-	 * @throws MissingArgumentException
+	 * @throws MissingArgumentException Missing arguments.
 	 */
 	public function create_product_variation_options( array $args ): ProductVariationOptions {
 		return new ProductVariationOptions( $args, $this );
@@ -103,7 +119,7 @@ class CustomFields {
 	 * @param array $args Optional. An array of arguments to customize the OrderMetabox instance.
 	 *
 	 * @return OrderMetabox The created OrderMetabox instance.
-	 * @throws MissingArgumentException
+	 * @throws MissingArgumentException Missing arguments.
 	 */
 	public function create_order_metabox( array $args ): OrderMetabox {
 		return new OrderMetabox( $args, $this );
@@ -115,7 +131,7 @@ class CustomFields {
 	 * @param array $args Optional. Arguments to customize the subscription metabox. Default is an empty array.
 	 *
 	 * @return SubscriptionMetabox Returns an instance of the SubscriptionMetabox class.
-	 * @throws MissingArgumentException
+	 * @throws MissingArgumentException Missing arguments.
 	 */
 	public function create_subscription_metabox( array $args ): SubscriptionMetabox {
 		return new SubscriptionMetabox( $args, $this );
@@ -127,7 +143,7 @@ class CustomFields {
 	 * @param array $args Optional. Arguments to customize the Gutenberg block.
 	 *
 	 * @return GutenbergBlock The newly created Gutenberg block instance.
-	 * @throws MissingArgumentException
+	 * @throws MissingArgumentException Missing arguments.
 	 */
 	public function create_gutenberg_block( array $args ): GutenbergBlock {
 		return new GutenbergBlock( $args, $this );
@@ -150,7 +166,7 @@ class CustomFields {
 	 * @param array $args An associative array of arguments necessary for creating site options.
 	 *
 	 * @return SiteOptions Returns an instance of the SiteOptions class initialized with the provided arguments.
-	 * @throws MissingArgumentException
+	 * @throws MissingArgumentException Missing arguments.
 	 */
 	public function create_site_options( array $args ): SiteOptions {
 		return new SiteOptions( $args, $this );
@@ -159,12 +175,12 @@ class CustomFields {
 	/**
 	 * Add custom fields to the user edit screen.
 	 *
-	 * @param array $array An associative array of options for creating the user.
+	 * @param array $args An associative array of options for creating the user.
 	 *
 	 * @return User Returns a User object initialized with the provided options.
 	 */
-	public function create_user_options( array $array ): User {
-		return new User( $array, $this );
+	public function create_user_options( array $args ): User {
+		return new User( $args, $this );
 	}
 
 	/**
@@ -173,7 +189,7 @@ class CustomFields {
 	 * @param array $args An array of arguments for creating the membership plan options.
 	 *
 	 * @return WcMembershipPlanOptions An instance of WcMembershipPlanOptions.
-	 * @throws MissingArgumentException
+	 * @throws MissingArgumentException Missing arguments.
 	 */
 	public function create_membership_plan_options( array $args ): WcMembershipPlanOptions {
 		return new WcMembershipPlanOptions( $args, $this );
@@ -204,6 +220,8 @@ class CustomFields {
 	/**
 	 * Get JavaScript asset details including its dependencies and version.
 	 *
+	 * phpcs:disable Generic.Commenting.Todo.TaskFound
+	 *
 	 * TODO: Make it more universal, now it can be only in plugins, it should be possible also for themes.
 	 *
 	 * @param string $item The name of the JavaScript file without the extension.
@@ -230,6 +248,8 @@ class CustomFields {
 
 	/**
 	 * Retrieves the CSS asset for the specified item.
+	 *
+	 * phpcs:disable Generic.Commenting.Todo.TaskFound
 	 *
 	 * TODO: Make it more universal, now it can be only in plugins, it should be possible also for themes.
 	 *
@@ -288,91 +308,90 @@ class CustomFields {
 		 * Sanitizes the value based on the specified item type.
 		 *
 		 * @param mixed $value The value to be sanitized.
-		 * @param array $item The item configuration containing the type and any additional attributes or sub-items.
 		 *
 		 * @return mixed The sanitized value.
 		 */
-		function ( mixed $value ) use ( $item ): mixed {
-			$original_value = $value;
+			function ( mixed $value ) use ( $item ): mixed {
+				$original_value = $value;
 
-			if ( in_array( $item['type'], array( 'attachment', 'post', 'term' ), true ) ) {
-				$sanitized_value = absint( $value );
-			} elseif ( in_array( $item['type'], array( 'checkbox', 'toggle' ), true ) ) {
-				$sanitized_value = filter_var( $value, FILTER_VALIDATE_BOOLEAN );
-			} elseif ( 'code' === $item['type'] ) {
-				$sanitized_value = $value;
-			} elseif ( 'color' === $item['type'] ) {
-				$sanitized_value = sanitize_hex_color( $value );
-			} elseif ( in_array(
-				$item['type'],
-				array(
-					'date',
-					'datetime',
-					'month',
-					'password',
-					'select',
-					'tel',
-					'text',
-					'time',
-					'week',
-				),
-				true
-			) ) {
-				$sanitized_value = sanitize_text_field( $value );
-			} elseif ( 'email' === $item['type'] ) {
-				$sanitized_value = sanitize_email( $value );
-			} elseif ( 'group' === $item['type'] ) {
-				$value           = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
-				$sanitized_value = array();
-				foreach ( $item['items'] as $sub_item ) {
-					$sanitized_value[ $sub_item['id'] ] = $this->sanitize_item_value( $sub_item )( $value[ $sub_item['id'] ] ?? null );
+				if ( in_array( $item['type'], array( 'attachment', 'post', 'term' ), true ) ) {
+					$sanitized_value = absint( $value );
+				} elseif ( in_array( $item['type'], array( 'checkbox', 'toggle' ), true ) ) {
+					$sanitized_value = filter_var( $value, FILTER_VALIDATE_BOOLEAN );
+				} elseif ( 'code' === $item['type'] ) {
+					$sanitized_value = $value;
+				} elseif ( 'color' === $item['type'] ) {
+					$sanitized_value = sanitize_hex_color( $value );
+				} elseif ( in_array(
+					$item['type'],
+					array(
+						'date',
+						'datetime',
+						'month',
+						'password',
+						'select',
+						'tel',
+						'text',
+						'time',
+						'week',
+					),
+					true
+				) ) {
+					$sanitized_value = sanitize_text_field( $value );
+				} elseif ( 'email' === $item['type'] ) {
+					$sanitized_value = sanitize_email( $value );
+				} elseif ( 'group' === $item['type'] ) {
+					$value           = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
+					$sanitized_value = array();
+					foreach ( $item['items'] as $sub_item ) {
+						$sanitized_value[ $sub_item['id'] ] = $this->sanitize_item_value( $sub_item )( $value[ $sub_item['id'] ] ?? null );
+					}
+				} elseif ( 'link' === $item['type'] ) {
+					$value                        = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
+					$sanitized_value              = array();
+					$sanitized_value['post']      = absint( $value['post'] ?? 0 );
+					$sanitized_value['label']     = sanitize_text_field( $value['label'] ?? '' );
+					$sanitized_value['url']       = esc_url( $value['url'] ?? '' );
+					$sanitized_value['target']    = sanitize_text_field( $value['target'] ?? '' );
+					$sanitized_value['post_type'] = sanitize_text_field( $value['post_type'] ?? '' );
+				} elseif ( 'mapycz' === $item['type'] ) {
+					$value                        = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
+					$sanitized_value              = array();
+					$sanitized_value['latitude']  = floatval( $value['latitude'] ?? 0 );
+					$sanitized_value['longitude'] = floatval( $value['longitude'] ?? 0 );
+					$sanitized_value['zoom']      = floatval( $value['zoom'] ?? 0 );
+					$sanitized_value['street']    = sanitize_text_field( $value['street'] ?? '' );
+					$sanitized_value['number']    = sanitize_text_field( $value['number'] ?? '' );
+					$sanitized_value['zip']       = sanitize_text_field( $value['zip'] ?? '' );
+					$sanitized_value['city']      = sanitize_text_field( $value['city'] ?? '' );
+					$sanitized_value['cityPart']  = sanitize_text_field( $value['cityPart'] ?? '' );
+					$sanitized_value['country']   = sanitize_text_field( $value['country'] ?? '' );
+				} elseif ( in_array( $item['type'], array( 'number', 'range' ), true ) ) {
+					$sanitized_value = floatval( $value );
+				} elseif ( 'textarea' === $item['type'] ) {
+					$sanitized_value = sanitize_textarea_field( $value );
+				} elseif ( 'url' === $item['type'] ) {
+					$sanitized_value = esc_url( $value );
+				} elseif ( 'wysiwyg' === $item['type'] ) {
+					$sanitized_value = wp_kses_post( $value );
+				} elseif ( str_starts_with( $item['type'], 'multi_' ) ) {
+					$single_type     = substr( $item['type'], strlen( 'multi_' ) );
+					$value           = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
+					$sanitized_value = array();
+					foreach ( $value as $sub_key => $sub_value ) {
+						$sanitized_value[ $sub_key ] = $this->sanitize_item_value(
+							array(
+								...$item,
+								'type' => $single_type,
+							),
+						)( $sub_value );
+					}
+				} else {
+					$sanitized_value = sanitize_textarea_field( $value );
 				}
-			} elseif ( 'link' === $item['type'] ) {
-				$value                        = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
-				$sanitized_value              = array();
-				$sanitized_value['post']      = absint( $value['post'] ?? 0 );
-				$sanitized_value['label']     = sanitize_text_field( $value['label'] ?? '' );
-				$sanitized_value['url']       = esc_url( $value['url'] ?? '' );
-				$sanitized_value['target']    = sanitize_text_field( $value['target'] ?? '' );
-				$sanitized_value['post_type'] = sanitize_text_field( $value['post_type'] ?? '' );
-			} elseif ( 'mapycz' === $item['type'] ) {
-				$value                        = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
-				$sanitized_value              = array();
-				$sanitized_value['latitude']  = floatval( $value['latitude'] ?? 0 );
-				$sanitized_value['longitude'] = floatval( $value['longitude'] ?? 0 );
-				$sanitized_value['zoom']      = floatval( $value['zoom'] ?? 0 );
-				$sanitized_value['street']    = sanitize_text_field( $value['street'] ?? '' );
-				$sanitized_value['number']    = sanitize_text_field( $value['number'] ?? '' );
-				$sanitized_value['zip']       = sanitize_text_field( $value['zip'] ?? '' );
-				$sanitized_value['city']      = sanitize_text_field( $value['city'] ?? '' );
-				$sanitized_value['cityPart']  = sanitize_text_field( $value['cityPart'] ?? '' );
-				$sanitized_value['country']   = sanitize_text_field( $value['country'] ?? '' );
-			} elseif ( in_array( $item['type'], array( 'number', 'range' ), true ) ) {
-				$sanitized_value = floatval( $value );
-			} elseif ( 'textarea' === $item['type'] ) {
-				$sanitized_value = sanitize_textarea_field( $value );
-			} elseif ( 'url' === $item['type'] ) {
-				$sanitized_value = esc_url( $value );
-			} elseif ( 'wysiwyg' === $item['type'] ) {
-				$sanitized_value = wp_kses_post( $value );
-			} elseif ( str_starts_with( $item['type'], 'multi_' ) ) {
-				$single_type     = substr( $item['type'], strlen( 'multi_' ) );
-				$value           = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
-				$sanitized_value = array();
-				foreach ( $value as $sub_key => $sub_value ) {
-					$sanitized_value[ $sub_key ] = $this->sanitize_item_value(
-						array(
-							...$item,
-							'type' => $single_type,
-						),
-					)( $sub_value );
-				}
-			} else {
-				$sanitized_value = sanitize_textarea_field( $value );
-			}
 
-			return apply_filters( 'wpifycf_sanitize_' . $item['type'], $sanitized_value, $original_value, $item );
-		};
+				return apply_filters( 'wpifycf_sanitize_' . $item['type'], $sanitized_value, $original_value, $item );
+			};
 	}
 
 	/**

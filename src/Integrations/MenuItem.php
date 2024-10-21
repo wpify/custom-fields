@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class MenuItem.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields\Integrations;
 
@@ -20,6 +25,12 @@ class MenuItem extends ItemsIntegration {
 	 * @var string
 	 */
 	public readonly string $id;
+
+	/**
+	 * Currently edited Menu Item ID.
+	 *
+	 * @var string
+	 */
 	public string $item_id;
 
 	/**
@@ -28,6 +39,12 @@ class MenuItem extends ItemsIntegration {
 	 * @var array
 	 */
 	public readonly array $tabs;
+
+	/**
+	 * Meta key used to store the custom fields values.
+	 *
+	 * @var string
+	 */
 	public readonly string $option_name;
 
 	/**
@@ -161,7 +178,7 @@ class MenuItem extends ItemsIntegration {
 	 *
 	 * @return int The ID of the item.
 	 */
-	function get_item_id(): int {
+	public function get_item_id(): int {
 		return $this->item_id;
 	}
 }

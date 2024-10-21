@@ -1,4 +1,9 @@
 <?php
+/**
+ * Abstract class ItemsIntegration.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields\Integrations;
 
@@ -15,7 +20,7 @@ abstract class ItemsIntegration extends OptionsIntegration {
 	 *
 	 * @return void
 	 */
-	public function __construct(
+	public function __construct( // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
 		private readonly CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
@@ -26,7 +31,7 @@ abstract class ItemsIntegration extends OptionsIntegration {
 	 *
 	 * @return int The ID of the item.
 	 */
-	abstract function get_item_id(): int;
+	abstract public function get_item_id(): int;
 
 	/**
 	 * Retrieves the value of a specified field.

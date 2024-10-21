@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class ProductVariationOptions.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields\Integrations;
 
@@ -24,17 +29,82 @@ class ProductVariationOptions extends ItemsIntegration {
 	 * @var string
 	 */
 	public readonly string $id;
+
+	/**
+	 * Currently edited Product Variation ID.
+	 *
+	 * @var int
+	 */
 	public int $variation_id;
+
+	/**
+	 * Tab definition where custom fields will be created.
+	 *
+	 * @var array
+	 */
 	public readonly array $tab;
+
+	/**
+	 * Show custom fields after 'pricing', 'inventory', 'dimensions' or 'download'.
+	 *
+	 * @var string
+	 */
 	public readonly string $after;
+
+	/**
+	 * The capability required for custom fields to be displayed to the user.
+	 *
+	 * @var string
+	 */
 	public readonly string $capability;
+
+	/**
+	 * The function to be called to output the content for this page.
+	 *
+	 * @var callable|null
+	 */
 	public readonly Closure|array|string|null $callback;
-	public readonly array $args;
+
+	/**
+	 * Generated hook suffix of the page.
+	 *
+	 * @var string
+	 */
 	public readonly string $hook_suffix;
+
+	/**
+	 * Hook priority.
+	 *
+	 * @var int
+	 */
 	public readonly int $hook_priority;
+
+	/**
+	 * Help tabs displayed on the screen.
+	 *
+	 * @var array
+	 */
 	public readonly array $help_tabs;
+
+	/**
+	 * Text for the help sidebar to be added to the settings page.
+	 *
+	 * @var string
+	 */
 	public readonly string $help_sidebar;
+
+	/**
+	 * Callback that returns boolean that defines if custom fields should be shown.
+	 *
+	 * @var callable|null
+	 */
 	public $display;
+
+	/**
+	 * Meta key used to store the custom fields values.
+	 *
+	 * @var string
+	 */
 	public readonly string $option_name;
 
 	/**
@@ -43,6 +113,12 @@ class ProductVariationOptions extends ItemsIntegration {
 	 * @var array
 	 */
 	public readonly array $items;
+
+	/**
+	 * List of the sections to be defined.
+	 *
+	 * @var array
+	 */
 	public readonly array $sections;
 
 	/**
@@ -51,6 +127,12 @@ class ProductVariationOptions extends ItemsIntegration {
 	 * @var array
 	 */
 	public readonly array $tabs;
+
+	/**
+	 * Defines if the current tab is a new tab.
+	 *
+	 * @var bool
+	 */
 	public bool $is_new_tab;
 
 	/**
@@ -152,7 +234,7 @@ class ProductVariationOptions extends ItemsIntegration {
 			),
 		);
 
-		if ( in_array( $this->after, array( 'pricing', 'inventory', 'dimensions', 'download' ) ) ) {
+		if ( in_array( $this->after, array( 'pricing', 'inventory', 'dimensions', 'download' ), true ) ) {
 			add_action( 'woocommerce_variation_options_' . $this->after, array( $this, 'render' ), 10, 3 );
 		} else {
 			add_action( 'woocommerce_product_after_variable_attributes', array( $this, 'render' ), 10, 3 );
@@ -242,7 +324,7 @@ class ProductVariationOptions extends ItemsIntegration {
 	 */
 	public function maybe_enqueue(): void {
 		$current_screen = get_current_screen();
-		if ( $current_screen->id === 'product' || $current_screen->id === 'product_page_product' ) {
+		if ( 'product' === $current_screen->id || 'product_page_product' === $current_screen->id ) {
 			$this->enqueue();
 		}
 	}
@@ -305,7 +387,7 @@ class ProductVariationOptions extends ItemsIntegration {
 	 *
 	 * @return int The ID of the item.
 	 */
-	function get_item_id(): int {
+	public function get_item_id(): int {
 		return $this->variation_id;
 	}
 }
