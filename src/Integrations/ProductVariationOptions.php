@@ -295,7 +295,7 @@ class ProductVariationOptions extends ItemsIntegration {
 	 *
 	 * @return void
 	 */
-	public function save( $product_variation_id, $loop ): void {
+	public function save( int $product_variation_id, int $loop ): void {
 		$items = $this->normalize_items( $this->items );
 
 		foreach ( $items as $item ) {

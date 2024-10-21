@@ -62,7 +62,7 @@ abstract class ItemsIntegration extends OptionsIntegration {
 	 *
 	 * @return mixed The result of setting the specified field.
 	 */
-	public function set_field( string $name, mixed $value, array $item = array() ) {
+	public function set_field( string $name, mixed $value, array $item = array() ): mixed {
 		if ( ! empty( $item['callback_set'] ) ) {
 			return call_user_func( $item['callback_set'], $item, $this->get_item_id(), $value );
 		} elseif ( ! empty( $this->option_name ) ) {

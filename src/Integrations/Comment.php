@@ -251,7 +251,7 @@ class Comment extends ItemsIntegration {
 	 *
 	 * @return mixed The value of the specified option if it exists, otherwise the default value.
 	 */
-	public function get_option_value( string $name, mixed $default_value ) {
+	public function get_option_value( string $name, mixed $default_value ): mixed {
 		return get_comment_meta( $this->comment_id, $name, true ) ?? $default_value;
 	}
 
@@ -264,7 +264,7 @@ class Comment extends ItemsIntegration {
 	 *
 	 * @return bool True if the option value was updated successfully, false otherwise.
 	 */
-	public function set_option_value( string $name, mixed $value, array $item = array() ) {
+	public function set_option_value( string $name, mixed $value, array $item = array() ): bool {
 		return update_comment_meta( $this->comment_id, $name, $value );
 	}
 

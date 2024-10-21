@@ -635,7 +635,7 @@ class Options extends OptionsIntegration {
 	 *
 	 * @return mixed The value of the option or the default value if the option does not exist.
 	 */
-	public function get_option_value( string $name, mixed $default_value ) {
+	public function get_option_value( string $name, mixed $default_value ): mixed {
 		if ( $this->type === $this::TYPE_NETWORK ) {
 			return get_network_option( get_current_network_id(), $name, $default_value );
 		} else {
@@ -654,7 +654,7 @@ class Options extends OptionsIntegration {
 	 *
 	 * @return bool True if the option was successfully updated, false otherwise.
 	 */
-	public function set_option_value( string $name, mixed $value ) {
+	public function set_option_value( string $name, mixed $value ): bool {
 		if ( $this->type === $this::TYPE_NETWORK ) {
 			return update_network_option( get_current_network_id(), $name, $value );
 		} else {

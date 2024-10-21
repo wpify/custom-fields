@@ -306,7 +306,7 @@ class OrderMetabox extends ItemsIntegration {
 	 *
 	 * @return mixed The value of the specified option, or the default value if the option is not found.
 	 */
-	public function get_option_value( string $name, mixed $default_value ) {
+	public function get_option_value( string $name, mixed $default_value ): mixed {
 		return $this->get_order()->get_meta( $name ) ?? $default_value;
 	}
 
@@ -316,9 +316,9 @@ class OrderMetabox extends ItemsIntegration {
 	 * @param string $name The name of the option to set.
 	 * @param mixed  $value The value to assign to the specified option.
 	 *
-	 * @return bool Returns true if the metadata was successfully saved, false otherwise.
+	 * @return WC_Order|int Returns true if the metadata was successfully saved, false otherwise.
 	 */
-	public function set_option_value( string $name, mixed $value ) {
+	public function set_option_value( string $name, mixed $value ): WC_Order|int {
 		$order = $this->get_order();
 		$order->update_meta_data( $name, $value );
 

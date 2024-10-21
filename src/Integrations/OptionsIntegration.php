@@ -144,7 +144,7 @@ abstract class OptionsIntegration extends BaseIntegration {
 	 * @param mixed  $value Field value.
 	 * @param array  $item Optional. Field item data.
 	 */
-	public function set_field( string $name, mixed $value, array $item = array() ) {
+	public function set_field( string $name, mixed $value, array $item = array() ): mixed {
 		if ( isset( $item['callback_set'] ) && is_callable( $item['callback_set'] ) ) {
 			return call_user_func( $item['callback_set'], $item, $value );
 		} elseif ( ! empty( $this->option_name ) ) {
@@ -166,7 +166,7 @@ abstract class OptionsIntegration extends BaseIntegration {
 	 *
 	 * @return void
 	 */
-	public function set_fields( string $option_name, array $sanitized_values, array $items ) {
+	public function set_fields( string $option_name, array $sanitized_values, array $items ): void {
 		$data = array();
 
 		foreach ( $items as $item ) {
@@ -190,7 +190,7 @@ abstract class OptionsIntegration extends BaseIntegration {
 	 *
 	 * @return mixed The value of the option or the default value if not set.
 	 */
-	abstract public function get_option_value( string $name, mixed $default_value );
+	abstract public function get_option_value( string $name, mixed $default_value ): mixed;
 
 	/**
 	 * Sets the value of an option.

@@ -294,7 +294,7 @@ class Metabox extends ItemsIntegration {
 	 *
 	 * @return mixed The value of the specified option, or the default value if the option does not exist.
 	 */
-	public function get_option_value( string $name, mixed $default_value ) {
+	public function get_option_value( string $name, mixed $default_value ): mixed {
 		return get_post_meta( $this->get_item_id(), $name, true ) ?? $default_value;
 	}
 
@@ -306,7 +306,7 @@ class Metabox extends ItemsIntegration {
 	 *
 	 * @return bool True on success, false on failure.
 	 */
-	public function set_option_value( string $name, mixed $value ) {
+	public function set_option_value( string $name, mixed $value ): bool {
 		return update_post_meta( $this->get_item_id(), $name, $value );
 	}
 

@@ -104,7 +104,7 @@ class MenuItem extends ItemsIntegration {
 	 *
 	 * @return void
 	 */
-	public function render( string $item_id, WP_Post $menu_item, int $depth, stdClass|null $args, int $current_object_id ) {
+	public function render( string $item_id, WP_Post $menu_item, int $depth, stdClass|null $args, int $current_object_id ): void {
 		$this->item_id = $item_id;
 		$this->enqueue();
 		$this->print_app(
@@ -132,7 +132,7 @@ class MenuItem extends ItemsIntegration {
 	 *
 	 * @return void
 	 */
-	public function save( int $menu_id, int $menu_item_db_id, array $args ) {
+	public function save( int $menu_id, int $menu_item_db_id, array $args ): void {
 		$this->item_id = $menu_item_db_id;
 		$items         = $this->normalize_items( $this->items );
 
@@ -157,7 +157,7 @@ class MenuItem extends ItemsIntegration {
 	 * @param string $name The name of the option to retrieve.
 	 * @param mixed  $default_value The default value to return if the option is not set.
 	 */
-	public function get_option_value( string $name, mixed $default_value ) {
+	public function get_option_value( string $name, mixed $default_value ): mixed {
 		return get_post_meta( $this->get_item_id(), $name, true ) ?? $default_value;
 	}
 
@@ -169,7 +169,7 @@ class MenuItem extends ItemsIntegration {
 	 *
 	 * @return bool True on success, false on failure.
 	 */
-	public function set_option_value( string $name, mixed $value ) {
+	public function set_option_value( string $name, mixed $value ): bool {
 		return update_post_meta( $this->get_item_id(), $name, $value );
 	}
 
