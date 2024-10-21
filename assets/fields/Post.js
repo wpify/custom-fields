@@ -4,6 +4,7 @@ import { PostSelect } from '@/components/PostSelect';
 import { IconButton } from '@/components/IconButton';
 import { checkValidityNumberType } from '@/helpers/validators';
 import clsx from 'clsx';
+import defaultThumbnail from '@/images/placeholder-image.svg';
 
 export function Post ({
   id,
@@ -38,7 +39,7 @@ export function PostPreview ({ post, onDelete }) {
       {post && (
         <>
           <img
-            src={post.thumbnail}
+            src={post.thumbnail || defaultThumbnail}
             alt={post.title}
             className="wpifycf-post-preview__thumbnail"
             loading="lazy"

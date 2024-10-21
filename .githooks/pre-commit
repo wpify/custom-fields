@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# Run PHP Code Beautifier
 if [ ! -f vendor/bin/phpcbf ]; then
   echo "Running PHP Code Beautifier..."
   vendor/bin/phpcbf -ps .
@@ -10,5 +11,20 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo "phpcbf completed successfully. Proceeding with the commit..."
+echo "phpcbf completed successfully."
+
+# Run NPM Build
+if [ -f package.json ]; then
+  echo "Running npm build process..."
+  npm run build
+  if [ $? -ne 0 ]; then
+    echo "Error: npm run build failed."
+    exit 1
+  fi
+  echo "npm build process completed successfully."
+else
+  echo "No package.json found. Skipping npm build process."
+fi
+
+echo "Pre-commit hook completed successfully. Proceeding with the commit..."
 exit 0
