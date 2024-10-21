@@ -13,22 +13,18 @@ jobs:
     steps:
       # Checkout the repository
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Set up PHP with Composer
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'  # Specify the version of PHP you want to use
-          tools: composer
-
-      # Install Composer dependencies, including dev dependencies
-      - name: Install Composer dependencies
-        run: composer install --no-progress --prefer-dist --no-interaction
+          tools: phpcs
 
       # Run PHPCS (PHP CodeSniffer) to check code standards
       - name: Run PHP CodeSniffer
-        run: vendor/bin/phpcs -ps .
+        run: phpcs -ps .
 
       # Optional: Fail the workflow if PHPCS finds issues
       - name: Fail if issues found
