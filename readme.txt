@@ -3,15 +3,15 @@
 Contributors:      wpify
 Tested up to:      6.6
 Stable tag:        1.0.0
-License:           GPLv2 or later
-License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+License:           GPLv3 or later
+License URI:       https://www.gnu.org/licenses/gpl-3.0.html
 Tags:              plugin best practices, testing, accessibility, performance, security
 
-WPify Custom Fields
+WPify Custom Fields is a powerful, developer-oriented WordPress library for creating custom fields.
 
 == Description ==
 
-WPify Custom Fields is a library where you can add a custom fields
+This library offers maximum flexibility for developers to integrate custom fields into various parts of WordPress, ranging from post metaboxes to WooCommerce product options. Built with React.js and requiring no additional composer dependencies, it is designed to be highly extendable and future-proof.
 
 == Changelog ==
 
