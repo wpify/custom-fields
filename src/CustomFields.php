@@ -1,254 +1,478 @@
 <?php
+/**
+ * Class CustomFields.
+ *
+ * @package WPify Custom Fields
+ */
 
 namespace Wpify\CustomFields;
 
-use Wpify\CustomFields\Implementations\AbstractImplementation;
-use Wpify\CustomFields\Implementations\Comment;
-use Wpify\CustomFields\Implementations\GutenbergBlock;
-use Wpify\CustomFields\Implementations\Metabox;
-use Wpify\CustomFields\Implementations\Options;
-use Wpify\CustomFields\Implementations\OrderMetabox;
-use Wpify\CustomFields\Implementations\ProductOptions;
-use Wpify\CustomFields\Implementations\ProductVariationOptions;
-use Wpify\CustomFields\Implementations\SiteOptions;
-use Wpify\CustomFields\Implementations\SubscriptionMetabox;
-use Wpify\CustomFields\Implementations\Taxonomy;
-use Wpify\CustomFields\Implementations\User;
-use Wpify\CustomFields\Implementations\WcMembershipPlanOptions;
-use Wpify\CustomFields\Implementations\WooCommerceSettings;
+use Closure;
+use stdClass;
+use Wpify\CustomFields\exceptions\MissingArgumentException;
+use Wpify\CustomFields\Integrations\Comment;
+use Wpify\CustomFields\Integrations\GutenbergBlock;
+use Wpify\CustomFields\Integrations\MenuItem;
+use Wpify\CustomFields\Integrations\Metabox;
+use Wpify\CustomFields\Integrations\Options;
+use Wpify\CustomFields\Integrations\OrderMetabox;
+use Wpify\CustomFields\Integrations\ProductOptions;
+use Wpify\CustomFields\Integrations\ProductVariationOptions;
+use Wpify\CustomFields\Integrations\SiteOptions;
+use Wpify\CustomFields\Integrations\SubscriptionMetabox;
+use Wpify\CustomFields\Integrations\Taxonomy;
+use Wpify\CustomFields\Integrations\User;
+use Wpify\CustomFields\Integrations\WcMembershipPlanOptions;
+use Wpify\CustomFields\Integrations\WooCommerceSettings;
 
 /**
  * Class CustomFields
- * @package CustomFields
+ *
+ * This class is responsible for managing various custom field creation and utility functions,
+ * including options pages, metaboxes, taxonomies, product options, and other custom field functionalities.
  */
-final class CustomFields {
-	/** @var Assets */
-	private $assets;
-
-	/** @var Sanitizer */
-	private $sanitizer;
-
-	/** @var Parser */
-	private $parser;
-
-	/** @var Api */
-	private $api;
-
-	/** @var callable[] */
-	public $api_callbacks = array();
-
-	/** @var AbstractImplementation[] */
-	public $registered = array();
-
+class CustomFields {
 	/**
-	 * CustomFields constructor.
-	 */
-	public function __construct( string $wcf_url = '' ) {
-		$assets_path     = realpath( __DIR__ . '/../build' );
-		$this->assets    = new Assets( $assets_path, $wcf_url );
-		$this->sanitizer = new Sanitizer();
-		$this->parser    = new Parser();
-		$this->api       = new Api( $this );
-	}
-
-	/**
-	 * @param array $args
+	 * Helpers class.
 	 *
-	 * @return Options
+	 * @var Helpers
 	 */
-	public function create_options_page( $args = array() ) {
-		$options            = new Options( $args, $this );
-		$this->registered[] = $options;
-
-		return $options;
-	}
+	public readonly Helpers $helpers;
 
 	/**
-	 * @param array $args
+	 * Api class.
 	 *
-	 * @return Options
+	 * @var Api
 	 */
-	public function create_site_options( $args = array() ) {
-		$options            = new SiteOptions( $args, $this );
-		$this->registered[] = $options;
+	public readonly Api $api;
 
-		return $options;
+	/**
+	 * Custom fields constructor.
+	 */
+	public function __construct() {
+		$this->helpers = new Helpers();
+		$this->api     = new Api( $this, $this->helpers );
 	}
 
 	/**
-	 * @param array $args
+	 * Creates an options page.
 	 *
-	 * @return Metabox
-	 */
-	public function create_metabox( $args = array() ) {
-		$metabox            = new Metabox( $args, $this );
-		$this->registered[] = $metabox;
-
-		return $metabox;
-	}
-
-	/**
-	 * @param array $args
+	 * @param array $args The arguments to configure the options page.
 	 *
-	 * @return OrderMetabox
+	 * @return Options The created options page object.
+	 * @throws MissingArgumentException Missing arguments.
 	 */
-	public function create_order_metabox( $args = array() ) {
-		$metabox            = new OrderMetabox( $args, $this );
-		$this->registered[] = $metabox;
-
-		return $metabox;
+	public function create_options_page( array $args ): Options {
+		return new Options( $args, $this );
 	}
 
 	/**
-	 * @param array $args
+	 * Creates a metabox with the given arguments.
 	 *
-	 * @return SubscriptionMetabox
-	 */
-	public function create_subscription_metabox( $args = array() ) {
-		$metabox            = new SubscriptionMetabox( $args, $this );
-		$this->registered[] = $metabox;
-
-		return $metabox;
-	}
-
-	/**
-	 * @param array $args
+	 * @param array $args The arguments for creating the metabox.
 	 *
-	 * @return Comment
+	 * @return Metabox The created Metabox instance.
 	 */
-	public function create_comment_metabox( $args = array() ) {
-		$metabox            = new Comment( $args, $this );
-		$this->registered[] = $metabox;
-
-		return $metabox;
+	public function create_metabox( array $args ): Metabox {
+		return new Metabox( $args, $this );
 	}
 
 	/**
-	 * @param array $args
+	 * Creates custom fields in a taxonomy with the specified arguments.
 	 *
-	 * @return ProductOptions
-	 */
-	public function create_product_options( $args = array() ) {
-		$product_options    = new ProductOptions( $args, $this );
-		$this->registered[] = $product_options;
-
-		return $product_options;
-	}
-
-	/**
-	 * @param array $args
+	 * @param array $args The arguments to create the taxonomy.
 	 *
-	 * @return ProductVariationOptions
+	 * @return Taxonomy The created taxonomy instance.
+	 * @throws MissingArgumentException Missing arguments.
 	 */
-	public function create_product_variation_options( $args = array() ) {
-		$product_variation_options    = new ProductVariationOptions( $args, $this );
-		$this->registered[] = $product_variation_options;
-
-		return $product_variation_options;
+	public function create_taxonomy( array $args ): Taxonomy {
+		return new Taxonomy( $args, $this );
 	}
 
 	/**
-	 * @param array $args
+	 * Creates custom fields in WooCommerce Product Options.
 	 *
-	 * @return WcMembershipPlanOptions
-	 */
-	public function create_membership_plan_options( $args = array() ) {
-		$membership_plan_options = new WcMembershipPlanOptions( $args, $this );
-		$this->registered[]      = $membership_plan_options;
-
-		return $membership_plan_options;
-	}
-
-	/**
-	 * @param array $args
+	 * @param array $args An associative array of arguments for configuring the product options.
 	 *
-	 * @return Taxonomy
+	 * @return ProductOptions An instance of the ProductOptions class configured with the provided arguments.
+	 * @throws MissingArgumentException Missing arguments.
 	 */
-	public function create_taxonomy_options( $args = array() ) {
-		$taxonomy           = new Taxonomy( $args, $this );
-		$this->registered[] = $taxonomy;
-
-		return $taxonomy;
+	public function create_product_options( array $args ): ProductOptions {
+		return new ProductOptions( $args, $this );
 	}
 
 	/**
-	 * @param array $args
+	 * Creates custom fields in WooCommerce Product Variation based on the provided arguments.
 	 *
-	 * @return User
+	 * @param array $args An associative array of arguments for creating product variation options.
+	 *
+	 * @return ProductVariationOptions The created product variation options instance.
+	 * @throws MissingArgumentException Missing arguments.
 	 */
-	public function create_user_options( $args = array() ) {
-		$user               = new User( $args, $this );
-		$this->registered[] = $user;
-
-		return $user;
+	public function create_product_variation_options( array $args ): ProductVariationOptions {
+		return new ProductVariationOptions( $args, $this );
 	}
 
 	/**
-	 * @param array $args
+	 * Creates custom fields in WooCommerce Order with the provided arguments.
+	 *
+	 * @param array $args Optional. An array of arguments to customize the OrderMetabox instance.
+	 *
+	 * @return OrderMetabox The created OrderMetabox instance.
+	 * @throws MissingArgumentException Missing arguments.
+	 */
+	public function create_order_metabox( array $args ): OrderMetabox {
+		return new OrderMetabox( $args, $this );
+	}
+
+	/**
+	 * Creates a metabox in Woo Subscription.
+	 *
+	 * @param array $args Optional. Arguments to customize the subscription metabox. Default is an empty array.
+	 *
+	 * @return SubscriptionMetabox Returns an instance of the SubscriptionMetabox class.
+	 * @throws MissingArgumentException Missing arguments.
+	 */
+	public function create_subscription_metabox( array $args ): SubscriptionMetabox {
+		return new SubscriptionMetabox( $args, $this );
+	}
+
+	/**
+	 * Creates a new Gutenberg block with custom fields.
+	 *
+	 * @param array $args Optional. Arguments to customize the Gutenberg block.
+	 *
+	 * @return GutenbergBlock The newly created Gutenberg block instance.
+	 * @throws MissingArgumentException Missing arguments.
+	 */
+	public function create_gutenberg_block( array $args ): GutenbergBlock {
+		return new GutenbergBlock( $args, $this );
+	}
+
+	/**
+	 * Creates a comment metabox.
+	 *
+	 * @param array $args Optional. Arguments to initialize the comment metabox.
+	 *
+	 * @return Comment The created comment metabox.
+	 */
+	public function create_comment_metabox( array $args ): Comment {
+		return new Comment( $args, $this );
+	}
+
+	/**
+	 * Add custom fields to the site options.
+	 *
+	 * @param array $args An associative array of arguments necessary for creating site options.
+	 *
+	 * @return SiteOptions Returns an instance of the SiteOptions class initialized with the provided arguments.
+	 * @throws MissingArgumentException Missing arguments.
+	 */
+	public function create_site_options( array $args ): SiteOptions {
+		return new SiteOptions( $args, $this );
+	}
+
+	/**
+	 * Add custom fields to the user edit screen.
+	 *
+	 * @param array $args An associative array of options for creating the user.
+	 *
+	 * @return User Returns a User object initialized with the provided options.
+	 */
+	public function create_user_options( array $args ): User {
+		return new User( $args, $this );
+	}
+
+	/**
+	 * Add custom fields to the Woo Membership plan options.
+	 *
+	 * @param array $args An array of arguments for creating the membership plan options.
+	 *
+	 * @return WcMembershipPlanOptions An instance of WcMembershipPlanOptions.
+	 * @throws MissingArgumentException Missing arguments.
+	 */
+	public function create_membership_plan_options( array $args ): WcMembershipPlanOptions {
+		return new WcMembershipPlanOptions( $args, $this );
+	}
+
+	/**
+	 * Add custom fields to the WooCommerce settings screen.
+	 *
+	 * @param array $args Optional. An array of arguments to initialize the settings.
 	 *
 	 * @return WooCommerceSettings
 	 */
-	public function create_woocommerce_settings( $args = array() ) {
-		$woocommerce_settings = new WooCommerceSettings( $args, $this );
-		$this->registered[]   = $woocommerce_settings;
-
-		return $woocommerce_settings;
+	public function create_woocommerce_settings( array $args ): WooCommerceSettings {
+		return new WooCommerceSettings( $args, $this );
 	}
 
 	/**
-	 * @param array $args
+	 * Adds custom fields to the menu item.
 	 *
-	 * @return GutenbergBlock
-	 */
-	public function create_gutenberg_block( $args = array() ) {
-		$gutenberg_block    = new GutenbergBlock( $args, $this );
-		$this->registered[] = $gutenberg_block;
-
-		return $gutenberg_block;
-	}
-
-	/**
-	 * @return Parser
-	 */
-	public function get_parser(): Parser {
-		return $this->parser;
-	}
-
-	/**
-	 * @return Sanitizer
-	 */
-	public function get_sanitizer(): Sanitizer {
-		return $this->sanitizer;
-	}
-
-	/**
-	 * @return Api
-	 */
-	public function get_api(): Api {
-		return $this->api;
-	}
-
-	/**
-	 * @return Assets
-	 */
-	public function get_assets(): Assets {
-		return $this->assets;
-	}
-
-	/**
-	 * @param $id
-	 * @param $callback
-	 */
-	public function set_api_callback( $id, $callback ) {
-		$this->api_callbacks[ $id ] = $callback;
-	}
-
-	/**
-	 * @param $id
+	 * @param array $args An optional array of menu item options.
 	 *
-	 * @return callable
+	 * @return MenuItem The newly created menu item.
 	 */
-	public function get_api_callback( $id ) {
-		return $this->api_callbacks[ $id ] ?? null;
+	public function create_menu_item_options( array $args ): MenuItem {
+		return new MenuItem( $args, $this );
+	}
+
+	/**
+	 * Get JavaScript asset details including its dependencies and version.
+	 *
+	 * TODO: Make it more universal, now it can be only in plugins, it should be possible also for themes.
+	 *
+	 * @param string $item The name of the JavaScript file without the extension.
+	 *
+	 * @return array An associative array containing 'dependencies', 'version', and 'src' of the JavaScript asset.
+	 */
+	public function get_js_asset( string $item ): array {
+		$build_path = plugin_dir_path( __DIR__ ) . 'build/';
+		$asset_php  = $build_path . $item . '.asset.php';
+
+		if ( file_exists( $asset_php ) ) {
+			$asset = require $asset_php;
+		} else {
+			$asset = array(
+				'dependencies' => array(),
+				'version'      => false,
+			);
+		}
+
+		$asset['src'] = plugin_dir_url( __DIR__ ) . 'build/' . $item . '.js';
+
+		return $asset;
+	}
+
+	/**
+	 * Retrieves the CSS asset for the specified item.
+	 *
+	 * TODO: Make it more universal, now it can be only in plugins, it should be possible also for themes.
+	 *
+	 * @param string $item The name of the CSS item to retrieve.
+	 *
+	 * @return array|string URL(s) to the CSS asset(s) for the specified item. Returns an array if there are multiple versions, otherwise returns a string.
+	 */
+	public function get_css_asset( string $item ): array|string {
+		$build_path = plugin_dir_path( __DIR__ ) . 'build/';
+		$asset_php  = $build_path . $item . '.asset.php';
+
+		if ( file_exists( $asset_php ) ) {
+			$asset = require $asset_php;
+		}
+
+		$src = ! empty( $asset )
+			? add_query_arg(
+				'ver',
+				$asset['version'],
+				plugin_dir_url( __DIR__ ) . 'build/' . $item . '.css',
+			)
+			: plugin_dir_url( __DIR__ ) . 'build/' . $item . '.css';
+
+		if ( ! empty( $asset ) && file_exists( $build_path . 'style-' . $item . '.css' ) ) {
+			$src = array(
+				$src,
+				add_query_arg(
+					'ver',
+					$asset['version'],
+					plugin_dir_url( __DIR__ ) . 'build/style-' . $item . '.css',
+				),
+			);
+		}
+
+		return $src;
+	}
+
+	/**
+	 * Retrieves the base name of the current plugin.
+	 *
+	 * @return string The base name of the current plugin.
+	 */
+	public function get_plugin_basename(): string {
+		$basename = plugin_basename( __FILE__ );
+
+		return substr( $basename, 0, strpos( $basename, '/' ) );
+	}
+
+	/**
+	 * Sanitizes a given item's value based on its type using a closure.
+	 *
+	 * @param array $item The item array which contains the type and other relevant information.
+	 *
+	 * @return Closure A closure that takes a value to be sanitized and returns the sanitized value.
+	 */
+	public function sanitize_item_value( array $item ): Closure {
+		/**
+		 * Sanitizes the value based on the specified item type.
+		 *
+		 * @param mixed $value The value to be sanitized.
+		 *
+		 * @return mixed The sanitized value.
+		 */
+		return function ( mixed $value ) use ( $item ): mixed {
+			$original_value = $value;
+
+			if ( in_array( $item['type'], array( 'attachment', 'post', 'term' ), true ) ) {
+				$sanitized_value = absint( $value );
+			} elseif ( in_array( $item['type'], array( 'checkbox', 'toggle' ), true ) ) {
+				$sanitized_value = filter_var( $value, FILTER_VALIDATE_BOOLEAN );
+			} elseif ( 'code' === $item['type'] ) {
+				$sanitized_value = $value;
+			} elseif ( 'color' === $item['type'] ) {
+				$sanitized_value = sanitize_hex_color( $value );
+			} elseif ( in_array(
+				$item['type'],
+				array(
+					'date',
+					'datetime',
+					'month',
+					'password',
+					'select',
+					'tel',
+					'text',
+					'time',
+					'week',
+				),
+				true
+			) ) {
+				$sanitized_value = sanitize_text_field( $value );
+			} elseif ( 'email' === $item['type'] ) {
+				$sanitized_value = sanitize_email( $value );
+			} elseif ( 'group' === $item['type'] ) {
+				$value           = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
+				$sanitized_value = array();
+				foreach ( $item['items'] as $sub_item ) {
+					$sanitized_value[ $sub_item['id'] ] = $this->sanitize_item_value( $sub_item )( $value[ $sub_item['id'] ] ?? null );
+				}
+			} elseif ( 'link' === $item['type'] ) {
+				$value                        = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
+				$sanitized_value              = array();
+				$sanitized_value['post']      = absint( $value['post'] ?? 0 );
+				$sanitized_value['label']     = sanitize_text_field( $value['label'] ?? '' );
+				$sanitized_value['url']       = esc_url( $value['url'] ?? '' );
+				$sanitized_value['target']    = sanitize_text_field( $value['target'] ?? '' );
+				$sanitized_value['post_type'] = sanitize_text_field( $value['post_type'] ?? '' );
+			} elseif ( 'mapycz' === $item['type'] ) {
+				$value                        = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
+				$sanitized_value              = array();
+				$sanitized_value['latitude']  = floatval( $value['latitude'] ?? 0 );
+				$sanitized_value['longitude'] = floatval( $value['longitude'] ?? 0 );
+				$sanitized_value['zoom']      = floatval( $value['zoom'] ?? 0 );
+				$sanitized_value['street']    = sanitize_text_field( $value['street'] ?? '' );
+				$sanitized_value['number']    = sanitize_text_field( $value['number'] ?? '' );
+				$sanitized_value['zip']       = sanitize_text_field( $value['zip'] ?? '' );
+				$sanitized_value['city']      = sanitize_text_field( $value['city'] ?? '' );
+				$sanitized_value['cityPart']  = sanitize_text_field( $value['cityPart'] ?? '' );
+				$sanitized_value['country']   = sanitize_text_field( $value['country'] ?? '' );
+			} elseif ( in_array( $item['type'], array( 'number', 'range' ), true ) ) {
+				$sanitized_value = floatval( $value );
+			} elseif ( 'textarea' === $item['type'] ) {
+				$sanitized_value = sanitize_textarea_field( $value );
+			} elseif ( 'url' === $item['type'] ) {
+				$sanitized_value = esc_url( $value );
+			} elseif ( 'wysiwyg' === $item['type'] ) {
+				$sanitized_value = wp_kses_post( $value );
+			} elseif ( str_starts_with( $item['type'], 'multi_' ) ) {
+				$single_type     = substr( $item['type'], strlen( 'multi_' ) );
+				$value           = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
+				$sanitized_value = array();
+				foreach ( $value as $sub_key => $sub_value ) {
+					$sanitized_value[ $sub_key ] = $this->sanitize_item_value(
+						array(
+							...$item,
+							'type' => $single_type,
+						),
+					)( $sub_value );
+				}
+			} else {
+				$sanitized_value = sanitize_textarea_field( $value );
+			}
+
+			return apply_filters( 'wpifycf_sanitize_' . $item['type'], $sanitized_value, $original_value, $item );
+		};
+	}
+
+	/**
+	 * Generates and returns a closure that sanitizes an array of values based on the given items array.
+	 *
+	 * @param array $items An array of items. Each item should contain an 'id' key used
+	 *                     for sanitizing the corresponding value in the input array.
+	 *
+	 * @return Closure A closure that accepts an array of values to be sanitized and returns the sanitized array.
+	 */
+	public function sanitize_option_value( array $items = array() ): Closure {
+		return function ( array $value = array() ) use ( $items ): array {
+			$next_value = array();
+			foreach ( $items as $item ) {
+				$next_value[ $item['id'] ] = $this->sanitize_item_value( $item )( $value[ $item['id'] ] ?? null );
+			}
+
+			return $next_value;
+		};
+	}
+
+	/**
+	 * Determines the WordPress data type for a given item.
+	 *
+	 * This method categorizes items based on their 'type' field into several
+	 * predefined WordPress data types.
+	 *
+	 * @param array $item The item array which contains a 'type' field.
+	 *                    The 'type' field in the array determines the corresponding WordPress data type.
+	 *
+	 * @return string The WordPress data type which can be one of
+	 *                'integer', 'number', 'boolean', 'object', 'array', or 'string'.
+	 */
+	public function get_wp_type( array $item ): string {
+		if ( in_array( $item['type'], array( 'attachment', 'post', 'term' ), true ) ) {
+			$type = 'integer';
+		} elseif ( in_array( $item['type'], array( 'number', 'range' ), true ) ) {
+			$type = 'number';
+		} elseif ( in_array( $item['type'], array( 'checkbox', 'toggle' ), true ) ) {
+			$type = 'boolean';
+		} elseif ( in_array(
+			$item['type'],
+			array(
+				'group',
+				'link',
+				'mapycz',
+				'multi_toggle',
+				'multi_checkbox',
+			),
+			true
+		) ) {
+			$type = 'object';
+		} elseif ( str_starts_with( $item['type'], 'multi_' ) ) {
+			$type = 'array';
+		} else {
+			$type = 'string';
+		}
+
+		return apply_filters( 'wpifycf_wp_type_' . $item['type'], $type, $item );
+	}
+
+	/**
+	 * Retrieves the default value for a given item.
+	 *
+	 * @param array $item The item array which may contain a 'default' value.
+	 *
+	 * @return mixed The default value for the item.
+	 */
+	public function get_default_value( array $item ): mixed {
+		if ( isset( $item['default'] ) ) {
+			$default_value = $item['default'];
+		} else {
+			$wp_type       = $this->get_wp_type( $item );
+			$default_value = match ( $wp_type ) {
+				'integer' => 0,
+				'number' => 0.0,
+				'boolean' => false,
+				'array' => array(),
+				'object' => new stdClass(),
+				default => '',
+			};
+		}
+
+		return apply_filters( 'wpifycf_default_value_' . $item['type'], $default_value, $item );
 	}
 }

@@ -1,0 +1,76 @@
+.wpifycf-field-mapycz {
+  width: 100%;
+  max-width: 600px;
+
+  &__set-key {
+    display: flex;
+    flex-flow: row wrap;
+    gap: var(--wpifycf-gap-1);
+
+    label {
+      width: 100%;
+      display: block;
+    }
+  }
+
+  &__map {
+    width: 100%;
+    border: 1px solid var(--wpifycf-border-color);
+    z-index: 0;
+  }
+
+  &__autocomplete {
+    position: relative;
+  }
+
+  &__autocomplete-input {
+    display: block;
+    width: 100%;
+    padding: var(--wpifycf-gap-1);
+    border: none;
+    border-bottom: 1px solid var(--wpifycf-border-color);
+    margin: 0;
+  }
+
+  &__suggestions {
+    position: absolute;
+    top: calc(100%);
+    background: white;
+    z-index: 1100;
+    display: flex;
+    flex-flow: column;
+    width: 300px;
+
+    button {
+      display: block;
+      appearance: none;
+      border: none;
+      background: none;
+      padding: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
+      cursor: pointer;
+      text-align: left;
+
+      &.active {
+        background: var(--wpifycf-border-color);
+      }
+    }
+  }
+
+  &__suggestions-attribution {
+    font-size: 0.8em;
+    padding: var(--wpifycf-gap-1);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    img {
+      display: inline-block;
+      margin-left: var(--wpifycf-gap-1);
+    }
+  }
+
+  &__address {
+    background: var(--wpifycf-border-color);
+    padding: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
+  }
+}

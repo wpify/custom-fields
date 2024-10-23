@@ -1,0 +1,16 @@
+.woocommerce_options_panel {
+  .wpifycf-field-parent label {
+    margin-left: unset;
+    float: unset;
+  }
+
+  input[type=email], input[type=number], input[type=password], input[type=text] {
+    width: 95%;
+    float: none;
+  }
+
+  .wpifycf-field-parent,
+  .wpifycf-app {
+    padding: 0 12px;
+  }
+}
