@@ -1,6 +1,7 @@
 .wpifycf-multi-field-items {
   display: flex;
   flex-flow: column;
+  max-width: 60em;
   gap: var(--wpifycf-gap-1);
 }
 
@@ -11,5 +12,6 @@
 }
 
 .wpifycf-multi-field-item-field {
+  flex: 1;
   max-width: 100%;
 }

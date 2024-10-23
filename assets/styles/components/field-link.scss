@@ -33,13 +33,13 @@
     }
 
     input[type="text"] {
-      width: 25em;
-      max-width: 100%;
+      width: 100%;
+      max-width: 25em;
     }
 
     .wpifycf-select {
-      width: 25em;
-      max-width: 100%;
+      width: 100%;
+      max-width: 25em;
     }
   }
 
@@ -54,8 +54,8 @@
     gap: var(--wpifycf-gap-1);
 
     input[type="url"] {
-      width: 25em;
-      max-width: 100%;
+      width: 100%;
+      max-width: 25em;
     }
   }
 }

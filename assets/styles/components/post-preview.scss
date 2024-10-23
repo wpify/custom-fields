@@ -1,7 +1,7 @@
 .wpifycf-post-preview {
   display: inline-grid;
   gap: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
-  width: 350px;
+  max-width: 350px;
   grid-template-areas:
           "thumbnail title delete"
           "thumbnail excerpt excerpt";
@@ -11,6 +11,7 @@
   padding: var(--wpifycf-gap-1);
   max-height: calc(100px + 2 * var(--wpifycf-gap-1));
   border: 1px solid var(--wpifycf-border-color);
+  overflow: hidden;
 
   &__thumbnail {
     grid-area: thumbnail;

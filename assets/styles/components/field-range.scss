@@ -4,6 +4,11 @@
   justify-content: flex-start;
   gap: var(--wpifycf-gap-1);
   line-height: 1;
+  max-width: 60em;
+
+  input {
+    flex: 1;
+  }
 
   &__value {
     margin-left: var(--wpifycf-gap-1);
@@ -11,7 +16,7 @@
     background: white;
     font-weight: 500;
     padding: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
-    min-width: 100px;
+    min-width: 50px;
     text-align: center;
   }
 }

@@ -5,3 +5,8 @@
   width: 100%;
   container-type: inline-size;
 }
+.wpifycf-field__control > .wpifycf-field-group, td > .wpifycf-field-group {
+  border: 1px solid var(--wpifycf-border-color);
+  padding: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
+  width: calc(100% - ( 2 * var(--wpifycf-gap-2)));
+}
