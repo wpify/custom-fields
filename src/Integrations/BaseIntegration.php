@@ -103,6 +103,22 @@ abstract class BaseIntegration {
 			$item['default'] = $this->custom_fields->get_default_value( $item );
 		}
 
+		/* Compatibility with WPify Woo */
+		$type_aliases = array(
+			'multiswitch' => 'multi_toggle',
+			'switch'      => 'toggle',
+			'multiselect' => 'multi_select',
+			'colorpicker' => 'color',
+			'gallery'     => 'multi_attachment',
+			'repeater'    => 'multi_group',
+		);
+
+		foreach ( $type_aliases as $alias => $correct ) {
+			if ( $item['type'] === $alias ) {
+				$item['type'] = $correct;
+			}
+		}
+
 		if ( isset( $item['items'] ) ) {
 			$item['items'] = $this->normalize_items( $item['items'], $item['global_id'] );
 		}

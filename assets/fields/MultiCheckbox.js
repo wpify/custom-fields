@@ -7,15 +7,21 @@ function MultiCheckbox ({
   id,
   htmlId,
   onChange,
-  value = {},
+  value = [],
   options,
   attributes = {},
   className,
 }) {
   const handleChange = useCallback(optionValue => event => {
-    const nextValue = { ...value };
-    nextValue[optionValue] = event.target.checked;
-    onChange(nextValue);
+    const nextValue = Array.isArray(value) ? [ ...value ] : [];
+
+    if (event.target.checked) {
+      nextValue.push(optionValue);
+    } else {
+      nextValue.splice(nextValue.indexOf(optionValue), 1);
+    }
+
+    onChange(nextValue.filter((value, index, array) => array.indexOf(value) === index));
   }, [onChange, value]);
 
   return (
@@ -26,7 +32,7 @@ function MultiCheckbox ({
             type="checkbox"
             id={`${htmlId}-${option.value}`}
             onChange={handleChange(option.value)}
-            checked={value[option.value] || false}
+            checked={Array.isArray(value) ? value.includes(option.value) : false}
             {...attributes}
           />
           <label

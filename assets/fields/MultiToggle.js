@@ -8,11 +8,21 @@ function MultiToggle ({
   id,
   htmlId,
   onChange,
-  value = {},
+  value = [],
   options,
   className,
 }) {
-  const handleChange = useCallback(optionValue => checked => onChange({ ...value, [optionValue]: checked }), [onChange, value]);
+  const handleChange = useCallback(optionValue => checked => {
+    const nextValue = Array.isArray(value) ? [ ...value ] : [];
+
+    if (checked) {
+      nextValue.push(optionValue);
+    } else {
+      nextValue.splice(nextValue.indexOf(optionValue), 1);
+    }
+
+    onChange(nextValue.filter((value, index, array) => array.indexOf(value) === index));
+  }, [onChange, value]);
 
   return (
     <div className={clsx('wpifycf-field-multi-toggle', `wpifycf-field-multi-toggle--${id}`, className)}>
@@ -21,7 +31,7 @@ function MultiToggle ({
           <ToggleControl
             id={`${htmlId}-${option.value}`}
             onChange={handleChange(option.value)}
-            checked={value[option.value] || false}
+            checked={Array.isArray(value) ? value.includes(option.value) : false}
             label={option.label}
           />
         </div>

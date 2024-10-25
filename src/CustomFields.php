@@ -372,6 +372,15 @@ class CustomFields {
 				$sanitized_value = esc_url( $value );
 			} elseif ( 'wysiwyg' === $item['type'] ) {
 				$sanitized_value = wp_kses_post( $value );
+			} elseif ( in_array( $item['type'], array( 'multi_checkbox', 'multi_toggle' ), true ) ) {
+				$value           = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
+				$sanitized_value = array();
+
+				if ( is_array( $value ) ) {
+					foreach ( $value as $sub_value ) {
+						$sanitized_value[] = sanitize_text_field( $sub_value );
+					}
+				}
 			} elseif ( str_starts_with( $item['type'], 'multi_' ) ) {
 				$single_type     = substr( $item['type'], strlen( 'multi_' ) );
 				$value           = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
@@ -436,8 +445,6 @@ class CustomFields {
 				'group',
 				'link',
 				'mapycz',
-				'multi_toggle',
-				'multi_checkbox',
 			),
 			true
 		) ) {
