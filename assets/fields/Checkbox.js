@@ -11,6 +11,7 @@ function Checkbox ({
   attributes = {},
   className,
   title,
+  disabled = false,
 }) {
   const handleChange = useCallback(event => onChange(event.target.checked), [onChange]);
 
@@ -22,6 +23,7 @@ function Checkbox ({
         onChange={handleChange}
         className={clsx('wpifycf-field-checkbox', `wpifycf-field-checkbox--${id}`, attributes.class, className)}
         checked={value}
+        disabled={disabled}
         {...attributes}
       />
       {title && ' ' + title}

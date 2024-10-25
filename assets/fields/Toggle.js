@@ -8,6 +8,7 @@ function Toggle ({
   htmlId,
   value = false,
   title,
+  disabled = false,
   onChange,
   className,
 }) {
@@ -17,6 +18,7 @@ function Toggle ({
       label={title}
       checked={value}
       onChange={onChange}
+      disabled={disabled}
       className={clsx('wpifycf-field-toggle', `wpifycf-field-toggle--${id}`, className)}
     />
   );

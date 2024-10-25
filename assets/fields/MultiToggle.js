@@ -35,6 +35,7 @@ function MultiToggle ({
             id={`${htmlId}-${option.value}`}
             onChange={handleChange(option.value)}
             checked={Array.isArray(value) ? value.includes(option.value) : false}
+            disabled={option.disabled}
             label={<span dangerouslySetInnerHTML={{ __html: option.label }}/>}
           />
         </div>

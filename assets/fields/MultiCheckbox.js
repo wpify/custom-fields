@@ -34,6 +34,7 @@ function MultiCheckbox ({
           id={`${htmlId}-${option.value}`}
           onChange={handleChange(option.value)}
           checked={Array.isArray(value) ? value.includes(option.value) : false}
+          disabled={option.disabled}
           {...attributes}
         />
         <label
