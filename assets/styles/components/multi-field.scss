@@ -3,6 +3,7 @@
   flex-flow: column;
   max-width: 60em;
   gap: var(--wpifycf-gap-1);
+  user-select: none;
 }
 
 .wpifycf-multi-field-item {

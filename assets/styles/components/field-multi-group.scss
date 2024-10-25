@@ -8,6 +8,7 @@
     display: flex;
     flex-flow: column;
     gap: var(--wpifycf-gap-2);
+    user-select: none;
   }
 
   &__item {

@@ -4,6 +4,7 @@
     flex-flow: row wrap;
     gap: var(--wpifycf-gap-1);
     margin-bottom: var(--wpifycf-gap-1);
+    user-select: none;
   }
 
   &__option {
