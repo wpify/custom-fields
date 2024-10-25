@@ -12,6 +12,13 @@
 }
 
 .wpifycf-multi-field-item-field {
-  flex: 1;
   max-width: 100%;
+
+  &--textarea, &--text, &--url {
+    flex: 1;
+  }
+
+  &--mapycz {
+    width: 600px;
+  }
 }

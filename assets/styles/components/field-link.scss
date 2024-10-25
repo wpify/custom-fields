@@ -34,12 +34,12 @@
 
     input[type="text"] {
       width: 100%;
-      max-width: 25em;
+      max-width: 35em;
     }
 
     .wpifycf-select {
       width: 100%;
-      max-width: 25em;
+      max-width: 35em;
     }
   }
 
@@ -54,8 +54,10 @@
     gap: var(--wpifycf-gap-1);
 
     input[type="url"] {
+      flex: 1;
       width: 100%;
-      max-width: 25em;
+      min-width: 20em;
+      max-width: 35em;
     }
   }
 }

@@ -24,6 +24,29 @@
     }
   }
 
+  &--trash {
+    svg {
+      fill: darkred;
+    }
+
+    &:hover svg {
+      fill: red;
+    }
+  }
+
+  &--plus {
+    svg {
+      border: 1px solid #2271b1;
+      background: #f6f7f7;
+      border-radius: 3px;
+
+      &:hover{
+        background: #f0f0f1;
+        border-color: #0a4b78;
+      }
+    }
+  }
+
   &--move {
     cursor: move;
   }
