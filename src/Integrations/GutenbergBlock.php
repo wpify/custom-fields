@@ -21,7 +21,6 @@ use Wpify\CustomFields\Exceptions\MissingArgumentException;
  * @throws MissingArgumentException If the required 'name' or 'title' fields are missing.
  */
 class GutenbergBlock extends BaseIntegration {
-
 	/**
 	 * ID of the custom fields options instance.
 	 *
@@ -250,7 +249,7 @@ class GutenbergBlock extends BaseIntegration {
 	 */
 	public function __construct(
 		array $args,
-		private readonly CustomFields $custom_fields,
+		CustomFields $custom_fields,
 	) {
 		parent::__construct( $custom_fields );
 

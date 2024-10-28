@@ -18,7 +18,6 @@ use Wpify\CustomFields\CustomFields;
  * including REST API registration and item normalization.
  */
 abstract class BaseIntegration {
-
 	/**
 	 * List of the fields to be shown.
 	 *
@@ -38,10 +37,10 @@ abstract class BaseIntegration {
 	 *
 	 * Registers the REST API options on initialization.
 	 *
-	 * @param CustomFields $custom_fields The custom fields object.
+	 * @param CustomFields $custom_fields The custom fields base class.
 	 */
 	public function __construct(
-		private readonly CustomFields $custom_fields,
+		public readonly CustomFields $custom_fields,
 	) {
 		add_action( 'rest_api_init', array( $this, 'register_rest_options' ) );
 	}

@@ -16,7 +16,6 @@ use Wpify\CustomFields\CustomFields;
  * Represents a menu item and integrates with custom fields.
  */
 class MenuItem extends ItemsIntegration {
-
 	/**
 	 * ID of the custom fields options instance.
 	 *
@@ -84,11 +83,9 @@ class MenuItem extends ItemsIntegration {
 	 * @return void
 	 */
 	public function maybe_enqueue( WP_Screen $current_screen ): void {
-		if ( 'nav-menus' !== $current_screen->id ) {
-			return;
+		if ( 'nav-menus' === $current_screen->id ) {
+			$this->enqueue();
 		}
-
-		$this->enqueue();
 	}
 
 	/**

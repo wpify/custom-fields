@@ -14,19 +14,6 @@ use Wpify\CustomFields\CustomFields;
  */
 abstract class ItemsIntegration extends OptionsIntegration {
 	/**
-	 * Constructor method for initializing the object with CustomFields.
-	 *
-	 * @param CustomFields $custom_fields An instance of CustomFields to initialize.
-	 *
-	 * @return void
-	 */
-	public function __construct( // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
-		private readonly CustomFields $custom_fields,
-	) {
-		parent::__construct( $custom_fields );
-	}
-
-	/**
 	 * Abstract method to retrieve the item ID.
 	 *
 	 * @return int The ID of the item.

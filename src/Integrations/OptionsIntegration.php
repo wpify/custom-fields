@@ -16,19 +16,6 @@ use Wpify\CustomFields\CustomFields;
  */
 abstract class OptionsIntegration extends BaseIntegration {
 	/**
-	 * Constructs a new instance of the class.
-	 *
-	 * @param CustomFields $custom_fields An instance of the CustomFields class.
-	 *
-	 * @return void
-	 */
-	public function __construct( // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
-		private readonly CustomFields $custom_fields,
-	) {
-		parent::__construct( $custom_fields );
-	}
-
-	/**
 	 * Prints the app container with specific data attributes.
 	 *
 	 * @param string $context The context in which the app is used.
