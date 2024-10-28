@@ -180,8 +180,6 @@ function TinyMCE ({ htmlId, value, onChange, height, disabled }) {
       suffix,
     });
 
-    console.log(htmlId);
-
     window.wp.oldEditor.initialize(htmlId, {
       tinymce: {
         ...settings,

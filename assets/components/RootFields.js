@@ -15,7 +15,7 @@ export function RootFields ({
       {...field}
       name={field.name || field.id}
       value={values[field.id]}
-      htmlId={field.id}
+      htmlId={field.id.replace(/[\[\]]+/g, '_')}
       onChange={updateValue(field.id)}
       renderOptions={renderOptions}
       setValidity={handleValidityChange(field.id)}
