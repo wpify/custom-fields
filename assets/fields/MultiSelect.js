@@ -13,6 +13,7 @@ export function MultiSelect ({
   options = [],
   options_key: optionsKey,
   className,
+  disabled,
 }) {
   useEffect(() => {
     if (!Array.isArray(value)) {
@@ -52,6 +53,7 @@ export function MultiSelect ({
   } = useMulti({
     value,
     onChange,
+    disabled,
   });
 
   const handleChange = useCallback(newValue => onChange([newValue, ...value]), [onChange, value]);
@@ -63,7 +65,9 @@ export function MultiSelect ({
           {usedOptions.map((option, index) => (
             <div className="wpifycf-field-multi-select__option" key={option.value}>
               <span>{option.label}</span>
-              <IconButton icon="trash" onClick={remove(index)} />
+              {!disabled && (
+                <IconButton icon="trash" onClick={remove(index)} />
+              )}
             </div>
           ))}
         </div>
@@ -76,6 +80,7 @@ export function MultiSelect ({
           options={availableOptions}
           filterOption={optionsKey ? Boolean : undefined}
           onInputChange={setSearch}
+          disabled={disabled}
         />
       )}
     </div>

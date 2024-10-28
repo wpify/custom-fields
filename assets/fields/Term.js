@@ -20,6 +20,7 @@ export function Term ({
   value = 0,
   onChange,
   className,
+  disabled = false,
 }) {
   const { data: terms, isError, isFetching } = useTerms({ taxonomy });
 
@@ -39,6 +40,7 @@ export function Term ({
         onChange={onChange}
         type="radio"
         htmlId={htmlId}
+        disabled={disabled}
       />
     );
   } else {
@@ -49,6 +51,7 @@ export function Term ({
         value={value}
         onChange={onChange}
         options={terms.map(term => ({ value: term.id, label: term.name }))}
+        disabled={disabled}
       />
     );
   }
@@ -62,7 +65,7 @@ export function Term ({
 
 Term.checkValidity = checkValidityNonZeroIntegerType;
 
-export function CategoryTree ({ categories = [], value = [], onChange, htmlId, type }) {
+export function CategoryTree ({ categories = [], value = [], onChange, htmlId, type, disabled = false }) {
   return (
     <div className="wpifycf-term-items">
       {categories.map(category => (
@@ -73,13 +76,14 @@ export function CategoryTree ({ categories = [], value = [], onChange, htmlId, t
           onChange={onChange}
           htmlId={htmlId + '__select'}
           type={type}
+          disabled={disabled}
         />
       ))}
     </div>
   );
 }
 
-function CategoryItem ({ htmlId, category, value = [], onChange, type }) {
+function CategoryItem ({ htmlId, category, value = [], onChange, type, disabled = false }) {
   const [isExpanded, setIsExpanded] = useState(() => isTermExpanded(category, value));
 
   useEffect(() => {
@@ -91,7 +95,9 @@ function CategoryItem ({ htmlId, category, value = [], onChange, type }) {
   }, []);
 
   const handleSelect = useCallback(id => () => {
-    if (type === 'radio') {
+    if (disabled) {
+      return null;
+    } else if (type === 'radio') {
       onChange(id);
     } else if (type === 'checkbox') {
       if (value.includes(id)) {
@@ -110,6 +116,7 @@ function CategoryItem ({ htmlId, category, value = [], onChange, type }) {
           name={htmlId}
           onChange={handleSelect(category.id)}
           checked={value.includes(category.id)}
+          disabled={disabled}
         />
         <div
           onClick={category.children ? handleToggleExpanded : handleSelect(category.id)}
@@ -132,6 +139,7 @@ function CategoryItem ({ htmlId, category, value = [], onChange, type }) {
               onChange={onChange}
               type={type}
               htmlId={htmlId}
+              disabled={disabled}
             />
           ))}
         </div>

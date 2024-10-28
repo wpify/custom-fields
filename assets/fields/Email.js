@@ -9,6 +9,7 @@ export function Email ({
   onChange,
   value = '',
   attributes = {},
+  disabled = false,
   className,
 }) {
   const handleChange = useCallback(function (event) {
@@ -24,6 +25,7 @@ export function Email ({
       onChange={handleChange}
       value={value}
       className={clsx('wpifycf-field-email', `wpifycf-field-email--${id}`, attributes.class, className)}
+      disabled={disabled}
       {...attributes}
     />
   );

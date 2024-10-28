@@ -9,6 +9,7 @@ function Color ({
   onChange,
   value = '',
   attributes = {},
+  disabled = false,
   className,
 }) {
   const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
@@ -20,6 +21,7 @@ function Color ({
       onChange={handleChange}
       value={value}
       className={clsx('wpifycf-field-color', `wpifycf-field-color--${id}`, attributes.class, className)}
+      disabled={disabled}
       {...attributes}
     />
   );

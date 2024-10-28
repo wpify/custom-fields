@@ -10,6 +10,7 @@ export function PostSelect ({
   value,
   exclude,
   include,
+  disabled,
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sentSelected, setSentSelected] = useState(undefined);
@@ -55,6 +56,7 @@ export function PostSelect ({
       classNamePrefix="wpifycf-select"
       onChange={handleChange}
       menuPortalTarget={document.body}
+      isDisabled={disabled}
     />
   );
 }

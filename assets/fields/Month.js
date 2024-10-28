@@ -11,6 +11,7 @@ export function Month ({
   attributes = {},
   min,
   max,
+  disabled = false,
   className,
 }) {
   const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
@@ -24,6 +25,7 @@ export function Month ({
       className={clsx('wpifycf-field-month', `wpifycf-field-month--${id}`, attributes.class, className)}
       min={min}
       max={max}
+      disabled={disabled}
       {...attributes}
     />
   );

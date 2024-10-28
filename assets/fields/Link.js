@@ -14,6 +14,7 @@ export function Link ({
   onChange,
   post_type,
   className,
+  disabled = false,
 }) {
   const [blurUrl, setBlurUrl] = useState(null);
   const postTypes = usePostTypes(post_type);
@@ -89,6 +90,7 @@ export function Link ({
               value={value}
               postTypes={postTypes}
               onChange={handlePostTypeChange}
+              disabled={disabled}
             />
           ) : (
             <label htmlFor={htmlId + '.url'}>
@@ -102,6 +104,7 @@ export function Link ({
               postType={value.post_type}
               value={value.post}
               onSelect={handlePostChange}
+              disabled={disabled}
             />
           )}
           <UrlInput
@@ -110,6 +113,7 @@ export function Link ({
             onUrlChange={handleUrlChange}
             onBlur={handleUrlBlur}
             onTargetChange={handleTargetChange}
+            disabled={disabled}
           />
         </div>
         <div className="wpifycf-field-link__field-label">
@@ -118,16 +122,16 @@ export function Link ({
           </label>
         </div>
         <div className="wpifycf-field-link__field-input">
-          <input type="text" value={value?.label || ''} id={htmlId + '.label'} onChange={handleLabelChange} />
+          <input type="text" value={value?.label || ''} id={htmlId + '.label'} onChange={handleLabelChange} disabled={disabled} />
         </div>
       </div>
     </div>
   );
 }
 
-function PostTypes ({ onChange, postTypes, value }) {
+function PostTypes ({ onChange, postTypes, value, disabled }) {
   return (
-    <select value={value.post_type} onChange={onChange}>
+    <select value={value.post_type} onChange={onChange} disabled={disabled}>
       <option value="">{__('URL', 'wpify-custom-fields')}</option>
       {postTypes.map((currentPostType) => (
         <option value={currentPostType.slug} key={currentPostType.slug}>
@@ -138,12 +142,24 @@ function PostTypes ({ onChange, postTypes, value }) {
   );
 }
 
-function UrlInput ({ value = {}, htmlId, onUrlChange, onTargetChange, onBlur }) {
+function UrlInput ({ value = {}, htmlId, onUrlChange, onTargetChange, onBlur, disabled }) {
   return (
     <div className="wpifycf-field-link__url-input">
-      <input type="url" value={value.url || ''} id={htmlId + '.url'} onChange={onUrlChange} onBlur={onBlur} />
+      <input
+        type="url"
+        disabled={disabled}
+        value={value.url || ''}
+        id={htmlId + '.url'}
+        onChange={onUrlChange}
+        onBlur={onBlur}
+      />
       <label className="wpifycf-field-link__field-option">
-        <input type="checkbox" checked={value.target === '_blank'} onChange={onTargetChange} />
+        <input
+          type="checkbox"
+          disabled={disabled}
+          checked={value.target === '_blank'}
+          onChange={onTargetChange}
+        />
         {__('Open in a new tab', 'wpify-custom-fields')}
       </label>
     </div>

@@ -10,4 +10,15 @@ form:has([data-context="user"]) {
   tr > th[scope="row"]:has(.wpifycf-field__label) > label:not(.wpifycf-field__label) {
     display: none;
   }
+
+  tr:has(.wpifycf-field--no-label.wpifycf-field--is-root) {
+    th {
+      display: none;
+    }
+
+    td {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
 }

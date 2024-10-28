@@ -12,6 +12,7 @@ export function Post ({
   onChange,
   post_type: postType,
   className,
+  disabled = false,
 }) {
   const [selected, setSelected] = useState(null);
   const handleDelete = useCallback(() => onChange(null), [onChange]);
@@ -23,9 +24,14 @@ export function Post ({
         onChange={onChange}
         onSelect={setSelected}
         postType={postType}
+        disabled={disabled}
       />
       {value > 0 && (
-        <PostPreview post={selected} onDelete={handleDelete} />
+        <PostPreview
+          post={selected}
+          onDelete={handleDelete}
+          disabled={disabled}
+        />
       )}
     </div>
   );
@@ -33,7 +39,7 @@ export function Post ({
 
 Post.checkValidity = checkValidityNumberType;
 
-export function PostPreview ({ post, onDelete }) {
+export function PostPreview ({ post, onDelete, disabled }) {
   return (
     <div className="wpifycf-post-preview">
       {post && (
@@ -54,7 +60,9 @@ export function PostPreview ({ post, onDelete }) {
           <div className="wpifycf-post-preview__excerpt">{post.excerpt.length > 125 ? post.excerpt.substring(0, 125) + '...' : post.excerpt}</div>
         </>
       )}
-      <IconButton icon="trash" className="wpifycf-post-preview__delete" onClick={onDelete} />
+      {!disabled && (
+        <IconButton icon="trash" className="wpifycf-post-preview__delete" onClick={onDelete} />
+      )}
     </div>
   );
 }

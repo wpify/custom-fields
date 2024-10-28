@@ -14,6 +14,7 @@ export function MultiTerm ({
   value = [],
   onChange,
   className,
+  disabled = false,
 }) {
   const { data: terms, isError, isFetching } = useTerms({ taxonomy });
 
@@ -38,6 +39,7 @@ export function MultiTerm ({
         onChange={onChange}
         type="checkbox"
         htmlId={htmlId}
+        disabled={disabled}
       />
     );
   } else {
@@ -48,6 +50,7 @@ export function MultiTerm ({
         value={value}
         onChange={onChange}
         options={termOptions}
+        disabled={disabled}
       />
     );
   }

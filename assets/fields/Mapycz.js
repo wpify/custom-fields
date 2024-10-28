@@ -28,6 +28,7 @@ export function Mapycz ({
   onChange,
   lang = 'en',
   className,
+  disabled = false,
 }) {
   const mapycz = useMapyCzApiKey();
 
@@ -38,7 +39,7 @@ export function Mapycz ({
       ) : mapycz.isError ? (
         <div>{__('Error in loading MapyCZ field...', 'wpify-custom-field')}</div>
       ) : mapycz.apiKey ? (
-        <MapyczMap apiKey={mapycz.apiKey} value={value} onChange={onChange} lang={lang} />
+        <MapyczMap apiKey={mapycz.apiKey} value={value} onChange={onChange} lang={lang} disabled={disabled} />
       ) : (
         <SetApiKey mapycz={mapycz} htmlId={htmlId} />
       )}
@@ -61,6 +62,7 @@ function MapyczMap ({
   value = {},
   onChange,
   lang,
+  disabled = false,
 }) {
   const [map, setMap] = useState(null);
   const latitude = value.latitude || defaultValue.latitude;
@@ -118,20 +120,26 @@ function MapyczMap ({
   }, [map]);
 
   const handleMarkerDrag = useCallback((event) => {
-    const marker = event.target;
-    const position = marker.getLatLng();
-    onChange({ ...value, latitude: position.lat.toFixed(6), longitude: position.lng.toFixed(6) });
-    setCenter(position);
-  }, [onChange, value, setCenter]);
+    if (!disabled) {
+      const marker = event.target;
+      const position = marker.getLatLng();
+      onChange({ ...value, latitude: position.lat.toFixed(6), longitude: position.lng.toFixed(6) });
+      setCenter(position);
+    }
+  }, [onChange, value, setCenter, disabled]);
 
   const handleZoomEnd = useCallback((event) => {
-    onChange({ ...value, zoom: event.target.getZoom() });
-  }, [onChange, value]);
+    if (!disabled) {
+      onChange({ ...value, zoom: event.target.getZoom() });
+    }
+  }, [onChange, value, disabled]);
 
   const handleMoveEnd = useCallback((event) => {
-    const center = event.target.getCenter();
-    onChange({ ...value, latitude: center.lat.toFixed(6), longitude: center.lng.toFixed(6) });
-  }, [onChange, value]);
+    if (!disabled) {
+      const center = event.target.getCenter();
+      onChange({ ...value, latitude: center.lat.toFixed(6), longitude: center.lng.toFixed(6) });
+    }
+  }, [onChange, value, disabled]);
 
   useEffect(() => {
     if (map) {
@@ -160,7 +168,7 @@ function MapyczMap ({
         <Marker
           position={center}
           icon={markerIcon}
-          draggable
+          draggable={!disabled}
           eventHandlers={{ dragend: handleMarkerDrag }}
         />
       </MapContainer>
@@ -188,7 +196,9 @@ function MapyczMap ({
 
   return (
     <div className="wpifycf-field-mapycz__map" ref={root}>
-      <AutoComplete value={value} onChange={onChange} apiKey={apiKey} lang={lang} setCenter={setCenter} />
+      {!disabled && (
+        <AutoComplete value={value} onChange={onChange} apiKey={apiKey} lang={lang} setCenter={setCenter} />
+      )}
       {mapContainer}
       <Address value={value} className="wpifycf-field-mapycz__address" />
     </div>

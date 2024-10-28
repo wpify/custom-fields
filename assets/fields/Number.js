@@ -13,6 +13,7 @@ export function NumberInput ({
   step,
   attributes = {},
   className,
+  disabled = false,
 }) {
   const handleChange = useCallback(event => onChange(Number(event.target.value)), [onChange]);
 
@@ -26,6 +27,7 @@ export function NumberInput ({
       max={max}
       step={step}
       className={clsx('wpifycf-field-number', `wpifycf-field-number--${id}`, attributes.class, className)}
+      disabled={disabled}
       {...attributes}
     />
   );

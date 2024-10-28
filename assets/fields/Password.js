@@ -10,6 +10,7 @@ function Password ({
   value = '',
   attributes = {},
   className,
+  disabled = false,
 }) {
   const handleChange = useCallback(event => onChange(String(event.target.value)), [onChange]);
 
@@ -20,6 +21,7 @@ function Password ({
       onChange={handleChange}
       value={value}
       className={clsx('wpifycf-field-password', `wpifycf-field-password--${id}`, attributes.class, className)}
+      disabled={disabled}
       {...attributes}
     />
   );

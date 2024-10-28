@@ -11,6 +11,7 @@ export function Url ({
   value = '',
   attributes = {},
   className,
+  disabled = false,
 }) {
   const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
 
@@ -30,6 +31,7 @@ export function Url ({
       onBlur={handleBlur}
       value={value}
       className={clsx('wpifycf-field-url', `wpifycf-field-url--${id}`, attributes.class, className)}
+      disabled={disabled}
       {...attributes}
     />
   );

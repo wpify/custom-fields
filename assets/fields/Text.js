@@ -10,6 +10,7 @@ export function Text ({
   value = '',
   attributes = {},
   className,
+  disabled = false,
 }) {
   const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
 
@@ -20,6 +21,7 @@ export function Text ({
       onChange={handleChange}
       value={value}
       className={clsx('wpifycf-field-text', `wpifycf-field-text--${id}`, attributes.class, className)}
+      disabled={disabled}
       {...attributes}
     />
   );

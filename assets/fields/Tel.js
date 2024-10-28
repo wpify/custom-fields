@@ -14,6 +14,7 @@ export function Tel ({
   attributes = {},
   default_country: defaultCountry = 'US',
   className,
+  disabled = false,
 }) {
   useEffect(() => {
     if (typeof value !== 'string') {
@@ -28,6 +29,7 @@ export function Tel ({
       value={value}
       id={htmlId}
       onChange={onChange}
+      disabled={disabled}
       className={clsx(
         'wpifycf-field-tel',
         `wpifycf-field-tel--${id}`,

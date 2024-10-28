@@ -56,23 +56,27 @@ export function Field ({
 
   const validityMessages = props.validity?.filter(v => typeof v === 'string') || [];
 
+  const combinedRenderOptions = FieldComponent.renderOptions
+    ? { ...renderOptions, ...FieldComponent.renderOptions }
+    : { ...renderOptions };
+
   return maybePortal(isHidden
     ? hiddenField
     : (
-      <FieldWrapper renderOptions={renderOptions}>
+      <FieldWrapper renderOptions={combinedRenderOptions}>
         <Label
-          renderOptions={renderOptions}
+          renderOptions={combinedRenderOptions}
           type={type}
           className="wpifycf-field__label"
           node={node}
           isRoot={isRoot}
           {...props}
         />
-        <ControlWrapper renderOptions={renderOptions}>
+        <ControlWrapper renderOptions={combinedRenderOptions}>
           {hiddenField}
           {FieldComponent.descriptionPosition === 'before' && (
             <FieldDescription
-              renderOptions={renderOptions}
+              renderOptions={combinedRenderOptions}
               description={description}
               descriptionPosition="before"
             />
@@ -87,7 +91,14 @@ export function Field ({
             <FieldComponent
               type={type}
               value={value}
-              className={clsx('wpifycf-field', `wpifycf-field--${type}`, props.className, validityMessages.length > 0 && 'wpifycf-field--invalid')}
+              className={clsx(
+                'wpifycf-field',
+                `wpifycf-field--${type}`,
+                props.className,
+                validityMessages.length > 0 && 'wpifycf-field--invalid',
+                combinedRenderOptions.noLabel && 'wpifycf-field--no-label',
+                combinedRenderOptions.isRoot && 'wpifycf-field--is-root',
+              )}
               fieldPath={fieldPath}
               {...props}
             />
@@ -99,7 +110,7 @@ export function Field ({
           ))}
           {FieldComponent.descriptionPosition !== 'before' && (
             <FieldDescription
-              renderOptions={renderOptions}
+              renderOptions={combinedRenderOptions}
               description={description}
               descriptionPosition="after"
             />

@@ -10,6 +10,7 @@ export function Button (props) {
     href,
     action,
     primary = false,
+    disabled = false,
     attributes = {},
     className,
   } = props;
@@ -27,6 +28,7 @@ export function Button (props) {
       href={href}
       onClick={handleClick}
       className={clsx('wpifycf-field-button', `wpifycf-field-${id}`, attributes.class, className)}
+      disabled={disabled}
       {...attributes}
     >
       {title}

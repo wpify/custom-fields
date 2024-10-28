@@ -21,6 +21,7 @@ function MultiGroup ({
   className,
   validity = [],
   fieldPath,
+  disabled = false,
   ...props
 }) {
   useEffect(() => {
@@ -49,6 +50,7 @@ function MultiGroup ({
     max,
     defaultValue,
     disabled_buttons,
+    disabled,
     dragHandle: '.wpifycf__move-handle',
   });
 
@@ -103,6 +105,7 @@ function MultiGroup ({
             <div className="wpifycf-field-multi-group__content">
               <Field
                 {...props}
+                disabled={disabled}
                 value={value}
                 default={defaultValue}
                 onChange={handleChange(index)}

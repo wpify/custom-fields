@@ -8,7 +8,7 @@ import '@wordpress/core-data';
 import { evaluateConditions } from '@/helpers/functions';
 import { AppContext } from '@/custom-fields';
 
-export function useSortableList ({ containerRef, draggable, handle, items, setItems }) {
+export function useSortableList ({ containerRef, draggable, handle, items, setItems, disabled = false }) {
   const onEnd = useCallback((event) => {
     event.stopPropagation();
     const nextItems = [...items];
@@ -19,7 +19,7 @@ export function useSortableList ({ containerRef, draggable, handle, items, setIt
 
   useEffect(() => {
     if (containerRef.current) {
-      const options = { animation: 150, onEnd, forceFallback: true };
+      const options = { animation: 150, onEnd, forceFallback: true, disabled };
       if (draggable) options.draggable = draggable;
       if (handle) options.handle = handle;
       const sortable = Sortable.create(containerRef.current, options);
@@ -73,7 +73,7 @@ export function useAttachment (id) {
   return { attachment, setAttachment };
 }
 
-export function useMulti ({ value, onChange, min, max, defaultValue, disabled_buttons = [], dragHandle }) {
+export function useMulti ({ value, onChange, min, max, defaultValue, disabled_buttons = [], dragHandle, disabled = false }) {
   const containerRef = useRef(null);
   const [keyPrefix, setKeyPrefix] = useState(uuidv4());
   const [collapsed, setCollapsed] = useState(() => Array(value.length).fill(true));
@@ -145,18 +145,20 @@ export function useMulti ({ value, onChange, min, max, defaultValue, disabled_bu
 
   const handleSort = useCallback(
     (nextValue) => {
-      setKeyPrefix(uuidv4());
-      onChange(nextValue);
+      if (!disabled) {
+        setKeyPrefix(uuidv4());
+        onChange(nextValue);
 
-      // Reorder the collapsed array to match the new order
-      setCollapsed((prevCollapsed) => {
-        return nextValue.map((_, newIndex) => {
-          const oldIndex = value.findIndex((item) => item === nextValue[newIndex]);
-          return prevCollapsed[oldIndex];
+        // Reorder the collapsed array to match the new order
+        setCollapsed((prevCollapsed) => {
+          return nextValue.map((_, newIndex) => {
+            const oldIndex = value.findIndex((item) => item === nextValue[newIndex]);
+            return prevCollapsed[oldIndex];
+          });
         });
-      });
+      }
     },
-    [onChange, value],
+    [onChange, value, disabled],
   );
 
   useSortableList({
@@ -164,6 +166,7 @@ export function useMulti ({ value, onChange, min, max, defaultValue, disabled_bu
     items: value,
     setItems: handleSort,
     handle: dragHandle,
+    disabled,
   });
 
   useEffect(() => {
@@ -180,10 +183,10 @@ export function useMulti ({ value, onChange, min, max, defaultValue, disabled_bu
   }, [onChange, value, min, max, defaultValue]);
 
   const length = value.length;
-  const canAdd = !disabled_buttons.includes('move') && (typeof max === 'undefined' || length < max);
-  const canRemove = !disabled_buttons.includes('delete') && (typeof min === 'undefined' || length > min);
-  const canMove = !disabled_buttons.includes('move') && length > 1;
-  const canDuplicate = !disabled_buttons.includes('duplicate');
+  const canAdd = !disabled && !disabled_buttons.includes('move') && (typeof max === 'undefined' || length < max);
+  const canRemove = !disabled && !disabled_buttons.includes('delete') && (typeof min === 'undefined' || length > min);
+  const canMove = !disabled && !disabled_buttons.includes('move') && length > 1;
+  const canDuplicate = !disabled && !disabled_buttons.includes('duplicate');
 
   const toggleCollapsed = useCallback((index, forceCollapsed = null) => () => {
     setCollapsed((prevCollapsed) => {

@@ -15,6 +15,7 @@ function Group ({
   validity = [],
   className,
   fieldPath,
+  disabled = false,
 }) {
   const handleChange = useCallback(id => fieldValue => onChange({ ...value, [id]: fieldValue }), [value, onChange]);
   const fieldValidity = validity?.reduce((acc, item) => typeof item === 'object' ? { ...acc, ...item } : acc, {});
@@ -26,6 +27,7 @@ function Group ({
       {items.map(field => (
         <Field
           key={field.id}
+          disabled={disabled}
           {...field}
           value={value[field.id] || ''}
           onChange={handleChange(field.id)}

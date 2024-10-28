@@ -183,12 +183,9 @@ abstract class BaseIntegration {
 		);
 
 		// Dependencies for WYSIWYG field.
-		$js['dependencies'][] = 'wp-tinymce';
-		$js['dependencies'][] = 'code-editor';
-
 		wp_enqueue_editor();
-		wp_enqueue_script( 'wp-block-library' );
 		wp_tinymce_inline_scripts();
+		wp_enqueue_script( 'wp-block-library' );
 
 		// Dependencies for Toggle field.
 		wp_enqueue_style( 'wp-components' );

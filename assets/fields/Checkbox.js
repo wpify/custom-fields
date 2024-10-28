@@ -26,7 +26,7 @@ function Checkbox ({
         disabled={disabled}
         {...attributes}
       />
-      {title && ' ' + title}
+      <span dangerouslySetInnerHTML={{ __html: title }} />
     </label>
   );
 }

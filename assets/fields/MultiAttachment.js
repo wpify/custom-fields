@@ -13,6 +13,7 @@ function MultiAttachment ({
   attachment_type,
   onChange,
   className,
+  disabled = false,
 }) {
   useEffect(() => {
     if (!Array.isArray(value)) {
@@ -32,6 +33,7 @@ function MultiAttachment ({
     containerRef,
     items: attachments,
     setItems: onSortEnd,
+    disabled,
   });
 
   useEffect(() => {
@@ -70,9 +72,11 @@ function MultiAttachment ({
     <div
       className={clsx('wpifycf-field-multi-attachment', `wpifycf-field-multi-attachment--${id}`, className)}
     >
-      <Button className="wpifycf-button__add" onClick={openMediaLibrary}>
-        {__('Add attachments', 'wpify-custom-fields')}
-      </Button>
+      {!disabled && (
+        <Button className="wpifycf-button__add" onClick={openMediaLibrary}>
+          {__('Add attachments', 'wpify-custom-fields')}
+        </Button>
+      )}
       {attachments.length > 0 && (
         <div className="wpifycf-field-multi-attachment__items" ref={containerRef}>
           {attachments.map((attachment) => (
@@ -80,6 +84,7 @@ function MultiAttachment ({
               key={attachment.id}
               attachment={attachment}
               remove={remove(attachment.id)}
+              disabled={disabled}
             />
           ))}
         </div>

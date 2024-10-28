@@ -13,6 +13,7 @@ export function Range ({
   step,
   attributes = {},
   className,
+  disabled = false,
 }) {
   const handleChange = useCallback(event => onChange(Number(event.target.value)), [onChange]);
   const isValid = !isNaN(parseFloat(value));
@@ -28,6 +29,7 @@ export function Range ({
         min={min}
         max={max}
         step={step}
+        disabled={disabled}
         {...attributes}
       />
       {max && <div className="wpifycf-field-range__minmax">{max}</div>}

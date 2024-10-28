@@ -11,6 +11,7 @@ export function Date ({
   attributes = {},
   min,
   max,
+  disabled = false,
   className,
 }) {
   const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
@@ -24,6 +25,7 @@ export function Date ({
       className={clsx('wpifycf-field-date', `wpifycf-field-date--${id}`, attributes.class, className)}
       min={min}
       max={max}
+      disabled={disabled}
       {...attributes}
     />
   );

@@ -10,6 +10,7 @@ export function Textarea ({
   value = '',
   attributes = {},
   className,
+  disabled = false,
 }) {
   const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
 
@@ -19,6 +20,7 @@ export function Textarea ({
       onChange={handleChange}
       value={value}
       className={clsx('wpifycf-field-textarea', `wpifycf-field-textarea--${id}`, attributes.class, className)}
+      disabled={disabled}
       {...attributes}
     />
   );

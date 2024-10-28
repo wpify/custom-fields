@@ -12,6 +12,7 @@ export function Week ({
   max,
   attributes = {},
   className,
+  disabled = false,
 }) {
   const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
 
@@ -24,6 +25,7 @@ export function Week ({
       min={min}
       max={max}
       className={clsx('wpifycf-field-week', `wpifycf-field-week--${id}`, attributes.class, className)}
+      disabled={disabled}
       {...attributes}
     />
   );

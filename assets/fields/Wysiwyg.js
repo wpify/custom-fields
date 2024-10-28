@@ -26,6 +26,7 @@ export function Wysiwyg ({
   onChange,
   height = 200,
   className,
+  disabled = false,
 }) {
   const [view, setView] = useState(VIEW_VISUAL);
   const { context } = useContext(AppContext);
@@ -49,12 +50,17 @@ export function Wysiwyg ({
         </button>
       </div>
       {view === VIEW_VISUAL && (
-        context === 'gutenberg' ? (
+        disabled ? (
+          <RawHTML className="wpifycf-field-wysiwyg__raw">
+            {value}
+          </RawHTML>
+        ) : context === 'gutenberg' ? (
           <GutenbergTinyMCE
             htmlId={htmlId}
             value={value}
             onChange={onChange}
             height={height}
+            disabled={disabled}
           />
         ) : (
           <TinyMCE
@@ -62,6 +68,7 @@ export function Wysiwyg ({
             value={value}
             onChange={onChange}
             height={height}
+            disabled={disabled}
           />
         )
       )}
@@ -74,6 +81,7 @@ export function Wysiwyg ({
           htmlId={htmlId}
           language="html"
           theme="light"
+          disabled={disabled}
         />
       )}
     </div>
@@ -82,7 +90,7 @@ export function Wysiwyg ({
 
 Wysiwyg.checkValidity = checkValidityStringType;
 
-function GutenbergTinyMCE ({ htmlId, value, onChange, height }) {
+function GutenbergTinyMCE ({ htmlId, value, onChange, height, disabled }) {
   const [isOpen, setOpen] = useState(false);
   const [isModalFullScreen, setIsModalFullScreen] = useState(false);
   const handleClose = useCallback(() => setOpen(false), []);
@@ -98,14 +106,16 @@ function GutenbergTinyMCE ({ htmlId, value, onChange, height }) {
         <RawHTML className="wpifycf-field-wysiwyg__raw" onClick={handleOpen}>
           {value}
         </RawHTML>
-        <Button
-          onClick={handleOpen}
-          label={__('Edit')}
-          variant="primary"
-          className="wpifycf-field-wysiwyg__raw-edit"
-        >
-          {__('Edit')}
-        </Button>
+        {!disabled && (
+          <Button
+            onClick={handleOpen}
+            label={__('Edit')}
+            variant="primary"
+            className="wpifycf-field-wysiwyg__raw-edit"
+          >
+            {__('Edit')}
+          </Button>
+        )}
       </div>
       {isOpen && (
         <Modal
@@ -156,10 +166,10 @@ function GutenbergTinyMCE ({ htmlId, value, onChange, height }) {
   );
 }
 
-function TinyMCE ({ htmlId, value, onChange, height }) {
+function TinyMCE ({ htmlId, value, onChange, height, disabled }) {
   const editorRef = useRef(null);
   const styles = useSelect(
-    (select) => select(store).getSettings().styles,
+    select => select(store).getSettings().styles,
   );
 
   useEffect(() => {
@@ -169,6 +179,8 @@ function TinyMCE ({ htmlId, value, onChange, height }) {
       base_url: baseURL,
       suffix,
     });
+
+    console.log(htmlId);
 
     window.wp.oldEditor.initialize(htmlId, {
       tinymce: {

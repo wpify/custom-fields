@@ -18,6 +18,7 @@ export function MultiField ({
   className,
   validity = [],
   fieldPath,
+  disabled = false,
   ...props
 }) {
   const {
@@ -36,6 +37,7 @@ export function MultiField ({
     max,
     defaultValue,
     disabled_buttons,
+    disabled,
     dragHandle: '.wpifycf-multi-field-item__sort',
   });
 
@@ -66,6 +68,7 @@ export function MultiField ({
                 validity={fieldsValidity[index]}
                 renderOptions={{ noLabel: true, noWrapper: true }}
                 fieldPath={`${fieldPath}[${index}]`}
+                disabled={disabled}
               />
             </div>
             {canRemove && (

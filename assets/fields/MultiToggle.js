@@ -11,6 +11,7 @@ function MultiToggle ({
   value = [],
   options,
   className,
+  disabled = false,
 }) {
   const handleChange = useCallback(optionValue => checked => {
     const nextValue = Array.isArray(value) ? [...value] : []
@@ -35,7 +36,7 @@ function MultiToggle ({
             id={`${htmlId}-${option.value}`}
             onChange={handleChange(option.value)}
             checked={Array.isArray(value) ? value.includes(option.value) : false}
-            disabled={option.disabled}
+            disabled={disabled || option.disabled}
             label={<span dangerouslySetInnerHTML={{ __html: option.label }}/>}
           />
         </div>

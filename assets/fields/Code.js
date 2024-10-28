@@ -23,6 +23,7 @@ export function Code ({
   theme = 'dark',
   attributes = {},
   className,
+  disabled = false,
 }) {
   const extensions = [EditorView.lineWrapping];
   const languageExtension = getLanguageExtension(language);
@@ -39,6 +40,7 @@ export function Code ({
           value={value}
           onChange={event => onChange(event.target.value)}
           style={{ width: '100%', height: height + 'px' }}
+          disabled={disabled}
         />
       )}
     >
@@ -49,6 +51,7 @@ export function Code ({
         height={height + 'px'}
         theme={theme === 'dark' ? vscodeDark : undefined}
         extensions={extensions}
+        editable={!disabled}
       />
     </ErrorBoundary>
   );

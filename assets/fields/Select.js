@@ -12,6 +12,7 @@ export function Select ({
   options = [],
   options_key: optionsKey,
   className,
+  disabled = false,
 }) {
   const [search, setSearch] = useState('');
 
@@ -37,6 +38,7 @@ export function Select ({
       filterOption={optionsKey ? Boolean : undefined}
       onInputChange={setSearch}
       className={clsx('wpifycf-field-select', `wpifycf-field-select--${id}`, className)}
+      disabled={disabled}
     />
   );
 }

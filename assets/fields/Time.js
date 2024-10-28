@@ -12,6 +12,7 @@ export function Time ({
   max,
   attributes = {},
   className,
+  disabled = false,
 }) {
   const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
 
@@ -24,6 +25,7 @@ export function Time ({
       min={min}
       max={max}
       className={clsx('wpifycf-field-time', `wpifycf-field-time--${id}`, attributes.class, className)}
+      disabled={disabled}
       {...attributes}
     />
   );

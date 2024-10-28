@@ -15,7 +15,7 @@ function Toggle ({
   return (
     <ToggleControl
       id={htmlId}
-      label={title}
+      label={<span dangerouslySetInnerHTML={{ __html: title }}/>}
       checked={value}
       onChange={onChange}
       disabled={disabled}

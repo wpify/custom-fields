@@ -14,6 +14,7 @@ function Attachment ({
   attachment_type,
   attributes = {},
   className,
+  disabled = false,
 }) {
   const { attachment, setAttachment } = useAttachment(value);
 
@@ -36,9 +37,9 @@ function Attachment ({
       className={clsx('wpifycf-field-attachment', `wpifycf-field-attachment--${id}`, attributes.class, className)}
     >
       {attachment && (
-        <AttachmentItem attachment={attachment} remove={remove} />
+        <AttachmentItem attachment={attachment} remove={remove} disabled={disabled} />
       )}
-      {!attachment && (
+      {!attachment && !disabled && (
         <Button onClick={openMediaLibrary} className="wpifycf-button__add">
           {__('Add attachment', 'wpify-custom-fields')}
         </Button>
@@ -57,7 +58,7 @@ Attachment.Title = ({ value }) => {
   return null;
 };
 
-export function AttachmentItem ({ attachment, remove }) {
+export function AttachmentItem ({ attachment, remove, disabled }) {
   const thumbnail = attachment?.sizes?.medium?.url;
   const icon = attachment?.icon;
 
@@ -82,10 +83,12 @@ export function AttachmentItem ({ attachment, remove }) {
           {attachment.filename}
         </div>
       )}
-      <div className="wpifycf-attachment-item__actions">
-        <IconButton href={attachment.editLink} icon="edit" style="dark" />
-        <IconButton onClick={remove} icon="trash" style="dark" />
-      </div>
+      {!disabled && (
+        <div className="wpifycf-attachment-item__actions">
+          <IconButton href={attachment.editLink} icon="edit" style="dark"/>
+          <IconButton onClick={remove} icon="trash" style="dark"/>
+        </div>
+      )}
     </div>
   );
 }
