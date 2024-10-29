@@ -3,8 +3,13 @@
   --wpifycf-gap-2: 10px;
   --wpifycf-gap-3: 20px;
   --wpifycf-border-color: #ddd;
+  --wpifycf-grey: #f6f7f7;
+  --wpifycf-grey-hover: #f0f0f1;
+  --wpifycf-blue: #2271b1;
+  --wpifycf-blue-hover: #0a4b78;
 }
 
+@import "components/button";
 @import "components/context-options";
 @import "components/context-gutenberg-block";
 @import "components/context-metabox";

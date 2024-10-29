@@ -1,0 +1,36 @@
+.wpifycf-button {
+  display: inline-flex;
+  background: var(--wpifycf-grey);
+  border: 1px solid var(--wpifycf-blue);
+  color: var(--wpifycf-blue) !important;
+  outline: 1px solid #0000;
+  text-decoration: none;
+  text-shadow: none;
+  white-space: nowrap;
+  line-height: 1;
+  min-height: 30px;
+  padding: 0 10px;
+  font-size: 13px;
+  border-radius: 3px;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    background: var(--wpifycf-grey-hover);
+    border: 1px solid var(--wpifycf-blue-hover);
+    color: var(--wpifycf-blue-hover);
+  }
+
+  &--primary {
+    background: var(--wpifycf-blue);
+    border: 1px solid var(--wpifycf-blue);
+    color: white !important;
+  }
+
+  &--primary:hover {
+    background: var(--wpifycf-blue-hover);
+    border: 1px solid var(--wpifycf-blue-hover);
+    color: white;
+  }
+}

@@ -34,7 +34,7 @@ export function Button ({
       {...rest}
       onClick={handleClick}
       disabled={disabled}
-      className={clsx('button wpifycf-button', className, primary && 'button-primary')}
+      className={clsx('wpifycf-button', className, primary && 'wpifycf-button--primary')}
     >
       {children}
     </Tag>
