@@ -184,13 +184,17 @@ abstract class BaseIntegration {
 		// Dependencies for WYSIWYG field.
 		wp_enqueue_editor();
 		wp_tinymce_inline_scripts();
-		wp_enqueue_script( 'wp-block-library' );
 
-		// Dependencies for Toggle field.
-		wp_enqueue_style( 'wp-components' );
+		if ( ! get_current_screen()->is_block_editor() ) {
+			// Dependencies for WYSIWYG field.
+			wp_enqueue_script( 'wp-block-library' );
 
-		// Dependencies for Attachment field.
-		wp_enqueue_media();
+			// Dependencies for Attachment field.
+			wp_enqueue_media();
+
+			// Dependencies for Toggle field.
+			wp_enqueue_style( 'wp-components' );
+		}
 
 		wp_enqueue_script(
 			$handle,
