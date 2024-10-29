@@ -89,7 +89,7 @@ abstract class BaseIntegration {
 			unset( $item['custom_attributes'] );
 		}
 
-		if ( isset( $item['title'] ) && ! empty( $item['label'] ) ) {
+		if ( ! empty( $item['title'] ) && empty( $item['label'] ) ) {
 			$item['label'] = $item['title'];
 		}
 

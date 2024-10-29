@@ -38,8 +38,8 @@ callback).
 
 #### `$meta_key` *string*
 
-Meta key used to store the custom fields values. If meta key is empty, the individual fields will be stored as separate
-meta.
+Meta key used to store the custom fields values. If meta key is not set, the individual fields will be stored as separate
+meta values.
 
 #### `$tabs` *array*
 
