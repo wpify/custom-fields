@@ -85,7 +85,7 @@ class CustomFields {
 	 * @return Taxonomy The created taxonomy instance.
 	 * @throws MissingArgumentException Missing arguments.
 	 */
-	public function create_taxonomy( array $args ): Taxonomy {
+	public function create_taxonomy_options( array $args ): Taxonomy {
 		return new Taxonomy( $args, $this );
 	}
 
