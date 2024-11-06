@@ -93,3 +93,7 @@ For full documentation, examples, and advanced usage, please visit
 the [WPify Custom Fields documentation](docs/index.md). If you encounter any
 issues or have questions, feel free to [open an issue](https://github.com/wpify/custom-fields/issues) on GitHub or reach
 out for support.
+
+## Notes
+
+* DO NOT upgrade @wordpress/scripts to v28.0+, as it would require WordPress 6.6+
