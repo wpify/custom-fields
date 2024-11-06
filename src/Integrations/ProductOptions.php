@@ -221,7 +221,13 @@ class ProductOptions extends ItemsIntegration {
 
 		add_filter( 'woocommerce_product_data_tabs', array( $this, 'woocommerce_product_data_tabs' ), 98 );
 		add_action( 'woocommerce_product_data_panels', array( $this, 'render_data_panels' ) );
-		add_action( 'woocommerce_product_options_' . $this->tab['target'] ?? $this->tab['id'], array( $this, 'render' ) );
+		add_action(
+			'woocommerce_product_options_' . $this->tab['target'] ?? $this->tab['id'],
+			array(
+				$this,
+				'render',
+			)
+		);
 		add_action( 'woocommerce_process_product_meta', array( $this, 'save' ) );
 		add_action( 'init', array( $this, 'register_meta' ), $this->hook_priority );
 	}
@@ -269,7 +275,7 @@ class ProductOptions extends ItemsIntegration {
 		?>
 		<div id="<?php echo esc_attr( $this->tab['target'] ); ?>" class="panel woocommerce_options_panel">
 			<?php
-            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 			do_action( 'woocommerce_product_options_' . $this->tab['target'] );
 			?>
 		</div>
@@ -340,23 +346,9 @@ class ProductOptions extends ItemsIntegration {
 	 * @return void
 	 */
 	public function save( int $post_id ): void {
-		$items = $this->normalize_items( $this->items );
+		$this->product_id = $post_id;
 
-		foreach ( $items as $item ) {
-			// Nonce already verified by WordPress.
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing
-			if ( ! isset( $_POST[ $item['id'] ] ) ) {
-				continue;
-			}
-
-			$this->product_id = $post_id;
-
-			$this->set_field(
-				$item['id'],
-				$this->get_sanitized_post_item_value( $item ),
-				$item,
-			);
-		}
+		$this->set_fields_from_post_request( $this->normalize_items( $this->items ) );
 	}
 
 	/**

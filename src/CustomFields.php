@@ -217,18 +217,33 @@ class CustomFields {
 		return new MenuItem( $args, $this );
 	}
 
+	public function path_to_url( string $path ): string {
+		$content_url = content_url();
+
+		if ( is_ssl() && str_starts_with( $content_url, 'http://' ) ) {
+			$content_url = str_replace( 'http://', 'https://', $content_url );
+		}
+
+		return str_replace( WP_CONTENT_DIR, $content_url, $path );
+	}
+
+	public function get_build_path( string $file = '' ): string {
+		return dirname( __DIR__ ) . '/build/' . $file;
+	}
+
+	public function get_build_url( string $file = '' ): string {
+		return $this->path_to_url( $this->get_build_path( $file ) );
+	}
+
 	/**
 	 * Get JavaScript asset details including its dependencies and version.
-	 *
-	 * TODO: Make it more universal, now it can be only in plugins, it should be possible also for themes.
 	 *
 	 * @param string $item The name of the JavaScript file without the extension.
 	 *
 	 * @return array An associative array containing 'dependencies', 'version', and 'src' of the JavaScript asset.
 	 */
 	public function get_js_asset( string $item ): array {
-		$build_path = plugin_dir_path( __DIR__ ) . 'build/';
-		$asset_php  = $build_path . $item . '.asset.php';
+		$asset_php = $this->get_build_path( $item . '.asset.php' );
 
 		if ( file_exists( $asset_php ) ) {
 			$asset = require $asset_php;
@@ -239,7 +254,7 @@ class CustomFields {
 			);
 		}
 
-		$asset['src'] = plugin_dir_url( __DIR__ ) . 'build/' . $item . '.js';
+		$asset['src'] = $this->get_build_url( $item . '.js' );
 
 		return $asset;
 	}
@@ -247,15 +262,13 @@ class CustomFields {
 	/**
 	 * Retrieves the CSS asset for the specified item.
 	 *
-	 * TODO: Make it more universal, now it can be only in plugins, it should be possible also for themes.
-	 *
 	 * @param string $item The name of the CSS item to retrieve.
 	 *
 	 * @return array|string URL(s) to the CSS asset(s) for the specified item. Returns an array if there are multiple versions, otherwise returns a string.
 	 */
 	public function get_css_asset( string $item ): array|string {
 		$build_path = plugin_dir_path( __DIR__ ) . 'build/';
-		$asset_php  = $build_path . $item . '.asset.php';
+		$asset_php  = $this->get_build_path( $item . '.asset.php' );
 
 		if ( file_exists( $asset_php ) ) {
 			$asset = require $asset_php;
@@ -265,17 +278,17 @@ class CustomFields {
 			? add_query_arg(
 				'ver',
 				$asset['version'],
-				plugin_dir_url( __DIR__ ) . 'build/' . $item . '.css',
+				$this->get_build_url( $item . '.css' ),
 			)
-			: plugin_dir_url( __DIR__ ) . 'build/' . $item . '.css';
+			: $this->get_build_url( $item . '.css' );
 
-		if ( ! empty( $asset ) && file_exists( $build_path . 'style-' . $item . '.css' ) ) {
+		if ( ! empty( $asset ) && file_exists( $this->get_build_path( 'style-' . $item . '.css' ) ) ) {
 			$src = array(
 				$src,
 				add_query_arg(
 					'ver',
 					$asset['version'],
-					plugin_dir_url( __DIR__ ) . 'build/style-' . $item . '.css',
+					$this->get_build_url( 'style-' . $item . '.css' ),
 				),
 			);
 		}

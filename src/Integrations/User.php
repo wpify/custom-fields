@@ -193,21 +193,8 @@ class User extends ItemsIntegration {
 	 */
 	public function save( int $user_id ): void {
 		$this->user_id = $user_id;
-		$items         = $this->normalize_items( $this->items );
 
-		foreach ( $items as $item ) {
-			// Nonce verification is already done by WordPress.
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing
-			if ( ! isset( $_POST[ $item['id'] ] ) ) {
-				continue;
-			}
-
-			$this->set_field(
-				$item['id'],
-				$this->get_sanitized_post_item_value( $item ),
-				$item,
-			);
-		}
+		$this->set_fields_from_post_request( $this->normalize_items( $this->items ) );
 	}
 
 	/**

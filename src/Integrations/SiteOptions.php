@@ -460,34 +460,7 @@ class SiteOptions extends OptionsIntegration {
 	 * @return void
 	 */
 	public function save_site_options(): void {
-		$items = $this->normalize_items( $this->items );
-
-		if ( ! empty( $this->option_name ) ) {
-			// Nonce verification already done by WordPress.
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing
-			if ( isset( $_POST[ $this->option_name ] ) ) {
-				// Custom sanitization implemented.
-				// Nonce verification already done by WordPress.
-				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
-				$post_data = $this->custom_fields->sanitize_option_value( $items )( wp_unslash( $_POST[ $this->option_name ] ) );
-				$this->set_fields( $this->option_name, $post_data, $items );
-			}
-		} else {
-			foreach ( $items as $item ) {
-				// Nonce verification already done by WordPress.
-				// phpcs:ignore WordPress.Security.NonceVerification.Missing
-				if ( ! isset( $_POST[ $item['id'] ] ) ) {
-					continue;
-				}
-
-				$this->set_field(
-					$item['id'],
-					$this->get_sanitized_post_item_value( $item ),
-					$item,
-				);
-			}
-		}
-
+		$this->set_fields_from_post_request( $this->normalize_items( $this->items ) );
 		wp_safe_redirect(
 			add_query_arg(
 				array( 'updated' => true ),

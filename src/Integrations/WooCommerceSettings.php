@@ -198,7 +198,7 @@ class WooCommerceSettings extends OptionsIntegration {
 		}
 
 		if ( $this->is_new_tab ) {
-            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 			$sections = apply_filters( 'woocommerce_get_sections_' . $this->tab['id'], array() );
 
 			if ( is_array( $sections ) && count( $sections ) > 1 ) {
@@ -228,7 +228,7 @@ class WooCommerceSettings extends OptionsIntegration {
 					}
 					?>
 				</ul>
-				<br class="clear" />
+				<br class="clear"/>
 				<?php
 			}
 		}
@@ -259,23 +259,8 @@ class WooCommerceSettings extends OptionsIntegration {
 		$section = sanitize_text_field( wp_unslash( $_REQUEST['section'] ?? '' ) );
 		// phpcs:enable
 
-		$items = $this->normalize_items( $this->items );
-
 		if ( $tab === $this->tab['id'] && $section === $this->section['id'] ) {
-			foreach ( $items as $item ) {
-				// Nonce verification is not needed here, nonce already verified in WooCommerce.
-				// phpcs:ignore WordPress.Security.NonceVerification.Missing
-				if ( ! isset( $_POST[ $item['id'] ] ) ) {
-					continue;
-				}
-
-				$this->set_field(
-					$item['id'],
-					$this->get_sanitized_post_item_value( $item ),
-					$item,
-				);
-			}
-
+			$this->set_fields_from_post_request( $this->normalize_items( $this->items ) );
 			wp_safe_redirect(
 				add_query_arg(
 					array(

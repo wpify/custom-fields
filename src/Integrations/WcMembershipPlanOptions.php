@@ -333,26 +333,13 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 	 * @return void
 	 */
 	public function save( array $data ): void {
-		$items                    = $this->normalize_items( $this->items );
 		$this->membership_plan_id = $data['post_ID'];
 
 		if ( ! $this->membership_plan_id ) {
 			return;
 		}
 
-		foreach ( $items as $item ) {
-			// Nonce already verified by WordPress.
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing
-			if ( ! isset( $_POST[ $item['id'] ] ) ) {
-				continue;
-			}
-
-			$this->set_field(
-				$item['id'],
-				$this->get_sanitized_post_item_value( $item ),
-				$item,
-			);
-		}
+		$this->set_fields_from_post_request( $this->normalize_items( $this->items ) );
 	}
 
 	/**

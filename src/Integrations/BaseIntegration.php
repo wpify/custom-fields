@@ -185,7 +185,9 @@ abstract class BaseIntegration {
 		wp_enqueue_editor();
 		wp_tinymce_inline_scripts();
 
-		if ( ! get_current_screen()->is_block_editor() ) {
+		$current_screen = get_current_screen();
+
+		if ( ! $current_screen || ! $current_screen->is_block_editor() ) {
 			// Dependencies for WYSIWYG field.
 			wp_enqueue_script( 'wp-block-library' );
 
@@ -201,7 +203,7 @@ abstract class BaseIntegration {
 			$js['src'],
 			$js['dependencies'],
 			$js['version'],
-			array( 'in_footer' => true ),
+			array( 'in_footer' => false ),
 		);
 
 		wp_add_inline_script(

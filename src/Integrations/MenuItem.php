@@ -124,21 +124,8 @@ class MenuItem extends ItemsIntegration {
 	 */
 	public function save( int $menu_id, int $menu_item_db_id ): void {
 		$this->item_id = $menu_item_db_id;
-		$items         = $this->normalize_items( $this->items );
 
-		foreach ( $items as $item ) {
-			// Nonce verification is already done by WordPress.
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing
-			if ( ! isset( $_POST[ $item['id'] ][ $menu_item_db_id ] ) ) {
-				continue;
-			}
-
-			$this->set_field(
-				$item['id'],
-				$this->get_sanitized_post_item_value( $item, $menu_item_db_id ),
-				$item,
-			);
-		}
+		$this->set_fields_from_post_request( $this->normalize_items( $this->items ), $menu_item_db_id );
 	}
 
 	/**

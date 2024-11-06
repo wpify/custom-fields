@@ -261,41 +261,28 @@ class OrderMetabox extends ItemsIntegration {
 	 *
 	 * @param int $post_id The post ID of the order being saved.
 	 *
-	 * @return int The post ID after save operation.
+	 * @return void Result not needed.
 	 */
-	public function save( int $post_id ): int {
+	public function save( int $post_id ): void {
 		remove_action( 'woocommerce_update_order', array( $this, 'save' ) );
 
 		if ( ! isset( $_POST[ $this->nonce ] ) ) {
-			return $post_id;
+			return;
 		}
 
 		$nonce = sanitize_text_field( wp_unslash( $_POST[ $this->nonce ] ) );
 
 		if ( ! wp_verify_nonce( $nonce, $this->id ) ) {
-			return $post_id;
+			return;
 		}
 
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-			return $post_id;
+			return;
 		}
 
 		$this->order_id = $post_id;
-		$items          = $this->normalize_items( $this->items );
 
-		foreach ( $items as $item ) {
-			if ( ! isset( $_POST[ $item['id'] ] ) ) {
-				continue;
-			}
-
-			$this->set_field(
-				$item['id'],
-				$this->get_sanitized_post_item_value( $item ),
-				$item,
-			);
-		}
-
-		return $post_id;
+		$this->set_fields_from_post_request( $this->normalize_items( $this->items ) );
 	}
 
 	/**

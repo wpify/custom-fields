@@ -488,29 +488,7 @@ class Options extends OptionsIntegration {
 	 */
 	public function save_network_options(): void {
 		check_admin_referer( $this::NETWORK_SAVE_ACTION );
-		$items = $this->normalize_items( $this->items );
-
-		if ( ! empty( $this->option_name ) ) {
-			if ( isset( $_POST[ $this->option_name ] ) ) {
-				// Sanitization is done via custom sanitizer.
-				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-				$post_data = $this->custom_fields->sanitize_option_value( $items )( wp_unslash( $_POST[ $this->option_name ] ) );
-				$this->set_fields( $this->option_name, $post_data, $items );
-			}
-		} else {
-			foreach ( $items as $item ) {
-				if ( ! isset( $_POST[ $item['id'] ] ) ) {
-					continue;
-				}
-
-				$this->set_field(
-					$item['id'],
-					$this->get_sanitized_post_item_value( $item ),
-					$item,
-				);
-			}
-		}
-
+		$this->set_fields_from_post_request( $this->normalize_items( $this->items ) );
 		wp_safe_redirect(
 			add_query_arg(
 				array( 'updated' => true ),

@@ -296,23 +296,8 @@ class ProductVariationOptions extends ItemsIntegration {
 	 * @return void
 	 */
 	public function save( int $product_variation_id, int $loop ): void {
-		$items = $this->normalize_items( $this->items );
-
-		foreach ( $items as $item ) {
-			// Nonce is already verified by WooCommerce.
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing
-			if ( ! isset( $_POST[ $item['id'] ][ $loop ] ) ) {
-				continue;
-			}
-
-			$this->variation_id = $product_variation_id;
-
-			$this->set_field(
-				$item['id'],
-				$this->get_sanitized_post_item_value( $item, $loop ),
-				$item,
-			);
-		}
+		$this->variation_id = $product_variation_id;
+		$this->set_fields_from_post_request( $this->normalize_items( $this->items ), $loop );
 	}
 
 	/**

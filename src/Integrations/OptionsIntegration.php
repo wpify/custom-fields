@@ -49,7 +49,23 @@ abstract class OptionsIntegration extends BaseIntegration {
 	 * @param string $class_name Optional. Additional CSS class for the field element.
 	 */
 	public function print_field( array $item, array $data_attributes = array(), string $tag = 'div', string $class_name = '' ): void {
-		$item['name']   = empty( $this->option_name ) ? $item['id'] : $this->option_name . '[' . $item['id'] . ']';
+		if ( empty( $this->option_name ) ) {
+			$name = $item['id'];
+
+			if ( isset( $data_attributes['loop'] ) ) {
+				$name .= '[' . $data_attributes['loop'] . ']';
+			}
+		} else {
+			$name = $this->option_name;
+
+			if ( isset( $data_attributes['loop'] ) ) {
+				$name .= '[' . $data_attributes['loop'] . ']';
+			}
+
+			$name .= '[' . $item['id'] . ']';
+		}
+
+		$item['name']   = $name;
 		$item['value']  = $this->get_field( $item['id'], $item );
 		$item['loop']   = $data_attributes['loop'] ?? '';
 		$integration_id = isset( $data_attributes['loop'] ) ? $this->id . '__' . $data_attributes['loop'] : $this->id;
@@ -64,44 +80,6 @@ abstract class OptionsIntegration extends BaseIntegration {
 		?>
 		></<?php echo esc_attr( $tag ); ?>>
 		<?php
-	}
-
-	/**
-	 * Retrieves and sanitizes the value of a POST item based on the provided item definition and optional index.
-	 *
-	 * Nonce is verified by the caller.
-	 * phpcs:disable WordPress.Security.NonceVerification.Missing
-	 *
-	 * Sanitization is handled by method \Wpify\CustomFields\CustomFields::sanitize_item_value().
-	 * phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-	 *
-	 * @param array    $item The definition of the item, including its ID.
-	 * @param int|null $index Optional index to retrieve a specific value if the item is an array.
-	 *
-	 * @return mixed The sanitized value of the POST item, or null if not set.
-	 */
-	public function get_sanitized_post_item_value( array $item, ?int $index = null ): mixed {
-		/**
-		 * Nonce is verified by the caller.
-		 * phpcs:disable WordPress.Security.NonceVerification.Missing
-		 *
-		 * Sanitization is handled by method \Wpify\CustomFields\CustomFields::sanitize_item_value().
-		 * phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		 */
-		if ( ( null === $index && isset( $_POST[ $item['id'] ] ) ) || isset( $_POST[ $item['id'] ][ $index ] ) ) {
-			$wp_type = $this->custom_fields->get_wp_type( $item );
-			$value   = wp_unslash( null === $index ? $_POST[ $item['id'] ] : $_POST[ $item['id'] ][ $index ] );
-
-			if ( 'string' !== $wp_type ) {
-				$value = json_decode( $value, ARRAY_A );
-			}
-
-			return $this->custom_fields->sanitize_item_value( $item )( $value );
-		}
-
-		// phpcs:enable
-
-		return null;
 	}
 
 	/**
@@ -186,4 +164,57 @@ abstract class OptionsIntegration extends BaseIntegration {
 	 * @param mixed  $value The value to assign to the option.
 	 */
 	abstract public function set_option_value( string $name, mixed $value );
+
+	/**
+	 * Set fields from $_POST request.
+	 *
+	 * @param array      $items
+	 * @param mixed|null $loop_id
+	 */
+	public function set_fields_from_post_request( array $items, mixed $loop_id = null ): void {
+		// Sanitization is done via custom sanitizer.
+		// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		if ( ! empty( $this->option_name ) ) {
+			if ( is_null( $loop_id ) ) {
+				$post_data = isset( $_POST[ $this->option_name ] ) ? wp_unslash( $_POST[ $this->option_name ] ) : array();
+			} else {
+				$post_data = isset( $_POST[ $this->option_name ][ $loop_id ] ) ? wp_unslash( $_POST[ $this->option_name ][ $loop_id ] ) : array();
+			}
+
+			$this->set_fields(
+				$this->option_name,
+				$this->custom_fields->sanitize_option_value( $items )( $post_data ),
+				$items
+			);
+		} else {
+			foreach ( $items as $item ) {
+				$wp_type = $this->custom_fields->get_wp_type( $item );
+
+				if ( is_null( $loop_id ) ) {
+					if ( ! isset( $_POST[ $item['id'] ] ) ) {
+						continue;
+					}
+
+					$value = wp_unslash( $_POST[ $item['id'] ] );
+				} else {
+					if ( ! isset( $_POST[ $item['id'] ][ $loop_id ] ) ) {
+						continue;
+					}
+
+					$value = wp_unslash( $_POST[ $item['id'] ][ $loop_id ] );
+				}
+
+				if ( $wp_type !== 'string' ) {
+					$value = json_decode( $value, ARRAY_A );
+				}
+
+				$this->set_field(
+					$item['id'],
+					$this->custom_fields->sanitize_item_value( $item )( $value ),
+					$item
+				);
+			}
+		}
+		// phpcs:enable
+	}
 }

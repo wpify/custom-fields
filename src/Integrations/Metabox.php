@@ -191,48 +191,33 @@ class Metabox extends ItemsIntegration {
 	 * @param int     $post_id The ID of the post to save the meta box for.
 	 * @param WP_Post $post The post object being saved.
 	 *
-	 * @return bool|int True on successful save, or the post ID if any checks fail.
+	 * @return void Result not needed;
 	 */
-	public function save_meta_box( int $post_id, WP_Post $post ): bool|int {
+	public function save_meta_box( int $post_id, WP_Post $post ): void {
 		if ( ! isset( $_POST[ $this->nonce ] ) ) {
-			return $post_id;
+			return;
 		}
 
 		$nonce = sanitize_text_field( wp_unslash( $_POST[ $this->nonce ] ) );
 
 		if ( ! wp_verify_nonce( $nonce, $this->id ) ) {
-			return $post_id;
+			return;
 		}
 
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-			return $post_id;
+			return;
 		}
 
 		if ( isset( $_POST['post_type'] ) && ! in_array( $_POST['post_type'], $this->post_types, true ) ) {
-			return $post_id;
+			return;
 		}
 
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
-			return $post_id;
+			return;
 		}
 
 		$this->set_post( $post );
-
-		$items = $this->normalize_items( $this->items );
-
-		foreach ( $items as $item ) {
-			if ( ! isset( $_POST[ $item['id'] ] ) ) {
-				continue;
-			}
-
-			$this->set_field(
-				$item['id'],
-				$this->get_sanitized_post_item_value( $item ),
-				$item,
-			);
-		}
-
-		return true;
+		$this->set_fields_from_post_request( $this->normalize_items( $this->items ) );
 	}
 
 	/**

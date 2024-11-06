@@ -160,36 +160,21 @@ class Comment extends ItemsIntegration {
 	 *
 	 * @param int $comment_id The ID of the comment being saved.
 	 *
-	 * @return bool|int True on success, comment ID on failure.
+	 * @return void We don't need the return value.
 	 */
-	public function save_meta_box( int $comment_id ): bool|int {
+	public function save_meta_box( int $comment_id ): void {
 		if ( ! isset( $_POST[ $this->nonce ] ) ) {
-			return $comment_id;
+			return;
 		}
 
 		$nonce = sanitize_text_field( wp_unslash( $_POST[ $this->nonce ] ) );
 
 		if ( ! wp_verify_nonce( $nonce, $this->id ) ) {
-			return $comment_id;
+			return;
 		}
 
 		$this->set_comment( $comment_id );
-
-		$items = $this->normalize_items( $this->items );
-
-		foreach ( $items as $item ) {
-			if ( ! isset( $_POST[ $item['id'] ] ) ) {
-				continue;
-			}
-
-			$this->set_field(
-				$item['id'],
-				$this->get_sanitized_post_item_value( $item ),
-				$item,
-			);
-		}
-
-		return true;
+		$this->set_fields_from_post_request( $this->normalize_items( $this->items ) );
 	}
 
 	/**

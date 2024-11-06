@@ -19,12 +19,7 @@ function loadCustomFields () {
   document.querySelectorAll('.wpifycf-app[data-loaded=false]').forEach(container => {
     const nodes = Array.from(document.querySelectorAll('.wpifycf-field-parent[data-integration-id="' + container.dataset.integrationId + '"]'));
     const defs = nodes.map(node => {
-      const dataset = { ...JSON.parse(node.dataset.item), node };
-      if (dataset.loop || dataset.loop === 0) {
-        dataset.id = `${dataset.id}[${dataset.loop}]`;
-        dataset.name = `${dataset.name}[${dataset.loop}]`;
-      }
-      return dataset;
+      return { ...JSON.parse(node.dataset.item), node };
     });
     const fields = defs.map(({ value, ...props }) => props);
     const initialValues = defs.reduce((acc, { id, value }) => ({ ...acc, [id]: value }), {});
