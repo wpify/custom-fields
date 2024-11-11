@@ -9,6 +9,7 @@ namespace Wpify\CustomFields\Integrations;
 
 use Closure;
 use WP_Block;
+use WP_REST_Server;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
@@ -291,6 +292,7 @@ class GutenbergBlock extends BaseIntegration {
 
 		add_action( 'init', array( $this, 'register_block' ) );
 		add_action( 'enqueue_block_assets', array( $this, 'enqueue' ) );
+		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 	}
 
 	/**
@@ -419,5 +421,48 @@ class GutenbergBlock extends BaseIntegration {
 		}
 
 		return call_user_func( $this->render_callback, $attributes, $content, $block );
+	}
+
+	/**
+	 * Registers the REST API routes for the block.
+	 *
+	 * @return void
+	 */
+	public function register_routes(): void {
+		$this->custom_fields->api->register_rest_route(
+			'render-block/' . $this->name,
+			WP_REST_Server::CREATABLE,
+			array( $this, 'render_from_api' ),
+		);
+	}
+
+	/**
+	 * Renders a block's content based on provided attributes and a rendering callback.
+	 *
+	 * @param \WP_REST_Request $request The REST API request object.
+	 *
+	 * @return string The rendered block content.
+	 */
+	public function render_from_api( \WP_REST_Request $request ): string {
+		$attributes = $request->get_param( 'attributes' );
+		$post_id    = $request->get_param( 'postId' );
+
+		$parsed_block = array(
+			'blockName'    => $this->name,
+			'attrs'        => $attributes,
+			'innerBlocks'  => array(),
+			'innerHTML'    => '',
+			'innerContent' => array(),
+		);
+
+		if ( null === $this->render_callback ) {
+			return '';
+		}
+
+		if ( $post_id ) {
+			setup_postdata( $post_id );
+		}
+
+		return call_user_func( $this->render_callback, $parsed_block['attrs'], '', new WP_Block( $parsed_block ) );
 	}
 }

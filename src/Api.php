@@ -109,7 +109,7 @@ class Api {
 	 * @return string The REST namespace string constructed from the plugin's basename.
 	 */
 	public function get_rest_namespace(): string {
-		return $this->custom_fields->get_plugin_basename() . '/wpifycf/v1';
+		return $this->custom_fields->get_api_basename() . '/wpifycf/v1';
 	}
 
 	/**

@@ -343,6 +343,17 @@ export function useMapyCzApiKey () {
   };
 }
 
+export function useRenderBlock ({ blockName, attributes, postId }) {
+  const { config } = useContext(AppContext);
+
+  return useQuery({
+    queryKey: ['render-block', postId, blockName, attributes],
+    queryFn: () => post(config.api_path + '/render-block/' + blockName, { attributes, postId }),
+    enabled: !!config.api_path,
+    ...defaultQueryOptions,
+  });
+}
+
 export function useMapyCzSuggestions ({ query, apiKey, limit = 10, lang = 'en' }) {
   return useQuery({
     queryKey: ['mapycz-suggestions', query],

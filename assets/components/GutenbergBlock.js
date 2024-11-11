@@ -1,13 +1,15 @@
 import { useState, useCallback, useMemo, useContext } from 'react';
 import { InnerBlocks, useBlockProps, BlockControls } from '@wordpress/block-editor';
 import { ToolbarButton, ToolbarGroup } from '@wordpress/components';
-import ServerSideRender from '@wordpress/server-side-render';
 import { __, sprintf } from '@wordpress/i18n';
 import { desktop, edit, Icon } from '@wordpress/icons';
 import { useValidity } from '@/helpers/hooks';
 import { AppContext } from '@/custom-fields';
 import { RootFields } from '@/components/RootFields';
 import { Tabs } from '@/components/Tabs';
+import { useRenderBlock } from '@/helpers/hooks';
+import { useSelect } from '@wordpress/data';
+import { ErrorBoundary } from 'react-error-boundary';
 
 const RENDERED_VIEW = 'view';
 const EDITOR_VIEW = 'edit';
@@ -60,28 +62,46 @@ export function GutenbergBlock ({ name, args }) {
 }
 
 function RenderedView ({ name, attributes, title }) {
-  return useMemo(() => (
-    <ServerSideRender
-      block={name}
-      attributes={attributes}
-      className="wpifycf-gutenberg-block__ssr"
-      httpMethod="POST"
-      EmptyResponsePlaceholder={props => <EmptyResponse title={title} name={name} {...props} />}
-      ErrorResponsePlaceholder={props => <ErrorResponse title={title} name={name} {...props} />}
-      LoadingResponsePlaceholder={props => <LoadingResponse title={title} name={name} {...props} />}
-    />
-  ), [attributes, name, title]);
+  const postId = useSelect(
+    select => select('core/editor')?.getCurrentPostId(),
+  );
+
+  const renderer = useRenderBlock({
+    blockName: name,
+    attributes,
+    postId,
+  });
+
+  if (renderer.isFetching) {
+    return <LoadingResponse title={title} name={name} />;
+  }
+
+  if (renderer.isError) {
+    return <ErrorResponse title={title} name={name} />;
+  }
+
+  if (!renderer.data) {
+    return <EmptyResponse title={title} name={name} />;
+  }
+
+  return (
+    <ErrorBoundary fallback={<ErrorResponse title={title} name={name} />}>
+      <div
+        className="wpifycf-gutenberg-block__ssr"
+        dangerouslySetInnerHTML={{ __html: renderer.data }}
+      />
+    </ErrorBoundary>
+  );
 }
 
 function EditorView ({ fields, values, updateValue }) {
   const { validity, validate, handleValidityChange } = useValidity();
-  const { context } = useContext(AppContext);
 
   const renderOptions = useMemo(() => ({
     noFieldWrapper: false,
     noControlWrapper: false,
     isRoot: true,
-  }), [context]);
+  }), []);
 
   return (
     <>

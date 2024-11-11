@@ -123,7 +123,7 @@ abstract class BaseIntegration {
 		}
 
 		if ( isset( $item['options'] ) ) {
-			if ( is_callable( $item['options'] ) && empty( $item['async'] ) ) {
+			if ( is_callable( $item['options'] ) && isset( $item['async'] ) && false === $item['async'] ) {
 				$item['options'] = $this->normalize_options( $item['options']() );
 			} elseif ( is_callable( $item['options'] ) ) {
 				if ( empty( $item['options_key'] ) ) {
@@ -132,6 +132,7 @@ abstract class BaseIntegration {
 
 				$item['options_callback'] = $item['options'];
 				$item['options']          = array();
+				$item['async']            = true;
 			} elseif ( is_array( $item['options'] ) ) {
 				$item['options'] = $this->normalize_options( $item['options'] );
 			}

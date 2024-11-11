@@ -217,6 +217,13 @@ class CustomFields {
 		return new MenuItem( $args, $this );
 	}
 
+	/**
+	 * Converts a path to a URL.
+	 *
+	 * @param string $path The path to convert.
+	 *
+	 * @return string The URL of the path.
+	 */
 	public function path_to_url( string $path ): string {
 		$content_url = content_url();
 
@@ -227,10 +234,24 @@ class CustomFields {
 		return str_replace( WP_CONTENT_DIR, $content_url, $path );
 	}
 
+	/**
+	 * Get the path of the build file.
+	 *
+	 * @param string $file The file name.
+	 *
+	 * @return string
+	 */
 	public function get_build_path( string $file = '' ): string {
 		return dirname( __DIR__ ) . '/build/' . $file;
 	}
 
+	/**
+	 * Get the URL of the build file.
+	 *
+	 * @param string $file The file name.
+	 *
+	 * @return string
+	 */
 	public function get_build_url( string $file = '' ): string {
 		return $this->path_to_url( $this->get_build_path( $file ) );
 	}
@@ -297,14 +318,15 @@ class CustomFields {
 	}
 
 	/**
-	 * Retrieves the base name of the current plugin.
+	 * Retrieves the base name of the current implementation.
 	 *
-	 * @return string The base name of the current plugin.
+	 * @return string The base name of the current implementation.
 	 */
-	public function get_plugin_basename(): string {
-		$basename = plugin_basename( __FILE__ );
+	public function get_api_basename(): string {
+		$content_path = str_replace( WP_CONTENT_DIR, '', __DIR__ );
+		$file_path    = basename( $content_path );
 
-		return substr( $basename, 0, strpos( $basename, '/' ) );
+		return ltrim( str_replace( '/' . $file_path, '', $content_path ), '/' );
 	}
 
 	/**
@@ -346,7 +368,7 @@ class CustomFields {
 					'time',
 					'week',
 				),
-				true
+				true,
 			) ) {
 				$sanitized_value = sanitize_text_field( $value );
 			} elseif ( 'email' === $item['type'] ) {
@@ -459,7 +481,7 @@ class CustomFields {
 				'link',
 				'mapycz',
 			),
-			true
+			true,
 		) ) {
 			$type = 'object';
 		} elseif ( str_starts_with( $item['type'], 'multi_' ) ) {

@@ -168,12 +168,16 @@ abstract class OptionsIntegration extends BaseIntegration {
 	/**
 	 * Set fields from $_POST request.
 	 *
-	 * @param array      $items
-	 * @param mixed|null $loop_id
+	 * @param array      $items An array of items where each item contains an 'id' and optionally a 'callback_set'.
+	 * @param mixed|null $loop_id Optional. The loop ID to use for the fields.
 	 */
 	public function set_fields_from_post_request( array $items, mixed $loop_id = null ): void {
 		// Sanitization is done via custom sanitizer.
 		// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+
+		// Nonce verification not needed here, is verified by caller.
+		// phpcs:disable WordPress.Security.NonceVerification.Missing
+
 		if ( ! empty( $this->option_name ) ) {
 			if ( is_null( $loop_id ) ) {
 				$post_data = isset( $_POST[ $this->option_name ] ) ? wp_unslash( $_POST[ $this->option_name ] ) : array();
@@ -204,7 +208,7 @@ abstract class OptionsIntegration extends BaseIntegration {
 					$value = wp_unslash( $_POST[ $item['id'] ][ $loop_id ] );
 				}
 
-				if ( $wp_type !== 'string' ) {
+				if ( 'string' !== $wp_type ) {
 					$value = json_decode( $value, ARRAY_A );
 				}
 
