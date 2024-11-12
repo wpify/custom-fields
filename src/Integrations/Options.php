@@ -541,7 +541,7 @@ class Options extends OptionsIntegration {
 		foreach ( $this->sections as $id => $section ) {
 			add_settings_section(
 				$id,
-				$section['label'] ?? '',
+				$section['title'] ?? '',
 				$section['callback'] ?? '__return_true',
 				$this->menu_slug,
 				$section['args'] ?? array(),

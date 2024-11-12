@@ -93,6 +93,10 @@ abstract class BaseIntegration {
 			$item['label'] = $item['title'];
 		}
 
+		if ( empty( $item['label'] ) ) {
+			$item['label'] = '';
+		}
+
 		if ( isset( $item['desc'] ) ) {
 			$item['description'] = $item['desc'];
 			unset( $item['desc'] );
