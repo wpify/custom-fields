@@ -125,6 +125,15 @@
     box-sizing: border-box;
   }
 
+  & &__single-value {
+    grid-area: 1 / 1 / 2 / 3;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
+
   & &__multi-value {
     margin: 0;
   }

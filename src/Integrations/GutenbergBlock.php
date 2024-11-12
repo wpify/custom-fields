@@ -8,6 +8,7 @@
 namespace Wpify\CustomFields\Integrations;
 
 use Closure;
+use stdClass;
 use WP_Block;
 use WP_REST_Server;
 use Wpify\CustomFields\CustomFields;
@@ -420,6 +421,8 @@ class GutenbergBlock extends BaseIntegration {
 			return $content;
 		}
 
+		$attributes = $this->normalize_attributes( $attributes );
+
 		return call_user_func( $this->render_callback, $attributes, $content, $block );
 	}
 
@@ -463,6 +466,29 @@ class GutenbergBlock extends BaseIntegration {
 			setup_postdata( $post_id );
 		}
 
-		return call_user_func( $this->render_callback, $parsed_block['attrs'], '', new WP_Block( $parsed_block ) );
+		$attributes = $this->normalize_attributes( $attributes );
+
+		return call_user_func( $this->render_callback, $attributes, '', new WP_Block( $parsed_block ) );
+	}
+
+	/**
+	 * Normalizes the attributes array.
+	 *
+	 * @param array $attributes Block attributes.
+	 *
+	 * @return array
+	 */
+	public function normalize_attributes( array $attributes ): array {
+		$normalized_attributes = array();
+
+		foreach ( $attributes as $attribute_name => $attribute_value ) {
+			if ( $attribute_value instanceof stdClass ) {
+				$normalized_attributes[ $attribute_name ] = (array) $attribute_value;
+			} else {
+				$normalized_attributes[ $attribute_name ] = $attribute_value;
+			}
+		}
+
+		return $normalized_attributes;
 	}
 }

@@ -20,5 +20,29 @@
     flex-flow: column;
     gap: var(--wpifycf-gap-2);
     container-type: inline-size;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-size: 13px;
+    line-height: 1.4em;
+  }
+
+  &__ssr * {
+    pointer-events: none;
+  }
+}
+
+.components-panel__row {
+  .wpifycf-field__label {
+    max-width: 100%;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.4;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-bottom: calc(8px);
+    padding: 0;
+  }
+
+  .wpifycf-field__wrapper {
+    width: 100%;
   }
 }
