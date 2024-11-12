@@ -6,6 +6,18 @@
   position: relative;
   box-sizing: border-box;
 
+  & span[aria-live="polite"] {
+    z-index: 9999;
+    border: 0;
+    clip: rect(1px, 1px, 1px, 1px);
+    height: 1px;
+    width: 1px;
+    position: absolute;
+    overflow: hidden;
+    padding: 0;
+    white-space: nowrap;
+  }
+
   & &__control {
     padding: 2px 4px;
     min-height: 0;
