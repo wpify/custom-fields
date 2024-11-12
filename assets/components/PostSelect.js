@@ -46,6 +46,7 @@ export function PostSelect ({
 
   return (
     <Select
+      unstyled
       isLoading={isLoading}
       isClearable
       options={options}

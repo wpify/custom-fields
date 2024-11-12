@@ -96,6 +96,7 @@ function GutenbergTinyMCE ({ htmlId, value, onChange, height, disabled }) {
   const handleClose = useCallback(() => setOpen(false), []);
   const handleOpen = useCallback(() => setOpen(true), []);
   const handleToggleFullscreen = useCallback(() => setIsModalFullScreen(!isModalFullScreen), [isModalFullScreen]);
+  const sanitizedId = htmlId.replace(/\./g, '__');
 
   return (
     <>
@@ -140,7 +141,7 @@ function GutenbergTinyMCE ({ htmlId, value, onChange, height, disabled }) {
           }
         >
           <TinyMCE
-            htmlId={htmlId}
+            htmlId={sanitizedId}
             value={value}
             onChange={onChange}
             height={height}
@@ -172,6 +173,8 @@ function TinyMCE ({ htmlId, value, onChange, height, disabled }) {
     select => select(store).getSettings().styles,
   );
 
+  const sanitizedId = htmlId.replace(/\./g, '__');
+
   useEffect(() => {
     const { baseURL, suffix, settings } = window.wpEditorL10n.tinymce;
 
@@ -180,7 +183,7 @@ function TinyMCE ({ htmlId, value, onChange, height, disabled }) {
       suffix,
     });
 
-    window.wp.oldEditor.initialize(htmlId, {
+    window.wp.oldEditor.initialize(sanitizedId, {
       tinymce: {
         ...settings,
         height,
@@ -212,7 +215,7 @@ function TinyMCE ({ htmlId, value, onChange, height, disabled }) {
         editorRef.current.remove();
       }
 
-      window.wp.oldEditor.remove(htmlId);
+      window.wp.oldEditor.remove(sanitizedId);
     };
   }, []);
 
@@ -224,7 +227,7 @@ function TinyMCE ({ htmlId, value, onChange, height, disabled }) {
   }, [value]);
 
   return (
-    <textarea id={htmlId} onChange={onChange} value={value} />
+    <textarea id={sanitizedId} onChange={onChange} value={value} />
   );
 }
 

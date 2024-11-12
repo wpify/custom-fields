@@ -7,6 +7,7 @@ export function Select ({ value, onChange, options, filterOption, onInputChange,
 
   return (
     <ReactSelect
+      unstyled
       value={value}
       onChange={handleChange}
       options={options}

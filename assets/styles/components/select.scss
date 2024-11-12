@@ -3,15 +3,70 @@
   min-width: 200px;
   max-width: 60em;
   width: 100%;
+  position: relative;
+  box-sizing: border-box;
 
   & &__control {
     padding: 2px 4px;
     min-height: 0;
     border-radius: 2px;
+    align-items: center;
+    cursor: default;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    outline: 0 !important;
+    position: relative;
+    transition: all 100ms;
+    background-color: hsl(0, 0%, 100%);
+    border-color: hsl(0, 0%, 80%);
+    border-style: solid;
+    border-width: 1px;
+    box-sizing: border-box;
+  }
+
+  & &__value-container {
+    padding: 0;
+    gap: 4px;
+    align-items: center;
+    display: grid;
+    flex: 1;
+    flex-wrap: wrap;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  & &__placeholder {
+    grid-area: 1 / 1 / 2 / 3;
+    color: hsl(0, 0%, 50%);
+    margin-left: 2px;
+    margin-right: 2px;
+    box-sizing: border-box;
   }
 
   & &__input-container {
     margin: 0;
+    padding: 0;
+    visibility: visible;
+    flex: 1 1 auto;
+    display: inline-grid;
+    grid-area: 1 / 1 / 2 / 3;
+    grid-template-columns: 0 min-content;
+    color: hsl(0, 0%, 20%);
+    box-sizing: border-box;
+  }
+
+  & &__input-container::after {
+    content: attr(data-value) " ";
+    visibility: hidden;
+    white-space: pre;
+    grid-area: 1 / 2;
+    font: inherit;
+    min-width: 2px;
+    border: 0;
+    margin: 0;
+    outline: 0;
     padding: 0;
   }
 
@@ -26,24 +81,112 @@
     box-shadow: none;
   }
 
+  & &__indicators {
+    align-items: center;
+    align-self: stretch;
+    display: flex;
+    flex-shrink: 0;
+    box-sizing: border-box;
+  }
+
   & &__indicator {
     padding: 2px 0 2px 8px;
+    display: flex;
+    transition: color 150ms;
+    color: hsl(0, 0%, 80%);
+    box-sizing: border-box;
+  }
+
+  & &__indicator svg {
+    display: inline-block;
+    fill: currentColor;
+    line-height: 1;
+    stroke: currentColor;
+    stroke-width: 0;
   }
 
   & &__indicator-separator {
     margin: 2px 0;
-  }
-
-  & &__value-container {
-    padding: 0;
-    gap: 4px;
+    align-self: stretch;
+    width: 1px;
+    background-color: hsl(0, 0%, 80%);
+    box-sizing: border-box;
   }
 
   & &__multi-value {
     margin: 0;
   }
 
-  & &__menu {
+  &__menu-portal {
+    left: 402px;
+    position: absolute;
+    top: 295.984375px;
+    width: 840px;
+    z-index: 1;
+    box-sizing: border-box;
+  }
+
+  & &__menu,
+  &__menu {
+    top: 100%;
+    position: absolute;
+    width: 100%;
     z-index: 2000;
+    background-color: hsl(0, 0%, 100%);
+    border-radius: 4px;
+    box-shadow: 0 0 0 1px hsla(0, 0%, 0%, 0.1), 0 4px 11px hsla(0, 0%, 0%, 0.1);
+    margin-bottom: 8px;
+    margin-top: 8px;
+    box-sizing: border-box;
+  }
+
+  & &__menu-list,
+  &__menu-list {
+    max-height: 300px;
+    overflow-y: auto;
+    position: relative;
+    padding-bottom: 4px;
+    padding-top: 4px;
+    box-sizing: border-box;
+  }
+
+  & &__option,
+  &__option {
+    cursor: default;
+    display: block;
+    font-size: inherit;
+    width: 100%;
+    user-select: none;
+    background-color: transparent;
+    color: inherit;
+    padding: 8px 12px;
+    box-sizing: border-box;
+  }
+
+  & &__option--is-selected,
+  &__option--is-selected {
+    cursor: default;
+    display: block;
+    font-size: inherit;
+    width: 100%;
+    user-select: none;
+    background-color: #2684FF;
+    color: hsl(0, 0%, 100%);
+    padding: 8px 12px;
+    box-sizing: border-box;
+  }
+
+  & &__option--is-focused,
+  &__option--is-focused {
+    cursor: default;
+    display: block;
+    font-size: inherit;
+    width: 100%;
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    background-color: #DEEBFF;
+    color: inherit;
+    padding: 8px 12px;
+    box-sizing: border-box;
   }
 }
