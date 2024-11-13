@@ -205,7 +205,7 @@ class SubscriptionMetabox extends ItemsIntegration {
 	 * @return void
 	 */
 	public function add_meta_box( string $post_type ): void {
-		if ( ! $this->display ) {
+		if ( ! $this->display || ! function_exists( 'wc_get_container' ) || ! function_exists( 'wc_get_page_screen_id' ) ) {
 			return;
 		}
 
@@ -267,6 +267,10 @@ class SubscriptionMetabox extends ItemsIntegration {
 	 * or false on failure.
 	 */
 	public function get_order(): bool|WC_Order|WC_Order_Refund {
+		if ( ! function_exists( 'wc_get_order' ) ) {
+			return false;
+		}
+
 		return wc_get_order( $this->get_item_id() );
 	}
 
