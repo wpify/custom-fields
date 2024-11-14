@@ -179,3 +179,11 @@ Tabs used for the custom fields. See [Tabs](../features/tabs.md) for more inform
 ### `$items` *array*
 
 List of the fields to be shown. See [Field Types](../field-types.md) for available field types.
+
+## Inner Blocks
+
+TODO: Add documentation for inner blocks.
+
+## Inspector Controls
+
+TODO: Add documentation for inspector controls.

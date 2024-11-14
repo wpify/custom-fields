@@ -85,7 +85,7 @@ abstract class BaseIntegration {
 		$item['global_id'] = $global_id . '__' . $item['id'];
 
 		if ( isset( $item['custom_attributes'] ) ) {
-			$item['props'] = $item['custom_attributes'];
+			$item['attributes'] = $item['custom_attributes'];
 			unset( $item['custom_attributes'] );
 		}
 

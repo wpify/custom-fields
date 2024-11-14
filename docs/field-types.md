@@ -65,7 +65,7 @@ There is also an alternative shape of the `items` array, where it is not an asso
 
 It's completely up to you, which array shape you prefer.
 
-## Field properties
+## Default field properties
 
 Every field definition can contain the following properties:
 
