@@ -8,7 +8,7 @@ require('@/fields/Datetime');
 require('@/fields/Email');
 require('@/fields/Group');
 require('@/fields/Html');
-require('@/fields/InnerBlock');
+require('@/fields/InnerBlocks');
 require('@/fields/Link');
 require('@/fields/Mapycz');
 require('@/fields/Month');

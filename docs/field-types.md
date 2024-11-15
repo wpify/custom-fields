@@ -65,7 +65,7 @@ There is also an alternative shape of the `items` array, where it is not an asso
 
 It's completely up to you, which array shape you prefer.
 
-## Default field properties
+## Default Field Properties
 
 Every field definition can contain the following properties:
 
@@ -115,65 +115,65 @@ Array of additional attributes for the simple field types. It can be used to set
 
 ## Simple field types
 
-* Checkbox
-* Multi Checkbox
-* Color
-* Date
-* DateTime
-* Email
-* Month
-* Number
-* Password
-* Range
-* Select
-* Multi Select
-* Phone
-* Text
-* Textarea
-* Time
-* Toggle
-* Multi Toggle
-* URL
-* Week
+* [Checkbox](field-types/checkbox.md) `checkbox`
+* [Multi Checkbox](field-types/multi_checkbox.md) `multi_checkbox`
+* Color `color`
+* Date `date`
+* DateTime `datetime`
+* Email `email`
+* Month `month`
+* Number `number`
+* Password `password`
+* Range `range`
+* Select `select`
+* Multi Select `multi_select`
+* Phone `tel`
+* Text `text`
+* Textarea `textarea`
+* Time `time`
+* Toggle `toggle`
+* Multi Toggle `multi_toggle`
+* URL `url`
+* Week `week`
 
 ## Relational field types
 
-* Attachment
-* Multi Attachment (gallery)
-* Link
-* Multi Link
-* Post
-* Multi Post
-* Term
-* Multi Term
+* Attachment `attachment`
+* Multi Attachment (gallery) `multi_attachment`
+* Link `link`
+* Multi Link `multi_link`
+* Post `post`
+* Multi Post `multi_post`
+* Term `term`
+* Multi Term `multi_term`
 
 ## Complex field types
 
-* Code Editor
-* Group
-* Mapy.cz
-* WYSIWYG editor (TinyMCE)
-* Inner Blocks (for Gutenberg Blocks only)
+* Code Editor `code`
+* Group `group`
+* Mapy.cz `mapycz`
+* WYSIWYG editor (TinyMCE) `wysiwyg`
+* [Inner Blocks](field-types/inner_blocks.md) `inner_blocks`
 
 ## Repeater field types
 
-* Multi Date
-* Multi DateTime
-* Multi Email
-* Multi Group
-* Multi Mapy.cz
-* Multi Month
-* Multi Number
-* Multi Phone
-* Multi Text
-* Multi Textarea
-* Multi Time
-* Multi URL
-* Multi Week
+* Multi Date `multi_date`
+* Multi DateTime `multi_datetime`
+* Multi Email `multi_email`
+* Multi Group (Repeater) `multi_group`
+* Multi Mapy.cz `multi_mapycz`
+* Multi Month `multi_month`
+* Multi Number `multi_number`
+* Multi Phone `multi_tel`
+* Multi Text `multi_text`
+* Multi Textarea `multi_textarea`
+* Multi Time `multi_time`
+* Multi URL `multi_url`
+* Multi Week `multi_week`
 
 ## Static field types
 
-* Button
-* Multi Button
-* HTML
-* Title
+* Button `button`
+* Multi Button `multi_button`
+* HTML `html`
+* Title `title`

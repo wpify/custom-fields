@@ -182,7 +182,7 @@ List of the fields to be shown. See [Field Types](../field-types.md) for availab
 
 ## Inner Blocks
 
-TODO: Add documentation for inner blocks.
+Inner Blocks are a special field type that allows you to create nested blocks within your custom block. The `inner_blocks` field type is used to define this field. The `inner_blocks` field type does not have any additional properties and can be used only once in a block definition.
 
 ## Inspector Controls
 
