@@ -9,7 +9,7 @@ namespace Wpify\CustomFields\Integrations;
 
 use Closure;
 use Wpify\CustomFields\CustomFields;
-use Wpify\CustomFields\exceptions\MissingArgumentException;
+use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
 /**
  * Options class for managing settings pages in the WordPress admin area.
