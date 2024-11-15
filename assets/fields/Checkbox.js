@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
 import { checkValidityBooleanType } from '@/helpers/validators';
+import { stripHtml } from '@/helpers/functions'
 
 function Checkbox ({
   id,
@@ -32,5 +33,9 @@ function Checkbox ({
 }
 
 Checkbox.checkValidity = checkValidityBooleanType;
+
+Checkbox.Title = ({ field, value }) => {
+  return stripHtml(field.label);
+};
 
 addFilter('wpifycf_field_checkbox', 'wpify_custom_fields', () => Checkbox);

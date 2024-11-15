@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
-import { normalizeUrl } from '@/helpers/functions';
+import { normalizeUrl, stripHtml } from '@/helpers/functions'
 import { usePostTypes, useUrlTitle } from '@/helpers/hooks';
 import { PostSelect } from '@/components/PostSelect';
 import clsx from 'clsx';
@@ -128,6 +128,10 @@ export function Link ({
     </div>
   );
 }
+
+Link.Title = ({ field, value }) => {
+  return stripHtml(field.label) + ' (' + value.url + ')';
+};
 
 function PostTypes ({ onChange, postTypes, value, disabled }) {
   return (

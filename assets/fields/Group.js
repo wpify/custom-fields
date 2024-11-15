@@ -4,6 +4,7 @@ import { addFilter, applyFilters } from '@wordpress/hooks';
 import { Field } from '@/components/Field';
 import { Text } from '@/fields/Text';
 import { checkValidityGroupType } from '@/helpers/validators';
+import { stripHtml } from '@/helpers/functions'
 
 function Group ({
   id,
@@ -50,12 +51,12 @@ Group.Title = ({ field, value, index }) => {
       continue;
     }
 
-    if (typeof FieldComponent.Title === 'function') {
-      return <FieldComponent.Title value={value[item.id]} />;
+    if (typeof FieldComponent.Title === 'function' && value[item.id]) {
+      return <FieldComponent.Title value={value[item.id]} field={item} />;
     }
 
     if (typeof value[item.id] === 'string') {
-      return value[item.id];
+      return stripHtml(value[item.id]);
     }
   }
 

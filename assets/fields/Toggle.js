@@ -2,6 +2,7 @@ import { addFilter } from '@wordpress/hooks';
 import { ToggleControl } from '@wordpress/components';
 import { checkValidityBooleanType } from '@/helpers/validators';
 import clsx from 'clsx';
+import { stripHtml } from '@/helpers/functions'
 
 function Toggle ({
   id,
@@ -25,5 +26,9 @@ function Toggle ({
 }
 
 Toggle.checkValidity = checkValidityBooleanType;
+
+Toggle.Title = ({ field, value }) => {
+  return stripHtml(field.label);
+};
 
 addFilter('wpifycf_field_toggle', 'wpify_custom_fields', () => Toggle);
