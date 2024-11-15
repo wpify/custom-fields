@@ -130,7 +130,7 @@ export function Link ({
 }
 
 Link.Title = ({ field, value }) => {
-  return stripHtml(field.label) + ' (' + value.url + ')';
+  return stripHtml(value.label) + ' (' + value.url + ')';
 };
 
 function PostTypes ({ onChange, postTypes, value, disabled }) {
