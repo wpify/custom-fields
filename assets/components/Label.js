@@ -2,6 +2,8 @@ import clsx from 'clsx';
 import { useContext } from 'react';
 import { AppContext } from '@/custom-fields';
 import { maybePortal } from '@/helpers/functions';
+import { ErrorBoundary } from 'react-error-boundary'
+import { RawHTML } from '@/components/RawHTML'
 
 export function Label ({
   node,
@@ -24,7 +26,7 @@ export function Label ({
       htmlFor={htmlId}
       className={clsx(`wpifycf-field__label wpifycf-field__label--${type}`, className, validity.length && 'wpifycf-field__label--invalid')}
     >
-      {label}
+      <RawHTML html={label} />
       {required && <span className="wpifycf-field__required">*</span>}
     </label>
   );
