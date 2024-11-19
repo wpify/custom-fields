@@ -221,11 +221,12 @@ class OrderMetabox extends ItemsIntegration {
 	 *
 	 * @return void
 	 */
-	public function render( WC_Order $order ): void {
+	public function render( \WP_Post $post ): void {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
 
+		$order          = wc_get_order( $post->ID );
 		$this->order_id = $order->get_id();
 		$this->enqueue();
 
