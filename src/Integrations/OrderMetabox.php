@@ -11,6 +11,7 @@ use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableControlle
 use Closure;
 use WC_Order;
 use WC_Order_Refund;
+use WP_Post;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
@@ -217,11 +218,11 @@ class OrderMetabox extends ItemsIntegration {
 	/**
 	 * Renders the order meta and associated items.
 	 *
-	 * @param WC_Order $order Order object.
+	 * @param WP_Post $post Post object.
 	 *
 	 * @return void
 	 */
-	public function render( \WP_Post $post ): void {
+	public function render( WP_Post $post ): void {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
