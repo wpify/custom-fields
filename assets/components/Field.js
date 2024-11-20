@@ -24,13 +24,14 @@ export function Field ({
   conditions,
   fieldPath,
   isRoot = false,
+  generator,
   ...props
 }) {
   const FieldComponent = useMemo(() => applyFilters('wpifycf_field_' + type, Text, props), [type, props]);
   const { currentTab } = useContext(AppContext);
   const shown = useConditions({ conditions, fieldPath });
   const isCurrentTab = !tab || !currentTab || currentTab === tab;
-  const isHidden = !shown || !isCurrentTab;
+  const isHidden = !shown || !isCurrentTab || type === 'hidden';
 
   const validity = useMemo(
     () => !isHidden && typeof FieldComponent.checkValidity === 'function'
@@ -44,6 +45,16 @@ export function Field ({
       setValidity(validity);
     }
   }, [setValidity, validity]);
+
+  useEffect(() => {
+    if (!value && typeof generator === 'string') {
+      const nextValue = applyFilters('wpifycf_generator_' + generator, value, props);
+
+      if (nextValue && nextValue !== value) {
+        props.onChange(nextValue);
+      }
+    }
+  }, [value, generator, props.onChange]);
 
   const hiddenField = name && (
     <input

@@ -9,6 +9,7 @@ import { GutenbergBlock, SaveGutenbergBlock } from '@/components/GutenbergBlock'
 import { AppContextProvider } from '@/components/AppContextProvider';
 
 require('@/helpers/field-types');
+require('@/helpers/generators');
 
 export const AppContext = createContext({});
 const config = { ...window.wpifycf };

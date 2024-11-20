@@ -7,7 +7,8 @@ export function Button (props) {
   const {
     title,
     id,
-    href,
+    url,
+    href = url,
     action,
     primary = false,
     disabled = false,
