@@ -69,14 +69,14 @@ class Api {
 		$this->register_rest_route(
 			'mapycz-api-key',
 			WP_REST_Server::EDITABLE,
-			fn( WP_REST_Request $request ) => update_option( 'wpifycf_mapycz_api_key', $request->get_param( 'api_key' ) ),
+			fn( WP_REST_Request $request ) => update_option( 'mapy_cz_api_key', $request->get_param( 'api_key' ) ),
 			array( 'api_key' => array( 'required' => true ) ),
 		);
 
 		$this->register_rest_route(
 			'mapycz-api-key',
 			WP_REST_Server::READABLE,
-			fn() => get_option( 'wpifycf_mapycz_api_key' ),
+			fn() => get_option( 'mapy_cz_api_key' ),
 		);
 	}
 

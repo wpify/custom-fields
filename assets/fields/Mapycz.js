@@ -8,7 +8,6 @@ import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
 import clsx from 'clsx';
 import { AppContext } from '@/custom-fields';
-import { stripHtml } from '@/helpers/functions'
 
 const markerIcon = L.icon({
   iconUrl: 'https://api.mapy.cz/img/api/marker/drop-red.png',
