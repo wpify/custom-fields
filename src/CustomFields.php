@@ -441,13 +441,13 @@ class CustomFields {
 	 *
 	 * @param array $items An array of items. Each item should contain an 'id' key used
 	 *                     for sanitizing the corresponding value in the input array.
-	 * @param array $previous_value Optional. The previous value of the array. Default is an empty array.
+	 * @param mixed $previous_value Optional. The previous value of the array. Default is an empty array.
 	 *
 	 * @return Closure A closure that accepts an array of values to be sanitized and returns the sanitized array.
 	 */
-	public function sanitize_option_value( array $items = array(), array $previous_value = array() ): Closure {
+	public function sanitize_option_value( array $items = array(), mixed $previous_value = array() ): Closure {
 		return function ( array $value = array() ) use ( $items, $previous_value ): array {
-			$next_value = $previous_value;
+			$next_value = is_array( $previous_value ) ? $previous_value : array();
 			foreach ( $items as $item ) {
 				if ( isset( $value[ $item['id'] ] ) ) {
 					$next_value[ $item['id'] ] = $this->sanitize_item_value( $item )( $value[ $item['id'] ] );
