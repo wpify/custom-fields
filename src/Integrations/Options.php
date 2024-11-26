@@ -306,6 +306,10 @@ class Options extends OptionsIntegration {
 			break;
 		}
 
+		if ( ! empty( $this->option_name ) ) {
+			add_filter( "wpifycf_{$this->type}_{$this->option_name}_items", array( $this, 'get_items_for_option_name' ) );
+		}
+
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 
 		if ( $this->type === $this::TYPE_USER ) {
@@ -499,6 +503,17 @@ class Options extends OptionsIntegration {
 	}
 
 	/**
+	 * Retrieves the items for the option name.
+	 *
+	 * @param array $items The items to be merged with the option name items.
+	 *
+	 * @return array The merged items.
+	 */
+	public function get_items_for_option_name( array $items ): array {
+		return array_merge( $items, $this->normalize_items( $this->items ) );
+	}
+
+	/**
 	 * Registers settings, sections, and fields for the WordPress options page.
 	 *
 	 * This method normalizes the items and registers each setting with the appropriate
@@ -531,7 +546,10 @@ class Options extends OptionsIntegration {
 				array(
 					'type'              => 'object',
 					'label'             => $this->page_title,
-					'sanitize_callback' => $this->custom_fields->sanitize_option_value( $items ),
+					'sanitize_callback' => $this->custom_fields->sanitize_option_value(
+						apply_filters( "wpifycf_{$this->type}_{$this->option_name}_items", array() ),
+						$this->get_option_value( $this->option_name, array() ),
+					),
 					'show_in_rest'      => false,
 					'default'           => array(),
 				),

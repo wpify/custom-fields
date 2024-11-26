@@ -57,7 +57,7 @@ Mapycz.checkValidity = function (value, field) {
   return validity;
 };
 
-Mapycz.Title = ({ field, value }) => {
+Mapycz.Title = ({ value }) => {
   return value.latitude + ', ' + value.longitude;
 };
 
@@ -342,20 +342,14 @@ function TileLayerMapycz ({ apiKey }) {
 }
 
 function SetApiKey ({ mapycz, htmlId }) {
-  const [apiKey, setApiKey] = useState('');
+  const [apiKey, setApiKey] = useState(mapycz.apiKey || '');
 
   const handleApiKeyChange = useCallback((event) => {
     setApiKey(event.target.value);
-  }, []);
+  }, [setApiKey]);
 
   const handleApiKeyUpdate = useCallback(() => {
     mapycz.handleUpdate(apiKey);
-  }, [mapycz, apiKey]);
-
-  useEffect(() => {
-    if (mapycz.apiKey !== apiKey) {
-      setApiKey(mapycz.apiKey ? mapycz.apiKey : '');
-    }
   }, [mapycz, apiKey]);
 
   return (

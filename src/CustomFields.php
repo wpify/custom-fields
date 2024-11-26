@@ -375,7 +375,7 @@ class CustomFields {
 				$sanitized_value = sanitize_email( $value );
 			} elseif ( 'group' === $item['type'] ) {
 				$value           = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
-				$sanitized_value = array();
+				$sanitized_value = $value;
 				foreach ( $item['items'] as $sub_item ) {
 					$sanitized_value[ $sub_item['id'] ] = $this->sanitize_item_value( $sub_item )( $value[ $sub_item['id'] ] ?? null );
 				}
@@ -441,14 +441,17 @@ class CustomFields {
 	 *
 	 * @param array $items An array of items. Each item should contain an 'id' key used
 	 *                     for sanitizing the corresponding value in the input array.
+	 * @param array $previous_value Optional. The previous value of the array. Default is an empty array.
 	 *
 	 * @return Closure A closure that accepts an array of values to be sanitized and returns the sanitized array.
 	 */
-	public function sanitize_option_value( array $items = array() ): Closure {
-		return function ( array $value = array() ) use ( $items ): array {
-			$next_value = array();
+	public function sanitize_option_value( array $items = array(), array $previous_value = array() ): Closure {
+		return function ( array $value = array() ) use ( $items, $previous_value ): array {
+			$next_value = $previous_value;
 			foreach ( $items as $item ) {
-				$next_value[ $item['id'] ] = $this->sanitize_item_value( $item )( $value[ $item['id'] ] ?? null );
+				if ( isset( $value[ $item['id'] ] ) ) {
+					$next_value[ $item['id'] ] = $this->sanitize_item_value( $item )( $value[ $item['id'] ] );
+				}
 			}
 
 			return $next_value;

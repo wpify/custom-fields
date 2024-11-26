@@ -7,8 +7,6 @@
 
 namespace Wpify\CustomFields\Integrations;
 
-use Wpify\CustomFields\CustomFields;
-
 /**
  * Abstract class for integrating custom fields with items.
  */

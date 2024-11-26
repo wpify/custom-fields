@@ -70,7 +70,7 @@ abstract class BaseIntegration {
 			$next_items[ $item['id'] ] = $this->normalize_item( $item, $global_id );
 		}
 
-		return array_values( $next_items );
+		return apply_filters( 'wpifycf_items', array_values( $next_items ), $this->id );
 	}
 
 	/**
