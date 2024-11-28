@@ -244,9 +244,9 @@ class OrderMetabox extends ItemsIntegration {
 
 		foreach ( $items as $item ) {
 			?>
-            <div class="form-field">
+			<div class="form-field">
 				<?php $this->print_field( $item ); ?>
-            </div>
+			</div>
 			<?php
 		}
 	}
