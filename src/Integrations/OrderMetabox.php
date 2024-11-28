@@ -9,6 +9,7 @@ namespace Wpify\CustomFields\Integrations;
 
 use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 use Closure;
+use WC_Abstract_Order;
 use WC_Order;
 use WC_Order_Refund;
 use WP_Post;
@@ -119,7 +120,7 @@ class OrderMetabox extends ItemsIntegration {
 	/**
 	 * Constructor for the class.
 	 *
-	 * @param array        $args Configuration arguments including 'items', 'title', and other optional settings.
+	 * @param array        $args          Configuration arguments including 'items', 'title', and other optional settings.
 	 * @param CustomFields $custom_fields Instance of CustomFields.
 	 *
 	 * @return void
@@ -218,16 +219,17 @@ class OrderMetabox extends ItemsIntegration {
 	/**
 	 * Renders the order meta and associated items.
 	 *
-	 * @param WP_Post $post Post object.
+	 * @param WP_Post|WC_Abstract_Order $post Post object.
 	 *
 	 * @return void
 	 */
-	public function render( WP_Post $post ): void {
+	public function render( WP_Post|WC_Abstract_Order $post ): void {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
 
-		$order          = wc_get_order( $post->ID );
+		$id             = is_a( 'WC_Abstract_Order', $post ) ? $post->get_id() : $post->ID;
+		$order          = wc_get_order( $id );
 		$this->order_id = $order->get_id();
 		$this->enqueue();
 
@@ -242,9 +244,9 @@ class OrderMetabox extends ItemsIntegration {
 
 		foreach ( $items as $item ) {
 			?>
-			<div class="form-field">
+            <div class="form-field">
 				<?php $this->print_field( $item ); ?>
-			</div>
+            </div>
 			<?php
 		}
 	}
@@ -294,7 +296,7 @@ class OrderMetabox extends ItemsIntegration {
 	/**
 	 * Retrieves the value of a specified option from the order metadata.
 	 *
-	 * @param string $name The name of the option whose value is to be retrieved.
+	 * @param string $name          The name of the option whose value is to be retrieved.
 	 * @param mixed  $default_value The default value to return if the option is not found.
 	 *
 	 * @return mixed The value of the specified option, or the default value if the option is not found.
@@ -306,7 +308,7 @@ class OrderMetabox extends ItemsIntegration {
 	/**
 	 * Sets the value of a specified option in the order metadata.
 	 *
-	 * @param string $name The name of the option to set.
+	 * @param string $name  The name of the option to set.
 	 * @param mixed  $value The value to assign to the specified option.
 	 *
 	 * @return WC_Order|int Returns true if the metadata was successfully saved, false otherwise.
