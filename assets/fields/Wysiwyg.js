@@ -173,22 +173,21 @@ function TinyMCE ({ htmlId, value, onChange, height, disabled }) {
     select => select(store).getSettings().styles,
   );
 
+  const [editor, setEditor] = useState(null);
+
   const sanitizedId = htmlId.replace(/\./g, '__');
 
   useEffect(() => {
-    const { baseURL, suffix, settings } = window.wpEditorL10n.tinymce;
+    const { baseURL: base_url, suffix, settings } = window.wpEditorL10n.tinymce;
 
-    window.tinymce.EditorManager.overrideDefaults({
-      base_url: baseURL,
-      suffix,
-    });
-
+    window.tinymce.EditorManager.overrideDefaults({ base_url, suffix });
     window.wp.oldEditor.initialize(sanitizedId, {
       tinymce: {
         ...settings,
         height,
         setup (editor) {
           editorRef.current = editor;
+          setEditor(editor);
           editor.on('init', () => {
             const doc = editor.getDoc();
             styles?.forEach(({ css }) => {
@@ -196,14 +195,6 @@ function TinyMCE ({ htmlId, value, onChange, height, disabled }) {
               styleEl.innerHTML = css;
               doc.head.appendChild(styleEl);
             });
-          });
-
-          editor.on('change keyup', function () {
-            const content = editor.getContent();
-
-            if (onChange) {
-              onChange(content);
-            }
           });
         },
       },
@@ -214,10 +205,28 @@ function TinyMCE ({ htmlId, value, onChange, height, disabled }) {
         editorRef.current.off('change keyup');
         editorRef.current.remove();
       }
-
       window.wp.oldEditor.remove(sanitizedId);
+      setEditor(null);
     };
-  }, []);
+  }, [sanitizedId, setEditor, height]);
+
+  useEffect(() => {
+    if (editor) {
+      editor.on('change keyup', function () {
+        const content = editor.getContent();
+
+        if (onChange) {
+          onChange(content);
+        }
+      });
+    }
+
+    return () => {
+      if (editor) {
+        editor.off('change keyup');
+      }
+    }
+  }, [editor, onChange]);
 
   useEffect(() => {
     const editor = editorRef.current;
