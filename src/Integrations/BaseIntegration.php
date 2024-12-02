@@ -156,12 +156,12 @@ abstract class BaseIntegration {
 		$next_options = array();
 
 		foreach ( $options as $key => $value ) {
-			if ( is_string( $key ) ) {
+			if ( is_string( $key ) && is_string( $value ) ) {
 				$next_options[] = array(
 					'label' => $value,
 					'value' => $key,
 				);
-			} else {
+			} elseif ( is_array( $value ) && isset( $value['label'] ) && isset( $value['value'] ) ) {
 				$next_options[] = $value;
 			}
 		}
