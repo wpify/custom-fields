@@ -278,13 +278,35 @@ function AutoComplete ({ value, onChange, apiKey, lang, setCenter }) {
       setActive((active + length - 1) % length);
     } else if (event.key === 'ArrowDown' && active < length - 1) {
       setActive((active + length + 1) % length);
-    } else if (event.key === 'Enter' && active !== null) {
+    } else if (event.key === 'Enter') {
       event.stopPropagation();
       event.preventDefault();
+
+      const formats = [
+        /(?<latitude>\d+(\.\d+)?)\s*[,;]\s*(?<longitude>\d+(\.\d+)?)/,
+        /(?<latitude>\d+(,\d+)?)\s*;\s*(?<longitude>\d+(,\d+)?)/,
+      ];
+
+      for(let i = 0; i < formats.length; i++) {
+        const match = event.target.value.match(formats[i]);
+        if (match) {
+          const { latitude, longitude } = match.groups;
+          onChange({
+            ...value,
+            latitude: parseFloat(latitude).toFixed(6),
+            longitude: parseFloat(longitude).toFixed(6),
+          });
+          setActive(null);
+          setQuery('');
+          setCenter([parseFloat(latitude).toFixed(6), parseFloat(longitude).toFixed(6)]);
+          return;
+        }
+      }
+
       handleSelect(active);
       setActive(null);
     }
-  }, [active, handleSelect, length]);
+  }, [active, handleSelect, length, setCenter]);
 
   const handleFocus = useCallback(() => {
     setActive(0);
