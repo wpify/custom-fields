@@ -56,6 +56,10 @@
     font-weight: 600;
     line-height: 1.3;
     font-size: 14px;
+
+    &:has(span:empty) {
+      display: none;
+    }
   }
 
   &__label--invalid {
