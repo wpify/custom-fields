@@ -17,15 +17,57 @@ export function useSortableList ({ containerRef, draggable, handle, items, setIt
     setItems(nextItems);
   }, [items, setItems]);
 
+  const stopPropagation = useCallback(e => e.stopPropagation(), []);
+
   useEffect(() => {
     if (containerRef.current) {
-      const options = { animation: 150, onEnd, forceFallback: true, disabled };
-      if (draggable) options.draggable = draggable;
-      if (handle) options.handle = handle;
-      const sortable = Sortable.create(containerRef.current, options);
-      return () => sortable.destroy();
+      containerRef.current.addEventListener('drag', stopPropagation);
+      containerRef.current.addEventListener('dragend', stopPropagation);
+      containerRef.current.addEventListener('dragenter', stopPropagation);
+      containerRef.current.addEventListener('dragexit', stopPropagation);
+      containerRef.current.addEventListener('dragleave', stopPropagation);
+      containerRef.current.addEventListener('dragover', stopPropagation);
+      containerRef.current.addEventListener('dragstart', stopPropagation);
+      containerRef.current.addEventListener('drop', stopPropagation);
     }
-  }, [containerRef, onEnd, draggable, handle]);
+
+    return () => {
+      if (containerRef.current) {
+        containerRef.current.removeEventListener('drag', stopPropagation);
+        containerRef.current.removeEventListener('dragend', stopPropagation);
+        containerRef.current.removeEventListener('dragenter', stopPropagation);
+        containerRef.current.removeEventListener('dragexit', stopPropagation);
+        containerRef.current.removeEventListener('dragleave', stopPropagation);
+        containerRef.current.removeEventListener('dragover', stopPropagation);
+        containerRef.current.removeEventListener('dragstart', stopPropagation);
+        containerRef.current.removeEventListener('drop', stopPropagation);
+      }
+    };
+  }, [containerRef.current, stopPropagation]);
+
+  useEffect(() => {
+    let sortable;
+
+    const options = { animation: 150, onEnd, disabled };
+
+    if (draggable) {
+      options.draggable = draggable;
+    }
+
+    if (handle) {
+      options.handle = handle;
+    }
+
+    if (containerRef.current) {
+      sortable = Sortable.create(containerRef.current, options);
+    }
+
+    return () => {
+      if (sortable) {
+        sortable.destroy();
+      }
+    };
+  }, [containerRef.current, onEnd, draggable, handle]);
 }
 
 export function useMediaLibrary ({
@@ -73,7 +115,16 @@ export function useAttachment (id) {
   return { attachment, setAttachment };
 }
 
-export function useMulti ({ value, onChange, min, max, defaultValue, disabled_buttons = [], dragHandle, disabled = false }) {
+export function useMulti ({
+  value,
+  onChange,
+  min,
+  max,
+  defaultValue,
+  disabled_buttons = [],
+  dragHandle,
+  disabled = false
+}) {
   const containerRef = useRef(null);
   const [keyPrefix, setKeyPrefix] = useState(uuidv4());
   const [collapsed, setCollapsed] = useState(() => Array(value.length).fill(true));
@@ -292,7 +343,7 @@ export function usePostTypes (onlyPostTypes = []) {
 
 export function useOptions ({
   optionsKey,
-  initialData = [],
+  initialData = [{ value: '', label: 'Loading...' }],
   enabled = true,
   select,
   ...args

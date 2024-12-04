@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { IconButton } from '@/components/IconButton';
 import { checkValidityMultiStringType } from '@/helpers/validators';
 import clsx from 'clsx';
+import { useDebounce } from '@uidotdev/usehooks';
 
 export function MultiSelect ({
   id,
@@ -19,20 +20,36 @@ export function MultiSelect ({
     if (!Array.isArray(value)) {
       onChange([]);
     }
-  }, [value, onChange])
+  }, [value, onChange]);
 
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 300);
+  const [allOptions, setAllOptions] = useState({});
 
-  const { data: fetchedOptions } = useOptions({
+  const { data, isSuccess } = useOptions({
     optionsKey,
     enabled: !!optionsKey,
     initialData: options,
-    search,
+    search: debouncedSearch,
   });
 
+  useEffect(() => {
+    if (isSuccess) {
+      setAllOptions((allOptions) => ({
+        ...allOptions,
+        ...data.reduce((acc, option) => {
+          acc[option.value] = option.label;
+          return acc;
+        }, {})
+      }));
+    }
+  }, [data, isSuccess]);
+
   const realOptions = useMemo(
-    () => optionsKey ? fetchedOptions : options,
-    [fetchedOptions, options]
+    () => optionsKey
+      ? (data.length > 0 ? data : [{ value: '', label: 'No options found' }])
+      : options,
+    [data, options]
   );
 
   const availableOptions = useMemo(
@@ -42,7 +59,12 @@ export function MultiSelect ({
 
   const usedOptions = useMemo(
     () => Array.isArray(value)
-      ? value.map(value => realOptions.find(option => String(option.value) === String(value)) || { value, label: value })
+      ? value.filter(Boolean).map(
+        value => realOptions.find(option => String(option.value) === String(value)
+        ) || {
+          value,
+          label: value
+        })
       : [],
     [realOptions, value],
   );
@@ -64,25 +86,23 @@ export function MultiSelect ({
         <div className="wpifycf-field-multi-select__options" ref={containerRef}>
           {usedOptions.map((option, index) => (
             <div className="wpifycf-field-multi-select__option" key={option.value}>
-              <span>{option.label}</span>
+              <span>{allOptions[option.value] || option.value}</span>
               {!disabled && (
-                <IconButton icon="trash" onClick={remove(index)} />
+                <IconButton icon="trash" onClick={remove(index)}/>
               )}
             </div>
           ))}
         </div>
       )}
-      {availableOptions.length > 0 && (
-        <SelectControl
-          id={id}
-          value={null}
-          onChange={handleChange}
-          options={availableOptions}
-          filterOption={optionsKey ? Boolean : undefined}
-          onInputChange={setSearch}
-          disabled={disabled}
-        />
-      )}
+      <SelectControl
+        id={id}
+        value={null}
+        onChange={handleChange}
+        options={availableOptions}
+        filterOption={optionsKey ? Boolean : undefined}
+        onInputChange={setSearch}
+        disabled={disabled}
+      />
     </div>
   );
 }
