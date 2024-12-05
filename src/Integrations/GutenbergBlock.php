@@ -423,7 +423,13 @@ class GutenbergBlock extends BaseIntegration {
 
 		$attributes = $this->normalize_attributes( $attributes );
 
-		return call_user_func( $this->render_callback, $attributes, $content, $block );
+		$content = call_user_func( $this->render_callback, $attributes, $content, $block );
+
+		if ( empty( $content ) || ! is_string( $content ) ) {
+			return '';
+		}
+
+		return $content;
 	}
 
 	/**
