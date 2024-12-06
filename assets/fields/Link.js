@@ -15,57 +15,95 @@ export function Link ({
   post_type,
   className,
   disabled = false,
+  setTitle,
 }) {
   const [blurUrl, setBlurUrl] = useState(null);
   const postTypes = usePostTypes(post_type);
+  const defaultValue = {
+    target: null,
+    post: null,
+    post_type: null,
+    label: null,
+    url: null,
+  };
+
+  const generateTitle = useCallback((value) => {
+    const parts = [];
+    if (value.label) {
+      parts.push(stripHtml(value.label));
+    }
+    if (value.url) {
+      parts.push(`(${value.url})`);
+    }
+    return parts.join(' ');
+  }, []);
 
   const handlePostChange = useCallback(option => {
     if (typeof option !== 'undefined' && option?.id !== value.post) {
-      onChange({
+      const nextValue = {
+        ...defaultValue,
         ...value,
         post: option?.id,
         label: option?.title,
         url: option?.permalink,
-      });
+      };
+      onChange(nextValue);
+      setTitle(generateTitle(nextValue));
     }
-  }, [onChange, value]);
+  }, [onChange, setTitle, value]);
 
   const handleUrlChange = useCallback(event => {
-    onChange({
+    const nextValue = {
+      ...defaultValue,
       ...value,
       url: event.target.value,
-    });
-  }, [onChange, value]);
+    };
+    onChange(nextValue);
+    setTitle(generateTitle(nextValue));
+  }, [onChange, setTitle, value]);
 
   const handleTargetChange = useCallback(event => {
     onChange({
+      ...defaultValue,
       ...value,
       target: event.target.checked ? '_blank' : null,
     });
   }, [onChange, value]);
 
   const handleLabelChange = useCallback(event => {
-    onChange({
+    const nextValue = {
+      ...defaultValue,
       ...value,
       label: event.target.value,
-    });
+    };
+    onChange(nextValue);
+    setTitle(generateTitle(nextValue));
   }, [onChange, value]);
 
   const handlePostTypeChange = useCallback(event => {
-    onChange({
+    const nextValue = {
+      ...defaultValue,
       ...value,
       post_type: event.target.value,
       post: null,
       url: null,
       label: null,
-    });
+    };
+    onChange(nextValue);
+    setTitle(generateTitle(nextValue));
   }, [onChange, value]);
 
   const handleUrlBlur = useCallback((event) => {
     const normalizedUrl = normalizeUrl(event.target.value);
     setBlurUrl(normalizedUrl);
     if (value?.url !== normalizedUrl) {
-      onChange({ ...value, url: normalizedUrl });
+      const nextValue = {
+        ...defaultValue,
+        ...value,
+        url: normalizedUrl
+      };
+      onChange(nextValue);
+      setTitle(generateTitle(nextValue));
     }
   }, [onChange, value]);
 
@@ -73,11 +111,14 @@ export function Link ({
 
   useEffect(() => {
     if (blurUrl && resolvedUrlTitle.data && !value.label) {
-      onChange({
+      const nextValue = {
+        ...defaultValue,
         ...value,
         label: resolvedUrlTitle.data,
-      });
+      };
+      onChange(nextValue);
       setBlurUrl(null);
+      setTitle(generateTitle(nextValue));
     }
   }, [resolvedUrlTitle, onChange, value.label, blurUrl]);
 
@@ -128,10 +169,6 @@ export function Link ({
     </div>
   );
 }
-
-Link.Title = ({ field, value }) => {
-  return stripHtml(value.label) + ' (' + value.url + ')';
-};
 
 function PostTypes ({ onChange, postTypes, value, disabled }) {
   return (

@@ -13,8 +13,16 @@ function Checkbox ({
   className,
   title,
   disabled = false,
+  setTitle,
 }) {
-  const handleChange = useCallback(event => onChange(event.target.checked), [onChange]);
+  const handleChange = useCallback(event => {
+    onChange(event.target.checked);
+    if (event.target.checked) {
+      setTitle(stripHtml(title));
+    } else {
+      setTitle('');
+    }
+  }, [onChange]);
 
   return (
     <label>
@@ -33,9 +41,5 @@ function Checkbox ({
 }
 
 Checkbox.checkValidity = checkValidityBooleanType;
-
-Checkbox.Title = ({ field, value }) => {
-  return stripHtml(field.label);
-};
 
 addFilter('wpifycf_field_checkbox', 'wpify_custom_fields', () => Checkbox);

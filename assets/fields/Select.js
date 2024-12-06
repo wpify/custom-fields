@@ -1,10 +1,9 @@
 import { addFilter } from '@wordpress/hooks';
 import { Select as SelectControl } from '@/components/Select.js';
 import { useOptions } from '@/helpers/hooks';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { checkValidityStringType } from '@/helpers/validators';
 import clsx from 'clsx';
-import { Mapycz } from '@/fields/Mapycz'
 import { stripHtml } from '@/helpers/functions'
 
 export function Select ({
@@ -15,6 +14,7 @@ export function Select ({
   options_key: optionsKey,
   className,
   disabled = false,
+  setTitle,
 }) {
   const [search, setSearch] = useState('');
 
@@ -31,10 +31,21 @@ export function Select ({
     [fetchedOptions, options]
   );
 
+  const valueOption = useMemo(() => {
+    if (Array.isArray(realOptions)) {
+      return realOptions.find(option => String(option.value) === String(value));
+    }
+    return null;
+  }, [realOptions, value]);
+
+  useEffect(() => {
+    setTitle(stripHtml(valueOption?.label || ''));
+  }, [valueOption, setTitle]);
+
   return (
     <SelectControl
       id={id}
-      value={Array.isArray(realOptions) && realOptions.find(option => String(option.value) === String(value))}
+      value={valueOption}
       onChange={onChange}
       options={realOptions}
       filterOption={optionsKey ? Boolean : undefined}
@@ -46,9 +57,5 @@ export function Select ({
 }
 
 Select.checkValidity = checkValidityStringType;
-
-Select.Title = ({ field, value }) => {
-  return stripHtml(field.options.find(option => String(option.value) === String(value))?.label);
-};
 
 addFilter('wpifycf_field_select', 'wpify_custom_fields', () => Select);

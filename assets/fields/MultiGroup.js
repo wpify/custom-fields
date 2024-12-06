@@ -1,4 +1,3 @@
-import { Group } from '@/fields/Group';
 import { addFilter } from '@wordpress/hooks';
 import { useMulti } from '@/helpers/hooks';
 import clsx from 'clsx';
@@ -7,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { IconButton } from '@/components/IconButton';
 import { checkValidityMultiGroupType } from '@/helpers/validators';
 import { Field } from '@/components/Field';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 function MultiGroup ({
   value = [],
@@ -22,6 +21,7 @@ function MultiGroup ({
   validity = [],
   fieldPath,
   disabled = false,
+  setTitle,
   ...props
 }) {
   useEffect(() => {
@@ -55,6 +55,19 @@ function MultiGroup ({
   });
 
   const fieldsValidity = validity?.reduce((acc, item) => typeof item === 'object' ? { ...acc, ...item } : acc, {});
+  const [titles, setTitles] = useState(() => {
+    return value.map((val, index) => '#' + (index + 1));
+  });
+
+  const handleSetTitle = useCallback(index => title => {
+    if (titles[index] !== title) {
+      setTitles(titles => {
+        const nextTitles = [...titles];
+        nextTitles[index] = title;
+        return nextTitles;
+      });
+    }
+  }, [titles, setTitles]);
 
   return (
     <div className={clsx('wpifycf-field-multi-group', `wpifycf-field-multi-group--${props.id}`, props.attributes?.class, className)}>
@@ -75,7 +88,7 @@ function MultiGroup ({
                 </div>
               )}
               <div className="wpifycf-field-multi-group__title" onClick={toggleCollapsed(index)}>
-                <Group.Title field={props} value={value} index={index} />
+                {titles[index] || `#${index + 1}`}
               </div>
               <div className={clsx('wpifycf-field-multi-group__header-actions')}>
                 {canDuplicate && (
@@ -114,6 +127,7 @@ function MultiGroup ({
                 validity={fieldsValidity[index]}
                 fieldPath={`${fieldPath}[${index}]`}
                 renderOptions={{ noLabel: true, noFieldWrapper: true, noControlWrapper: true }}
+                setTitle={handleSetTitle(index)}
               />
             </div>
           </div>

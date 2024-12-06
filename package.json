@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "postinstall": "cp -R .githooks/* .git/hooks/ && chmod +x .git/hooks/*",
     "start": "wp-scripts start",
     "build": "wp-scripts build",
     "build:analyze": "wp-scripts build --webpack-bundle-analyzer"

@@ -21,6 +21,7 @@ export function RootFields ({
       setValidity={handleValidityChange(field.id)}
       validity={validate ? validity[field.id] : []}
       fieldPath={field.id}
+      setTitle={() => null}
     />
   ));
 }

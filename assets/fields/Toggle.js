@@ -3,6 +3,7 @@ import { ToggleControl } from '@wordpress/components';
 import { checkValidityBooleanType } from '@/helpers/validators';
 import clsx from 'clsx';
 import { stripHtml } from '@/helpers/functions'
+import { useEffect } from 'react';
 
 function Toggle ({
   id,
@@ -12,7 +13,16 @@ function Toggle ({
   disabled = false,
   onChange,
   className,
+  setTitle,
 }) {
+  useEffect(() => {
+    if (value) {
+      setTitle(stripHtml(title));
+    } else {
+      setTitle('');
+    }
+  }, [setTitle, value]);
+
   return (
     <ToggleControl
       id={htmlId}
@@ -26,9 +36,5 @@ function Toggle ({
 }
 
 Toggle.checkValidity = checkValidityBooleanType;
-
-Toggle.Title = ({ field, value }) => {
-  return stripHtml(field.label);
-};
 
 addFilter('wpifycf_field_toggle', 'wpify_custom_fields', () => Toggle);

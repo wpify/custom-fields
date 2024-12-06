@@ -28,6 +28,5 @@ git add build/
 git add src/
 git add *.php
 
-
 echo "Pre-commit hook completed successfully. Proceeding with the commit..."
 exit 0

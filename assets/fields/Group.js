@@ -1,10 +1,9 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { addFilter, applyFilters } from '@wordpress/hooks';
+import { addFilter } from '@wordpress/hooks';
 import { Field } from '@/components/Field';
-import { Text } from '@/fields/Text';
 import { checkValidityGroupType } from '@/helpers/validators';
-import { stripHtml } from '@/helpers/functions'
+import { stripHtml } from '@/helpers/functions';
 
 function Group ({
   id,
@@ -17,9 +16,57 @@ function Group ({
   className,
   fieldPath,
   disabled = false,
+  setTitle,
 }) {
-  const handleChange = useCallback(id => fieldValue => onChange({ ...value, [id]: fieldValue }), [value, onChange]);
   const fieldValidity = validity?.reduce((acc, item) => typeof item === 'object' ? { ...acc, ...item } : acc, {});
+
+  const [titles, setTitles] = useState(() => {
+    const nextItems = {};
+    for (const item of items) {
+      if (value[item.id] !== 'undefined' && (typeof value[item.id] === 'string' || typeof value[item.id] === 'number') && Boolean(value[item.id])) {
+        nextItems[item.id] = String(value[item.id]);
+      }
+    }
+    return nextItems;
+  });
+
+  const [currentTitle, setCurrentTitle] = useState(() => {
+    for (const item of items) {
+      if (typeof titles[item.id] !== 'undefined' && Boolean(titles[item.id])) {
+        return String(titles[item.id]);
+      }
+    }
+    return '';
+  });
+
+  const handleSetTitle = useCallback(id => title => {
+    if (titles[id] !== title) {
+      const nextTitles = { ...titles, [id]: stripHtml(title) };
+      let nextCurrentTitle = '';
+      for (const item of items) {
+        if (typeof nextTitles[item.id] !== 'undefined' && Boolean(nextTitles[item.id])) {
+          nextCurrentTitle = String(nextTitles[item.id]);
+          break;
+        } else if (value[item.id] !== 'undefined' && (typeof value[item.id] === 'string' || typeof value[item.id] === 'number') && Boolean(value[item.id])) {
+          nextCurrentTitle = String(value[item.id]);
+          break;
+        }
+      }
+      setTitles(nextTitles);
+      if (nextCurrentTitle !== currentTitle) {
+        setCurrentTitle(nextCurrentTitle);
+      }
+    }
+  }, [setTitles, currentTitle, titles, items, value]);
+
+  useEffect(() => {
+    setTitle(currentTitle);
+  }, [currentTitle, setTitle]);
+
+  const handleChange = useCallback(
+    id => fieldValue => onChange({ ...value, [id]: fieldValue }),
+    [value, onChange]
+  );
 
   return (
     <div
@@ -35,6 +82,7 @@ function Group ({
           htmlId={`${htmlId}.${field.id}`}
           validity={fieldValidity[field.id]}
           fieldPath={`${fieldPath}.${field.id}`}
+          setTitle={handleSetTitle(field.id)}
         />
       ))}
     </div>
@@ -42,31 +90,6 @@ function Group ({
 }
 
 Group.descriptionPosition = 'before';
-
-Group.Title = ({ field, value, index }) => {
-  for (const item of field.items) {
-    const FieldComponent = applyFilters('wpifycf_field_' + item.type, Text);
-
-    if (!value[item.id]) {
-      continue;
-    }
-
-    if (typeof FieldComponent.Title === 'function' && value[item.id]) {
-      return <FieldComponent.Title value={value[item.id]} field={item} />;
-    }
-
-    if (typeof value[item.id] === 'string') {
-      return stripHtml(value[item.id]);
-    }
-  }
-
-  if (typeof index === 'number') {
-    return `#${index + 1}`;
-  }
-
-  return null;
-};
-
 Group.checkValidity = checkValidityGroupType;
 
 export { Group };

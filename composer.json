@@ -20,7 +20,6 @@
     }
   },
   "scripts": {
-    "post-autoload-dump": "cp -R .githooks/* .git/hooks/ && chmod +x .git/hooks/*",
     "phpcs": "phpcs -ps .",
     "phpcbf": "phpcbf -ps ."
   },

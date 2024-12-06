@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import { IconButton } from '@/components/IconButton';
 import { Button } from '@/components/Button';
@@ -15,8 +15,17 @@ function Attachment ({
   attributes = {},
   className,
   disabled = false,
+  setTitle,
 }) {
   const { attachment, setAttachment } = useAttachment(value);
+
+  useEffect(() => {
+    if (attachment) {
+      setTitle(attachment.filename);
+    } else {
+      setTitle('');
+    }
+  }, [attachment, setTitle]);
 
   const openMediaLibrary = useMediaLibrary({
     value,
@@ -47,16 +56,6 @@ function Attachment ({
     </div>
   );
 }
-
-Attachment.Title = ({ value }) => {
-  const { attachment } = useAttachment(value);
-
-  if (attachment) {
-    return attachment.filename;
-  }
-
-  return null;
-};
 
 export function AttachmentItem ({ attachment, remove, disabled }) {
   const thumbnail = attachment?.sizes?.medium?.url;

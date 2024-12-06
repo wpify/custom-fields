@@ -29,8 +29,17 @@ export function Mapycz ({
   lang = 'en',
   className,
   disabled = false,
+  setTitle,
 }) {
   const mapycz = useMapyCzApiKey();
+
+  useEffect(() => {
+    if (value.longitude && value.latitude) {
+      setTitle(`${value.longitude}:${value.latitude}`);
+    } else {
+      setTitle('');
+    }
+  }, [value]);
 
   return (
     <div className={clsx('wpifycf-field-mapycz', `wpifycf-field-mapycz--${id}`, className)}>
@@ -55,10 +64,6 @@ Mapycz.checkValidity = function (value, field) {
   }
 
   return validity;
-};
-
-Mapycz.Title = ({ value }) => {
-  return value.latitude + ', ' + value.longitude;
 };
 
 function MapyczMap ({
