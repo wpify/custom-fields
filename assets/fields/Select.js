@@ -18,6 +18,8 @@ export function Select ({
 }) {
   const [search, setSearch] = useState('');
 
+  console.log(id, options);
+
   const { data: fetchedOptions } = useOptions({
     optionsKey,
     enabled: !!optionsKey,
@@ -25,6 +27,8 @@ export function Select ({
     search,
     value,
   });
+
+  console.log(id, fetchedOptions);
 
   const realOptions = useMemo(
     () => optionsKey ? fetchedOptions : options,
@@ -39,8 +43,10 @@ export function Select ({
   }, [realOptions, value]);
 
   useEffect(() => {
-    setTitle(stripHtml(valueOption?.label || ''));
+    setTitle && setTitle(stripHtml(valueOption?.label || ''));
   }, [valueOption, setTitle]);
+
+  console.log(setTitle)
 
   return (
     <SelectControl
