@@ -228,7 +228,7 @@ class OrderMetabox extends ItemsIntegration {
 			return;
 		}
 
-		$id             = is_a( 'WC_Abstract_Order', $post ) ? $post->get_id() : $post->ID;
+		$id             = is_a( $post, 'WC_Abstract_Order' ) ? $post->get_id() : $post->ID;
 		$order          = wc_get_order( $id );
 		$this->order_id = $order->get_id();
 		$this->enqueue();
