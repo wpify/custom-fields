@@ -146,9 +146,11 @@ class Metabox extends ItemsIntegration {
 		$this->post_types    = $args['post_types'] ?? array();
 		$this->tabs          = $args['tabs'] ?? array();
 
-		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
-		add_action( 'save_post', array( $this, 'save_meta_box' ), 10, 2 );
-		add_action( 'init', array( $this, 'register_meta' ) );
+		if ( ! defined( 'WP_CLI' ) || false === WP_CLI ) {
+			add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
+			add_action( 'save_post', array( $this, 'save_meta_box' ), 10, 2 );
+			add_action( 'init', array( $this, 'register_meta' ) );
+		}
 	}
 
 	/**

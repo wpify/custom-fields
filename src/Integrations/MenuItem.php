@@ -70,9 +70,11 @@ class MenuItem extends ItemsIntegration {
 		$this->option_name = $args['meta_key'] ?? '';
 		$this->items       = $args['items'] ?? array();
 
-		add_action( 'wp_nav_menu_item_custom_fields', array( $this, 'render' ) );
-		add_action( 'wp_update_nav_menu_item', array( $this, 'save' ), 10, 2 );
-		add_action( 'current_screen', array( $this, 'maybe_enqueue' ) );
+		if ( ! defined( 'WP_CLI' ) || false === WP_CLI ) {
+			add_action( 'wp_nav_menu_item_custom_fields', array( $this, 'render' ) );
+			add_action( 'wp_update_nav_menu_item', array( $this, 'save' ), 10, 2 );
+			add_action( 'current_screen', array( $this, 'maybe_enqueue' ) );
+		}
 	}
 
 	/**

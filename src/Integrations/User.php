@@ -102,11 +102,13 @@ class User extends ItemsIntegration {
 
 		$this->id = $args['id'] ?? 'user__' . sanitize_title( $this->title ) . '__' . wp_generate_uuid4();
 
-		add_action( 'show_user_profile', array( $this, 'render_edit_form' ) );
-		add_action( 'edit_user_profile', array( $this, 'render_edit_form' ) );
-		add_action( 'personal_options_update', array( $this, 'save' ) );
-		add_action( 'edit_user_profile_update', array( $this, 'save' ) );
-		add_action( 'init', array( $this, 'register_meta' ), $this->init_priority );
+		if ( ! defined( 'WP_CLI' ) || false === WP_CLI ) {
+			add_action( 'show_user_profile', array( $this, 'render_edit_form' ) );
+			add_action( 'edit_user_profile', array( $this, 'render_edit_form' ) );
+			add_action( 'personal_options_update', array( $this, 'save' ) );
+			add_action( 'edit_user_profile_update', array( $this, 'save' ) );
+			add_action( 'init', array( $this, 'register_meta' ), $this->init_priority );
+		}
 	}
 
 	/**

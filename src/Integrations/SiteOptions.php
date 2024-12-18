@@ -262,11 +262,13 @@ class SiteOptions extends OptionsIntegration {
 			break;
 		}
 
-		add_filter( 'network_edit_site_nav_links', array( $this, 'create_tab' ) );
-		add_action( 'network_admin_menu', array( $this, 'register' ) );
-		add_action( 'admin_init', array( $this, 'register_settings' ), $this->hook_priority );
-		add_action( 'network_admin_edit_' . $this::SAVE_ACTION, array( $this, 'save_site_options' ) );
-		add_action( 'current_screen', array( $this, 'set_page_title' ) );
+		if ( ! defined( 'WP_CLI' ) || false === WP_CLI ) {
+			add_filter( 'network_edit_site_nav_links', array( $this, 'create_tab' ) );
+			add_action( 'network_admin_menu', array( $this, 'register' ) );
+			add_action( 'admin_init', array( $this, 'register_settings' ), $this->hook_priority );
+			add_action( 'network_admin_edit_' . $this::SAVE_ACTION, array( $this, 'save_site_options' ) );
+			add_action( 'current_screen', array( $this, 'set_page_title' ) );
+		}
 	}
 
 	/**

@@ -107,11 +107,20 @@ class Taxonomy extends ItemsIntegration {
 		$this->tabs          = $args['tabs'] ?? array();
 		$this->option_name   = $args['meta_key'] ?? '';
 
-		add_action( $this->taxonomy . '_add_form_fields', array( $this, 'render_add_form' ), $this->hook_priority );
-		add_action( $this->taxonomy . '_edit_form_fields', array( $this, 'render_edit_form' ), $this->hook_priority );
-		add_action( 'created_' . $this->taxonomy, array( $this, 'save' ) );
-		add_action( 'edited_' . $this->taxonomy, array( $this, 'save' ) );
-		add_action( 'init', array( $this, 'register_meta' ), $this->init_priority );
+		if ( ! defined( 'WP_CLI' ) || false === WP_CLI ) {
+			add_action( $this->taxonomy . '_add_form_fields', array( $this, 'render_add_form' ), $this->hook_priority );
+			add_action(
+				$this->taxonomy . '_edit_form_fields',
+				array(
+					$this,
+					'render_edit_form',
+				),
+				$this->hook_priority
+			);
+			add_action( 'created_' . $this->taxonomy, array( $this, 'save' ) );
+			add_action( 'edited_' . $this->taxonomy, array( $this, 'save' ) );
+			add_action( 'init', array( $this, 'register_meta' ), $this->init_priority );
+		}
 	}
 
 	/**

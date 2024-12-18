@@ -219,17 +219,19 @@ class ProductOptions extends ItemsIntegration {
 			),
 		);
 
-		add_filter( 'woocommerce_product_data_tabs', array( $this, 'woocommerce_product_data_tabs' ), 98 );
-		add_action( 'woocommerce_product_data_panels', array( $this, 'render_data_panels' ) );
-		add_action(
-			'woocommerce_product_options_' . $this->tab['target'] ?? $this->tab['id'],
-			array(
-				$this,
-				'render',
-			)
-		);
-		add_action( 'woocommerce_process_product_meta', array( $this, 'save' ) );
-		add_action( 'init', array( $this, 'register_meta' ), $this->hook_priority );
+		if ( ! defined( 'WP_CLI' ) || false === WP_CLI ) {
+			add_filter( 'woocommerce_product_data_tabs', array( $this, 'woocommerce_product_data_tabs' ), 98 );
+			add_action( 'woocommerce_product_data_panels', array( $this, 'render_data_panels' ) );
+			add_action(
+				'woocommerce_product_options_' . $this->tab['target'] ?? $this->tab['id'],
+				array(
+					$this,
+					'render',
+				)
+			);
+			add_action( 'woocommerce_process_product_meta', array( $this, 'save' ) );
+			add_action( 'init', array( $this, 'register_meta' ), $this->hook_priority );
+		}
 	}
 
 	/**

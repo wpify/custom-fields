@@ -234,15 +234,17 @@ class ProductVariationOptions extends ItemsIntegration {
 			),
 		);
 
-		if ( in_array( $this->after, array( 'pricing', 'inventory', 'dimensions', 'download' ), true ) ) {
-			add_action( 'woocommerce_variation_options_' . $this->after, array( $this, 'render' ), 10, 3 );
-		} else {
-			add_action( 'woocommerce_product_after_variable_attributes', array( $this, 'render' ), 10, 3 );
-		}
+		if ( ! defined( 'WP_CLI' ) || false === WP_CLI ) {
+			if ( in_array( $this->after, array( 'pricing', 'inventory', 'dimensions', 'download' ), true ) ) {
+				add_action( 'woocommerce_variation_options_' . $this->after, array( $this, 'render' ), 10, 3 );
+			} else {
+				add_action( 'woocommerce_product_after_variable_attributes', array( $this, 'render' ), 10, 3 );
+			}
 
-		add_action( 'woocommerce_save_product_variation', array( $this, 'save' ), 10, 2 );
-		add_action( 'init', array( $this, 'register_meta' ), $this->hook_priority );
-		add_action( 'admin_footer', array( $this, 'maybe_enqueue' ) );
+			add_action( 'woocommerce_save_product_variation', array( $this, 'save' ), 10, 2 );
+			add_action( 'init', array( $this, 'register_meta' ), $this->hook_priority );
+			add_action( 'admin_footer', array( $this, 'maybe_enqueue' ) );
+		}
 	}
 
 	/**

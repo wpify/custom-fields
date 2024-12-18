@@ -306,20 +306,34 @@ class Options extends OptionsIntegration {
 			break;
 		}
 
-		if ( ! empty( $this->option_name ) ) {
-			add_filter( "wpifycf_{$this->type}_{$this->option_name}_items", array( $this, 'get_items_for_option_name' ) );
-		}
+		if ( ! defined( 'WP_CLI' ) || false === WP_CLI ) {
+			if ( ! empty( $this->option_name ) ) {
+				add_filter(
+					"wpifycf_{$this->type}_{$this->option_name}_items",
+					array(
+						$this,
+						'get_items_for_option_name',
+					)
+				);
+			}
 
-		add_action( 'admin_init', array( $this, 'register_settings' ) );
+			add_action( 'admin_init', array( $this, 'register_settings' ) );
 
-		if ( $this->type === $this::TYPE_USER ) {
-			add_action( 'user_admin_menu', array( $this, 'register' ), $this->hook_priority );
-		} elseif ( $this->type === $this::TYPE_NETWORK ) {
-			add_action( 'network_admin_menu', array( $this, 'register' ), $this->hook_priority );
-			add_action( 'network_admin_edit_' . $this::NETWORK_SAVE_ACTION, array( $this, 'save_network_options' ) );
-			add_action( 'network_admin_notices', array( $this, 'show_network_admin_notices' ) );
-		} else {
-			add_action( 'admin_menu', array( $this, 'register' ), $this->hook_priority );
+			if ( $this->type === $this::TYPE_USER ) {
+				add_action( 'user_admin_menu', array( $this, 'register' ), $this->hook_priority );
+			} elseif ( $this->type === $this::TYPE_NETWORK ) {
+				add_action( 'network_admin_menu', array( $this, 'register' ), $this->hook_priority );
+				add_action(
+					'network_admin_edit_' . $this::NETWORK_SAVE_ACTION,
+					array(
+						$this,
+						'save_network_options',
+					)
+				);
+				add_action( 'network_admin_notices', array( $this, 'show_network_admin_notices' ) );
+			} else {
+				add_action( 'admin_menu', array( $this, 'register' ), $this->hook_priority );
+			}
 		}
 	}
 

@@ -181,8 +181,10 @@ class OrderMetabox extends ItemsIntegration {
 		);
 		$this->nonce         = $this->id . '-nonce';
 
-		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
-		add_action( 'woocommerce_update_order', array( $this, 'save' ) );
+		if ( ! defined( 'WP_CLI' ) || false === WP_CLI ) {
+			add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
+			add_action( 'woocommerce_update_order', array( $this, 'save' ) );
+		}
 	}
 
 

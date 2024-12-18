@@ -218,17 +218,19 @@ class WcMembershipPlanOptions extends ItemsIntegration {
 			),
 		);
 
-		add_filter( 'wc_membership_plan_data_tabs', array( $this, 'wc_membership_plan_data_tabs' ), 98 );
-		add_action( 'wc_membership_plan_data_panels', array( $this, 'render_data_panels' ) );
-		add_action(
-			'wc_membership_plan_options_' . $this->tab['target'] ?? $this->tab['id'],
-			array(
-				$this,
-				'render',
-			)
-		);
-		add_action( 'wc_memberships_save_meta_box', array( $this, 'save' ) );
-		add_action( 'init', array( $this, 'register_meta' ), $this->hook_priority );
+		if ( ! defined( 'WP_CLI' ) || false === WP_CLI ) {
+			add_filter( 'wc_membership_plan_data_tabs', array( $this, 'wc_membership_plan_data_tabs' ), 98 );
+			add_action( 'wc_membership_plan_data_panels', array( $this, 'render_data_panels' ) );
+			add_action(
+				'wc_membership_plan_options_' . $this->tab['target'] ?? $this->tab['id'],
+				array(
+					$this,
+					'render',
+				)
+			);
+			add_action( 'wc_memberships_save_meta_box', array( $this, 'save' ) );
+			add_action( 'init', array( $this, 'register_meta' ), $this->hook_priority );
+		}
 	}
 
 	/**

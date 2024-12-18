@@ -118,8 +118,10 @@ class Comment extends ItemsIntegration {
 		$this->items         = $args['items'] ?? array();
 		$this->tabs          = $args['tabs'] ?? array();
 
-		add_action( 'add_meta_boxes_comment', array( $this, 'add_meta_box' ) );
-		add_action( 'edit_comment', array( $this, 'save_meta_box' ), 10, 2 );
+		if ( ! defined( 'WP_CLI' ) || false === WP_CLI ) {
+			add_action( 'add_meta_boxes_comment', array( $this, 'add_meta_box' ) );
+			add_action( 'edit_comment', array( $this, 'save_meta_box' ), 10, 2 );
+		}
 	}
 
 	/**

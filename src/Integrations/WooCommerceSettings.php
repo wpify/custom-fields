@@ -111,20 +111,22 @@ class WooCommerceSettings extends OptionsIntegration {
 			),
 		);
 
-		add_filter( 'woocommerce_settings_tabs_array', array( $this, 'woocommerce_settings_tabs_array' ), 30 );
-		add_filter( 'woocommerce_get_sections_' . $this->tab['id'], array( $this, 'woocommerce_get_sections' ) );
-		add_action( 'woocommerce_settings_' . $this->tab['id'], array( $this, 'render' ), 11 );
-		add_action( 'woocommerce_settings_save_' . $this->tab['id'], array( $this, 'save' ) );
+		if ( ! defined( 'WP_CLI' ) || false === WP_CLI ) {
+			add_filter( 'woocommerce_settings_tabs_array', array( $this, 'woocommerce_settings_tabs_array' ), 30 );
+			add_filter( 'woocommerce_get_sections_' . $this->tab['id'], array( $this, 'woocommerce_get_sections' ) );
+			add_action( 'woocommerce_settings_' . $this->tab['id'], array( $this, 'render' ), 11 );
+			add_action( 'woocommerce_settings_save_' . $this->tab['id'], array( $this, 'save' ) );
 
-		// Nonce verification is not needed here, we are just setting a current tab, section and displaying message.
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended
-		$tab              = sanitize_text_field( wp_unslash( $_REQUEST['tab'] ?? '' ) );
-		$section          = sanitize_text_field( wp_unslash( $_REQUEST['section'] ?? '' ) );
-		$settings_updated = sanitize_text_field( wp_unslash( $_REQUEST['settings-updated'] ?? '' ) );
-		// phpcs:enable
+			// Nonce verification is not needed here, we are just setting a current tab, section and displaying message.
+			// phpcs:disable WordPress.Security.NonceVerification.Recommended
+			$tab              = sanitize_text_field( wp_unslash( $_REQUEST['tab'] ?? '' ) );
+			$section          = sanitize_text_field( wp_unslash( $_REQUEST['section'] ?? '' ) );
+			$settings_updated = sanitize_text_field( wp_unslash( $_REQUEST['settings-updated'] ?? '' ) );
+			// phpcs:enable
 
-		if ( $tab === $this->tab['id'] && $section === $this->section['id'] && '1' === $settings_updated ) {
-			WC_Admin_Settings::add_message( __( 'Your settings have been saved.', 'wpify-custom-fields' ) );
+			if ( $tab === $this->tab['id'] && $section === $this->section['id'] && '1' === $settings_updated ) {
+				WC_Admin_Settings::add_message( __( 'Your settings have been saved.', 'wpify-custom-fields' ) );
+			}
 		}
 	}
 
