@@ -50,6 +50,8 @@ class Helpers {
 	 * @return array An array of post data arrays.
 	 */
 	public function get_posts( array $args = array() ): array {
+		unset( $args['_locale'] );
+
 		if ( empty( $args['numberposts'] ) ) {
 			$args['numberposts'] = 50;
 		}
@@ -59,22 +61,31 @@ class Helpers {
 		}
 
 		$posts         = array();
-		$exclude       = $args['exclude'] ?? array();
-		$ensure        = $args['ensure'] ?? array();
 		$ensured_posts = array();
 		$added_posts   = array();
 
-		if ( ! is_array( $exclude ) ) {
+		if ( ! empty( $args['exclude'] ) && is_array( $args['exclude'] ) ) {
+			$exclude = array_values( array_filter( array_map( 'intval', $args['exclude'] ) ) );
+		} else {
 			$exclude = array();
 		}
 
-		if ( ! empty( $ensure ) ) {
+		unset( $args['exclude'] );
+
+		if ( ! empty( $args['ensure'] ) && is_array( $args['ensure'] ) ) {
 			$ensured_posts = get_posts(
 				array(
 					...$args,
-					'include' => $ensure,
+					'include' => array_values( array_filter( array_map( 'intval', $args['ensure'] ) ) ),
 				),
 			);
+		}
+
+		unset( $args['ensure'] );
+
+		if ( ! empty( $args['s'] ) ) {
+			$args['orderby'] = 'relevance';
+			$args['order']   = 'DESC';
 		}
 
 		$raw_posts = get_posts(
