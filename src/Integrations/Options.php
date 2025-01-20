@@ -411,7 +411,7 @@ class Options extends OptionsIntegration {
 		settings_errors( $this->menu_slug . '_error' );
 		$this->enqueue();
 		?>
-		<?php do_action('wpify_custom_fields_before_options', $this);?>
+		<?php do_action( 'wpifycf_before_options', $this ); ?>
 		<div class="wrap">
 			<h1>
 				<?php echo wp_kses_post( get_admin_page_title() ); ?>
@@ -459,7 +459,7 @@ class Options extends OptionsIntegration {
 				?>
 			</form>
 		</div>
-		<?php do_action('wpify_custom_fields_after_options', $this);?>
+		<?php do_action( 'wpifycf_after_options', $this ); ?>
 		<?php
 	}
 
