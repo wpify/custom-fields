@@ -15,6 +15,7 @@ export function MultiSelect ({
   options_key: optionsKey,
   className,
   disabled,
+  async_params: asyncParams = {},
 }) {
   useEffect(() => {
     if (!Array.isArray(value)) {
@@ -31,6 +32,7 @@ export function MultiSelect ({
     enabled: !!optionsKey,
     initialData: options,
     search: debouncedSearch,
+    ...asyncParams,
   });
 
   useEffect(() => {
