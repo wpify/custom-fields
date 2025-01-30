@@ -15,10 +15,9 @@ export function Select ({
   className,
   disabled = false,
   setTitle,
+  async_params: asyncParams = {},
 }) {
   const [search, setSearch] = useState('');
-
-  console.log(id, options);
 
   const { data: fetchedOptions } = useOptions({
     optionsKey,
@@ -26,9 +25,8 @@ export function Select ({
     initialData: options,
     search,
     value,
+    ...asyncParams,
   });
-
-  console.log(id, fetchedOptions);
 
   const realOptions = useMemo(
     () => optionsKey ? fetchedOptions : options,
@@ -45,8 +43,6 @@ export function Select ({
   useEffect(() => {
     setTitle && setTitle(stripHtml(valueOption?.label || ''));
   }, [valueOption, setTitle]);
-
-  console.log(setTitle)
 
   return (
     <SelectControl
