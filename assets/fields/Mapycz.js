@@ -288,8 +288,8 @@ function AutoComplete ({ value, onChange, apiKey, lang, setCenter }) {
       event.preventDefault();
 
       const formats = [
-        /(?<latitude>\d+(\.\d+)?)\s*[,;]\s*(?<longitude>\d+(\.\d+)?)/,
-        /(?<latitude>\d+(,\d+)?)\s*;\s*(?<longitude>\d+(,\d+)?)/,
+        /(?<latitude>-?\d+(\.\d+)?)\s*[,;]\s*(?<longitude>-?\d+(\.\d+)?)/,
+        /(?<latitude>-?\d+(,\d+)?)\s*;\s*(?<longitude>-?\d+(,\d+)?)/,
       ];
 
       for(let i = 0; i < formats.length; i++) {
