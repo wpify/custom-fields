@@ -3,6 +3,7 @@ import { InnerBlocks, useBlockProps, BlockControls, InspectorControls } from '@w
 import { ToolbarButton, ToolbarGroup, Panel, PanelRow, PanelBody } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 import { desktop, edit, Icon } from '@wordpress/icons';
+import { applyFilters } from '@wordpress/hooks';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useValidity } from '@/helpers/hooks';
 import { AppContext } from '@/custom-fields';
@@ -25,6 +26,8 @@ export function GutenbergBlock ({ name, args }) {
   const blockFields = fields.filter(field => field.position !== 'inspector');
   const inspectorFields = fields.filter(field => field.position === 'inspector');
   const { validity, validate, handleValidityChange } = useValidity();
+
+  const filteredFields = applyFilters('wpifycf_definition', fields, values, { context: 'gutenberg', name, args });
 
   return (
     <div {...props}>
@@ -58,7 +61,7 @@ export function GutenbergBlock ({ name, args }) {
         )}
         {view === EDITOR_VIEW && (
           <EditorView
-            fields={fields}
+            fields={filteredFields}
             values={values}
             updateValue={updateValue}
           />
