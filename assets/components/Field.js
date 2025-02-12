@@ -71,6 +71,19 @@ export function Field ({
     ? { ...renderOptions, ...FieldComponent.renderOptions }
     : { ...renderOptions };
 
+  if (combinedRenderOptions.noLabel && combinedRenderOptions.isRoot) {
+    const closestTd = node.closest('td');
+    const closestTh = node.closest('tr')?.querySelector('th');
+
+    if (closestTd) {
+      closestTd.setAttribute('colspan', 2);
+    }
+
+    if (closestTh) {
+      closestTh.remove();
+    }
+  }
+
   return maybePortal(isHidden
     ? hiddenField
     : (
