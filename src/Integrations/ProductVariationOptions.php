@@ -11,7 +11,7 @@ use Closure;
 use WC_Product;
 use WP_Post;
 use Wpify\CustomFields\CustomFields;
-use Wpify\CustomFields\exceptions\MissingArgumentException;
+use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
 /**
  * Class representing Product Variation Options.

@@ -9,7 +9,7 @@ namespace Wpify\CustomFields;
 
 use Closure;
 use stdClass;
-use Wpify\CustomFields\exceptions\MissingArgumentException;
+use Wpify\CustomFields\Exceptions\MissingArgumentException;
 use Wpify\CustomFields\Integrations\Comment;
 use Wpify\CustomFields\Integrations\GutenbergBlock;
 use Wpify\CustomFields\Integrations\MenuItem;
