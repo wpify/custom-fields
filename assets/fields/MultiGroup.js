@@ -56,6 +56,9 @@ function MultiGroup ({
 
   const fieldsValidity = validity?.reduce((acc, item) => typeof item === 'object' ? { ...acc, ...item } : acc, {});
   const [titles, setTitles] = useState(() => {
+    if (!Array.isArray(value)) {
+      return [];
+    }
     return value.map((val, index) => '#' + (index + 1));
   });
 
