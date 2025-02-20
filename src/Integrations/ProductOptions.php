@@ -180,26 +180,12 @@ class ProductOptions extends ItemsIntegration {
 
 		$tab = $args['tab'] ?? array();
 
-		if ( empty( $tab['label'] ) ) {
-			throw new MissingArgumentException(
-				sprintf(
-				/* translators: %1$s is the class name. */
-					esc_html( __( 'Missing argument $tab["label"] in class %2$s.', 'wpify-custom-fields' ) ),
-					__CLASS__,
-				),
-			);
-		}
-
 		if ( empty( $tab['id'] ) ) {
 			$tab['id'] = sanitize_title( $tab['label'] );
 		}
 
 		if ( empty( $tab['target'] ) ) {
 			$tab['target'] = $tab['id'];
-		}
-
-		if ( empty( $tab['priority'] ) ) {
-			$tab['priority'] = 100;
 		}
 
 		if ( empty( $tab['class'] ) ) {
@@ -274,6 +260,9 @@ class ProductOptions extends ItemsIntegration {
 	 * @return void No return value.
 	 */
 	public function render_data_panels(): void {
+		if ( ! $this->is_new_tab ) {
+			return;
+		}
 		?>
 		<div id="<?php echo esc_attr( $this->tab['target'] ); ?>" class="panel woocommerce_options_panel">
 			<?php
