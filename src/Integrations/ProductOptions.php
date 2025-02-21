@@ -180,6 +180,8 @@ class ProductOptions extends ItemsIntegration {
 
 		$tab = $args['tab'] ?? array();
 
+		$tab['label'] = $tab['label'] ?? '';
+
 		if ( empty( $tab['id'] ) ) {
 			$tab['id'] = sanitize_title( $tab['label'] );
 		}
