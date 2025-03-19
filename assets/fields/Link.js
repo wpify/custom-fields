@@ -122,6 +122,10 @@ export function Link ({
     }
   }, [resolvedUrlTitle, onChange, value.label, blurUrl]);
 
+  useEffect(() => {
+    setTitle(value?.label);
+  }, [setTitle, value?.label]);
+
   return (
     <div className={clsx('wpifycf-field-link', `wpifycf-field-link--${id}`, className)}>
       <div className="wpifycf-field-link__fields">

@@ -29,7 +29,7 @@ abstract class OptionsIntegration extends BaseIntegration {
 		<div class="wpifycf-app"
 			data-loaded="false"
 			data-integration-id="<?php echo esc_attr( $integration_id ); ?>"
-			data-tabs="<?php echo esc_attr( htmlentities( wp_json_encode( $tabs ) ) ); ?>"
+			data-tabs="<?php echo esc_attr( wpify_custom_fields_json_encode( $tabs ) ); ?>"
 			data-context="<?php echo esc_attr( $context ); ?>"
 			<?php
 			foreach ( $data_attributes as $key => $value ) {
@@ -70,7 +70,8 @@ abstract class OptionsIntegration extends BaseIntegration {
 		$item['loop']   = $data_attributes['loop'] ?? '';
 		$integration_id = isset( $data_attributes['loop'] ) ? $this->id . '__' . $data_attributes['loop'] : $this->id;
 		?>
-		<<?php echo esc_attr( $tag ); ?> data-item="<?php echo esc_attr( htmlentities( wp_json_encode( $item ) ) ); ?>"
+		<<?php echo esc_attr( $tag ); ?>
+		data-item="<?php echo esc_attr( wpify_custom_fields_json_encode( $item ) ); ?>"
 		data-integration-id="<?php echo esc_attr( $integration_id ); ?>"
 		class="wpifycf-field-parent<?php echo $class_name ? ' ' . esc_attr( $class_name ) : ''; ?>"
 		<?php

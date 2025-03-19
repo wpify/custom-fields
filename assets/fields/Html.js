@@ -1,6 +1,7 @@
 import { ErrorBoundary } from 'react-error-boundary';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
+import { useEffect } from 'react';
 
 function Html ({
   attributes = {},

@@ -15,6 +15,7 @@ import {
   FlexItem,
 } from '@wordpress/components';
 import { fullscreen } from '@wordpress/icons';
+import { stripHtml } from '@/helpers/functions';
 
 const VIEW_VISUAL = 'visual';
 const VIEW_HTML = 'html';
@@ -27,9 +28,14 @@ export function Wysiwyg ({
   height = 200,
   className,
   disabled = false,
+  setTitle,
 }) {
   const [view, setView] = useState(VIEW_VISUAL);
   const { context } = useContext(AppContext);
+
+  useEffect(() => {
+    setTitle(stripHtml(value).replace(/\n/g, ' ').substring(0, 50));
+  }, [setTitle, value]);
 
   return (
     <div className={clsx('wpifycf-field-wysiwyg', `wpifycf-field-wysiwyg--${id}`, className)}>

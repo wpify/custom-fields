@@ -32,6 +32,7 @@ export function MultiSelect ({
     enabled: !!optionsKey,
     initialData: options,
     search: debouncedSearch,
+    value,
     ...asyncParams,
   });
 
