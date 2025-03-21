@@ -86,10 +86,6 @@ export function Field ({
     }
   }
 
-  if (props.id === 'test_group')  {
-    console.log(combinedRenderOptions, renderOptions, props);
-  }
-
   return maybePortal(isHidden
     ? hiddenField
     : (
