@@ -347,7 +347,9 @@ class CustomFields {
 		return function ( mixed $value ) use ( $item ): mixed {
 			$original_value = $value;
 
-			if ( in_array( $item['type'], array( 'attachment', 'post', 'term' ), true ) ) {
+			if ( isset( $item['unfiltered'] ) && $item['unfiltered'] === true ) {
+				$sanitized_value = $value;
+			} elseif ( in_array( $item['type'], array( 'attachment', 'post', 'term' ), true ) ) {
 				$sanitized_value = absint( $value );
 			} elseif ( in_array( $item['type'], array( 'checkbox', 'toggle' ), true ) ) {
 				$sanitized_value = filter_var( $value, FILTER_VALIDATE_BOOLEAN );

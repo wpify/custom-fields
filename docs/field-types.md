@@ -113,6 +113,10 @@ Default value of the field. It is used when the field is not set.
 
 Array of additional attributes for the simple field types. It can be used to set custom attributes like `placeholder`, `min`, `max`, etc.
 
+### `unfiltered`
+
+Boolean value that determines whether the field value should be unfiltered. If set to `true`, the field value is not sanitized.
+
 ## Simple field types
 
 * [Checkbox](field-types/checkbox.md) `checkbox`
