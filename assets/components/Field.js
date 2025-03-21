@@ -67,9 +67,11 @@ export function Field ({
 
   const validityMessages = props.validity?.filter(v => typeof v === 'string') || [];
 
-  const combinedRenderOptions = FieldComponent.renderOptions
-    ? { ...renderOptions, ...FieldComponent.renderOptions }
-    : { ...renderOptions };
+  const combinedRenderOptions = {
+    ...(FieldComponent.renderOptions || {}),
+    ...renderOptions,
+    ...(props.render_options || {}),
+  };
 
   if (combinedRenderOptions.noLabel && combinedRenderOptions.isRoot) {
     const closestTd = node.closest('td');
@@ -82,6 +84,10 @@ export function Field ({
     if (closestTh) {
       closestTh.remove();
     }
+  }
+
+  if (props.id === 'test_group')  {
+    console.log(combinedRenderOptions, renderOptions, props);
   }
 
   return maybePortal(isHidden

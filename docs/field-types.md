@@ -117,6 +117,14 @@ Array of additional attributes for the simple field types. It can be used to set
 
 Boolean value that determines whether the field value should be unfiltered. If set to `true`, the field value is not sanitized.
 
+### `render_options`
+
+Array of options that are passed to the field renderer. It can be used to customize the field rendering. Possible options:
+
+* `noLabel`: Boolean value that determines whether the field label should be hidden.
+* `noControlWrapper`: Boolean value that determines whether the field control should be wrapped in a div element.
+* `noFieldWrapper`: Boolean value that determines whether the field should be wrapped in a div element.
+
 ## Simple field types
 
 * [Checkbox](field-types/checkbox.md) `checkbox`
