@@ -6,12 +6,11 @@ import { __ } from '@wordpress/i18n';
 import { IconButton } from '@/components/IconButton';
 import { checkValidityMultiGroupType } from '@/helpers/validators';
 import { Field } from '@/components/Field';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 function MultiGroup ({
   value = [],
   onChange,
-  default: defaultValue,
   buttons = {},
   disabled_buttons = [],
   min,
@@ -29,6 +28,13 @@ function MultiGroup ({
       onChange([]);
     }
   }, [value, onChange]);
+
+  const defaultValue = useMemo(() => {
+    return props.items.reduce((acc, item) => {
+      acc[item.id] = item.default;
+      return acc;
+    }, {});
+  }, [props.items]);
 
   const {
     add,

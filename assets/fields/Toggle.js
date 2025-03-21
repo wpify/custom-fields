@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 function Toggle ({
   id,
   htmlId,
-  value = false,
+  value = null,
   title,
   disabled = false,
   onChange,
@@ -31,6 +31,7 @@ function Toggle ({
       onChange={onChange}
       disabled={disabled}
       className={clsx('wpifycf-field-toggle', `wpifycf-field-toggle--${id}`, className)}
+      __nextHasNoMarginBottom
     />
   );
 }
