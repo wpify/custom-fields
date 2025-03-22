@@ -205,21 +205,14 @@ class Options extends OptionsIntegration {
 	) {
 		parent::__construct( $custom_fields );
 
-		$required = array( 'page_title', 'menu_title', 'menu_slug' );
-		$missing  = array();
+		$missing_page_args   = empty( $args['page_title'] ) || empty( $args['menu_title'] ) || empty( $args['menu_slug'] );
+		$missing_hook_suffix = empty( $args['hook_suffix'] );
 
-		foreach ( $required as $arg ) {
-			if ( empty( $args[ $arg ] ) ) {
-				$missing[] = $arg;
-			}
-		}
-
-		if ( count( $missing ) > 0 ) {
+		if ( $missing_page_args && $missing_hook_suffix ) {
 			throw new MissingArgumentException(
 				sprintf(
-				/* translators: %1$s is a list of missing arguments, %2$s is the class name. */
-					esc_html( __( 'Missing arguments %1$s in class %2$s.', 'wpify-custom-fields' ) ),
-					esc_html( implode( ', ', $missing ) ),
+					/* translators: %1$s is the class name. */
+					esc_html( __( 'Missing arguments ((page_title AND menu_title AND menu_slug) OR (hook_suffix)) in class %1$s.', 'wpify-custom-fields' ) ),
 					__CLASS__,
 				),
 			);
@@ -238,10 +231,10 @@ class Options extends OptionsIntegration {
 		}
 
 		$this->type            = $args['type'] ?? $this::TYPE_OPTIONS;
-		$this->page_title      = $args['page_title'];
-		$this->menu_title      = $args['menu_title'];
+		$this->page_title      = $args['page_title'] ?? '';
+		$this->menu_title      = $args['menu_title'] ?? '';
 		$this->capability      = $args['capability'] ?? 'manage_options';
-		$this->menu_slug       = $args['menu_slug'];
+		$this->menu_slug       = $args['menu_slug'] ?? '';
 		$this->parent_slug     = $args['parent_slug'] ?? null;
 		$this->callback        = $args['callback'] ?? null;
 		$this->icon_url        = $args['icon_url'] ?? null;
@@ -334,6 +327,12 @@ class Options extends OptionsIntegration {
 			} else {
 				add_action( 'admin_menu', array( $this, 'register' ), $this->hook_priority );
 			}
+
+			if ( ! empty( $args['hook_suffix'] ) ) {
+				$this->hook_suffix = $args['hook_suffix'];
+
+				add_action( $this->hook_suffix, array( $this, 'render' ) );
+			}
 		}
 	}
 
@@ -353,42 +352,44 @@ class Options extends OptionsIntegration {
 			return;
 		}
 
-		if ( $this->type === $this::TYPE_USER_SUBMENU ) {
-			$hook_suffix = add_users_page(
-				$this->page_title,
-				$this->menu_title,
-				$this->capability,
-				$this->menu_slug,
-				array( $this, 'render' ),
-				$this->position,
-			);
-		} elseif ( $this->parent_slug ) {
-			$hook_suffix = add_submenu_page(
-				$this->parent_slug,
-				$this->page_title,
-				$this->menu_title,
-				$this->capability,
-				$this->menu_slug,
-				array( $this, 'render' ),
-				$this->position,
-			);
-		} else {
-			$hook_suffix = add_menu_page(
-				$this->page_title,
-				$this->menu_title,
-				$this->capability,
-				$this->menu_slug,
-				array( $this, 'render' ),
-				$this->icon_url,
-				$this->position,
-			);
-		}
+		if ( empty( $this->hook_suffix ) ) {
+			if ( $this->type === $this::TYPE_USER_SUBMENU ) {
+				$hook_suffix = add_users_page(
+					$this->page_title,
+					$this->menu_title,
+					$this->capability,
+					$this->menu_slug,
+					array( $this, 'render' ),
+					$this->position,
+				);
+			} elseif ( $this->parent_slug ) {
+				$hook_suffix = add_submenu_page(
+					$this->parent_slug,
+					$this->page_title,
+					$this->menu_title,
+					$this->capability,
+					$this->menu_slug,
+					array( $this, 'render' ),
+					$this->position,
+				);
+			} else {
+				$hook_suffix = add_menu_page(
+					$this->page_title,
+					$this->menu_title,
+					$this->capability,
+					$this->menu_slug,
+					array( $this, 'render' ),
+					$this->icon_url,
+					$this->position,
+				);
+			}
 
-		if ( $this->type === $this::TYPE_NETWORK ) {
-			$hook_suffix = $hook_suffix . '-network';
-		}
+			if ( $this->type === $this::TYPE_NETWORK ) {
+				$hook_suffix = $hook_suffix . '-network';
+			}
 
-		$this->hook_suffix = $hook_suffix;
+			$this->hook_suffix = $hook_suffix;
+		}
 
 		add_action( 'load-' . $this->hook_suffix, array( $this, 'render_help' ) );
 	}

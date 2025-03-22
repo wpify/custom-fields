@@ -16,10 +16,11 @@ wpify_custom_fields()->create_options_page(
     array(
         'type'            => \Wpify\CustomFields\Integrations\Options::TYPE_OPTIONS,
         'parent_slug'     => 'options-general.php',
-        'page_title'      => 'Custom Options Page',
-        'menu_title'      => 'Custom Options',
+        'page_title'      => 'Custom Options Page', // only if you want to create page
+        'menu_title'      => 'Custom Options', // only if you want to create page
+        'menu_slug'       => 'custom-options', // only if you want to create page
+        'hook_suffix'     => 'toplevel_page_custom-options', // only if you want to use existing page
         'capability'      => 'manage_options',
-        'menu_slug'       => 'custom-options',
         'position'        => 100,
         'hook_priority'   => 10,
         'option_name'     => 'test_options_key',
@@ -67,15 +68,19 @@ Type of the options page. Possible values are 'options', 'network', 'user_submen
 
 ### `$parent_slug` *string*
 
-The slug name for the parent menu (or the file name of a standard WordPress admin page).
+The slug name for the parent menu (or the file name of a standard WordPress admin page). Use only if `hook_suffix` argument is not set.
 
 ### `$page_title` *string*
 
-The text to be displayed in the title tags of the page when the menu is selected.
+The text to be displayed in the title tags of the page when the menu is selected. Use only if `hook_suffix` argument is not set.
 
 ### `$menu_title` *string*
 
-The text to be used for the menu.
+The text to be used for the menu. Use only if `hook_suffix` argument is not set.
+
+### `$hook_suffix` *string*
+
+The hook suffix (the result of `add_menu_page`, `add_submenu_page` or `add_users_page`). Use if you want to render custom fields on the existing page. In that case, don't use arguments `page_title`, `menu_title`, `menu_slug`.
 
 ### `$capability` *string*
 
