@@ -310,8 +310,6 @@ class Options extends OptionsIntegration {
 				);
 			}
 
-			add_action( 'admin_init', array( $this, 'register_settings' ) );
-
 			if ( $this->type === $this::TYPE_USER ) {
 				add_action( 'user_admin_menu', array( $this, 'register' ), $this->hook_priority );
 			} elseif ( $this->type === $this::TYPE_NETWORK ) {
@@ -328,9 +326,12 @@ class Options extends OptionsIntegration {
 				add_action( 'admin_menu', array( $this, 'register' ), $this->hook_priority );
 			}
 
-			if ( ! empty( $args['hook_suffix'] ) ) {
+			if ( empty( $args['hook_suffix'] ) ) {
+				add_action( 'admin_init', array( $this, 'register_settings' ) );
+			} else {
 				$this->hook_suffix = $args['hook_suffix'];
 
+				add_action( $this->hook_suffix, array( $this, 'register_settings' ) );
 				add_action( $this->hook_suffix, array( $this, 'render' ) );
 			}
 		}
