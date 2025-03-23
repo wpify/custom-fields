@@ -15,12 +15,11 @@ use Wpify\CustomFields\Exceptions\MissingArgumentException;
  * Options class for managing settings pages in the WordPress admin area.
  */
 class Options extends OptionsIntegration {
-	const TYPE_NETWORK        = 'network';
-	const TYPE_USER_SUBMENU   = 'user_submenu';
-	const TYPE_USER           = 'user';
-	const TYPE_OPTIONS        = 'options';
-	const ALLOWED_TYPES       = array( self::TYPE_OPTIONS, self::TYPE_NETWORK, self::TYPE_USER_SUBMENU, self::TYPE_USER );
-	const NETWORK_SAVE_ACTION = 'wpifycf-save-network-options';
+	const TYPE_NETWORK      = 'network';
+	const TYPE_USER_SUBMENU = 'user_submenu';
+	const TYPE_USER         = 'user';
+	const TYPE_OPTIONS      = 'options';
+	const ALLOWED_TYPES     = array( self::TYPE_OPTIONS, self::TYPE_NETWORK, self::TYPE_USER_SUBMENU, self::TYPE_USER );
 
 	/**
 	 * ID of the custom fields options instance.
@@ -315,7 +314,7 @@ class Options extends OptionsIntegration {
 			} elseif ( $this->type === $this::TYPE_NETWORK ) {
 				add_action( 'network_admin_menu', array( $this, 'register' ), $this->hook_priority );
 				add_action(
-					'network_admin_edit_' . $this::NETWORK_SAVE_ACTION,
+					'network_admin_edit_' . $this->get_network_save_action(),
 					array(
 						$this,
 						'save_network_options',
@@ -426,13 +425,13 @@ class Options extends OptionsIntegration {
 			$action = admin_url( 'options.php' );
 
 			if ( $this->type === $this::TYPE_NETWORK ) {
-				$action = add_query_arg( 'action', $this::NETWORK_SAVE_ACTION, 'edit.php' );
+				$action = add_query_arg( 'action', $this->get_network_save_action(), 'edit.php' );
 			}
 			?>
 			<form action="<?php echo esc_attr( $action ); ?>" method="POST">
 				<?php
 				if ( $this->type === $this::TYPE_NETWORK ) {
-					wp_nonce_field( $this::NETWORK_SAVE_ACTION );
+					wp_nonce_field( $this->get_network_save_action() );
 				}
 
 				$this->print_app( 'options', $this->tabs );
@@ -502,6 +501,15 @@ class Options extends OptionsIntegration {
 	}
 
 	/**
+	 * Retrieves the action name for saving network options.
+	 *
+	 * @return string
+	 */
+	private function get_network_save_action() {
+		return sprintf( 'wpifycf-save-network-options-%s', $this->id );
+	}
+
+	/**
 	 * Saves network options by sanitizing and setting the appropriate fields.
 	 *
 	 * Ensures data integrity and security by performing necessary checks and sanitizations on the input fields. Redirects the user upon completion.
@@ -509,7 +517,7 @@ class Options extends OptionsIntegration {
 	 * @return void
 	 */
 	public function save_network_options(): void {
-		check_admin_referer( $this::NETWORK_SAVE_ACTION );
+		check_admin_referer( $this->get_network_save_action() );
 		$this->set_fields_from_post_request( $this->normalize_items( $this->items ) );
 		wp_safe_redirect(
 			add_query_arg(
