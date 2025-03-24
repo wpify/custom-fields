@@ -148,6 +148,7 @@ export function useMulti ({
   const add = useCallback(() => {
     onChange([...value, defaultValue]);
     setCollapsed((prevCollapsed) => [...prevCollapsed, false]);
+    setKeyPrefix(uuidv4());
   }, [value, defaultValue, onChange]);
 
   const remove = useCallback(
@@ -156,6 +157,7 @@ export function useMulti ({
         const nextValues = [...value];
         nextValues.splice(index, 1);
         onChange(nextValues);
+        setKeyPrefix(uuidv4());
 
         setCollapsed((prevCollapsed) => {
           const nextCollapsed = [...prevCollapsed];
@@ -165,6 +167,7 @@ export function useMulti ({
       } else {
         onChange([]);
         setCollapsed([]);
+        setKeyPrefix(uuidv4());
       }
     },
     [value, onChange],
@@ -175,6 +178,7 @@ export function useMulti ({
       const nextValues = [...value];
       nextValues.splice(index, 0, nextValues[index]);
       onChange(nextValues);
+      setKeyPrefix(uuidv4());
 
       setCollapsed((prevCollapsed) => {
         const nextCollapsed = [...prevCollapsed];
