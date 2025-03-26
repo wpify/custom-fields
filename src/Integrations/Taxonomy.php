@@ -70,7 +70,7 @@ class Taxonomy extends ItemsIntegration {
 	 *
 	 * @var int
 	 */
-	public readonly int $term_id;
+	public int $term_id;
 
 	/**
 	 * Constructor for initializing the class with arguments and custom fields.
