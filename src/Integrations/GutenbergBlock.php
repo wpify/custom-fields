@@ -336,7 +336,7 @@ class GutenbergBlock extends BaseIntegration {
 		);
 
 		wp_add_inline_script(
-			'wpifycf',
+			$this->custom_fields->get_script_handle(),
 			'document.dispatchEvent(new CustomEvent("wpifycf_register_block",{detail:' . wp_json_encode( $data ) . '}));',
 		);
 	}

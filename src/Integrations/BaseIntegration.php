@@ -179,7 +179,7 @@ abstract class BaseIntegration {
 			return;
 		}
 
-		$handle = 'wpifycf';
+		$handle = $this->custom_fields->get_script_handle();
 		$js     = $this->custom_fields->get_js_asset( 'wpify-custom-fields' );
 		$data   = array(
 			'stylesheet' => $this->custom_fields->get_css_asset( 'wpify-custom-fields' ),
@@ -213,7 +213,7 @@ abstract class BaseIntegration {
 
 		wp_add_inline_script(
 			$handle,
-			'window.' . $handle . '=' . wp_json_encode( $data ) . ';',
+			'window.wpifycf=' . wp_json_encode( $data ) . ';',
 			'before',
 		);
 	}

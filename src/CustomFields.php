@@ -330,6 +330,15 @@ class CustomFields {
 	}
 
 	/**
+	 * Retrieves handle of the current implementation.
+	 *
+	 * @return string The base name of the handle.
+	 */
+	public function get_script_handle(): string {
+		return 'wpifycf-' . str_replace( '/', '-', $this->get_api_basename() );
+	}
+
+	/**
 	 * Sanitizes a given item's value based on its type using a closure.
 	 *
 	 * @param array $item The item array which contains the type and other relevant information.
