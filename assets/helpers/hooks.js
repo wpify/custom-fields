@@ -354,8 +354,6 @@ export function useOptions ({
 }) {
   const { config } = useContext(AppContext);
 
-  console.log(config);
-
   return useQuery({
     queryKey: ['options', optionsKey, args],
     queryFn: () => get(config.api_path + '/options/' + optionsKey, args),

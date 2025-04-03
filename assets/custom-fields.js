@@ -16,7 +16,7 @@ import { AppContextProvider } from '@/components/AppContext';
 
   function loadCustomFields () {
     addStyleSheet(config.stylesheet);
-    document.querySelectorAll('.wpifycf-app[data-loaded=false]').forEach(container => {
+    document.querySelectorAll('.wpifycf-app[data-loaded=false][data-instance="' + config.instance + '"]').forEach(container => {
       const nodes = Array.from(document.querySelectorAll('.wpifycf-field-parent[data-integration-id="' + container.dataset.integrationId + '"]'));
       const defs = nodes.map(node => {
         return { ...JSON.parse(node.dataset.item), node };
@@ -44,6 +44,10 @@ import { AppContextProvider } from '@/components/AppContext';
   }
 
   function loadGutenbergBlocks (event) {
+    if (event.detail.instance !== config.instance) {
+      return;
+    }
+
     addStyleSheet(config.stylesheet);
 
     let { icon } = event.detail.args;
@@ -65,39 +69,40 @@ import { AppContextProvider } from '@/components/AppContext';
       );
     }
 
+    const EditGutenbergBlock =  ({ attributes, setAttributes, ...props }) => {
+      const updateValue = useCallback(key => value => setAttributes({ [key]: value }), [setAttributes]);
+      return (
+        <AppContextProvider
+          context="gutenberg"
+          config={config}
+          tabs={event.detail.tabs}
+          fields={event.detail.items}
+          values={attributes}
+          updateValue={updateValue}
+        >
+          <QueryClientProvider client={queryClient}>
+            <StrictMode>
+              <GutenbergBlock
+                {...props}
+                name={event.detail.name}
+                args={event.detail.args}
+              />
+            </StrictMode>
+          </QueryClientProvider>
+        </AppContextProvider>
+      )
+    };
+
     registerBlockType(event.detail, {
       ...event.detail.args,
       icon,
-      edit: ({ attributes, setAttributes, ...props }) => {
-        const updateValue = useCallback(key => value => setAttributes({ [key]: value }), [setAttributes]);
-
-        return (
-          <AppContextProvider
-            context="gutenberg"
-            config={config}
-            tabs={event.detail.tabs}
-            fields={event.detail.items}
-            values={attributes}
-            updateValue={updateValue}
-          >
-            <QueryClientProvider client={queryClient}>
-              <StrictMode>
-                <GutenbergBlock
-                  {...props}
-                  name={event.detail.name}
-                  args={event.detail.args}
-                />
-              </StrictMode>
-            </QueryClientProvider>
-          </AppContextProvider>
-        )
-      },
+      edit: EditGutenbergBlock,
       save: SaveGutenbergBlock,
     });
   }
 
   document.addEventListener('DOMContentLoaded', loadCustomFields);
-  document.addEventListener('wpifycf_register_block', loadGutenbergBlocks);
+  document.addEventListener('wpifycf_register_block_' + config.instance, loadGutenbergBlocks);
 
   if (typeof jQuery !== 'undefined') {
     jQuery(document).on('woocommerce_variations_loaded', loadCustomFields);

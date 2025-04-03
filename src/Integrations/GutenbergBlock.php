@@ -329,15 +329,16 @@ class GutenbergBlock extends BaseIntegration {
 		parent::enqueue();
 
 		$data = array(
-			'name'  => $this->name,
-			'items' => $this->normalize_items( $this->items ),
-			'args'  => $this->get_args(),
-			'tabs'  => $this->tabs,
+			'name'     => $this->name,
+			'items'    => $this->normalize_items( $this->items ),
+			'args'     => $this->get_args(),
+			'tabs'     => $this->tabs,
+			'instance' => $this->custom_fields->get_script_handle(),
 		);
 
 		wp_add_inline_script(
 			$this->custom_fields->get_script_handle(),
-			'document.dispatchEvent(new CustomEvent("wpifycf_register_block",{detail:' . wp_json_encode( $data ) . '}));',
+			'document.dispatchEvent(new CustomEvent("wpifycf_register_block_' . $this->custom_fields->get_script_handle() . '",{detail:' . wp_json_encode( $data ) . '}));',
 		);
 	}
 

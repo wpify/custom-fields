@@ -182,6 +182,7 @@ abstract class BaseIntegration {
 		$handle = $this->custom_fields->get_script_handle();
 		$js     = $this->custom_fields->get_js_asset( 'wpify-custom-fields' );
 		$data   = array(
+			'instance'   => $this->custom_fields->get_script_handle(),
 			'stylesheet' => $this->custom_fields->get_css_asset( 'wpify-custom-fields' ),
 			'api_path'   => $this->custom_fields->api->get_rest_namespace(),
 		);
