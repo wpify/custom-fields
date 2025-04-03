@@ -88,6 +88,7 @@ export function GutenbergBlock ({ name, args }) {
                     setValidity={handleValidityChange(field.id)}
                     validity={validate ? validity[field.id] : []}
                     fieldPath={field.id}
+                    setTitle={() => null}
                   />
                 </PanelRow>
               ))}
