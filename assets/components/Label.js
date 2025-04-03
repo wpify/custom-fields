@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useContext } from 'react';
-import { AppContext } from '@/custom-fields';
+import { AppContext } from '@/components/AppContext';;
 import { maybePortal } from '@/helpers/functions';
 import { ErrorBoundary } from 'react-error-boundary'
 import { RawHTML } from '@/components/RawHTML'

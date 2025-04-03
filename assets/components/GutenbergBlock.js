@@ -6,7 +6,7 @@ import { desktop, edit, Icon } from '@wordpress/icons';
 import { applyFilters } from '@wordpress/hooks';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useValidity } from '@/helpers/hooks';
-import { AppContext } from '@/custom-fields';
+import { AppContext } from '@/components/AppContext';;
 import { RootFields } from '@/components/RootFields';
 import { Tabs } from '@/components/Tabs';
 import { useRenderBlock } from '@/helpers/hooks';

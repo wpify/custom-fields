@@ -6,7 +6,7 @@ import { get, post } from '@/helpers/api.js';
 import { useSelect } from '@wordpress/data';
 import '@wordpress/core-data';
 import { evaluateConditions } from '@/helpers/functions';
-import { AppContext } from '@/custom-fields';
+import { AppContext } from '@/components/AppContext';;
 
 export function useSortableList ({ containerRef, draggable, handle, items, setItems, disabled = false }) {
   const onEnd = useCallback((event) => {
@@ -353,6 +353,8 @@ export function useOptions ({
   ...args
 }) {
   const { config } = useContext(AppContext);
+
+  console.log(config);
 
   return useQuery({
     queryKey: ['options', optionsKey, args],

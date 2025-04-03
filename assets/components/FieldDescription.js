@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useContext } from 'react';
-import { AppContext } from '@/custom-fields';
+import { AppContext } from '@/components/AppContext';;
 
 export function FieldDescription({
   renderOptions = {},

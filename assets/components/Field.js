@@ -10,7 +10,7 @@ import { FieldWrapper } from '@/components/FieldWrapper';
 import { ControlWrapper } from '@/components/ControlWrapper';
 import { FieldDescription } from '@/components/FieldDescription';
 import { maybePortal } from '@/helpers/functions';
-import { AppContext } from '@/custom-fields';
+import { AppContext } from '@/components/AppContext';;
 
 export function Field ({
   type,

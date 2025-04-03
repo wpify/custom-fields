@@ -1,6 +1,6 @@
 import { useMemo, useContext } from 'react';
 import { useValidity } from '@/helpers/hooks';
-import { AppContext } from '@/custom-fields';
+import { AppContext } from '@/components/AppContext';;
 import { RootFields } from '@/components/RootFields';
 import { Tabs } from '@/components/Tabs';
 import { applyFilters } from '@wordpress/hooks';

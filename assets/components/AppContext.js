@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
-import { AppContext } from '@/custom-fields';
+import { createContext, useCallback, useEffect, useState } from 'react';
+
+export const AppContext = createContext({});
 
 export function AppContextProvider ({
   context,
@@ -75,7 +76,8 @@ export function AppContextProvider ({
         currentTab,
         setTab,
       }}
-      children={children}
-    />
+    >
+      {children}
+    </AppContext.Provider>
   );
 }

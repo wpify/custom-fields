@@ -7,7 +7,7 @@ import { Code } from '@/fields/Code';
 import { checkValidityStringType } from '@/helpers/validators';
 import { useSelect } from '@wordpress/data';
 import { store } from '@wordpress/block-editor';
-import { AppContext } from '@/custom-fields';
+import { AppContext } from '@/components/AppContext';;
 import {
   Modal,
   Button,

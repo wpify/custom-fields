@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useCallback, useContext } from 'react';
-import { AppContext } from '@/custom-fields';
+import { AppContext } from '@/components/AppContext';;
 
 export function Tabs () {
   const { currentTab, setTab, tabs } = useContext(AppContext);

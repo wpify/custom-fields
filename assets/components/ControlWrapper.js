@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { AppContext } from '@/custom-fields';
+import { AppContext } from '@/components/AppContext';;
 
 export function ControlWrapper ({ renderOptions = {}, children }) {
   const { context } = useContext(AppContext);
