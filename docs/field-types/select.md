@@ -39,7 +39,7 @@ These properties are available for all field types:
 
 ### Specific Properties
 
-#### `options` _(array)_ - Required, unless using `options_key`
+#### `options` _(array|callable)_ - Required
 
 An associative array of options where the keys are the values to store and the array values are the labels to display. Alternatively, you can use an array of objects with `value` and `label` properties:
 
@@ -51,9 +51,41 @@ An associative array of options where the keys are the values to store and the a
 ),
 ```
 
-#### `options_key` _(string)_ - Optional
+You can also use an associative array:
 
-A key referencing a dynamic options list registered through the WPify Custom Fields API. This allows loading options from an external source or dynamic callback. When using `options_key`, the `options` property is not required.
+```php
+'options' => array(
+    'red'   => 'Red',
+    'green' => 'Green',
+    'blue'  => 'Blue',
+),
+```
+
+Another option is to use a callable function that returns the options array. This is useful for dynamic options:
+
+```php
+'options' => 'custom_get_colors',
+```
+
+You have to define the `custom_get_colors` function in your theme or plugin:
+
+```php
+function custom_get_colors( array $args ): array {
+    // Perform any logic to fetch or generate options
+    
+    return array(
+        'red'   => 'Red',
+        'green' => 'Green',
+        'blue'  => 'Blue',
+    );
+}
+```
+The function accepts an array of arguments with the following keys:
+- `value`: The current value of the field
+- `search`: The search term entered by the user
+- additional parameters passed via `async_params`
+
+The function should return the option that is currently selected (value) and options that match the search term. The returned array should be in the same format as the static options.
 
 #### `async_params` _(array)_ - Optional
 
@@ -70,7 +102,6 @@ The field stores the value (key) of the selected option as a string in the datab
 ```php
 'color_scheme' => array(
 	'type'        => 'select',
-	'id'          => 'color_scheme',
 	'label'       => 'Color Scheme',
 	'description' => 'Select the color scheme for this content.',
 	'options'     => array(
@@ -84,44 +115,20 @@ The field stores the value (key) of the selected option as a string in the datab
 
 ### Dynamic Options from Callback
 
-First, register your options source in your plugin or theme:
-
-```php
-add_filter( 'wpifycf_options_countries', 'my_theme_get_countries' );
-
-function my_theme_get_countries() {
-	return array(
-		array( 'value' => 'us', 'label' => 'United States' ),
-		array( 'value' => 'ca', 'label' => 'Canada' ),
-		array( 'value' => 'mx', 'label' => 'Mexico' ),
-		// More countries...
-	);
-}
-```
-
-Then use it in your field definition:
-
 ```php
 'country' => array(
 	'type'        => 'select',
-	'id'          => 'country',
 	'label'       => 'Country',
-	'description' => 'Select your country.',
-	'options_key' => 'countries',
-),
-```
-
-### Select with API Parameters
-
-```php
-'category' => array(
-	'type'         => 'select',
-	'id'           => 'category',
-	'label'        => 'Product Category',
-	'options_key'  => 'product_categories',
-	'async_params' => array(
-		'parent' => 0, // Only show top-level categories
-	),
+	'description' => 'Select the country.',
+	'options'     => function ( array $args ): array {
+        return array(
+            array( 'value' => 'us', 'label' => 'United States' ),
+            array( 'value' => 'ca', 'label' => 'Canada' ),
+            array( 'value' => 'mx', 'label' => 'Mexico' ),
+            // More countries...
+        );
+    },
+	'default'     => 'us',
 ),
 ```
 
