@@ -129,63 +129,64 @@ Array of options that are passed to the field renderer. It can be used to custom
 
 * [Checkbox](field-types/checkbox.md) `checkbox`
 * [Multi Checkbox](field-types/multi_checkbox.md) `multi_checkbox`
-* Color `color`
-* Date `date`
-* DateTime `datetime`
-* Email `email`
-* Month `month`
-* Number `number`
-* Password `password`
-* Range `range`
-* Select `select`
-* Multi Select `multi_select`
-* Phone `tel`
-* Text `text`
-* Textarea `textarea`
-* Time `time`
-* Toggle `toggle`
-* Multi Toggle `multi_toggle`
-* URL `url`
-* Week `week`
+* [Color](field-types/color.md) `color`
+* [Date](field-types/date.md) `date`
+* [Datetime](field-types/datetime.md) `datetime`
+* [Email](field-types/email.md) `email`
+* [Month](field-types/month.md) `month`
+* [Number](field-types/number.md) `number`
+* [Password](field-types/password.md) `password`
+* [Range](field-types/range.md) `range`
+* [Select](field-types/select.md) `select`
+* [Multi Select](field-types/multi_select.md) `multi_select`
+* [Tel (Phone)](field-types/tel.md) `tel`
+* [Text](field-types/text.md) `text`
+* [Textarea](field-types/textarea.md) `textarea`
+* [Time](field-types/time.md) `time`
+* [Toggle](field-types/toggle.md) `toggle`
+* [Multi Toggle](field-types/multi_toggle.md) `multi_toggle`
+* [URL](field-types/url.md) `url`
+* [Week](field-types/week.md) `week`
 
 ## Relational field types
 
-* Attachment `attachment`
-* Multi Attachment (gallery) `multi_attachment`
-* Link `link`
-* Multi Link `multi_link`
-* Post `post`
-* Multi Post `multi_post`
-* Term `term`
-* Multi Term `multi_term`
+* [Attachment](field-types/attachment.md) `attachment`
+* [Multi Attachment (gallery)](field-types/multi_attachment.md) `multi_attachment`
+* [Link](field-types/link.md) `link`
+* [Multi Link](field-types/multi_link.md) `multi_link`
+* [Post](field-types/post.md) `post`
+* [Multi Post](field-types/multi_post.md) `multi_post`
+* [Term](field-types/term.md) `term`
+* [Multi Term](field-types/multi_term.md) `multi_term`
 
 ## Complex field types
 
-* Code Editor `code`
-* Group `group`
-* Mapy.cz `mapycz`
-* WYSIWYG editor (TinyMCE) `wysiwyg`
+* [Code Editor](field-types/code.md) `code`
+* [Group](field-types/group.md) `group`
+* [Mapy.cz](field-types/mapycz.md) `mapycz`
+* [WYSIWYG editor (TinyMCE)](field-types/wysiwyg.md) `wysiwyg`
 * [Inner Blocks](field-types/inner_blocks.md) `inner_blocks`
 
 ## Repeater field types
 
-* Multi Date `multi_date`
-* Multi DateTime `multi_datetime`
-* Multi Email `multi_email`
-* Multi Group (Repeater) `multi_group`
-* Multi Mapy.cz `multi_mapycz`
-* Multi Month `multi_month`
-* Multi Number `multi_number`
-* Multi Phone `multi_tel`
-* Multi Text `multi_text`
-* Multi Textarea `multi_textarea`
-* Multi Time `multi_time`
-* Multi URL `multi_url`
-* Multi Week `multi_week`
+* [Multi Date](field-types/multi_date.md) `multi_date`
+* [Multi Datetime](field-types/multi_datetime.md) `multi_datetime`
+* [Multi Email](field-types/multi_email.md) `multi_email`
+* [Multi Group (Repeater)](field-types/multi_group.md) `multi_group`
+* [Multi Mapy.cz](field-types/multi_mapycz.md) `multi_mapycz`
+* [Multi Month](field-types/multi_month.md) `multi_month`
+* [Multi Number](field-types/multi_number.md) `multi_number`
+* [Multi Phone](field-types/multi_tel.md) `multi_tel`
+* [Multi Text](field-types/multi_text.md) `multi_text`
+* [Multi Textarea](field-types/multi_textarea.md) `multi_textarea`
+* [Multi Time](field-types/multi_time.md) `multi_time`
+* [Multi URL](field-types/multi_url.md) `multi_url`
+* [Multi Week](field-types/multi_week.md) `multi_week`
 
 ## Static field types
 
-* Button `button`
-* Multi Button `multi_button`
-* HTML `html`
-* Title `title`
+* [Button](field-types/button.md) `button`
+* [Multi Button](field-types/multi_button.md) `multi_button`
+* [HTML](field-types/html.md) `html`
+* [Title](field-types/title.md) `title`
+* [Hidden](field-types/hidden.md) `hidden`
