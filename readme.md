@@ -1,39 +1,120 @@
 # WPify Custom Fields
 
-WPify Custom Fields is a powerful, developer-oriented WordPress library for creating custom fields. This library offers
-maximum flexibility for developers to integrate custom fields into various parts of WordPress, ranging from post
-metaboxes to WooCommerce product options. Built with React.js and requiring no additional composer dependencies, it is
-designed to be highly extendable and future-proof.
+WPify Custom Fields is a powerful, developer-oriented WordPress library for creating custom fields. It provides a comprehensive solution for integrating custom fields into various parts of WordPress and WooCommerce, from post metaboxes to product options, options pages, taxonomies, and much more.
 
-## Features
+Built with modern React.js and PHP 8.1+, this library offers maximum flexibility for developers while maintaining a clean, intuitive interface for end-users.
 
-- **Developer-Oriented**: WPify Custom Fields provides maximum control for developers who need flexibility in their
-  WordPress projects.
-- **Composer Support**: Easily integrate WPify Custom Fields into your project with Composer.
-- **Broad Integration**: Custom fields can be implemented in a wide variety of locations, including but not limited to:
-    - Custom Options Pages, Metaboxes, Menu Item Options, Term Options, Settings pages, etc.
-    - Custom Gutenberg Blocks
-    - WooCommerce Order Metabox, Product Options, Settings, etc.
-    - WooCommerce Subscription Options and Woo Memberships Plan Options
-- **50+ Field Types**: A wide range of field types is available, allowing you to build anything from simple input fields
-  to complex multi-attachment **galleries** or **repeaters**.
-- **Conditional Logic**: Show or hide fields conditionally based on the current data, giving you more control over the
-  display and functionality of your custom fields.
-- **Tabbed Field Organization**: Organize your custom fields into tabs for better user experience and cleaner UI.
-- **Required Fields**: Make fields required to ensure important data is captured.
+## Key Features
 
-## Why WPify Custom Fields?
+- **Extensive Integration Options**: Add custom fields to 14+ different contexts:
+  - WordPress Core: Post Metaboxes, Taxonomies, Options Pages, Menu Items, Gutenberg Blocks, User Profiles, Comments
+  - WooCommerce: Product Options, Product Variations, Order Metaboxes, Settings Pages, Subscriptions, Membership Plans
+  - Multisite: Site Options, Network Options
 
-- **Flexibility**: WPify Custom Fields integrates with multiple parts of WordPress and WooCommerce, offering flexibility
-  that surpasses most other custom field plugins.
-- **Ease of Use**: While developer-focused, the library is designed to be straightforward, allowing you to implement
-  custom fields with minimal code.
-- **Extendable**: With the ability to create custom field types and implementations, you are never limited by the
-  built-in features.
-- **Future-Proof**: Built with React.js and PHP 8.1+, WPify Custom Fields is ready for modern WordPress development.
+- **46+ Field Types**: Build anything from simple forms to complex interfaces:
+  - Simple Fields: Text, Textarea, Number, Select, Toggle, Checkbox, Date/Time, Color, etc.
+  - Relational Fields: Post, Term, Attachment, Links
+  - Complex Fields: Group, Code Editor, WYSIWYG, Map integration
+  - Repeater Fields: Multi versions of all field types
+  - Static Fields: HTML, Button, Title, Hidden
 
-## [Documentation](docs/index.md) & [Support](https://github.com/wpify/custom-fields/issues)
+- **Powerful Conditional Logic**: Dynamically show/hide fields based on complex conditions:
+  - Multiple comparison operators (equals, contains, greater than, etc.)
+  - Complex AND/OR logic and nested condition groups
+  - Advanced path references with dot notation for nested fields
 
-For full documentation, examples, and advanced usage, please visit
-the [**WPify Custom Fields documentation**](docs/index.md). If you encounter any
-issues or have questions, feel free to [open an issue](https://github.com/wpify/custom-fields/issues) for support.
+- **Organized Field Groups**: Create better user experiences:
+  - Tabbed interface for organizing related fields
+  - Nested tabs for complex hierarchies
+  - Collapsible field groups
+
+- **Developer-Friendly**:
+  - Strong typing with PHP 8.1+ features
+  - Clean, standardized API
+  - Extendable architecture for custom field types
+  - Well-documented with consistent examples
+
+## Requirements
+
+- PHP 8.1 or later
+- WordPress 6.2 or later
+- Modern browser (Chrome, Firefox, Safari, Edge)
+
+## Installation
+
+### Via Composer (Recommended)
+
+```bash
+composer require wpify/custom-fields
+```
+
+### Manual Installation
+
+1. Download the latest release from the [Releases page](https://github.com/wpify/custom-fields/releases)
+2. Upload to your `/wp-content/plugins/` directory
+3. Activate through the WordPress admin interface
+
+## Quick Example
+
+```php
+// Create a custom metabox for posts
+wpify_custom_fields()->create_metabox(
+	array(
+		'id'        => 'demo_metabox',
+		'title'     => __( 'Demo Metabox', 'textdomain' ),
+		'post_type' => 'post',
+		'items'     => array(
+			'text_field' => array(
+				'type'        => 'text',
+				'label'       => __( 'Text Field', 'textdomain' ),
+				'description' => __( 'This is a simple text field', 'textdomain' ),
+				'required'    => true,
+			),
+			'select_field' => array(
+				'type'    => 'select',
+				'label'   => __( 'Select Field', 'textdomain' ),
+				'options' => array(
+					'option1' => __( 'Option 1', 'textdomain' ),
+					'option2' => __( 'Option 2', 'textdomain' ),
+				),
+				'conditions' => array(
+					array(
+						'field'     => 'text_field',
+						'condition' => '!=',
+						'value'     => '',
+					),
+				),
+			),
+		),
+	)
+);
+```
+
+## Why Choose WPify Custom Fields?
+
+- **Flexible API**: Provides a consistent API across all WordPress and WooCommerce contexts
+- **Modern Architecture**: Built with React and modern PHP principles
+- **Performance Optimized**: Loads only the resources needed for each context
+- **Comprehensive Solution**: No need for multiple plugins to handle different field contexts
+- **Future-Proof**: Regularly updated and maintained
+- **Extendable**: Create custom field types when needed
+
+## Documentation
+
+For comprehensive documentation, visit:
+
+- [Main Documentation](docs/index.md)
+- [Field Types](docs/field-types.md)
+- [Integrations](docs/integrations.md)
+- [Conditional Logic](docs/features/conditions.md)
+- [Tabs System](docs/features/tabs.md)
+- [Extending](docs/features/extending.md)
+- [Migration from 3.x to 4.x](docs/migration-3-to-4.md)
+
+## Support & Issues
+
+If you encounter any issues or have questions, please [open an issue](https://github.com/wpify/custom-fields/issues) on our GitHub repository.
+
+## License
+
+WPify Custom Fields is released under the GPL v2 or later license.
