@@ -9,7 +9,7 @@ This guide will help you migrate your codebase from version 3.x to version 4.x o
 
 ## JavaScript Changes
 
-- Extending field types is not compatible
+- Extending field types is not compatible with the previous version. You need to reimplement your custom field types using the new architecture
 - Field sanitization has been improved and standardized according to WordPress standards
 
 ## Type Compatibility
