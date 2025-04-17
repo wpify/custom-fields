@@ -14,7 +14,6 @@ array(
 	'conditions' => array(
 		array(
 			'field'     => 'another_field',
-			'condition' => '==',
 			'value'     => 'show_me',
 		),
 	),
@@ -33,21 +32,21 @@ The `conditions` parameter expects an array of condition rules. Each condition r
 
 ## Available Comparison Operators
 
-| Operator | Description | Example |
-|----------|-------------|---------|
-| `==` | Equal (default) | `'condition' => '=='` |
-| `!=` | Not equal | `'condition' => '!='` |
-| `>` | Greater than | `'condition' => '>'` |
-| `>=` | Greater than or equal | `'condition' => '>='` |
-| `<` | Less than | `'condition' => '<'` |
-| `<=` | Less than or equal | `'condition' => '<='` |
-| `between` | Between (inclusive) | `'condition' => 'between', 'value' => array(5, 10)` |
-| `contains` | Contains substring | `'condition' => 'contains'` |
-| `not_contains` | Does not contain substring | `'condition' => 'not_contains'` |
-| `in` | Value is in array | `'condition' => 'in', 'value' => array('a', 'b', 'c')` |
-| `not_in` | Value is not in array | `'condition' => 'not_in', 'value' => array('x', 'y', 'z')` |
-| `empty` | Value is empty | `'condition' => 'empty', 'value' => true` |
-| `not_empty` | Value is not empty | `'condition' => 'not_empty', 'value' => true` |
+| Operator       | Description                | Example                                                    |
+|----------------|----------------------------|------------------------------------------------------------|
+| `==`           | Equal (default)            | `'condition' => '==', 'value' => 10`                       |
+| `!=`           | Not equal                  | `'condition' => '!=', 'value' => 10`                       |
+| `>`            | Greater than               | `'condition' => '>', 'value' => 10`                        |
+| `>=`           | Greater than or equal      | `'condition' => '>=', 'value' => 10`                       |
+| `<`            | Less than                  | `'condition' => '<', 'value' => 10`                        |
+| `<=`           | Less than or equal         | `'condition' => '<=', 'value' => 10`                       |
+| `between`      | Between (inclusive)        | `'condition' => 'between', 'value' => array(5, 10)`        |
+| `contains`     | Contains substring         | `'condition' => 'contains', 'value' => 'something'`        |
+| `not_contains` | Does not contain substring | `'condition' => 'not_contains', 'value' => 'something`     |
+| `in`           | Value is in array          | `'condition' => 'in', 'value' => array('a', 'b', 'c')`     |
+| `not_in`       | Value is not in array      | `'condition' => 'not_in', 'value' => array('x', 'y', 'z')` |
+| `empty`        | Value is empty             | `'condition' => 'empty'`                                   |
+| `not_empty`    | Value is not empty         | `'condition' => 'not_empty'`                               |
 
 ## Multiple Conditions
 
@@ -424,7 +423,6 @@ array(
 		array(
 			'field'     => 'optional_field',
 			'condition' => 'not_empty',
-			'value'     => true,
 		),
 	),
 ),
@@ -437,7 +435,6 @@ array(
 		array(
 			'field'     => 'optional_field',
 			'condition' => 'empty',
-			'value'     => true,
 		),
 	),
 ),
