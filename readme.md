@@ -11,7 +11,7 @@ Built with modern React.js and PHP 8.1+, this library offers maximum flexibility
   - WooCommerce: Product Options, Product Variations, Order Metaboxes, Settings Pages, Subscriptions, Membership Plans
   - Multisite: Site Options, Network Options
 
-- **46+ Field Types**: Build anything from simple forms to complex interfaces:
+- **50+ Field Types**: Build anything from simple forms to complex interfaces:
   - Simple Fields: Text, Textarea, Number, Select, Toggle, Checkbox, Date/Time, Color, etc.
   - Relational Fields: Post, Term, Attachment, Links
   - Complex Fields: Group, Code Editor, WYSIWYG, Map integration
