@@ -16,7 +16,9 @@ function Attachment ({
   className,
   disabled = false,
   setTitle,
+  ...props
 }) {
+  console.log(props);
   const { attachment, setAttachment } = useAttachment(value);
 
   useEffect(() => {

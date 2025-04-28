@@ -80,6 +80,7 @@ export function MyCustomField({
 	attributes = {},
 	className,
 	disabled = false,
+    allValues = {},
 }) {
 	const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
   

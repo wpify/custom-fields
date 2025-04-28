@@ -28,7 +28,7 @@ export function Field ({
   ...props
 }) {
   const FieldComponent = useMemo(() => applyFilters('wpifycf_field_' + type, Text, props), [type, props]);
-  const { currentTab } = useContext(AppContext);
+  const { currentTab, values: allValues } = useContext(AppContext);
   const shown = useConditions({ conditions, fieldPath });
   const isCurrentTab = !tab || !currentTab || currentTab === tab;
   const isHidden = !shown || !isCurrentTab || type === 'hidden';
@@ -126,6 +126,7 @@ export function Field ({
                 combinedRenderOptions.isRoot && 'wpifycf-field--is-root',
               )}
               fieldPath={fieldPath}
+              allValues={allValues}
               {...props}
             />
           </ErrorBoundary>
