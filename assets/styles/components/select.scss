@@ -139,12 +139,7 @@
   }
 
   &__menu-portal {
-    left: 402px;
-    position: absolute;
-    top: 295.984375px;
-    width: 840px;
-    z-index: 1;
-    box-sizing: border-box;
+    z-index: 1000 !important;
   }
 
   & &__menu,
