@@ -23,6 +23,10 @@ abstract class OptionsIntegration extends BaseIntegration {
 	 * @param array  $data_attributes Optional. Additional data attributes.
 	 */
 	public function print_app( string $context, array $tabs, array $data_attributes = array() ): void {
+		if ( ! apply_filters( 'wpifycf_print_app', true, $this, $context, $tabs, $data_attributes ) ) {
+			return;
+		}
+
 		$loop           = $data_attributes['loop'] ?? '';
 		$integration_id = isset( $data_attributes['loop'] ) ? $this->id . '__' . $loop : $this->id;
 		?>
