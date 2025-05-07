@@ -193,7 +193,7 @@ class Options extends OptionsIntegration {
 	 *
 	 * Initializes an Options object, validates required arguments, and sets up action hooks.
 	 *
-	 * @param array        $args Arguments for the options page.
+	 * @param array        $args          Arguments for the options page.
 	 * @param CustomFields $custom_fields The custom fields object.
 	 *
 	 * @throws MissingArgumentException If required arguments are missing or invalid.
@@ -210,7 +210,7 @@ class Options extends OptionsIntegration {
 		if ( $missing_page_args && $missing_hook_suffix ) {
 			throw new MissingArgumentException(
 				sprintf(
-					/* translators: %1$s is the class name. */
+				/* translators: %1$s is the class name. */
 					esc_html( __( 'Missing arguments ((page_title AND menu_title AND menu_slug) OR (hook_suffix)) in class %1$s.', 'wpify-custom-fields' ) ),
 					__CLASS__,
 				),
@@ -413,10 +413,10 @@ class Options extends OptionsIntegration {
 		$this->enqueue();
 		?>
 		<?php do_action( 'wpifycf_before_options', $this ); ?>
-		<div class="wrap">
-			<h1>
+        <div class="wrap">
+            <h1>
 				<?php echo wp_kses_post( get_admin_page_title() ); ?>
-			</h1>
+            </h1>
 			<?php
 			if ( is_callable( $this->callback ) ) {
 				call_user_func( $this->callback );
@@ -427,8 +427,9 @@ class Options extends OptionsIntegration {
 			if ( $this->type === $this::TYPE_NETWORK ) {
 				$action = add_query_arg( 'action', $this->get_network_save_action(), 'edit.php' );
 			}
+			do_action( 'wpifycf_before_options_form', $this );
 			?>
-			<form action="<?php echo esc_attr( $action ); ?>" method="POST">
+            <form action="<?php echo esc_attr( $action ); ?>" method="POST">
 				<?php
 				if ( $this->type === $this::TYPE_NETWORK ) {
 					wp_nonce_field( $this->get_network_save_action() );
@@ -458,8 +459,9 @@ class Options extends OptionsIntegration {
 					}
 				}
 				?>
-			</form>
-		</div>
+            </form>
+			<?php do_action( 'wpifycf_after_options_form', $this ); ?>
+        </div>
 		<?php do_action( 'wpifycf_after_options', $this ); ?>
 		<?php
 	}
@@ -615,7 +617,7 @@ class Options extends OptionsIntegration {
 	 * If the 'section' key is missing from the item, it will default to 'general'.
 	 * Additionally, the method utilizes a parent class method for primary normalization.
 	 *
-	 * @param array  $item The item to be normalized.
+	 * @param array  $item      The item to be normalized.
 	 * @param string $global_id An optional global identifier.
 	 *
 	 * @return array The normalized item with an ensured 'section' key.
@@ -642,9 +644,9 @@ class Options extends OptionsIntegration {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['updated'] ) && isset( $_GET['page'] ) && $this->menu_slug === $_GET['page'] ) {
 			?>
-			<div id="message" class="updated notice is-dismissible">
-				<p><?php echo esc_html( $this->success_message ); ?></p>
-			</div>
+            <div id="message" class="updated notice is-dismissible">
+                <p><?php echo esc_html( $this->success_message ); ?></p>
+            </div>
 			<?php
 		}
 	}
@@ -652,7 +654,7 @@ class Options extends OptionsIntegration {
 	/**
 	 * Retrieves an option value based on the context of the object. If the type is network, it fetches a network option; otherwise, it fetches a regular option.
 	 *
-	 * @param string $name The name of the option to retrieve.
+	 * @param string $name          The name of the option to retrieve.
 	 * @param mixed  $default_value The default value to return if the option does not exist.
 	 *
 	 * @return mixed The value of the option or the default value if the option does not exist.
@@ -671,7 +673,7 @@ class Options extends OptionsIntegration {
 	 * This function updates the value of an option, either at the network level
 	 * or at the regular single instance level, depending on the context of the type.
 	 *
-	 * @param string $name The name of the option to be updated.
+	 * @param string $name  The name of the option to be updated.
 	 * @param mixed  $value The new value to set for the specified option.
 	 *
 	 * @return bool True if the option was successfully updated, false otherwise.
