@@ -413,10 +413,10 @@ class Options extends OptionsIntegration {
 		$this->enqueue();
 		?>
 		<?php do_action( 'wpifycf_before_options', $this ); ?>
-        <div class="wrap">
-            <h1>
+		<div class="wrap">
+			<h1>
 				<?php echo wp_kses_post( get_admin_page_title() ); ?>
-            </h1>
+			</h1>
 			<?php
 			if ( is_callable( $this->callback ) ) {
 				call_user_func( $this->callback );
@@ -429,7 +429,7 @@ class Options extends OptionsIntegration {
 			}
 			do_action( 'wpifycf_before_options_form', $this );
 			?>
-            <form action="<?php echo esc_attr( $action ); ?>" method="POST">
+			<form action="<?php echo esc_attr( $action ); ?>" method="POST">
 				<?php
 				if ( $this->type === $this::TYPE_NETWORK ) {
 					wp_nonce_field( $this->get_network_save_action() );
@@ -459,9 +459,9 @@ class Options extends OptionsIntegration {
 					}
 				}
 				?>
-            </form>
+			</form>
 			<?php do_action( 'wpifycf_after_options_form', $this ); ?>
-        </div>
+		</div>
 		<?php do_action( 'wpifycf_after_options', $this ); ?>
 		<?php
 	}
@@ -644,9 +644,9 @@ class Options extends OptionsIntegration {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['updated'] ) && isset( $_GET['page'] ) && $this->menu_slug === $_GET['page'] ) {
 			?>
-            <div id="message" class="updated notice is-dismissible">
-                <p><?php echo esc_html( $this->success_message ); ?></p>
-            </div>
+			<div id="message" class="updated notice is-dismissible">
+				<p><?php echo esc_html( $this->success_message ); ?></p>
+			</div>
 			<?php
 		}
 	}
