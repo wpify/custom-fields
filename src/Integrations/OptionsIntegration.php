@@ -30,7 +30,7 @@ abstract class OptionsIntegration extends BaseIntegration {
 		$loop           = $data_attributes['loop'] ?? '';
 		$integration_id = isset( $data_attributes['loop'] ) ? $this->id . '__' . $loop : $this->id;
 		?>
-		<div class="wpifycf-app"
+		<div class="wpifycf-instance"
 			data-loaded="false"
 			data-instance="<?php echo esc_attr( $this->custom_fields->get_script_handle() ); ?>"
 			data-integration-id="<?php echo esc_attr( $integration_id ); ?>"
