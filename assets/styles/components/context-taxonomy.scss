@@ -1,6 +1,6 @@
 #addtag,
 #edittag {
-  .wpifycf-field-integration:has(input[data-hide-field='true']) {
+  .wpifycf-field-instance:has(input[data-hide-field='true']) {
     display: none;
   }
 }

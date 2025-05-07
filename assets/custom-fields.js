@@ -17,7 +17,7 @@ import { AppContextProvider } from '@/components/AppContext';
   function loadCustomFields () {
     addStyleSheet(config.stylesheet);
     document.querySelectorAll('.wpifycf-instance[data-loaded=false][data-instance="' + config.instance + '"]').forEach(container => {
-      const nodes = Array.from(document.querySelectorAll('.wpifycf-field-integration[data-integration-id="' + container.dataset.integrationId + '"]'));
+      const nodes = Array.from(document.querySelectorAll('.wpifycf-field-instance[data-instance="' + config.instance + '"][data-integration-id="' + container.dataset.integrationId + '"]'));
       const defs = nodes.map(node => {
         return { ...JSON.parse(node.dataset.item), node };
       });

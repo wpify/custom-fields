@@ -78,7 +78,8 @@ abstract class OptionsIntegration extends BaseIntegration {
 		<<?php echo esc_attr( $tag ); ?>
 		data-item="<?php echo esc_attr( $this->custom_fields->helpers->json_encode( $item ) ); ?>"
 		data-integration-id="<?php echo esc_attr( $integration_id ); ?>"
-		class="wpifycf-field-integration<?php echo $class_name ? ' ' . esc_attr( $class_name ) : ''; ?>"
+		data-instance="<?php echo esc_attr( $this->custom_fields->get_script_handle() ); ?>"
+		class="wpifycf-field-instance<?php echo $class_name ? ' ' . esc_attr( $class_name ) : ''; ?>"
 		<?php
 		foreach ( $data_attributes as $key => $value ) {
 			printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );
