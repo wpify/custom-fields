@@ -2,12 +2,12 @@
   .wpifycf-instance  {
     margin-bottom: var(--wpifycf-gap-3);
   }
-  .wpifycf-field-parent  {
+  .wpifycf-field-integration  {
     padding: var(--wpifycf-gap-2) 0;
     margin-bottom: var(--wpifycf-gap-2);
   }
 
-  .wpifycf-field-parent:has(input[data-hide-field='true']) {
+  .wpifycf-field-integration:has(input[data-hide-field='true']) {
     display: none;
   }
 

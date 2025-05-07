@@ -1,5 +1,5 @@
 .menu-item-settings {
-  .wpifycf-field-parent:has(input[data-hide-field='true']) {
+  .wpifycf-field-integration:has(input[data-hide-field='true']) {
     display: none;
   }
 
@@ -7,7 +7,7 @@
     margin-bottom: var(--wpifycf-gap-2);
   }
 
-  .wpifycf-field-parent:not(:last-child) {
+  .wpifycf-field-integration:not(:last-child) {
     margin-bottom: var(--wpifycf-gap-2);
   }
 }
