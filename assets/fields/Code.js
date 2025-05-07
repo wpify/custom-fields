@@ -84,4 +84,4 @@ function getLanguageExtension (language) {
 
 Code.checkValidity = checkValidityStringType;
 
-addFilter('wpifycf_field_code', 'wpify_custom_fields', () => Code);
+export default Code;

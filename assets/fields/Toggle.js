@@ -38,4 +38,4 @@ function Toggle ({
 
 Toggle.checkValidity = checkValidityBooleanType;
 
-addFilter('wpifycf_field_toggle', 'wpify_custom_fields', () => Toggle);
+export default Toggle;

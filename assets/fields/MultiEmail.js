@@ -6,4 +6,4 @@ const MultiEmail = props => <MultiField {...props} type="email" />;
 
 MultiEmail.checkValidity = checkValidityMultiFieldType('email');
 
-addFilter('wpifycf_field_multi_email', 'wpify_custom_fields', () => MultiEmail);
+export default MultiEmail;

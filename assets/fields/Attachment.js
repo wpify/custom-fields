@@ -96,4 +96,4 @@ export function AttachmentItem ({ attachment, remove, disabled }) {
 
 Attachment.checkValidity = checkValidityNonZeroIntegerType;
 
-addFilter('wpifycf_field_attachment', 'wpify_custom_fields', () => Attachment);
+export default Attachment;

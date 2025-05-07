@@ -40,4 +40,4 @@ export function Range ({
 
 Range.checkValidity = checkValidityNumberType;
 
-addFilter('wpifycf_field_range', 'wpify_custom_fields', () => Range);
+export default Range;

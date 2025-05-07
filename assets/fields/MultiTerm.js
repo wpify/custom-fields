@@ -64,4 +64,4 @@ export function MultiTerm ({
 
 MultiTerm.checkValidity = checkValidityMultiNonZeroType;
 
-addFilter('wpifycf_field_multi_term', 'wpify_custom_fields', () => MultiTerm);
+export default MultiTerm;

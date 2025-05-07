@@ -6,4 +6,4 @@ const MultiUrl = props => <MultiField {...props} type="url" />;
 
 MultiUrl.checkValidity = checkValidityMultiFieldType('url');
 
-addFilter('wpifycf_field_multi_url', 'wpify_custom_fields', () => MultiUrl);
+export default MultiUrl;

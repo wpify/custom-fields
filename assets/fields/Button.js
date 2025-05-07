@@ -37,4 +37,4 @@ export function Button (props) {
   );
 }
 
-addFilter('wpifycf_field_button', 'wpify_custom_fields', () => Button);
+export default Button;

@@ -33,4 +33,4 @@ export function Week ({
 
 Week.checkValidity = checkValidityStringType;
 
-addFilter('wpifycf_field_week', 'wpify_custom_fields', () => Week);
+export default Week;

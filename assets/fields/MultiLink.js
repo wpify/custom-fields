@@ -6,4 +6,4 @@ const MultiLink = props => <MultiField {...props} type="link" />;
 
 MultiLink.checkValidity = checkValidityMultiFieldType('link');
 
-addFilter('wpifycf_field_multi_link', 'wpify_custom_fields', () => MultiLink);
+export default MultiLink;

@@ -148,4 +148,4 @@ function CategoryItem ({ htmlId, category, value = [], onChange, type, disabled 
   );
 }
 
-addFilter('wpifycf_field_term', 'wpify_custom_fields', () => Term);
+export default Term;

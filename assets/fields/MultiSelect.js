@@ -112,4 +112,4 @@ export function MultiSelect ({
 
 MultiSelect.checkValidity = checkValidityMultiStringType;
 
-addFilter('wpifycf_field_multi_select', 'wpify_custom_fields', () => MultiSelect);
+export default MultiSelect;

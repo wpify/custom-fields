@@ -6,4 +6,4 @@ const MultiTime = props => <MultiField {...props} type="time" />;
 
 MultiTime.checkValidity = checkValidityMultiFieldType('time');
 
-addFilter('wpifycf_field_multi_time', 'wpify_custom_fields', () => MultiTime);
+export default MultiTime;

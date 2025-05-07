@@ -401,4 +401,4 @@ function SetApiKey ({ mapycz, htmlId }) {
   );
 }
 
-addFilter('wpifycf_field_mapycz', 'wpify_custom_fields', () => Mapycz);
+export default Mapycz;

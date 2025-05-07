@@ -1,6 +1,6 @@
 import { applyFilters } from '@wordpress/hooks';
-import { Text } from '@/fields/Text';
 import { createPortal } from 'react-dom';
+import fieldTypes from '@/fields';
 
 export function addStyleSheet (url) {
   if (Array.isArray(url)) {
@@ -82,8 +82,14 @@ function cleanTel (content) {
   return content.replace(/[^\d+]/g, '');
 }
 
-export function getFieldComponentByType (type) {
-  return applyFilters('wpifycf_field_' + type, Text);
+export function getFieldComponentByType (type, props) {
+  const field = fieldTypes[type];
+
+  if (field) {
+    return field;
+  } else {
+    return applyFilters('wpifycf_field_' + type, fieldTypes['text'], props);
+  }
 }
 
 export function getValueByPath (obj = {}, path, currentPath = '') {

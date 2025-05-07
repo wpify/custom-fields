@@ -67,4 +67,4 @@ export function PostPreview ({ post, onDelete, disabled }) {
   );
 }
 
-addFilter('wpifycf_field_post', 'wpify_custom_fields', () => Post);
+export default Post;

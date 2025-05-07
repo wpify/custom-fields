@@ -249,4 +249,4 @@ function TinyMCE ({ htmlId, value, onChange, height, disabled }) {
 Wysiwyg.VIEW_VISUAL = VIEW_VISUAL;
 Wysiwyg.VIEW_HTML = VIEW_HTML;
 
-addFilter('wpifycf_field_wysiwyg', 'wpify_custom_fields', () => Wysiwyg);
+export default Wysiwyg;

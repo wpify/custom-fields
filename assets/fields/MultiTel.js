@@ -6,4 +6,4 @@ const MultiTel = props => <MultiField {...props} type="tel" />;
 
 MultiTel.checkValidity = checkValidityMultiFieldType('tel');
 
-addFilter('wpifycf_field_multi_tel', 'wpify_custom_fields', () => MultiTel);
+export default MultiTel;

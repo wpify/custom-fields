@@ -33,4 +33,4 @@ export function Month ({
 
 Month.checkValidity = checkValidityStringType;
 
-addFilter('wpifycf_field_month', 'wpify_custom_fields', () => Month);
+export default Month;

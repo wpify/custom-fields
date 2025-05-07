@@ -24,4 +24,4 @@ Html.renderOptions = {
   noLabel: true,
 };
 
-addFilter('wpifycf_field_html', 'wpify_custom_fields', () => Html);
+export default Html;

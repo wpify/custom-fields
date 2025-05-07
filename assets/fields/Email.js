@@ -33,4 +33,4 @@ export function Email ({
 
 Email.checkValidity = checkValidityEmailType;
 
-addFilter('wpifycf_field_email', 'wpify_custom_fields', () => Email);
+export default Email;

@@ -6,4 +6,4 @@ const MultiDate = props => <MultiField {...props} type="date" />;
 
 MultiDate.checkValidity = checkValidityMultiFieldType('date');
 
-addFilter('wpifycf_field_multi_date', 'wpify_custom_fields', () => MultiDate);
+export default MultiDate;

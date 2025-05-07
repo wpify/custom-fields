@@ -9,7 +9,7 @@ import { useContext, useEffect, useMemo } from 'react';
 import { FieldWrapper } from '@/components/FieldWrapper';
 import { ControlWrapper } from '@/components/ControlWrapper';
 import { FieldDescription } from '@/components/FieldDescription';
-import { maybePortal } from '@/helpers/functions';
+import { getFieldComponentByType, maybePortal } from '@/helpers/functions';
 import { AppContext } from '@/components/AppContext';;
 
 export function Field ({
@@ -27,7 +27,7 @@ export function Field ({
   generator,
   ...props
 }) {
-  const FieldComponent = useMemo(() => applyFilters('wpifycf_field_' + type, Text, props), [type, props]);
+  const FieldComponent = useMemo(() => getFieldComponentByType(type, props), [type, props]);
   const { currentTab, values: allValues } = useContext(AppContext);
   const shown = useConditions({ conditions, fieldPath });
   const isCurrentTab = !tab || !currentTab || currentTab === tab;

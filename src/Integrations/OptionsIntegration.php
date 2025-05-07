@@ -30,7 +30,7 @@ abstract class OptionsIntegration extends BaseIntegration {
 		$loop           = $data_attributes['loop'] ?? '';
 		$integration_id = isset( $data_attributes['loop'] ) ? $this->id . '__' . $loop : $this->id;
 		?>
-		<div class="wpifycf-instance"
+		<div class="wpifycf-app-instance"
 			data-loaded="false"
 			data-instance="<?php echo esc_attr( $this->custom_fields->get_script_handle() ); ?>"
 			data-integration-id="<?php echo esc_attr( $integration_id ); ?>"
@@ -79,7 +79,7 @@ abstract class OptionsIntegration extends BaseIntegration {
 		data-item="<?php echo esc_attr( $this->custom_fields->helpers->json_encode( $item ) ); ?>"
 		data-integration-id="<?php echo esc_attr( $integration_id ); ?>"
 		data-instance="<?php echo esc_attr( $this->custom_fields->get_script_handle() ); ?>"
-		class="wpifycf-field-instance<?php echo $class_name ? ' ' . esc_attr( $class_name ) : ''; ?>"
+		class="wpifycf-field-instance wpifycf-field-instance--<?php echo esc_attr( $this->custom_fields->get_script_handle() ); ?><?php echo $class_name ? ' ' . esc_attr( $class_name ) : ''; ?>"
 		<?php
 		foreach ( $data_attributes as $key => $value ) {
 			printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );

@@ -33,4 +33,4 @@ export function Date ({
 
 Date.checkValidity = checkValidityDateTimeType;
 
-addFilter('wpifycf_field_date', 'wpify_custom_fields', () => Date);
+export default Date;

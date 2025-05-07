@@ -20,4 +20,4 @@ function MultiButton ({
   );
 }
 
-addFilter('wpifycf_field_multi_button', 'wpify_custom_fields', () => MultiButton);
+export default MultiButton;

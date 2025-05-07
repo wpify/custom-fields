@@ -22,4 +22,4 @@ export function InnerBlocks({
   );
 }
 
-addFilter('wpifycf_field_inner_blocks', 'wpify_custom_fields', () => InnerBlocks);
+export default InnerBlocks;

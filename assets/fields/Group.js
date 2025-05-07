@@ -94,4 +94,4 @@ Group.checkValidity = checkValidityGroupType;
 
 export { Group };
 
-addFilter('wpifycf_field_group', 'wpify_custom_fields', () => Group);
+export default Group;

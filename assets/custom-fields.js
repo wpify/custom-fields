@@ -8,15 +8,15 @@ import { registerBlockType } from '@wordpress/blocks';
 import { GutenbergBlock, SaveGutenbergBlock } from '@/components/GutenbergBlock';
 import { AppContextProvider } from '@/components/AppContext';
 
-(function(config) {
+(function(receivedConfig) {
   require('@/helpers/field-types');
   require('@/helpers/generators');
 
   const queryClient = new QueryClient();
 
-  function loadCustomFields () {
+  function loadCustomFields (config) {
     addStyleSheet(config.stylesheet);
-    document.querySelectorAll('.wpifycf-instance[data-loaded=false][data-instance="' + config.instance + '"]').forEach(container => {
+    document.querySelectorAll('.wpifycf-app-instance[data-loaded=false][data-instance="' + config.instance + '"]').forEach(container => {
       const nodes = Array.from(document.querySelectorAll('.wpifycf-field-instance[data-instance="' + config.instance + '"][data-integration-id="' + container.dataset.integrationId + '"]'));
       const defs = nodes.map(node => {
         return { ...JSON.parse(node.dataset.item), node };
@@ -43,7 +43,7 @@ import { AppContextProvider } from '@/components/AppContext';
     });
   }
 
-  function loadGutenbergBlocks (event) {
+  function loadGutenbergBlocks (event, config) {
     if (event.detail.instance !== config.instance) {
       return;
     }
@@ -101,11 +101,11 @@ import { AppContextProvider } from '@/components/AppContext';
     });
   }
 
-  document.addEventListener('DOMContentLoaded', loadCustomFields);
-  document.addEventListener('wpifycf_register_block_' + config.instance, loadGutenbergBlocks);
+  document.addEventListener('DOMContentLoaded', () => loadCustomFields(receivedConfig));
+  document.addEventListener('wpifycf_register_block_' + receivedConfig.instance, (event) => loadGutenbergBlocks(event, receivedConfig));
 
   if (typeof jQuery !== 'undefined') {
-    jQuery(document).on('woocommerce_variations_loaded', loadCustomFields);
-    jQuery(document).on('menu-item-added', loadCustomFields);
+    jQuery(document).on('woocommerce_variations_loaded', () => loadCustomFields(receivedConfig));
+    jQuery(document).on('menu-item-added', () => loadCustomFields(receivedConfig));
   }
 })(JSON.parse(JSON.stringify(window.wpifycf)));

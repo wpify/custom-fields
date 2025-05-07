@@ -39,4 +39,4 @@ export function Url ({
 
 Url.checkValidity = checkValidityStringType;
 
-addFilter('wpifycf_field_url', 'wpify_custom_fields', () => Url);
+export default Url;

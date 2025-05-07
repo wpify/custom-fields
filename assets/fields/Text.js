@@ -29,4 +29,4 @@ export function Text ({
 
 Text.checkValidity = checkValidityStringType;
 
-addFilter('wpifycf_field_text', 'wpify_custom_fields', () => Text);
+export default Text;

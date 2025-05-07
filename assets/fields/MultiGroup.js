@@ -155,4 +155,4 @@ function MultiGroup ({
 
 MultiGroup.checkValidity = checkValidityMultiGroupType;
 
-addFilter('wpifycf_field_multi_group', 'wpify_custom_fields', () => MultiGroup);
+export default MultiGroup;

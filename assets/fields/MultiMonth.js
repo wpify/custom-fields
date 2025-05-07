@@ -6,4 +6,4 @@ const MultiMonth = props => <MultiField {...props} type="month" />;
 
 MultiMonth.checkValidity = checkValidityMultiFieldType('month');
 
-addFilter('wpifycf_field_multi_month', 'wpify_custom_fields', () => MultiMonth);
+export default MultiMonth;

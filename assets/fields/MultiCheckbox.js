@@ -50,4 +50,4 @@ function MultiCheckbox ({
 
 MultiCheckbox.checkValidity = checkValidityMultiBooleanType
 
-addFilter('wpifycf_field_multi_checkbox', 'wpify_custom_fields', () => MultiCheckbox)
+export default MultiCheckbox

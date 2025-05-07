@@ -6,4 +6,4 @@ const MultiNumber = props => <MultiField {...props} type="number" />;
 
 MultiNumber.checkValidity = checkValidityMultiFieldType('number');
 
-addFilter('wpifycf_field_multi_number', 'wpify_custom_fields', () => MultiNumber);
+export default MultiNumber;

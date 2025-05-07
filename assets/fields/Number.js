@@ -35,4 +35,4 @@ export function NumberInput ({
 
 NumberInput.checkValidity = checkValidityNumberType;
 
-addFilter('wpifycf_field_number', 'wpify_custom_fields', () => NumberInput);
+export default NumberInput;

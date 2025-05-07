@@ -6,4 +6,4 @@ const MultiMapycz = props => <MultiField {...props} type="mapycz" />;
 
 MultiMapycz.checkValidity = checkValidityMultiFieldType('mapycz');
 
-addFilter('wpifycf_field_multi_mapycz', 'wpify_custom_fields', () => MultiMapycz);
+export default MultiMapycz;

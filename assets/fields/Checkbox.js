@@ -42,4 +42,4 @@ function Checkbox ({
 
 Checkbox.checkValidity = checkValidityBooleanType;
 
-addFilter('wpifycf_field_checkbox', 'wpify_custom_fields', () => Checkbox);
+export default Checkbox;

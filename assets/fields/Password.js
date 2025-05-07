@@ -29,4 +29,4 @@ function Password ({
 
 Password.checkValidity = checkValidityStringType;
 
-addFilter('wpifycf_field_password', 'wpify_custom_fields', () => Password);
+export default Password;

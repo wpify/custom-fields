@@ -60,4 +60,4 @@ export function Select ({
 
 Select.checkValidity = checkValidityStringType;
 
-addFilter('wpifycf_field_select', 'wpify_custom_fields', () => Select);
+export default Select;

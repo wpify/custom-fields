@@ -14,4 +14,4 @@ Title.renderOptions = {
   noLabel: true,
 };
 
-addFilter('wpifycf_field_title', 'wpify_custom_fields', () => Title);
+export default Title;

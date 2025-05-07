@@ -6,4 +6,4 @@ const MultiWeek = props => <MultiField {...props} type="week" />;
 
 MultiWeek.checkValidity = checkValidityMultiFieldType('week');
 
-addFilter('wpifycf_field_multi_week', 'wpify_custom_fields', () => MultiWeek);
+export default MultiWeek;

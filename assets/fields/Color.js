@@ -29,4 +29,4 @@ function Color ({
 
 Color.checkValidity = checkValidityStringType;
 
-addFilter('wpifycf_field_color', 'wpify_custom_fields', () => Color);
+export default Color;

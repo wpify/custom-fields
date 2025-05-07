@@ -33,4 +33,4 @@ export function Time ({
 
 Time.checkValidity = checkValidityStringType;
 
-addFilter('wpifycf_field_time', 'wpify_custom_fields', () => Time);
+export default Time;

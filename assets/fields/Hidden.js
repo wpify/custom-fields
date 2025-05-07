@@ -24,4 +24,4 @@ export function Hidden ({
   );
 }
 
-addFilter('wpifycf_field_hidden', 'wpify_custom_fields', () => Hidden);
+export default Hidden;

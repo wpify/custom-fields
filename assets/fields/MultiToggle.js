@@ -47,4 +47,4 @@ function MultiToggle ({
 
 MultiToggle.checkValidity = checkValidityMultiBooleanType
 
-addFilter('wpifycf_field_multi_toggle', 'wpify_custom_fields', () => MultiToggle)
+export default MultiToggle;

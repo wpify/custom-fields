@@ -60,4 +60,4 @@ export function MultiPost ({
 
 MultiPost.checkValidity = checkValidityMultiNonZeroType;
 
-addFilter('wpifycf_field_multi_post', 'wpify_custom_fields', () => MultiPost);
+export default MultiPost;

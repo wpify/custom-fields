@@ -335,7 +335,7 @@ class CustomFields {
 	 * @return string The base name of the handle.
 	 */
 	public function get_script_handle(): string {
-		return 'wpifycf-' . str_replace( '/', '-', $this->get_api_basename() );
+		return 'wpifycf_' . str_replace( '/', '_', $this->get_api_basename() );
 	}
 
 	/**

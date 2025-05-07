@@ -95,4 +95,4 @@ function MultiAttachment ({
 
 MultiAttachment.checkValidity = checkValidityMultiNonZeroType;
 
-addFilter('wpifycf_field_multi_attachment', 'wpify_custom_fields', () => MultiAttachment);
+export default MultiAttachment;

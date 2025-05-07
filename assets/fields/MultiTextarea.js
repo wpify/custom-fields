@@ -6,4 +6,4 @@ const MultiTextarea = props => <MultiField {...props} type="textarea" />;
 
 MultiTextarea.checkValidity = checkValidityMultiFieldType('textarea');
 
-addFilter('wpifycf_field_multi_textarea', 'wpify_custom_fields', () => MultiTextarea);
+export default MultiTextarea;

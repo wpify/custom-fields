@@ -28,4 +28,4 @@ export function Textarea ({
 
 Textarea.checkValidity = checkValidityStringType;
 
-addFilter('wpifycf_field_textarea', 'wpify_custom_fields', () => Textarea);
+export default Textarea;

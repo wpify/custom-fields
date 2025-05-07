@@ -213,4 +213,4 @@ function UrlInput ({ value = {}, htmlId, onUrlChange, onTargetChange, onBlur, di
 
 Link.checkValidity = checkValidityLinkType;
 
-addFilter('wpifycf_field_link', 'wpify_custom_fields', () => Link);
+export default Link;

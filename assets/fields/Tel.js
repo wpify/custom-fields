@@ -43,4 +43,4 @@ export function Tel ({
 
 Tel.checkValidity = checkValidityStringType;
 
-addFilter('wpifycf_field_tel', 'wpify_custom_fields', () => Tel);
+export default Tel;
