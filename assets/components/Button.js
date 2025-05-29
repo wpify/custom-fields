@@ -6,6 +6,7 @@ export function Button ({
   href,
   className,
   children,
+  target,
   primary = false,
   disabled = false,
   ...rest
@@ -15,7 +16,7 @@ export function Button ({
 
   if (href) {
     props.href = href;
-    props.target = '_blank';
+    props.target = target || '_blank';
   } else {
     props.type = 'button';
   }

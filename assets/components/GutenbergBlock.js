@@ -29,6 +29,8 @@ export function GutenbergBlock ({ name, args }) {
 
   const filteredFields = applyFilters('wpifycf_definition', fields, values, { context: 'gutenberg', name, args });
 
+  console.log(values);
+
   return (
     <div {...props}>
       {blockFields.length > 0 && (

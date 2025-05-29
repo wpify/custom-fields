@@ -10,7 +10,9 @@ import { FieldWrapper } from '@/components/FieldWrapper';
 import { ControlWrapper } from '@/components/ControlWrapper';
 import { FieldDescription } from '@/components/FieldDescription';
 import { getFieldComponentByType, maybePortal } from '@/helpers/functions';
-import { AppContext } from '@/components/AppContext';;
+import { AppContext } from '@/components/AppContext';
+
+;
 
 export function Field ({
   type,
@@ -75,7 +77,8 @@ export function Field ({
 
   if (combinedRenderOptions.noLabel && combinedRenderOptions.isRoot) {
     const closestTd = node?.closest('td');
-    const closestTh = node?.closest('tr')?.querySelector('th');
+    const closestTr = closestTd?.closest('tr');
+    const closestTh = closestTr?.querySelector(':scope > th');
 
     if (closestTd) {
       closestTd.setAttribute('colspan', 2);

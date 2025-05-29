@@ -6,6 +6,7 @@ import { IconButton } from '@/components/IconButton';
 import { checkValidityMultiStringType } from '@/helpers/validators';
 import clsx from 'clsx';
 import { useDebounce } from '@uidotdev/usehooks';
+import { stripHtml } from '@/helpers/functions';
 
 export function MultiSelect ({
   id,
@@ -27,7 +28,7 @@ export function MultiSelect ({
   const debouncedSearch = useDebounce(search, 300);
   const [allOptions, setAllOptions] = useState({});
 
-  const { data, isSuccess } = useOptions({
+  const { data, isSuccess, isFetching } = useOptions({
     optionsKey,
     enabled: !!optionsKey,
     initialData: options,
@@ -41,7 +42,7 @@ export function MultiSelect ({
       setAllOptions((allOptions) => ({
         ...allOptions,
         ...data.reduce((acc, option) => {
-          acc[option.value] = option.label;
+          acc[option.value] = stripHtml(option.label);
           return acc;
         }, {})
       }));
@@ -49,9 +50,9 @@ export function MultiSelect ({
   }, [data, isSuccess]);
 
   const realOptions = useMemo(
-    () => optionsKey
+    () => (optionsKey
       ? (data.length > 0 ? data : [{ value: '', label: 'No options found' }])
-      : options,
+      : options).map(option => ({ ...option, label: stripHtml(option.label) })),
     [data, options]
   );
 
@@ -61,14 +62,19 @@ export function MultiSelect ({
   );
 
   const usedOptions = useMemo(
-    () => Array.isArray(value)
-      ? value.filter(Boolean).map(
-        value => realOptions.find(option => String(option.value) === String(value)
-        ) || {
-          value,
-          label: value
-        })
-      : [],
+    () => {
+      const options = Array.isArray(value)
+        ? value
+          .filter(Boolean)
+          .map(
+            value => realOptions.find(option => String(option.value) === String(value)
+            ) || {
+              value,
+              label: stripHtml(value)
+            })
+        : [];
+      return options.map(option => ({ ...option, label: stripHtml(option.label) }))
+    },
     [realOptions, value],
   );
 
@@ -105,6 +111,7 @@ export function MultiSelect ({
         filterOption={optionsKey ? Boolean : undefined}
         onInputChange={setSearch}
         disabled={disabled}
+        isFetching={isFetching}
       />
     </div>
   );

@@ -1,4 +1,3 @@
-import { addFilter } from '@wordpress/hooks';
 import { useTerms } from '@/helpers/hooks';
 import { __ } from '@wordpress/i18n';
 import { MultiSelect } from '@/fields/MultiSelect';
@@ -6,6 +5,7 @@ import { CategoryTree } from '@/fields/Term';
 import { useMemo } from 'react';
 import { checkValidityMultiNonZeroType } from '@/helpers/validators';
 import clsx from 'clsx';
+import { stripHtml } from '@/helpers/functions';
 
 export function MultiTerm ({
   taxonomy,
@@ -19,7 +19,7 @@ export function MultiTerm ({
   const { data: terms, isError, isFetching } = useTerms({ taxonomy });
 
   const termOptions = useMemo(
-    () => terms.map(term => ({ value: term.id, label: term.name })),
+    () => terms.map(term => ({ value: term.id, label: stripHtml(term.name) })),
     [terms],
   );
 

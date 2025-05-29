@@ -49,6 +49,7 @@ An array of button definitions, where each button has the following properties:
 - `title` _(string)_ - The text to display on the button
 - `id` _(string)_ - Optional unique identifier for the button
 - `url` or `href` _(string)_ - URL to navigate to when the button is clicked (ignored if `action` is specified)
+- `target` _(string)_ - Optional, default: `_blank` - The target attribute for the link (e.g., `_blank`, `_self`)
 - `action` _(string)_ - Name of WordPress hook action to trigger when the button is clicked
 - `primary` _(boolean)_ - Whether to style the button as a primary action button
 - `disabled` _(boolean)_ - Whether this specific button should be disabled

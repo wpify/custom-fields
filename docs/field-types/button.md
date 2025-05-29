@@ -12,6 +12,7 @@ array(
     'action'  => 'my_custom_action',  // Optional WordPress hook to trigger
     'url'     => 'https://example.com', // Optional URL to navigate to
     'primary' => true, // Optional styling
+    'target' => '_blank',
 )
 ```
 
@@ -45,6 +46,10 @@ Name of a WordPress hook action to trigger when the button is clicked. When the 
 #### `url` or `href` _(string)_ - Optional
 
 URL to navigate to when the button is clicked. This property is ignored if `action` is specified.
+
+#### `target` _(string)_ - Optional, default: `_blank`
+
+The target attribute for the link, specifying where to open the URL. Common values are `_blank` (new tab) or `_self` (same tab). This property is ignored if `action` is specified.
 
 #### `primary` _(boolean)_ - Optional, default: `false`
 

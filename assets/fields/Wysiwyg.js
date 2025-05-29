@@ -1,6 +1,5 @@
 import { RawHTML } from '@wordpress/element';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { addFilter } from '@wordpress/hooks';
 import clsx from 'clsx';
 import { __ } from '@wordpress/i18n';
 import { Code } from '@/fields/Code';

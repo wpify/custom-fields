@@ -1,5 +1,5 @@
 import { Button as ButtonComponent } from '@/components/Button';
-import { addFilter, doAction } from '@wordpress/hooks';
+import { doAction } from '@wordpress/hooks';
 import { useCallback } from 'react';
 import clsx from 'clsx';
 
@@ -14,6 +14,7 @@ export function Button (props) {
     disabled = false,
     attributes = {},
     className,
+    target,
   } = props;
 
   const handleClick = useCallback(event => {
@@ -30,6 +31,7 @@ export function Button (props) {
       onClick={handleClick}
       className={clsx('wpifycf-field-button', `wpifycf-field-${id}`, attributes.class, className)}
       disabled={disabled}
+      target={target}
       {...attributes}
     >
       {title}

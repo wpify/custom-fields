@@ -1,6 +1,5 @@
 import clsx from 'clsx';
 import { Button } from '@/fields/Button';
-import { addFilter } from '@wordpress/hooks';
 
 function MultiButton ({
   className,

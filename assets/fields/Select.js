@@ -1,4 +1,3 @@
-import { addFilter } from '@wordpress/hooks';
 import { Select as SelectControl } from '@/components/Select.js';
 import { useOptions } from '@/helpers/hooks';
 import { useEffect, useMemo, useState } from 'react';
@@ -19,7 +18,7 @@ export function Select ({
 }) {
   const [search, setSearch] = useState('');
 
-  const { data: fetchedOptions } = useOptions({
+  const { data: fetchedOptions, isFetching } = useOptions({
     optionsKey,
     enabled: !!optionsKey,
     initialData: options,
@@ -29,7 +28,7 @@ export function Select ({
   });
 
   const realOptions = useMemo(
-    () => optionsKey ? fetchedOptions : options,
+    () => (optionsKey ? fetchedOptions : options).map(option => ({ ...option, label: stripHtml(option.label) })),
     [fetchedOptions, options]
   );
 
@@ -44,6 +43,8 @@ export function Select ({
     setTitle && setTitle(stripHtml(valueOption?.label || ''));
   }, [valueOption, setTitle]);
 
+  console.log(isFetching);
+
   return (
     <SelectControl
       id={id}
@@ -54,6 +55,7 @@ export function Select ({
       onInputChange={setSearch}
       className={clsx('wpifycf-field-select', `wpifycf-field-select--${id}`, className)}
       disabled={disabled}
+      isFetching={isFetching}
     />
   );
 }

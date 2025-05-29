@@ -5,6 +5,7 @@ import { IconButton } from '@/components/IconButton';
 import { checkValidityNumberType } from '@/helpers/validators';
 import clsx from 'clsx';
 import defaultThumbnail from '@/images/placeholder-image.svg';
+import { stripHtml } from '@/helpers/functions';
 
 export function Post ({
   id,
@@ -54,7 +55,7 @@ export function PostPreview ({ post, onDelete, disabled }) {
           />
           <div className="wpifycf-post-preview__title">
             <a href={post.permalink} target="_blank">
-              {post.id}: {post.title}
+              {post.id}: {stripHtml(post.title)}
             </a>
           </div>
           <div className="wpifycf-post-preview__excerpt">{post.excerpt.length > 125 ? post.excerpt.substring(0, 125) + '...' : post.excerpt}</div>

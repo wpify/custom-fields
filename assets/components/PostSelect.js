@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useDebounce } from '@uidotdev/usehooks';
 import { usePosts } from '@/helpers/hooks';
 import Select from 'react-select';
+import { stripHtml } from '@/helpers/functions';
 
 export function PostSelect ({
   postType,
@@ -19,7 +20,7 @@ export function PostSelect ({
   const { data: options = [], isLoading } = usePosts({
     postType, s: debouncedSearchTerm,
     ensure: [value],
-    select: values => values.map(value => ({ ...value, label: value.title, value: value.id })),
+    select: values => values.map(value => ({ ...value, label: stripHtml(value.title), value: value.id })),
     exclude,
     include,
   });

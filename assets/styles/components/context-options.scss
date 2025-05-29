@@ -12,11 +12,11 @@ form:has([data-context="user"]) {
   }
 
   tr:has(.wpifycf-field--no-label.wpifycf-field--is-root) {
-    th {
+    > thead > th {
       display: none;
     }
 
-    td {
+    > tbody > td {
       padding-left: 0;
       padding-right: 0;
     }
