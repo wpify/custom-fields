@@ -41,7 +41,7 @@ These properties are available for all field types:
 
 #### `options` _(array|callable)_ - Required
 
-An associative array of options where the keys are the values to store and the array values are the labels to display. Alternatively, you can use an array of objects with `value` and `label` properties:
+An associative array of options where the keys are the values to store and the array values are the labels to display. **Please be aware that value must be always string!** Alternatively, you can use an array of objects with `value` and `label` properties:
 
 ```php
 'options' => array(

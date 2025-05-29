@@ -43,8 +43,6 @@ export function Select ({
     setTitle && setTitle(stripHtml(valueOption?.label || ''));
   }, [valueOption, setTitle]);
 
-  console.log(isFetching);
-
   return (
     <SelectControl
       id={id}

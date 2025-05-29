@@ -4,7 +4,6 @@ import { IconButton } from '@/components/IconButton';
 import { Button } from '@/components/Button';
 import { __ } from '@wordpress/i18n';
 import { useMediaLibrary, useAttachment } from '@/helpers/hooks';
-import { addFilter } from '@wordpress/hooks';
 import { checkValidityNonZeroIntegerType } from '@/helpers/validators';
 
 function Attachment ({
@@ -16,9 +15,7 @@ function Attachment ({
   className,
   disabled = false,
   setTitle,
-  ...props
 }) {
-  console.log(props);
   const { attachment, setAttachment } = useAttachment(value);
 
   useEffect(() => {

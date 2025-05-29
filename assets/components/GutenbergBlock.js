@@ -26,10 +26,7 @@ export function GutenbergBlock ({ name, args }) {
   const blockFields = fields.filter(field => field.position !== 'inspector');
   const inspectorFields = fields.filter(field => field.position === 'inspector');
   const { validity, validate, handleValidityChange } = useValidity();
-
   const filteredFields = applyFilters('wpifycf_definition', fields, values, { context: 'gutenberg', name, args });
-
-  console.log(values);
 
   return (
     <div {...props}>
