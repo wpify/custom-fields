@@ -135,13 +135,13 @@ function evaluateCondition (value, condition, expected) {
       case 'between':
         return value >= (expected[0] || -Infinity) && value <= (expected[1] || +Infinity);
       case 'contains':
-        return value.includes(expected);
+        return value?.includes(expected);
       case 'not_contains':
-        return !value.includes(expected);
+        return !value?.includes(expected);
       case 'in':
-        return expected.includes(value);
+        return expected?.includes(value);
       case 'not_in':
-        return !expected.includes(value);
+        return !expected?.includes(value);
       case 'empty':
         return Boolean(value) === false;
       case 'not_empty':

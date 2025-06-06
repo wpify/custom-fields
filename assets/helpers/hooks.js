@@ -447,6 +447,8 @@ export function useValidity ({ form } = {}) {
   const handleSubmit = useCallback((event) => {
     if (validity && Object.values(validity).some(v => v.length > 0)) {
       event.preventDefault();
+      event.target.querySelectorAll('.submitbox input[type="submit"].disabled').forEach(el => el.classList.remove('disabled'));
+      event.target.querySelectorAll('.submitbox .spinner.is-active').forEach(el => el.classList.remove('is-active'));
       setValidate(true);
     } else {
       setValidate(false);
