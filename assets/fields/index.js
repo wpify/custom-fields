@@ -37,6 +37,7 @@ import MultiWeek from './MultiWeek';
 import Number from './Number';
 import Password from './Password';
 import Post from './Post';
+import Radio from './Radio';
 import Range from './Range';
 import Select from './Select';
 import Tel from './Tel';
@@ -90,6 +91,7 @@ export default {
   number: Number,
   password: Password,
   post: Post,
+  radio: Radio,
   range: Range,
   select: Select,
   tel: Tel,

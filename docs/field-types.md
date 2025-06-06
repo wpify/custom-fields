@@ -136,6 +136,7 @@ Array of options that are passed to the field renderer. It can be used to custom
 * [Month](field-types/month.md) `month`
 * [Number](field-types/number.md) `number`
 * [Password](field-types/password.md) `password`
+* [Radio](field-types/radio.md) `radio`
 * [Range](field-types/range.md) `range`
 * [Select](field-types/select.md) `select`
 * [Multi Select](field-types/multi_select.md) `multi_select`

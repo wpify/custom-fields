@@ -374,6 +374,7 @@ class CustomFields {
 					'month',
 					'password',
 					'select',
+					'radio',
 					'tel',
 					'text',
 					'time',
