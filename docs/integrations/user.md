@@ -5,7 +5,7 @@ Add custom fields to WordPress user profiles. This integration allows you to ext
 ## Example
 
 ```php
-wpify_custom_fields()->create_user_fields(
+wpify_custom_fields()->create_user_options(
 	array(
 		'id'    => 'user_profile_fields',
 		'title' => 'Additional Information',

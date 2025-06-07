@@ -5,7 +5,7 @@ Add custom fields to taxonomy terms. This integration allows you to attach custo
 ## Example
 
 ```php
-wpify_custom_fields()->create_taxonomy(
+wpify_custom_fields()->create_taxonomy_options(
 	array(
 		'id'       => 'product_category_fields',
 		'taxonomy' => 'product_cat',

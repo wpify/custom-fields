@@ -12,7 +12,7 @@ The WooCommerce Membership Plan Options integration adds custom fields to WooCom
 ```php
 $custom_fields = new \Wpify\CustomFields\CustomFields();
 
-$custom_fields->create_wc_membership_plan_options(
+$custom_fields->create_membership_plan_options(
 	array(
 		'tab'   => array(
 			'label'    => 'Custom Fields',
@@ -92,7 +92,7 @@ $welcome_message = isset( $custom_fields['welcome_message'] ) ? $custom_fields['
 You can conditionally display fields based on a callback function:
 
 ```php
-$custom_fields->create_wc_membership_plan_options(
+$custom_fields->create_membership_plan_options(
 	array(
 		'tab'     => array(
 			'label' => 'Custom Fields',
@@ -113,7 +113,7 @@ $custom_fields->create_wc_membership_plan_options(
 You can organize your fields into tabs for better user experience:
 
 ```php
-$custom_fields->create_wc_membership_plan_options(
+$custom_fields->create_membership_plan_options(
 	array(
 		'tab'  => array(
 			'label' => 'Custom Fields',
