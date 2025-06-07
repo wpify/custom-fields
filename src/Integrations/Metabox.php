@@ -210,6 +210,9 @@ class Metabox extends ItemsIntegration {
 			return;
 		}
 
+		$post_id = $_POST['ID'] ?? $_POST['post_ID'] ?? $post_id;
+		$post    = get_post( $post_id );
+
 		if ( isset( $_POST['post_type'] ) && ! in_array( $_POST['post_type'], $this->post_types, true ) ) {
 			return;
 		}
