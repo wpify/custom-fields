@@ -259,15 +259,23 @@ class GutenbergBlock extends BaseIntegration {
 			throw new MissingArgumentException( 'name and title are required' );
 		}
 
-		$this->name                  = $args['name'];
-		$this->id                    = $args['id'] ?? sprintf( 'wpifycf_block_%s', sanitize_title( $this->name ) );
-		$this->api_version           = $args['api_version'] ?? '3';
-		$this->title                 = $args['title'];
-		$this->category              = $args['category'] ?? null;
-		$this->parent                = $args['parent'] ?? null;
-		$this->ancestor              = $args['ancestor'] ?? null;
-		$this->allowed_blocks        = $args['allowed_blocks'] ?? null;
-		$this->icon                  = $args['icon'] ?? null;
+		$this->name           = $args['name'];
+		$this->id             = $args['id'] ?? sprintf( 'wpifycf_block_%s', sanitize_title( $this->name ) );
+		$this->api_version    = $args['api_version'] ?? '3';
+		$this->title          = $args['title'];
+		$this->category       = $args['category'] ?? null;
+		$this->parent         = $args['parent'] ?? null;
+		$this->ancestor       = $args['ancestor'] ?? null;
+		$this->allowed_blocks = $args['allowed_blocks'] ?? null;
+
+		if ( ! empty( $args['icon'] ) && file_exists( $args['icon'] ) ) {
+			$this->icon = file_get_contents( $args['icon'] );
+		} elseif ( ! empty( $args['icon'] ) ) {
+			$this->icon = $args['icon'];
+		} else {
+			$this->icon = null;
+		}
+
 		$this->description           = $args['description'] ?? '';
 		$this->keywords              = $args['keywords'] ?? array();
 		$this->textdomain            = $args['textdomain'] ?? null;

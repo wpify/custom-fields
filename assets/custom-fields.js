@@ -52,7 +52,9 @@ import { AppContextProvider } from '@/components/AppContext';
 
     let { icon } = event.detail.args;
 
-    if (!icon) {
+    if (icon && /<svg[^>]*>/gm.test(icon)) {
+      icon = <span dangerouslySetInnerHTML={{ __html: icon }}/>;
+    } else if (!icon) {
       icon = (
         <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
           <path opacity="0.3"

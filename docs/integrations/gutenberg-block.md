@@ -93,8 +93,9 @@ Limits which block types can be inserted as children of this block type.
 
 The URL to the icon to be used for this menu.
 
-- Pass a base64-encoded SVG using a data URI, which will be colored to match the color scheme. This should begin with 'data:image/svg+xml;base64,'.
-- Pass the name of a Dashicons helper class to use a font icon, e.g. 'dashicons-chart-pie'.
+- Absolute path to a SVG icon on the filesystem.
+- String with a SVG icon. This should begin with `<svg`.
+- Name of a Dashicons helper class to use a font icon, e.g. `dashicons-chart-pie`.
 
 ### `$description` *string*
 
