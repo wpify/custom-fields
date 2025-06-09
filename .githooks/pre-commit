@@ -6,6 +6,18 @@ if [ -f vendor/bin/phpcbf ]; then
   vendor/bin/phpcbf -ps .
 fi
 
+# Run PHP Code Sniffer
+if [ -f vendor/bin/phpcs ]; then
+  echo "Running PHP Code Sniffer..."
+  vendor/bin/phpcs --standard=PSR12 --extensions=php --ignore=vendor,build,src,tests .
+  if [ $? -ne 0 ]; then
+    echo "Error: PHP Code Sniffer found issues. Please fix them before committing."
+    exit 1
+  fi
+else
+  echo "PHP Code Sniffer not found. Skipping code sniffing."
+fi
+
 echo "phpcbf completed successfully."
 
 # Run NPM Build
