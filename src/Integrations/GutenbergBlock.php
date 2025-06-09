@@ -269,7 +269,12 @@ class GutenbergBlock extends BaseIntegration {
 		$this->allowed_blocks = $args['allowed_blocks'] ?? null;
 
 		if ( ! empty( $args['icon'] ) && file_exists( $args['icon'] ) ) {
-			$this->icon = file_get_contents( $args['icon'] );
+			global $wp_filesystem;
+			if ( empty( $wp_filesystem ) ) {
+				require_once ABSPATH . 'wp-admin/includes/file.php';
+				WP_Filesystem();
+			}
+			$this->icon = $wp_filesystem->get_contents( $args['icon'] );
 		} elseif ( ! empty( $args['icon'] ) ) {
 			$this->icon = $args['icon'];
 		} else {
