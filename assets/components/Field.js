@@ -12,8 +12,6 @@ import { FieldDescription } from '@/components/FieldDescription';
 import { getFieldComponentByType, maybePortal } from '@/helpers/functions';
 import { AppContext } from '@/components/AppContext';
 
-;
-
 export function Field ({
   type,
   name,
@@ -55,8 +53,10 @@ export function Field ({
       if (nextValue && nextValue !== value) {
         props.onChange(nextValue);
       }
+    } else if (!value && props.default) {
+      props.onChange(props.default);
     }
-  }, [value, generator, props.onChange]);
+  }, [value, generator, props.onChange, props.default]);
 
   const hiddenField = name && (
     <input

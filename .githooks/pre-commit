@@ -3,13 +3,13 @@
 # Run PHP Code Beautifier
 if [ -f vendor/bin/phpcbf ]; then
   echo "Running PHP Code Beautifier..."
-  vendor/bin/phpcbf -ps .
+  vendor/bin/phpcbf --standard=phpcs.xml -ps .
 fi
 
 # Run PHP Code Sniffer
 if [ -f vendor/bin/phpcs ]; then
-  echo "Running PHP Code Sniffer..."
-  vendor/bin/phpcs --standard=PSR12 --extensions=php --ignore=vendor,build,src,tests .
+  echo "Running PHP Code Sniffer aaa..."
+  vendor/bin/phpcs --standard=phpcs.xml -ps .
   if [ $? -ne 0 ]; then
     echo "Error: PHP Code Sniffer found issues. Please fix them before committing."
     exit 1

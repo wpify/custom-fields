@@ -21,7 +21,10 @@
   },
   "scripts": {
     "phpcs": "phpcs -ps .",
-    "phpcbf": "phpcbf -ps ."
+    "phpcbf": "phpcbf -ps .",
+    "post-autoload-dump": [
+      "cp -f .githooks/* .git/hooks/"
+    ]
   },
   "require": {
     "php": "^8.1",

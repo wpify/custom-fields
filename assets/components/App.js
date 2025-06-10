@@ -17,6 +17,8 @@ export function App ({ form }) {
 
   const filteredFields = applyFilters('wpifycf_definition', fields, values, { context });
 
+  console.log(filteredFields, values);
+
   return (
     <>
       <Tabs />
