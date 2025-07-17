@@ -3,7 +3,7 @@ import { useOptions, useOtherFieldValues } from '@/helpers/hooks';
 import { useEffect, useMemo, useState } from 'react';
 import { checkValidityStringType } from '@/helpers/validators';
 import clsx from 'clsx';
-import { stripHtml, processAsyncParams } from '@/helpers/functions'
+import { stripHtml, interpolateFieldValues } from '@/helpers/functions'
 
 export function Select ({
   id,
@@ -20,9 +20,9 @@ export function Select ({
   const [search, setSearch] = useState('');
   const { getValue } = useOtherFieldValues(fieldPath);
 
-  // Process asyncParams to replace placeholders
+  // Interpolate field values into async parameters
   const processedAsyncParams = useMemo(() => {
-    return processAsyncParams(asyncParams, getValue);
+    return interpolateFieldValues(asyncParams, getValue);
   }, [asyncParams, getValue]);
 
   const { data: fetchedOptions, isFetching } = useOptions({

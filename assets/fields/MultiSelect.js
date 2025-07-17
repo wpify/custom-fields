@@ -6,7 +6,7 @@ import { IconButton } from '@/components/IconButton';
 import { checkValidityMultiStringType } from '@/helpers/validators';
 import clsx from 'clsx';
 import { useDebounce } from '@uidotdev/usehooks';
-import { stripHtml, processAsyncParams } from '@/helpers/functions';
+import { stripHtml, interpolateFieldValues } from '@/helpers/functions';
 
 export function MultiSelect ({
   id,
@@ -30,9 +30,9 @@ export function MultiSelect ({
   const [allOptions, setAllOptions] = useState({});
   const { getValue } = useOtherFieldValues(fieldPath);
 
-  // Process asyncParams to replace placeholders
+  // Interpolate field values into async parameters
   const processedAsyncParams = useMemo(() => {
-    return processAsyncParams(asyncParams, getValue);
+    return interpolateFieldValues(asyncParams, getValue);
   }, [asyncParams, getValue]);
 
   const { data, isSuccess, isFetching } = useOptions({

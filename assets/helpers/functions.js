@@ -216,26 +216,34 @@ export function stripHtml(html) {
   return div.textContent || div.innerText || '';
 }
 
-export function processAsyncParams(asyncParams, getValue) {
-  if (!asyncParams || typeof asyncParams !== 'object') {
-    return asyncParams;
+/**
+ * Interpolates field values into template placeholders within an object.
+ * Replaces {{field_path}} placeholders with actual field values.
+ * 
+ * @param {Object} params - Object containing parameters with potential placeholders
+ * @param {Function} getValue - Function to retrieve field values by path
+ * @returns {Object} New object with placeholders replaced by actual values
+ */
+export function interpolateFieldValues(params, getValue) {
+  if (!params || typeof params !== 'object') {
+    return params;
   }
 
-  const processed = {};
-  for (const [key, value] of Object.entries(asyncParams)) {
+  const interpolated = {};
+  for (const [key, value] of Object.entries(params)) {
     if (typeof value === 'string' && value.includes('{{') && value.includes('}}')) {
-      // Extract path from placeholder {{path_to_another_value}}
+      // Extract field path from placeholder {{field_path}}
       const match = value.match(/{{([^}]+)}}/);
       if (match && match[1]) {
         const fieldPath = match[1];
         const fieldValue = getValue(fieldPath);
-        processed[key] = value.replace(/{{[^}]+}}/g, fieldValue || '');
+        interpolated[key] = value.replace(/{{[^}]+}}/g, fieldValue || '');
       } else {
-        processed[key] = value;
+        interpolated[key] = value;
       }
     } else {
-      processed[key] = value;
+      interpolated[key] = value;
     }
   }
-  return processed;
+  return interpolated;
 }
