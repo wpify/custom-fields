@@ -93,6 +93,77 @@ The function should return the option that is currently selected (value) and opt
 
 Additional parameters to pass to the API when fetching options with `options_key`. Useful for filtering or customizing the returned options.
 
+The `async_params` support dynamic value replacement using placeholders. You can reference values from other fields using the `{{field_path}}` syntax:
+
+```php
+'product_type' => array(
+    'type' => 'select',
+    'id' => 'product_type',
+    'label' => 'Product Type',
+    'options' => array(
+        'physical' => 'Physical Product',
+        'digital' => 'Digital Product',
+        'service' => 'Service',
+    ),
+),
+'product_features' => array(
+    'type' => 'multi_select',
+    'id' => 'product_features',
+    'label' => 'Product Features',
+    'options' => 'get_product_features',
+    'async_params' => array(
+        'type' => '{{product_type}}', // Will be replaced with the value from product_type field
+    ),
+),
+```
+
+In this example, when the user selects a product type, the multi-select field for features will automatically update its available options based on the selected type.
+
+**Field Path Syntax:**
+
+The field path syntax follows the same rules as described in the [Conditions documentation](../features/conditions.md#field-path-references):
+
+- Use dot notation for nested fields: `{{parent_field.nested_field}}`
+- Use `#` for relative references: `{{#.sibling_field}}` (references a sibling field)
+- Use multiple `#` for parent levels: `{{##.parent_sibling_field}}`
+- Access array elements: `{{my_multi_field[0]}}`
+
+**Example with Complex Filtering:**
+
+```php
+'product_settings' => array(
+    'type' => 'group',
+    'id' => 'product_settings',
+    'items' => array(
+        'category' => array(
+            'type' => 'select',
+            'id' => 'category',
+            'label' => 'Category',
+            'options' => 'get_categories',
+        ),
+        'brand' => array(
+            'type' => 'select',
+            'id' => 'brand',
+            'label' => 'Brand',
+            'options' => 'get_brands',
+        ),
+        'available_tags' => array(
+            'type' => 'multi_select',
+            'id' => 'available_tags',
+            'label' => 'Available Tags',
+            'options' => 'get_product_tags',
+            'async_params' => array(
+                'category' => '{{#.category}}', // References category in the same group
+                'brand' => '{{#.brand}}',       // References brand in the same group
+                'store_id' => '{{store_info.id}}', // References a field outside the group
+            ),
+        ),
+    ),
+),
+```
+
+This feature is particularly useful for creating dependent select fields where the available options in one field depend on the selections made in other fields.
+
 ## Stored Value
 
 The field stores an array of selected option values in the database. For example:

@@ -5,8 +5,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { get, post } from '@/helpers/api.js';
 import { useSelect } from '@wordpress/data';
 import '@wordpress/core-data';
-import { evaluateConditions } from '@/helpers/functions';
-import { AppContext } from '@/components/AppContext';;
+import { evaluateConditions, getValueByPath } from '@/helpers/functions';
+import { AppContext } from '@/components/AppContext';
 
 export function useSortableList ({ containerRef, draggable, handle, items, setItems, disabled = false }) {
   const onEnd = useCallback((event) => {
@@ -484,4 +484,12 @@ export function useConditions ({ conditions = [], fieldPath = '' }) {
 
     return evaluateConditions(values, conditions, fieldPath);
   }, [conditions, values, fieldPath]);
+}
+
+export function useOtherFieldValues(fieldPath) {
+  const { values } = useContext(AppContext);
+
+  const getValue = useCallback((path) => getValueByPath(values, path, fieldPath), [fieldPath, values]);
+
+  return { values, getValue };
 }

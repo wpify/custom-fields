@@ -1,7 +1,6 @@
 import { applyFilters } from '@wordpress/hooks';
 import { ErrorBoundary } from 'react-error-boundary';
 import { __, sprintf } from '@wordpress/i18n';
-import { Text } from '@/fields/Text.js';
 import { Label } from '@/components/Label';
 import clsx from 'clsx';
 import { useConditions } from '@/helpers/hooks';

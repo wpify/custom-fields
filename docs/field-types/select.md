@@ -91,6 +91,77 @@ The function should return the option that is currently selected (value) and opt
 
 Additional parameters to pass to the API when fetching options with `options_key`. Useful for filtering or customizing the returned options.
 
+The `async_params` support dynamic value replacement using placeholders. You can reference values from other fields using the `{{field_path}}` syntax:
+
+```php
+'category_select' => array(
+    'type' => 'select',
+    'id' => 'category',
+    'label' => 'Category',
+    'options' => array(
+        'products' => 'Products',
+        'services' => 'Services',
+        'resources' => 'Resources',
+    ),
+),
+'subcategory_select' => array(
+    'type' => 'select',
+    'id' => 'subcategory',
+    'label' => 'Subcategory',
+    'options' => 'get_subcategories',
+    'async_params' => array(
+        'category' => '{{category}}', // Will be replaced with the value from category field
+    ),
+),
+```
+
+In this example, when the user selects a category, the subcategory select field will automatically update its options based on the selected category value.
+
+**Field Path Syntax:**
+
+The field path syntax follows the same rules as described in the [Conditions documentation](../features/conditions.md#field-path-references):
+
+- Use dot notation for nested fields: `{{parent_field.nested_field}}`
+- Use `#` for relative references: `{{#.sibling_field}}` (references a sibling field)
+- Use multiple `#` for parent levels: `{{##.parent_sibling_field}}`
+- Access array elements: `{{my_multi_field[0]}}`
+
+**Example with Nested Fields:**
+
+```php
+'group_field' => array(
+    'type' => 'group',
+    'id' => 'location_group',
+    'items' => array(
+        'country' => array(
+            'type' => 'select',
+            'id' => 'country',
+            'label' => 'Country',
+            'options' => 'get_countries',
+        ),
+        'state' => array(
+            'type' => 'select',
+            'id' => 'state',
+            'label' => 'State/Province',
+            'options' => 'get_states',
+            'async_params' => array(
+                'country' => '{{#.country}}', // References the country field in the same group
+            ),
+        ),
+        'city' => array(
+            'type' => 'select',
+            'id' => 'city',
+            'label' => 'City',
+            'options' => 'get_cities',
+            'async_params' => array(
+                'country' => '{{#.country}}',
+                'state' => '{{#.state}}',
+            ),
+        ),
+    ),
+),
+```
+
 ## Stored Value
 
 The field stores the value (key) of the selected option as a string in the database.

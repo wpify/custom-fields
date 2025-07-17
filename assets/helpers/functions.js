@@ -215,3 +215,27 @@ export function stripHtml(html) {
   div.innerHTML = html;
   return div.textContent || div.innerText || '';
 }
+
+export function processAsyncParams(asyncParams, getValue) {
+  if (!asyncParams || typeof asyncParams !== 'object') {
+    return asyncParams;
+  }
+
+  const processed = {};
+  for (const [key, value] of Object.entries(asyncParams)) {
+    if (typeof value === 'string' && value.includes('{{') && value.includes('}}')) {
+      // Extract path from placeholder {{path_to_another_value}}
+      const match = value.match(/{{([^}]+)}}/);
+      if (match && match[1]) {
+        const fieldPath = match[1];
+        const fieldValue = getValue(fieldPath);
+        processed[key] = value.replace(/{{[^}]+}}/g, fieldValue || '');
+      } else {
+        processed[key] = value;
+      }
+    } else {
+      processed[key] = value;
+    }
+  }
+  return processed;
+}

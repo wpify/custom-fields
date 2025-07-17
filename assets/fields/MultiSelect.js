@@ -1,12 +1,12 @@
 import { addFilter } from '@wordpress/hooks';
 import { Select as SelectControl } from '@/components/Select.js';
-import { useMulti, useOptions } from '@/helpers/hooks';
+import { useMulti, useOptions, useOtherFieldValues } from '@/helpers/hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { IconButton } from '@/components/IconButton';
 import { checkValidityMultiStringType } from '@/helpers/validators';
 import clsx from 'clsx';
 import { useDebounce } from '@uidotdev/usehooks';
-import { stripHtml } from '@/helpers/functions';
+import { stripHtml, processAsyncParams } from '@/helpers/functions';
 
 export function MultiSelect ({
   id,
@@ -17,6 +17,7 @@ export function MultiSelect ({
   className,
   disabled,
   async_params: asyncParams = {},
+  fieldPath,
 }) {
   useEffect(() => {
     if (!Array.isArray(value)) {
@@ -27,6 +28,12 @@ export function MultiSelect ({
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 300);
   const [allOptions, setAllOptions] = useState({});
+  const { getValue } = useOtherFieldValues(fieldPath);
+
+  // Process asyncParams to replace placeholders
+  const processedAsyncParams = useMemo(() => {
+    return processAsyncParams(asyncParams, getValue);
+  }, [asyncParams, getValue]);
 
   const { data, isSuccess, isFetching } = useOptions({
     optionsKey,
@@ -34,7 +41,7 @@ export function MultiSelect ({
     initialData: options,
     search: debouncedSearch,
     value,
-    ...asyncParams,
+    ...processedAsyncParams,
   });
 
   useEffect(() => {
