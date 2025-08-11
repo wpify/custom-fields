@@ -237,8 +237,8 @@ class Metabox extends ItemsIntegration {
 	public function register_meta(): void {
 		$items = $this->normalize_items( $this->items );
 
-		foreach ( $items as $item ) {
-			foreach ( $this->post_types as $post_type ) {
+		foreach ( $this->post_types as $post_type ) {
+			foreach ( $items as $item ) {
 				register_post_meta(
 					$post_type,
 					$item['id'],
@@ -251,8 +251,8 @@ class Metabox extends ItemsIntegration {
 						'show_in_rest'      => false,
 					),
 				);
-				add_action( 'wpifycf_register_post_meta', $items, $post_type );
 			}
+			add_action( 'wpifycf_register_post_meta', $items, $post_type );
 		}
 	}
 

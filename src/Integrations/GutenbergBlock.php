@@ -331,7 +331,14 @@ class GutenbergBlock extends BaseIntegration {
 		}
 
 		register_block_type( $this->name, $args );
-		do_action( 'wpifycf_register_block', $this->name, $args );
+		do_action(
+			'wpifycf_register_block',
+			$this->name,
+			array(
+				...$args,
+				'items' => $this->normalize_items( $this->items ),
+			)
+		);
 	}
 
 	/**
