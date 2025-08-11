@@ -331,6 +331,7 @@ class GutenbergBlock extends BaseIntegration {
 		}
 
 		register_block_type( $this->name, $args );
+		do_action( 'wpify_custom_fields_register_block', $this->name, $args );
 	}
 
 	/**
