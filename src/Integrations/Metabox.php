@@ -251,7 +251,7 @@ class Metabox extends ItemsIntegration {
 						'show_in_rest'      => false,
 					),
 				);
-				add_action( 'wpify_custom_fields_register_post_meta', $items, $post_type );
+				add_action( 'wpifycf_register_post_meta', $items, $post_type );
 			}
 		}
 	}
