@@ -52,7 +52,7 @@ export function Field ({
       if (nextValue && nextValue !== value) {
         props.onChange(nextValue);
       }
-    } else if (!value && props.default) {
+    } else if ((typeof value === 'undefined' || value === null) && props.default) {
       props.onChange(props.default);
     }
   }, [value, generator, props.onChange, props.default]);
