@@ -190,6 +190,8 @@ function TinyMCE ({ htmlId, value, onChange, height, disabled }) {
       tinymce: {
         ...settings,
         height,
+        toolbar1: 'formatselect,bold,italic,underline,strikethrough,bullist,numlist,blockquote,hr,alignleft,aligncenter,alignright,link,unlink,wp_add_media,wp_more,spellchecker,fullscreen,wp_adv',
+        toolbar2: 'fontsizeselect,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help',
         setup (editor) {
           editorRef.current = editor;
           setEditor(editor);
