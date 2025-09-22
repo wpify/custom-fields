@@ -1,4 +1,9 @@
 .wpifycf-field-text {
   width: 100%;
   max-width: 60em;
+
+  &__counter {
+    display: inline-block;
+    margin-left: 0.5rem;
+  }
 }

@@ -11,10 +11,12 @@ export function Text ({
   attributes = {},
   className,
   disabled = false,
+  counter = false,
 }) {
   const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
 
   return (
+    <>
     <input
       type="text"
       id={htmlId}
@@ -24,6 +26,10 @@ export function Text ({
       disabled={disabled}
       {...attributes}
     />
+      {counter && (
+        <span className="wpifycf-field-text__counter">{String(value).length}</span>
+      )}
+    </>
   );
 }
 
