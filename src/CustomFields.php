@@ -11,6 +11,7 @@ use Closure;
 use stdClass;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 use Wpify\CustomFields\Integrations\Comment;
+use Wpify\CustomFields\Integrations\CouponOptions;
 use Wpify\CustomFields\Integrations\GutenbergBlock;
 use Wpify\CustomFields\Integrations\MenuItem;
 use Wpify\CustomFields\Integrations\Metabox;
@@ -111,6 +112,18 @@ class CustomFields {
 	 */
 	public function create_product_variation_options( array $args ): ProductVariationOptions {
 		return new ProductVariationOptions( $args, $this );
+	}
+
+	/**
+	 * Creates custom fields in WooCommerce Coupon Options.
+	 *
+	 * @param array $args An associative array of arguments for configuring the product options.
+	 *
+	 * @return CouponOptions An instance of the ProductOptions class configured with the provided arguments.
+	 * @throws MissingArgumentException Missing arguments.
+	 */
+	public function create_coupon_options( array $args ): CouponOptions {
+		return new CouponOptions( $args, $this );
 	}
 
 	/**
