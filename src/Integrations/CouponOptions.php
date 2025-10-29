@@ -208,11 +208,11 @@ class CouponOptions extends ItemsIntegration {
 		);
 
 		if ( ! defined( 'WP_CLI' ) || false === WP_CLI ) {
-            add_filter('woocommerce_coupon_data_tabs', array($this, 'woocommerce_coupon_data_tabs'), 98);
-            add_action('woocommerce_coupon_data_panels', array($this, 'render_data_panels'));
-            add_action('woocommerce_coupon_options_' . $this->tab['target'] ?? $this->tab['id'], array($this, 'render'));
-            add_action('woocommerce_coupon_options_save', array($this, 'save'));
-            add_action('init', array($this, 'register_meta'), $this->hook_priority);
+			add_filter( 'woocommerce_coupon_data_tabs', array( $this, 'woocommerce_coupon_data_tabs' ), 98 );
+			add_action( 'woocommerce_coupon_data_panels', array( $this, 'render_data_panels' ) );
+			add_action( 'woocommerce_coupon_options_' . $this->tab['target'] ?? $this->tab['id'], array( $this, 'render' ) );
+			add_action( 'woocommerce_coupon_options_save', array( $this, 'save' ) );
+			add_action( 'init', array( $this, 'register_meta' ), $this->hook_priority );
 		}
 	}
 
@@ -263,7 +263,7 @@ class CouponOptions extends ItemsIntegration {
 		<div id="<?php echo esc_attr( $this->tab['target'] ); ?>" class="panel woocommerce_options_panel">
 			<?php
 			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
-            do_action('woocommerce_coupon_options_' . $this->tab['target']);
+			do_action( 'woocommerce_coupon_options_' . $this->tab['target'] );
 			?>
 		</div>
 		<?php
@@ -317,7 +317,7 @@ class CouponOptions extends ItemsIntegration {
 	 * @return bool|WC_Coupon|null The WooCommerce product object if found, false if the ID is invalid, or null if the product is not found.
 	 */
 	public function get_coupon(): bool|WC_Coupon|null {
-        return new WC_Coupon($this->get_item_id());
+		return new WC_Coupon( $this->get_item_id() );
 	}
 
 	/**
