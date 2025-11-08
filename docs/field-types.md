@@ -153,6 +153,8 @@ Array of options that are passed to the field renderer. It can be used to custom
 
 * [Attachment](field-types/attachment.md) `attachment`
 * [Multi Attachment (gallery)](field-types/multi_attachment.md) `multi_attachment`
+* [Direct File](field-types/direct-file.md) `direct_file`
+* [Multi Direct File](field-types/direct-file.md) `multi_direct_file`
 * [Link](field-types/link.md) `link`
 * [Multi Link](field-types/multi_link.md) `multi_link`
 * [Post](field-types/post.md) `post`

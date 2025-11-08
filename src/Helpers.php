@@ -194,4 +194,172 @@ class Helpers {
 
 		return $json ? $json : '';
 	}
+
+	/**
+	 * Gets the temporary directory for direct file uploads.
+	 *
+	 * @return string The absolute path to the temp directory.
+	 */
+	public function get_direct_file_temp_dir(): string {
+		$upload_dir = wp_upload_dir();
+		return trailingslashit( $upload_dir['basedir'] ) . 'wpifycf-temp';
+	}
+
+	/**
+	 * Sanitizes and resolves directory path (relative or absolute).
+	 *
+	 * @param string $directory The directory path from field definition.
+	 *
+	 * @return string The absolute, sanitized directory path.
+	 */
+	public function sanitize_directory_path( string $directory ): string {
+		// Remove any traversal attempts.
+		$directory = str_replace( array( '../', '..' ), '', $directory );
+
+		// If path is absolute, use it as-is.
+		if ( path_is_absolute( $directory ) ) {
+			return trailingslashit( $directory );
+		}
+
+		// Otherwise, treat as relative to ABSPATH.
+		return trailingslashit( ABSPATH ) . trailingslashit( $directory );
+	}
+
+	/**
+	 * Generates a unique filename by appending -n if file exists and replace is false.
+	 *
+	 * @param string $directory The target directory.
+	 * @param string $filename The desired filename.
+	 * @param bool   $replace Whether to replace existing files.
+	 *
+	 * @return string The final filename (unique if replace is false).
+	 */
+	public function generate_unique_filename( string $directory, string $filename, bool $replace = false ): string {
+		if ( $replace ) {
+			return $filename;
+		}
+
+		return wp_unique_filename( $directory, $filename );
+	}
+
+	/**
+	 * Moves a file from temp directory to target directory.
+	 *
+	 * @param string $temp_path The temporary file path.
+	 * @param string $target_directory The target directory.
+	 * @param string $filename The desired filename.
+	 * @param bool   $replace_existing Whether to replace existing files.
+	 *
+	 * @return string|false The absolute path to the moved file, or false on failure.
+	 */
+	public function move_temp_to_directory( string $temp_path, string $target_directory, string $filename, bool $replace_existing = false ) {
+		// Ensure target directory exists.
+		if ( ! file_exists( $target_directory ) ) {
+			if ( ! wp_mkdir_p( $target_directory ) ) {
+				return false;
+			}
+		}
+
+		// Check if temp file exists.
+		if ( ! file_exists( $temp_path ) ) {
+			return false;
+		}
+
+		// Generate final filename.
+		$final_filename = $this->generate_unique_filename( $target_directory, $filename, $replace_existing );
+		$target_path    = trailingslashit( $target_directory ) . $final_filename;
+
+		// If replacing and file exists, delete it first.
+		if ( $replace_existing && file_exists( $target_path ) ) {
+			wp_delete_file( $target_path );
+		}
+
+		// Move file from temp to target.
+		if ( rename( $temp_path, $target_path ) ) {
+			return $target_path;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Deletes a direct file from the filesystem.
+	 *
+	 * @param string $file_path The absolute path to the file.
+	 *
+	 * @return bool True on success, false on failure.
+	 */
+	public function delete_direct_file( string $file_path ): bool {
+		if ( ! file_exists( $file_path ) ) {
+			return false;
+		}
+
+		return wp_delete_file( $file_path );
+	}
+
+	/**
+	 * Extracts filename from a file path.
+	 *
+	 * @param string $file_path The file path.
+	 *
+	 * @return string The filename.
+	 */
+	public function get_filename_from_path( string $file_path ): string {
+		return basename( $file_path );
+	}
+
+	/**
+	 * Cleans up old temporary files from the temp directory.
+	 *
+	 * Deletes files older than the age threshold (default 24 hours).
+	 * The age threshold can be filtered using 'wpifycf_temp_file_age_threshold'.
+	 *
+	 * @return int Number of files deleted.
+	 */
+	public function cleanup_temp_files(): int {
+		$temp_dir = $this->get_direct_file_temp_dir();
+
+		// Skip if directory doesn't exist.
+		if ( ! is_dir( $temp_dir ) ) {
+			return 0;
+		}
+
+		// Get age threshold in seconds (default 24 hours).
+		$age_threshold = apply_filters( 'wpifycf_temp_file_age_threshold', DAY_IN_SECONDS );
+		$cutoff_time   = time() - $age_threshold;
+		$deleted_count = 0;
+
+		// Get all files in temp directory.
+		$files = glob( trailingslashit( $temp_dir ) . '*' );
+
+		if ( ! is_array( $files ) ) {
+			return 0;
+		}
+
+		foreach ( $files as $file ) {
+			// Skip if not a file.
+			if ( ! is_file( $file ) ) {
+				continue;
+			}
+
+			// Get file modification time.
+			$file_mtime = filemtime( $file );
+
+			if ( false === $file_mtime ) {
+				continue;
+			}
+
+			// Delete if older than threshold.
+			if ( $file_mtime < $cutoff_time ) {
+				if ( wp_delete_file( $file ) ) {
+					$deleted_count++;
+				} else {
+					// Log error but continue processing.
+					error_log( sprintf( '[wpify-custom-fields] Failed to delete temp file: %s', $file ) );
+				}
+			}
+		}
+
+		return $deleted_count;
+	}
 }

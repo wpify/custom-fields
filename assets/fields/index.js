@@ -5,6 +5,7 @@ import Code from './Code';
 import Color from './Color';
 import Date from './Date';
 import Datetime from './Datetime';
+import DirectFile from './DirectFile';
 import Email from './Email';
 import Group from './Group';
 import Hidden from './Hidden';
@@ -18,6 +19,7 @@ import MultiButton from './MultiButton';
 import MultiCheckbox from './MultiCheckbox';
 import MultiDate from './MultiDate';
 import MultiDatetime from './MultiDatetime';
+import MultiDirectFile from './MultiDirectFile';
 import MultiEmail from './MultiEmail';
 import MultiGroup from './MultiGroup';
 import MultiLink from './MultiLink';
@@ -59,6 +61,7 @@ export default {
   color: Color,
   date: Date,
   datetime: Datetime,
+  direct_file: DirectFile,
   email: Email,
   group: Group,
   hidden: Hidden,
@@ -72,6 +75,7 @@ export default {
   multi_checkbox: MultiCheckbox,
   multi_date: MultiDate,
   multi_datetime: MultiDatetime,
+  multi_direct_file: MultiDirectFile,
   multi_email: MultiEmail,
   multi_group: MultiGroup,
   multi_link: MultiLink,

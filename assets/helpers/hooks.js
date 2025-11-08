@@ -409,6 +409,70 @@ export function useMapyCzApiKey () {
   };
 }
 
+export function useDirectFileUpload() {
+  const { config } = useContext(AppContext);
+
+  const mutation = useMutation({
+    mutationFn: async ({ file, fieldId, onProgress }) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      if (fieldId) {
+        formData.append('field_id', fieldId);
+      }
+
+      // Use XHR for progress tracking
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+
+        xhr.upload.addEventListener('progress', (e) => {
+          if (e.lengthComputable && onProgress) {
+            const percentComplete = (e.loaded / e.total) * 100;
+            onProgress(percentComplete);
+          }
+        });
+
+        xhr.addEventListener('load', () => {
+          if (xhr.status === 200) {
+            try {
+              resolve(JSON.parse(xhr.responseText));
+            } catch (e) {
+              reject(new Error('Invalid response from server'));
+            }
+          } else {
+            try {
+              const response = JSON.parse(xhr.responseText);
+              reject(new Error(response.message || 'Upload failed'));
+            } catch (e) {
+              reject(new Error('Upload failed'));
+            }
+          }
+        });
+
+        xhr.addEventListener('error', () => {
+          reject(new Error('Upload failed'));
+        });
+
+        xhr.open('POST', window.wpApiSettings.root + config.api_path + '/direct-file-upload');
+        xhr.setRequestHeader('X-WP-Nonce', window.wpApiSettings.nonce);
+        xhr.send(formData);
+      });
+    },
+  });
+
+  return mutation;
+}
+
+export function useDirectFileInfo(filePath) {
+  const { config } = useContext(AppContext);
+
+  return useQuery({
+    queryKey: ['direct-file-info', filePath],
+    queryFn: () => get(config.api_path + '/direct-file-info', { file_path: filePath }),
+    enabled: !!config.api_path && !!filePath && typeof filePath === 'string' && filePath !== '',
+    ...defaultQueryOptions,
+  });
+}
+
 export function useMapyCzSuggestions ({ query, apiKey, limit = 10, lang = 'en' }) {
   return useQuery({
     queryKey: ['mapycz-suggestions', query],

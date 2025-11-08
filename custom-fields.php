@@ -39,3 +39,14 @@ if ( ! function_exists( 'wpify_custom_fields' ) ) {
 		return $plugin;
 	}
 }
+
+/**
+ * Plugin deactivation hook.
+ *
+ * Clears the scheduled cron event for temp file cleanup.
+ * Only runs when the standalone plugin is deactivated,
+ * not when the library is used as a Composer dependency.
+ */
+register_deactivation_hook( __FILE__, function() {
+	wp_clear_scheduled_hook( 'wpifycf_cleanup_temp_files' );
+} );

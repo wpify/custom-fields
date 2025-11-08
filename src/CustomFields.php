@@ -10,6 +10,7 @@ namespace Wpify\CustomFields;
 use Closure;
 use stdClass;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
+use Wpify\CustomFields\Fields\DirectFileField;
 use Wpify\CustomFields\Integrations\Comment;
 use Wpify\CustomFields\Integrations\CouponOptions;
 use Wpify\CustomFields\Integrations\GutenbergBlock;
@@ -48,11 +49,20 @@ class CustomFields {
 	public readonly Api $api;
 
 	/**
+	 * DirectFileField class.
+	 *
+	 * @var DirectFileField
+	 */
+	public readonly DirectFileField $direct_file_field;
+
+	/**
 	 * Custom fields constructor.
 	 */
 	public function __construct() {
-		$this->helpers = new Helpers();
-		$this->api     = new Api( $this, $this->helpers );
+		$this->helpers           = new Helpers();
+		$this->api               = new Api( $this, $this->helpers );
+		$this->direct_file_field = new DirectFileField( $this );
+		$this->init_temp_cleanup();
 	}
 
 	/**
@@ -363,11 +373,12 @@ class CustomFields {
 		 * Sanitizes the value based on the specified item type.
 		 *
 		 * @param mixed $value The value to be sanitized.
+		 * @param mixed $previous_value The previous stored value.
 		 *
 		 * @return mixed The sanitized value.
 		 */
-		return function ( mixed $value ) use ( $item ): mixed {
-			$original_value = $value;
+		return function ( mixed $value, mixed $previous_value = null ) use ( $item ): mixed {
+			$original_value = $previous_value ?? $value;
 
 			if ( isset( $item['unfiltered'] ) && true === $item['unfiltered'] ) {
 				$sanitized_value = $value;
@@ -441,9 +452,12 @@ class CustomFields {
 						$sanitized_value[] = sanitize_text_field( $sub_value );
 					}
 				}
+			} elseif ( in_array( $item['type'], array( 'direct_file', 'multi_direct_file' ), true ) ) {
+				$sanitized_value = $value;
 			} elseif ( str_starts_with( $item['type'], 'multi_' ) ) {
 				$single_type     = substr( $item['type'], strlen( 'multi_' ) );
 				$value           = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
+				$original_value  = is_string( $original_value ) ? json_decode( $original_value, true ) : (array) $original_value;
 				$sanitized_value = array();
 				foreach ( $value as $sub_key => $sub_value ) {
 					$sanitized_value[ $sub_key ] = $this->sanitize_item_value(
@@ -451,7 +465,7 @@ class CustomFields {
 							...$item,
 							'type' => $single_type,
 						),
-					)( $sub_value );
+					)( $sub_value, $original_value[ $sub_key ] ?? null );
 				}
 			} else {
 				$sanitized_value = sanitize_textarea_field( $value );
@@ -475,7 +489,10 @@ class CustomFields {
 			$next_value = is_array( $previous_value ) ? $previous_value : array();
 			foreach ( $items as $item ) {
 				if ( isset( $value[ $item['id'] ] ) ) {
-					$next_value[ $item['id'] ] = $this->sanitize_item_value( $item )( $value[ $item['id'] ] );
+					$next_value[ $item['id'] ] = $this->sanitize_item_value( $item )(
+						$value[ $item['id'] ],
+						$previous_value[ $item['id'] ] ?? null
+					);
 				}
 			}
 
@@ -544,5 +561,23 @@ class CustomFields {
 		}
 
 		return apply_filters( 'wpifycf_default_value_' . $item['type'], $default_value, $item );
+	}
+
+	/**
+	 * Initializes the temporary file cleanup system.
+	 *
+	 * Schedules a WordPress cron job to clean up old temporary files.
+	 * This method ensures the cron is only scheduled once (singleton pattern).
+	 *
+	 * @return void
+	 */
+	private function init_temp_cleanup(): void {
+		// Schedule cleanup cron if not already scheduled.
+		if ( ! wp_next_scheduled( 'wpifycf_cleanup_temp_files' ) ) {
+			wp_schedule_event( time(), 'twicedaily', 'wpifycf_cleanup_temp_files' );
+		}
+
+		// Register cleanup callback.
+		add_action( 'wpifycf_cleanup_temp_files', array( $this->helpers, 'cleanup_temp_files' ) );
 	}
 }

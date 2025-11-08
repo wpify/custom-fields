@@ -78,6 +78,24 @@ class Api {
 			WP_REST_Server::READABLE,
 			fn() => get_option( 'mapy_cz_api_key' ),
 		);
+
+		$this->register_rest_route(
+			'direct-file-upload',
+			WP_REST_Server::CREATABLE,
+			array( $this, 'handle_direct_file_upload' ),
+			array(
+				'field_id' => array( 'required' => false ),
+			),
+		);
+
+		$this->register_rest_route(
+			'direct-file-info',
+			WP_REST_Server::READABLE,
+			array( $this, 'handle_direct_file_info' ),
+			array(
+				'file_path' => array( 'required' => true ),
+			),
+		);
 	}
 
 	/**
@@ -119,5 +137,103 @@ class Api {
 	 */
 	public function permissions_callback(): bool {
 		return current_user_can( 'edit_posts' );
+	}
+
+	/**
+	 * Handles direct file upload to temporary directory.
+	 *
+	 * @param WP_REST_Request $request The REST request object.
+	 *
+	 * @return array|\WP_Error Response array with temp_path or WP_Error on failure.
+	 */
+	public function handle_direct_file_upload( WP_REST_Request $request ) {
+		// Check if file was uploaded.
+		if ( empty( $_FILES['file'] ) ) {
+			return new \WP_Error( 'no_file', __( 'No file was uploaded.', 'wpify-custom-fields' ), array( 'status' => 400 ) );
+		}
+
+		$file = $_FILES['file'];
+
+		// Check for upload errors.
+		if ( $file['error'] !== UPLOAD_ERR_OK ) {
+			return new \WP_Error( 'upload_error', __( 'File upload failed.', 'wpify-custom-fields' ), array( 'status' => 400 ) );
+		}
+
+		// Validate file size.
+		$max_upload_size = wp_max_upload_size();
+		if ( $file['size'] > $max_upload_size ) {
+			return new \WP_Error(
+				'file_too_large',
+				sprintf(
+					/* translators: %s: maximum file size */
+					__( 'File size exceeds maximum allowed size of %s.', 'wpify-custom-fields' ),
+					size_format( $max_upload_size )
+				),
+				array( 'status' => 400 )
+			);
+		}
+
+		// Sanitize filename.
+		$filename = sanitize_file_name( $file['name'] );
+
+		// Get temp directory.
+		$temp_dir = $this->helpers->get_direct_file_temp_dir();
+
+		// Ensure temp directory exists.
+		if ( ! file_exists( $temp_dir ) ) {
+			if ( ! wp_mkdir_p( $temp_dir ) ) {
+				return new \WP_Error( 'directory_creation_failed', __( 'Failed to create temporary directory.', 'wpify-custom-fields' ), array( 'status' => 500 ) );
+			}
+		}
+
+		// Generate unique filename to prevent conflicts.
+		$unique_filename = wp_unique_filename( $temp_dir, $filename );
+		$temp_path       = trailingslashit( $temp_dir ) . $unique_filename;
+
+		// Move uploaded file to temp directory.
+		if ( ! move_uploaded_file( $file['tmp_name'], $temp_path ) ) {
+			return new \WP_Error( 'move_failed', __( 'Failed to save uploaded file.', 'wpify-custom-fields' ), array( 'status' => 500 ) );
+		}
+
+		// Return temp path and metadata.
+		return array(
+			'temp_path' => $temp_path,
+			'filename'  => $unique_filename,
+			'size'      => $file['size'],
+			'type'      => $file['type'],
+		);
+	}
+
+	/**
+	 * Handles retrieving file information for a direct file.
+	 *
+	 * @param WP_REST_Request $request The REST API request object.
+	 *
+	 * @return array|\WP_Error File information or error.
+	 */
+	public function handle_direct_file_info( WP_REST_Request $request ) {
+		$file_path = $request->get_param( 'file_path' );
+
+		if ( empty( $file_path ) ) {
+			return new \WP_Error( 'no_file_path', __( 'No file path provided.', 'wpify-custom-fields' ), array( 'status' => 400 ) );
+		}
+
+		// Sanitize the file path.
+		$file_path = sanitize_text_field( $file_path );
+
+		// Check if file exists.
+		if ( ! file_exists( $file_path ) ) {
+			return new \WP_Error( 'file_not_found', __( 'File not found.', 'wpify-custom-fields' ), array( 'status' => 404 ) );
+		}
+
+		// Get file information.
+		$filesize = filesize( $file_path );
+		$filetype = wp_check_filetype( $file_path );
+
+		return array(
+			'size'     => $filesize,
+			'type'     => $filetype['type'],
+			'filename' => basename( $file_path ),
+		);
 	}
 }
