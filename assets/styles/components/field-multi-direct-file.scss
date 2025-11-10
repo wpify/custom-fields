@@ -1,0 +1,137 @@
+.wpifycf-field-multi-direct-file {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wpifycf-gap-2);
+
+  .wpifycf-button__add {
+    margin-bottom: var(--wpifycf-gap-1);
+    align-self: flex-start;
+  }
+}
+
+.wpifycf-multi-direct-file-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wpifycf-gap-2);
+  user-select: none;
+}
+
+.wpifycf-multi-direct-file-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: move;
+
+  &--uploading {
+    cursor: default;
+  }
+
+  &__sort {
+    flex-shrink: 0;
+    cursor: move;
+    display: flex;
+    align-items: center;
+
+    .wpifycf-sort {
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+
+    &:hover .wpifycf-sort {
+      opacity: 1;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .wpifycf-direct-file-uploading {
+      padding: 0;
+      border-radius: 4px;
+    }
+
+    .wpifycf-direct-file-info {
+      padding: 0;
+      border-radius: 4px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      flex: 1;
+
+      svg {
+        fill: #50575e;
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+    }
+
+    .wpifycf-direct-file-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .wpifycf-direct-file-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .wpifycf-direct-file-name {
+      color: #2271b1;
+      font-size: 13px;
+      font-weight: 500;
+      word-break: break-all;
+
+      &--link {
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .wpifycf-direct-file-path {
+      display: block;
+      color: #50575e;
+      font-size: 11px;
+      font-family: monospace;
+      word-break: break-all;
+      opacity: 0.8;
+    }
+
+    .wpifycf-direct-file-size {
+      display: block;
+      color: #50575e;
+      font-size: 11px;
+      opacity: 0.7;
+      font-weight: 500;
+    }
+  }
+
+  &__actions {
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-start;
+
+    .wpifycf-icon-button {
+      padding: 0;
+      display: block;
+    }
+
+    .wpifycf-icon-button svg {
+      margin-top: 0;
+      display: block;
+    }
+  }
+}

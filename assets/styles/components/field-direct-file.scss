@@ -12,8 +12,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
-		padding: 12px;
-		background: #f0f0f1;
+		padding: 0;
 		border-radius: 4px;
 
 		.components-spinner {
@@ -23,7 +22,6 @@
 		.wpifycf-direct-file-progress {
 			width: 100%;
 			height: 8px;
-			background: #dcdcde;
 			border-radius: 4px;
 			overflow: hidden;
 
@@ -44,8 +42,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 0 12px 12px 12px;
-		background: #f0f0f1;
+		padding: 0;
 		border-radius: 4px;
 
 		.wpifycf-direct-file-info {

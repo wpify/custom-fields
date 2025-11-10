@@ -83,7 +83,7 @@ class DirectFileField {
 			// This is a temp file, move it to the target directory.
 			$target_directory = $this->get_target_directory( $item );
 			$filename         = $this->helpers->get_filename_from_path( $value );
-			$replace_existing = $item['replace_existing'] ?? false;
+			$replace_existing = $item[ 'replace_existing' ] ?? false;
 
 			$moved_path = $this->helpers->move_temp_to_directory(
 				$value,
@@ -175,7 +175,7 @@ class DirectFileField {
 	 * @return string The absolute target directory path.
 	 */
 	private function get_target_directory( array $item ): string {
-		$directory = $item['directory'] ?? 'wp-content/uploads/direct-files/';
+		$directory = $item[ 'directory' ] ?? 'wp-content/uploads/direct-files/';
 		return $this->helpers->sanitize_directory_path( $directory );
 	}
 
@@ -192,7 +192,7 @@ class DirectFileField {
 			return;
 		}
 
-		$on_delete = $item['on_delete'] ?? 'keep';
+		$on_delete = $item[ 'on_delete' ] ?? 'keep';
 
 		if ( 'delete' === $on_delete ) {
 			$this->helpers->delete_direct_file( $file_path );
