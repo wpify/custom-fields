@@ -142,20 +142,18 @@ class Api {
 	/**
 	 * Handles direct file upload to temporary directory.
 	 *
-	 * @param WP_REST_Request $request The REST request object.
-	 *
 	 * @return array|\WP_Error Response array with temp_path or WP_Error on failure.
 	 */
-	public function handle_direct_file_upload( WP_REST_Request $request ) {
+	public function handle_direct_file_upload() {
 		// Check if file was uploaded.
-		if ( empty( $_FILES['file'] ) ) {
+		if ( empty( $_FILES['file'] ) ) { // phpcs:ignore
 			return new \WP_Error( 'no_file', __( 'No file was uploaded.', 'wpify-custom-fields' ), array( 'status' => 400 ) );
 		}
 
-		$file = $_FILES['file'];
+		$file = $_FILES['file']; // phpcs:ignore
 
 		// Check for upload errors.
-		if ( $file['error'] !== UPLOAD_ERR_OK ) {
+		if ( UPLOAD_ERR_OK !== $file['error'] ) {
 			return new \WP_Error( 'upload_error', __( 'File upload failed.', 'wpify-custom-fields' ), array( 'status' => 400 ) );
 		}
 

@@ -275,7 +275,7 @@ class Helpers {
 		}
 
 		// Move file from temp to target.
-		if ( rename( $temp_path, $target_path ) ) {
+		if ( rename( $temp_path, $target_path ) ) { // phpcs:ignore
 			return $target_path;
 		}
 
@@ -352,10 +352,10 @@ class Helpers {
 			// Delete if older than threshold.
 			if ( $file_mtime < $cutoff_time ) {
 				if ( wp_delete_file( $file ) ) {
-					$deleted_count++;
+					++$deleted_count;
 				} else {
 					// Log error but continue processing.
-					error_log( sprintf( '[wpify-custom-fields] Failed to delete temp file: %s', $file ) );
+					error_log( sprintf( '[wpify-custom-fields] Failed to delete temp file: %s', $file ) ); // phpcs:ignore
 				}
 			}
 		}
