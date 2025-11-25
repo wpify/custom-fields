@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 import clsx from 'clsx';
-import { addFilter } from '@wordpress/hooks';
 import { checkValidityStringType } from '@/helpers/validators';
 
 export function Text ({
@@ -12,6 +11,7 @@ export function Text ({
   className,
   disabled = false,
   counter = false,
+  getValue,
 }) {
   const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
 

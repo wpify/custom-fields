@@ -125,6 +125,27 @@ Array of options that are passed to the field renderer. It can be used to custom
 * `noControlWrapper`: Boolean value that determines whether the field control should be wrapped in a div element.
 * `noFieldWrapper`: Boolean value that determines whether the field should be wrapped in a div element.
 
+### `fieldPath`
+
+The current field's path in the form hierarchy. It identifies the field's position, which is especially useful for nested fields in groups or repeaters. The path uses dot notation (e.g., `parent_group.child_field`) and array indices for repeater items (e.g., `multi_group[0].field_name`). This property is used internally for relative path resolution and accessing sibling/parent field values.
+
+### `allValues`
+
+An object containing all current form field values, where keys are field IDs. This allows field components to access any other field's value in the form, which is useful for custom field implementations that need to read values from other fields.
+
+### `getValue`
+
+A helper function to access other field values using path syntax. The function signature is `getValue(path: string): any`.
+
+The path syntax supports:
+
+* Dot notation for nested fields: `parent.child`
+* Relative references using hash: `#` (parent), `##` (grandparent)
+* Array bracket notation: `multi_field[0]`
+* Combinations: `#.sibling_field[0].name`
+
+This is useful for dependent dropdowns, dynamic field values based on other fields, and other scenarios where a field needs to react to values from other fields.
+
 ## Simple field types
 
 * [Checkbox](field-types/checkbox.md) `checkbox`

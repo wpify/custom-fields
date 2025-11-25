@@ -3,7 +3,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { __, sprintf } from '@wordpress/i18n';
 import { Label } from '@/components/Label';
 import clsx from 'clsx';
-import { useConditions } from '@/helpers/hooks';
+import { useConditions, useOtherFieldValues } from '@/helpers/hooks';
 import { useContext, useEffect, useMemo } from 'react';
 import { FieldWrapper } from '@/components/FieldWrapper';
 import { ControlWrapper } from '@/components/ControlWrapper';
@@ -28,6 +28,7 @@ export function Field ({
 }) {
   const FieldComponent = useMemo(() => getFieldComponentByType(type, props), [type, props]);
   const { currentTab, values: allValues } = useContext(AppContext);
+  const { getValue } = useOtherFieldValues(fieldPath);
   const shown = useConditions({ conditions, fieldPath });
   const isCurrentTab = !tab || !currentTab || currentTab === tab;
   const isHidden = !shown || !isCurrentTab || type === 'hidden';
@@ -129,6 +130,7 @@ export function Field ({
               )}
               fieldPath={fieldPath}
               allValues={allValues}
+              getValue={getValue}
               {...props}
             />
           </ErrorBoundary>
