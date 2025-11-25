@@ -11,7 +11,6 @@ export function Text ({
   className,
   disabled = false,
   counter = false,
-  getValue,
 }) {
   const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
 

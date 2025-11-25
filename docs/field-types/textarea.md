@@ -16,6 +16,14 @@ array(
 
 **For Default Field Properties, see [Field Types Definition](../field-types.md)**.
 
+### `counter` _(boolean)_ - Optional
+
+When set to `true`, displays a character counter below the textarea showing the current character count.
+
+```php
+'counter' => true,
+```
+
 ### `attributes` _(array)_ - Optional
 
 You can pass HTML attributes to the textarea element. Common attributes include:
@@ -70,6 +78,22 @@ The field stores the text content as a string in the database, preserving line b
     'attributes'  => array(
         'placeholder' => "Street Address\nCity, State ZIP\nCountry",
         'rows'        => 4,
+    ),
+),
+```
+
+### Textarea with Character Counter
+
+```php
+'meta_description' => array(
+    'type'        => 'textarea',
+    'id'          => 'meta_description',
+    'label'       => 'Meta Description',
+    'description' => 'SEO description for search engines (recommended: 150-160 characters).',
+    'counter'     => true,
+    'attributes'  => array(
+        'maxlength' => 160,
+        'rows'      => 3,
     ),
 ),
 ```
@@ -138,6 +162,7 @@ if (!empty($product_description)) {
 ## Notes
 
 - The textarea field preserves line breaks entered by the user
+- The `counter` property is useful for SEO fields or any input where character count matters
 - For rich text editing with formatting options, consider using the [`wysiwyg`](wysiwyg.md) field type instead
 - When displaying textarea content, use `nl2br()` to convert line breaks to HTML `<br>` tags
 - For security, always use `esc_html()` when outputting textarea content to prevent XSS attacks
