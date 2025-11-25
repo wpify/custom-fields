@@ -116,6 +116,66 @@ wpify_custom_fields()->create_gutenberg_block(
 );
 ```
 
+## Rendering Inner Blocks
+
+To display inner blocks in both the editor preview and the front end, use the `<!-- inner_blocks -->` placeholder in your block's `render_callback`. This placeholder will be replaced with:
+
+- **In the editor**: An interactive InnerBlocks component where users can add and edit nested blocks
+- **On the front end**: The rendered content of the nested blocks (passed as `$content` parameter)
+
+### Example with Render Callback
+
+```php
+wpify_custom_fields()->create_gutenberg_block(
+	array(
+		'name'            => 'wpify/card-block',
+		'title'           => 'Card Block',
+		'render_callback' => function ( array $attributes, string $content, WP_Block $block ) {
+			$style = esc_attr( $attributes['card_style'] ?? 'default' );
+
+			return sprintf(
+				'<div class="card card--%s">
+					<div class="card__header">
+						<h3>%s</h3>
+					</div>
+					<div class="card__content">
+						<!-- inner_blocks -->
+					</div>
+				</div>',
+				$style,
+				esc_html( $attributes['card_title'] ?? '' )
+			);
+		},
+		'items'           => array(
+			'card_title'   => array(
+				'type'  => 'text',
+				'label' => 'Card Title',
+			),
+			'card_style'   => array(
+				'type'     => 'select',
+				'label'    => 'Card Style',
+				'options'  => array(
+					'default'  => 'Default',
+					'outlined' => 'Outlined',
+					'elevated' => 'Elevated',
+				),
+				'position' => 'inspector',
+			),
+			'card_content' => array(
+				'type'           => 'inner_blocks',
+				'label'          => 'Card Content',
+				'template'       => array(
+					array( 'core/paragraph', array( 'placeholder' => 'Add card content...' ) ),
+				),
+				'allowed_blocks' => array( 'core/paragraph', 'core/heading', 'core/image', 'core/list' ),
+			),
+		),
+	)
+);
+```
+
+The placeholder supports variations: `<!-- inner_blocks -->`, `<!-- inner_blocks/ -->`, or `<!-- inner_blocks / -->`.
+
 ## Notes
 
 - The Inner Blocks field type is only for use in Gutenberg blocks
@@ -123,3 +183,4 @@ wpify_custom_fields()->create_gutenberg_block(
 - Templates help guide users by pre-populating with specific blocks
 - Template locks control what users can modify
 - This field doesn't store a value itself - it just provides a container for other blocks
+- Use the `<!-- inner_blocks -->` placeholder in `render_callback` to position inner blocks in the editor preview

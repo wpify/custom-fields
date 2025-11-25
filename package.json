@@ -37,6 +37,7 @@
     "@uiw/codemirror-theme-vscode": "^4.23.3",
     "@uiw/react-codemirror": "^4.23.3",
     "clsx": "^2.1.1",
+    "html-react-parser": "^5.2.10",
     "leaflet": "^1.9.4",
     "react-error-boundary": "^4.0.13",
     "react-leaflet": "^4.2.1",

@@ -183,7 +183,47 @@ List of the fields to be shown. See [Field Types](../field-types.md) for availab
 
 ## Inner Blocks
 
-Inner Blocks are a special field type that allows you to create nested blocks within your custom block. The `inner_blocks` field type is used to define this field. The `inner_blocks` field type does not have any additional properties and can be used only once in a block definition.
+Inner Blocks are a special field type that allows you to create nested blocks within your custom block. The `inner_blocks` field type is used to define this field. The `inner_blocks` field type can be used only once in a block definition.
+
+### Rendering Inner Blocks
+
+To render inner blocks in both the editor preview and the front end, use the `<!-- inner_blocks -->` placeholder in your `render_callback`. This placeholder will be replaced with:
+
+- **In the editor**: An interactive InnerBlocks component where users can add and edit nested blocks
+- **On the front end**: The rendered content of the nested blocks (passed as `$content` parameter)
+
+```php
+wpify_custom_fields()->create_gutenberg_block(
+	array(
+		'name'            => 'wpify/container-block',
+		'title'           => 'Container Block',
+		'render_callback' => function ( array $attributes, string $content, WP_Block $block ) {
+			return sprintf(
+				'<div class="container-block">
+					<h2>%s</h2>
+					<!-- inner_blocks -->
+				</div>',
+				esc_html( $attributes['title'] ?? '' )
+			);
+		},
+		'items'           => array(
+			'title'        => array(
+				'type'  => 'text',
+				'label' => 'Block Title',
+			),
+			'inner_blocks' => array(
+				'type'           => 'inner_blocks',
+				'label'          => 'Content',
+				'allowed_blocks' => array( 'core/paragraph', 'core/heading', 'core/image' ),
+			),
+		),
+	)
+);
+```
+
+The placeholder supports variations like `<!-- inner_blocks -->`, `<!-- inner_blocks/ -->`, or `<!-- inner_blocks / -->`.
+
+See [Inner Blocks Field Type](../field-types/inner_blocks.md) for more details on configuration options.
 
 ## Inspector Controls
 

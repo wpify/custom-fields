@@ -13,6 +13,7 @@ import { useRenderBlock } from '@/helpers/hooks';
 import { useSelect } from '@wordpress/data';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Field } from '@/components/Field';
+import parse from 'html-react-parser';
 
 const RENDERED_VIEW = 'view';
 const EDITOR_VIEW = 'edit';
@@ -56,6 +57,7 @@ export function GutenbergBlock ({ name, args }) {
             title={args.title}
             name={name}
             attributes={values}
+            fields={fields}
           />
         )}
         {view === EDITOR_VIEW && (
@@ -99,7 +101,7 @@ export function GutenbergBlock ({ name, args }) {
   );
 }
 
-function RenderedView ({ name, attributes, title }) {
+function RenderedView ({ name, attributes, title, fields }) {
   const postId = useSelect(
     select => select('core/editor')?.getCurrentPostId(),
   );
@@ -111,6 +113,30 @@ function RenderedView ({ name, attributes, title }) {
     attributes: debouncedAttributes,
     postId,
   });
+
+  // Find inner_blocks field configuration
+  const innerBlocksField = fields.find(field => field.type === 'inner_blocks');
+
+  // Create parse options with replace function
+  const parseOptions = {
+    replace: (domNode) => {
+      // Check if it's a comment node matching our placeholder pattern
+      if (domNode.type === 'comment' && innerBlocksField) {
+        const commentData = domNode.data.trim();
+        // Match: "inner_blocks", "inner_blocks/", "inner_blocks /"
+        if (/^inner_blocks[\s/]*$/.test(commentData)) {
+          return (
+            <InnerBlocks
+              allowedBlocks={innerBlocksField.allowed_blocks}
+              template={innerBlocksField.template}
+              orientation={innerBlocksField.orientation}
+              templateLock={innerBlocksField.template_lock}
+            />
+          );
+        }
+      }
+    }
+  };
 
   if (renderer.isFetching) {
     return <LoadingResponse title={title} name={name} />;
@@ -126,10 +152,9 @@ function RenderedView ({ name, attributes, title }) {
 
   return (
     <ErrorBoundary fallback={<ErrorResponse title={title} name={name} />}>
-      <div
-        className="wpifycf-gutenberg-block__ssr"
-        dangerouslySetInnerHTML={{ __html: renderer.data }}
-      />
+      <div className="wpifycf-gutenberg-block__ssr">
+        {parse(renderer.data, parseOptions)}
+      </div>
     </ErrorBoundary>
   );
 }

@@ -1,4 +1,3 @@
-import { addFilter } from '@wordpress/hooks';
 import { InnerBlocks as InnerBlocksEditor } from '@wordpress/block-editor';
 import clsx from 'clsx';
 

@@ -25,8 +25,25 @@
     line-height: 1.4em;
   }
 
-  &__ssr * {
-    pointer-events: none;
+  &__ssr {
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    [role="button"],
+    [onclick],
+    label,
+    summary {
+      pointer-events: none;
+    }
+
+    .block-editor-inner-blocks {
+      &,
+      & * {
+        pointer-events: auto;
+      }
+    }
   }
 }
 
