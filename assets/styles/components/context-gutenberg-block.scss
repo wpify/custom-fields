@@ -38,11 +38,10 @@
       pointer-events: none;
     }
 
-    .block-editor-inner-blocks {
-      &,
-      & * {
-        pointer-events: auto;
-      }
+    .block-editor-inner-blocks > *,
+    .block-editor-block-list__layout > *,
+    .block-list-appender * {
+      pointer-events: auto;
     }
   }
 }
