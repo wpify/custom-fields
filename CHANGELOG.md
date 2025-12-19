@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.4.0] - 2025-12-19
+
 ### Added
 - `date_range` field type for selecting start and end dates
 - `multi_date_range` field type for managing multiple date ranges
