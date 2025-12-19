@@ -152,6 +152,7 @@ This is useful for dependent dropdowns, dynamic field values based on other fiel
 * [Multi Checkbox](field-types/multi_checkbox.md) `multi_checkbox`
 * [Color](field-types/color.md) `color`
 * [Date](field-types/date.md) `date`
+* [Date Range](field-types/date_range.md) `date_range`
 * [Datetime](field-types/datetime.md) `datetime`
 * [Email](field-types/email.md) `email`
 * [Month](field-types/month.md) `month`
@@ -194,6 +195,7 @@ This is useful for dependent dropdowns, dynamic field values based on other fiel
 ## Repeater field types
 
 * [Multi Date](field-types/multi_date.md) `multi_date`
+* [Multi Date Range](field-types/multi_date_range.md) `multi_date_range`
 * [Multi Datetime](field-types/multi_datetime.md) `multi_datetime`
 * [Multi Email](field-types/multi_email.md) `multi_email`
 * [Multi Group (Repeater)](field-types/multi_group.md) `multi_group`

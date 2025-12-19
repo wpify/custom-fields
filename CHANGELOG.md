@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `date_range` field type for selecting start and end dates
+- `multi_date_range` field type for managing multiple date ranges
+
+## [4.3.1] - 2025-12-14
+
+### Fixed
+- Inner blocks field type functionality
+
 ## [4.3.0] - 2025-11-25
 
 ### Added

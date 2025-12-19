@@ -186,3 +186,46 @@ export function checkValidityMultiStringType (value, field) {
 
   return validity;
 }
+
+export function checkValidityDateRangeType (value, field) {
+  const validity = [];
+
+  // Check required
+  if (field.required && (!value || (!value[0] && !value[1]))) {
+    validity.push(__('This field is required.', 'wpify-custom-fields'));
+    return validity;
+  }
+
+  // If both dates provided, check order
+  if (value && value[0] && value[1]) {
+    const startDate = new Date(value[0]);
+    const endDate = new Date(value[1]);
+    if (startDate > endDate) {
+      validity.push(__('The start date must be before or equal to the end date.', 'wpify-custom-fields'));
+    }
+  }
+
+  // Check min constraint
+  if (value && field.min) {
+    const minDate = new Date(field.min);
+    if (value[0] && new Date(value[0]) < minDate) {
+      validity.push(__('The start date must not be before the minimum date.', 'wpify-custom-fields'));
+    }
+    if (value[1] && new Date(value[1]) < minDate) {
+      validity.push(__('The end date must not be before the minimum date.', 'wpify-custom-fields'));
+    }
+  }
+
+  // Check max constraint
+  if (value && field.max) {
+    const maxDate = new Date(field.max);
+    if (value[0] && new Date(value[0]) > maxDate) {
+      validity.push(__('The start date must not be after the maximum date.', 'wpify-custom-fields'));
+    }
+    if (value[1] && new Date(value[1]) > maxDate) {
+      validity.push(__('The end date must not be after the maximum date.', 'wpify-custom-fields'));
+    }
+  }
+
+  return validity;
+}

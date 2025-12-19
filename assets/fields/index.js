@@ -4,6 +4,7 @@ import Checkbox from './Checkbox';
 import Code from './Code';
 import Color from './Color';
 import Date from './Date';
+import DateRange from './DateRange';
 import Datetime from './Datetime';
 import DirectFile from './DirectFile';
 import Email from './Email';
@@ -18,6 +19,7 @@ import MultiAttachment from './MultiAttachment';
 import MultiButton from './MultiButton';
 import MultiCheckbox from './MultiCheckbox';
 import MultiDate from './MultiDate';
+import MultiDateRange from './MultiDateRange';
 import MultiDatetime from './MultiDatetime';
 import MultiDirectFile from './MultiDirectFile';
 import MultiEmail from './MultiEmail';
@@ -60,6 +62,7 @@ export default {
   code: Code,
   color: Color,
   date: Date,
+  date_range: DateRange,
   datetime: Datetime,
   direct_file: DirectFile,
   email: Email,
@@ -74,6 +77,7 @@ export default {
   multi_button: MultiButton,
   multi_checkbox: MultiCheckbox,
   multi_date: MultiDate,
+  multi_date_range: MultiDateRange,
   multi_datetime: MultiDatetime,
   multi_direct_file: MultiDirectFile,
   multi_email: MultiEmail,

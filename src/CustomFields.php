@@ -435,6 +435,16 @@ class CustomFields {
 				$sanitized_value['city']      = sanitize_text_field( $value['city'] ?? '' );
 				$sanitized_value['cityPart']  = sanitize_text_field( $value['cityPart'] ?? '' );
 				$sanitized_value['country']   = sanitize_text_field( $value['country'] ?? '' );
+			} elseif ( 'date_range' === $item['type'] ) {
+				$value = is_string( $value ) ? json_decode( $value, true ) : $value;
+				if ( ! is_array( $value ) || ( empty( $value[0] ) && empty( $value[1] ) ) ) {
+					$sanitized_value = null;
+				} else {
+					$sanitized_value = array(
+						! empty( $value[0] ) ? sanitize_text_field( $value[0] ) : null,
+						! empty( $value[1] ) ? sanitize_text_field( $value[1] ) : null,
+					);
+				}
 			} elseif ( in_array( $item['type'], array( 'number', 'range' ), true ) ) {
 				$sanitized_value = floatval( $value );
 			} elseif ( 'textarea' === $item['type'] ) {
@@ -529,6 +539,8 @@ class CustomFields {
 			true,
 		) ) {
 			$type = 'object';
+		} elseif ( 'date_range' === $item['type'] ) {
+			$type = 'array';
 		} elseif ( str_starts_with( $item['type'], 'multi_' ) ) {
 			$type = 'array';
 		} else {
@@ -548,6 +560,8 @@ class CustomFields {
 	public function get_default_value( array $item ): mixed {
 		if ( isset( $item['default'] ) ) {
 			$default_value = $item['default'];
+		} elseif ( 'date_range' === $item['type'] ) {
+			$default_value = null;
 		} else {
 			$wp_type       = $this->get_wp_type( $item );
 			$default_value = match ( $wp_type ) {
