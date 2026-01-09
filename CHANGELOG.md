@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.4.1] - 2026-01-09
+
 ### Changed
 - Refactored WYSIWYG field component with improved Gutenberg iframe mode support
 - Added event isolation to prevent TinyMCE event propagation issues in Gutenberg editor
