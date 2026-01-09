@@ -10,7 +10,7 @@
   }
 
   &__editor {
-    display:block;
+    display: block;
     background: white;
     border: 1px solid var(--wpifycf-border-color);
     padding: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
@@ -23,7 +23,7 @@
     padding: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
     border-radius: 5px;
     border: 1px solid var(--wpifycf-border-color);
-    box-shadow: 0 0 5px rgba(0,0,0,.1);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   }
 
   &__tabs {
@@ -72,4 +72,151 @@
     border: 1px solid var(--wpifycf-border-color);
     border-top: none;
   }
+
+  // Editor container for inline TinyMCE.
+  &__editor-container {
+    .mce-tinymce {
+      border-radius: 0 0 4px 4px;
+    }
+  }
+
+  // Preview wrapper for modal approach.
+  &__preview-wrapper {
+    position: relative;
+    border: 1px solid var(--wpifycf-border-color);
+    border-radius: 4px;
+    background: #fff;
+    overflow: hidden;
+
+    &.is-disabled {
+      background: #f6f7f7;
+    }
+  }
+
+  &__preview {
+    padding: 12px;
+    min-height: 100px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    .is-disabled & {
+      cursor: default;
+    }
+
+    &:hover:not(.is-disabled &) {
+      background: #f9f9f9;
+    }
+
+    &:focus {
+      outline: 2px solid #2271b1;
+      outline-offset: -2px;
+    }
+
+    // Style content similarly to TinyMCE.
+    p {
+      margin: 0 0 1em;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin: 1em 0 0.5em;
+    }
+
+    ul,
+    ol {
+      margin: 0 0 1em;
+      padding-left: 2em;
+    }
+  }
+
+  &__placeholder {
+    color: #757575;
+    font-style: italic;
+  }
+
+  &__edit-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+
+  // Delay initialization styles.
+  &__delay-wrapper {
+    border: 1px solid var(--wpifycf-border-color);
+    border-radius: 4px;
+    background: #f6f7f7;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      border-color: #2271b1;
+    }
+
+    &:focus {
+      outline: 2px solid #2271b1;
+      outline-offset: -2px;
+    }
+  }
+
+  &__delay-message {
+    padding: 12px;
+    text-align: center;
+    color: #646970;
+    font-size: 14px;
+    border-bottom: 1px solid var(--wpifycf-border-color);
+  }
+
+  &__delay-preview {
+    padding: 12px;
+    flex: 1;
+    overflow: auto;
+    max-height: 300px;
+  }
+}
+
+// Event isolation wrapper.
+.wpifycf-event-isolation-wrapper {
+  position: relative;
+}
+
+// Modal styles.
+.wpifycf-wysiwyg-modal-overlay {
+  z-index: 100001; // Above Gutenberg's modals.
+}
+
+.wpifycf-wysiwyg-modal {
+  max-width: 900px;
+  width: 90%;
+
+  &.is-fullscreen {
+    max-width: none;
+    width: 100%;
+  }
+
+  .components-modal__content {
+    padding: 0;
+  }
+}
+
+.wpifycf-wysiwyg-modal__editor {
+  padding: 16px;
+  padding-bottom: 0;
+
+  // Remove TinyMCE border in modal context.
+  .mce-tinymce {
+    border: none;
+    box-shadow: none;
+  }
+}
+
+.wpifycf-wysiwyg-modal__actions {
+  padding: 16px;
+  border-top: 1px solid var(--wpifycf-border-color);
+  background: #f6f7f7;
 }

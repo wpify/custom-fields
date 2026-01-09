@@ -176,7 +176,7 @@ export function Link ({
 
 function PostTypes ({ onChange, postTypes, value, disabled }) {
   return (
-    <select value={value.post_type} onChange={onChange} disabled={disabled}>
+    <select value={value.post_type || ''} onChange={onChange} disabled={disabled}>
       <option value="">{__('URL', 'wpify-custom-fields')}</option>
       {postTypes.map((currentPostType) => (
         <option value={currentPostType.slug} key={currentPostType.slug}>

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Refactored WYSIWYG field component with improved Gutenberg iframe mode support
+- Added event isolation to prevent TinyMCE event propagation issues in Gutenberg editor
+- Improved WYSIWYG modal editor for Gutenberg context with fullscreen support
+
+### Fixed
+- Link field post_type select now handles undefined values correctly
+
 ## [4.4.0] - 2025-12-19
 
 ### Added
