@@ -40,7 +40,8 @@
 
     .block-editor-inner-blocks > *,
     .block-editor-block-list__layout > *,
-    .block-list-appender * {
+    .block-list-appender *,
+    .wpifycf-field__control * {
       pointer-events: auto;
     }
   }
