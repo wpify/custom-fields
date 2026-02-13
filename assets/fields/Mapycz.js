@@ -336,7 +336,7 @@ function AutoComplete ({ value, onChange, apiKey, lang, setCenter }) {
               onClick={() => handleSelect(index)}
               onMouseOver={() => handleMouseOver(index)}
               onMouseOut={() => setActive(null)}
-              className={index === active ? 'active' : ''}
+              className={index === active ? 'wpifycf-field-mapycz__suggestion--active' : ''}
             >
               <strong>
                 {suggestion.name}

@@ -1,7 +1,7 @@
 .wpifycf-multi-field-items {
   display: flex;
   flex-flow: column;
-  max-width: 60em;
+  max-width: var(--wpifycf-field-width-xl);
   gap: var(--wpifycf-gap-1);
   user-select: none;
 }

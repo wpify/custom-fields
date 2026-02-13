@@ -1,6 +1,6 @@
 .wpifycf-field-text {
   width: 100%;
-  max-width: 60em;
+  max-width: var(--wpifycf-field-width-xl);
 
   &__counter {
     display: inline-block;

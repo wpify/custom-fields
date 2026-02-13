@@ -57,7 +57,7 @@ export function MultiField ({
                 <IconButton icon="move" className="wpifycf-sort" />
               </div>
             )}
-            <div className={'wpifycf-multi-field-item-field wpifycf-multi-field-item-field--' + type}>
+            <div className={`wpifycf-multi-field-item-field wpifycf-multi-field-item-field--${type}`}>
               <Field
                 {...props}
                 type={type}

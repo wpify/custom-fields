@@ -49,11 +49,11 @@
       padding: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
       cursor: pointer;
       text-align: left;
-
-      &.active {
-        background: var(--wpifycf-border-color);
-      }
     }
+  }
+
+  &__suggestion--active {
+    background: var(--wpifycf-border-color);
   }
 
   &__suggestions-attribution {

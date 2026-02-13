@@ -31,8 +31,8 @@
   }
 
   &__item--invalid &__item-header {
-    border: 1px solid red;
-    color: red;
+    border: 1px solid var(--wpifycf-red);
+    color: var(--wpifycf-red);
   }
 
   &__title {

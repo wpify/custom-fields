@@ -1,6 +1,6 @@
 .wpifycf-field-textarea {
   width: 100%;
-  max-width: 60em;
+  max-width: var(--wpifycf-field-width-xl);
   height: 5lh;
 
   &__counter {

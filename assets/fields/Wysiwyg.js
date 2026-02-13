@@ -586,7 +586,7 @@ function ModalTinyMCE( {
 			<div
 				className={ clsx(
 					'wpifycf-field-wysiwyg__preview-wrapper',
-					disabled && 'is-disabled'
+					disabled && 'wpifycf-field-wysiwyg__preview-wrapper--disabled'
 				) }
 			>
 				<div
@@ -626,7 +626,7 @@ function ModalTinyMCE( {
 					isFullScreen={ isFullScreen }
 					className={ clsx(
 						'wpifycf-wysiwyg-modal',
-						isFullScreen && 'is-fullscreen'
+						isFullScreen && 'wpifycf-wysiwyg-modal--fullscreen'
 					) }
 					headerActions={
 						<Button
@@ -750,7 +750,7 @@ export function Wysiwyg( {
 					{ canShowVisual && (
 						<button
 							type="button"
-							className={ clsx( 'wpifycf-field-wysiwyg__tab', view === VIEW_VISUAL && 'active' ) }
+							className={ clsx( 'wpifycf-field-wysiwyg__tab', view === VIEW_VISUAL && 'wpifycf-field-wysiwyg__tab--active' ) }
 							onClick={ () => setView( VIEW_VISUAL ) }
 						>
 							{ __( 'Visual', 'wpify-custom-fields' ) }
@@ -759,7 +759,7 @@ export function Wysiwyg( {
 					{ canShowText && (
 						<button
 							type="button"
-							className={ clsx( 'wpifycf-field-wysiwyg__tab', view === VIEW_HTML && 'active' ) }
+							className={ clsx( 'wpifycf-field-wysiwyg__tab', view === VIEW_HTML && 'wpifycf-field-wysiwyg__tab--active' ) }
 							onClick={ () => setView( VIEW_HTML ) }
 						>
 							{ __( 'HTML', 'wpify-custom-fields' ) }

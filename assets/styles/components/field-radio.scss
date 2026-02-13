@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: var(--wpifycf-gap-1);
   line-height: 1;
-  max-width: 60em;
+  max-width: var(--wpifycf-field-width-xl);
 
   input {
     flex: 1;

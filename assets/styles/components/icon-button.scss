@@ -26,23 +26,25 @@
 
   &--trash {
     svg {
-      fill: hsl(0, 100%, 73%);
+      fill: var(--wpifycf-red);
+      opacity: 0.6;
     }
 
     &:hover svg {
-      fill: red;
+      fill: var(--wpifycf-red);
+      opacity: 1;
     }
   }
 
   &--plus, &--minus  {
     svg {
-      border: 1px solid #2271b1;
-      background: #f6f7f7;
-      border-radius: 3px;
+      border: 1px solid var(--wpifycf-blue);
+      background: var(--wpifycf-grey);
+      border-radius: var(--wpifycf-border-radius-sm);
 
       &:hover{
-        background: #f0f0f1;
-        border-color: #0a4b78;
+        background: var(--wpifycf-grey-hover);
+        border-color: var(--wpifycf-blue-hover);
       }
     }
   }

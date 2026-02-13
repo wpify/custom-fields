@@ -123,7 +123,7 @@ function DirectFile({ id, htmlId, value, onChange, required, allowed_types, max_
 			/>
 
 			{!hasFile && !uploading && (
-				<div className="wpifycf-direct-file-empty">
+				<div className="wpifycf-direct-file__empty">
 					<Button
 						variant="secondary"
 						onClick={handleButtonClick}
@@ -135,50 +135,50 @@ function DirectFile({ id, htmlId, value, onChange, required, allowed_types, max_
 			)}
 
 			{uploading && (
-				<div className="wpifycf-direct-file-uploading">
+				<div className="wpifycf-direct-file__uploading">
 					<Spinner />
-					<div className="wpifycf-direct-file-progress">
+					<div className="wpifycf-direct-file__progress">
 						<div
-							className="wpifycf-direct-file-progress-bar"
+							className="wpifycf-direct-file__progress-bar"
 							style={{ width: `${progress}%` }}
 						/>
 					</div>
-					<span className="wpifycf-direct-file-progress-text">
+					<span className="wpifycf-direct-file__progress-text">
 						{__('Uploading...', 'wpify-custom-fields')} {Math.round(progress)}%
 					</span>
 				</div>
 			)}
 
 			{hasFile && !uploading && (
-				<div className="wpifycf-direct-file-preview">
-					<div className="wpifycf-direct-file-info">
+				<div className="wpifycf-direct-file__preview">
+					<div className="wpifycf-direct-file__info">
 						<Icon icon={pageIcon} />
-						<div className="wpifycf-direct-file-details">
+						<div className="wpifycf-direct-file__details">
 							{isDownloadable ? (
 								<a
 									href={getFileUrl()}
 									target="_blank"
 									rel="noopener noreferrer"
-									className="wpifycf-direct-file-name wpifycf-direct-file-name--link"
+									className="wpifycf-direct-file__name wpifycf-direct-file__name--link"
 								>
 									{getFileName()}
 								</a>
 							) : (
-								<span className="wpifycf-direct-file-name">
+								<span className="wpifycf-direct-file__name">
 									{getFileName()}
 								</span>
 							)}
-							<span className="wpifycf-direct-file-meta">
-								<span className="wpifycf-direct-file-path">{value}</span>
+							<span className="wpifycf-direct-file__meta">
+								<span className="wpifycf-direct-file__path">{value}</span>
 								{(fileSize || fileInfo?.data?.size) && (
-									<span className="wpifycf-direct-file-size">
+									<span className="wpifycf-direct-file__size">
 										{formatFileSize(fileSize || fileInfo?.data?.size)}
 									</span>
 								)}
 							</span>
 						</div>
 					</div>
-					<div className="wpifycf-direct-file-actions">
+					<div className="wpifycf-direct-file__actions">
 						<Button
 							variant="secondary"
 							onClick={handleButtonClick}
@@ -201,7 +201,7 @@ function DirectFile({ id, htmlId, value, onChange, required, allowed_types, max_
 			)}
 
 			{error && (
-				<div className="wpifycf-direct-file-error">
+				<div className="wpifycf-direct-file__error">
 					{error}
 				</div>
 			)}

@@ -44,56 +44,56 @@ function DirectFileItem({ file, onRemove, disabled }) {
 	const isDownloadable = getFileUrl() !== null;
 
 	return (
-		<div className={clsx('wpifycf-multi-direct-file-item', {
-			'wpifycf-multi-direct-file-item--uploading': file.uploading
+		<div className={clsx('wpifycf-field-multi-direct-file__item', {
+			'wpifycf-field-multi-direct-file__item--uploading': file.uploading
 		})}>
 			{!disabled && (
-				<div className="wpifycf-multi-direct-file-item__sort">
+				<div className="wpifycf-field-multi-direct-file__item__sort">
 					<IconButton icon="move" className="wpifycf-sort" />
 				</div>
 			)}
-			<div className="wpifycf-multi-direct-file-item__content">
+			<div className="wpifycf-field-multi-direct-file__item__content">
 				{file.uploading ? (
-					<div className="wpifycf-direct-file-uploading">
+					<div className="wpifycf-direct-file__uploading">
 						<Spinner />
-						<div className="wpifycf-direct-file-progress">
+						<div className="wpifycf-direct-file__progress">
 							<div
-								className="wpifycf-direct-file-progress-bar"
+								className="wpifycf-direct-file__progress-bar"
 								style={{ width: `${file.progress || 0}%` }}
 							/>
 						</div>
-						<span className="wpifycf-direct-file-progress-text">
+						<span className="wpifycf-direct-file__progress-text">
 							{__('Uploading...', 'wpify-custom-fields')} {Math.round(file.progress || 0)}%
 						</span>
 					</div>
 				) : (
-					<div className="wpifycf-direct-file-info">
+					<div className="wpifycf-direct-file__info">
 						<Icon icon={pageIcon} />
-						<div className="wpifycf-direct-file-details">
-							<div className="wpifycf-direct-file-header">
+						<div className="wpifycf-direct-file__details">
+							<div className="wpifycf-direct-file__header">
 								{isDownloadable ? (
 									<a
 										href={getFileUrl()}
 										target="_blank"
 										rel="noopener noreferrer"
-										className="wpifycf-direct-file-name wpifycf-direct-file-name--link"
+										className="wpifycf-direct-file__name wpifycf-direct-file__name--link"
 									>
 										{getFileName()}
 									</a>
 								) : (
-									<span className="wpifycf-direct-file-name">
+									<span className="wpifycf-direct-file__name">
 										{getFileName()}
 									</span>
 								)}
 								{!disabled && (
-									<div className="wpifycf-multi-direct-file-item__actions">
+									<div className="wpifycf-field-multi-direct-file__item__actions">
 										<IconButton icon="trash" onClick={onRemove} />
 									</div>
 								)}
 							</div>
-							<span className="wpifycf-direct-file-path">{file.path}</span>
+							<span className="wpifycf-direct-file__path">{file.path}</span>
 							{(file.size || fileInfo?.data?.size) && (
-								<span className="wpifycf-direct-file-size">
+								<span className="wpifycf-direct-file__size">
 									{formatFileSize(file.size || fileInfo?.data?.size)}
 								</span>
 							)}
@@ -101,7 +101,7 @@ function DirectFileItem({ file, onRemove, disabled }) {
 					</div>
 				)}
 				{file.error && (
-					<div className="wpifycf-direct-file-error">
+					<div className="wpifycf-direct-file__error">
 						{file.error}
 					</div>
 				)}
@@ -204,7 +204,7 @@ function MultiDirectFile({
 		items: files,
 		setItems: onSortEnd,
 		disabled,
-		dragHandle: '.wpifycf-multi-direct-file-item__sort',
+		dragHandle: '.wpifycf-field-multi-direct-file__item__sort',
 	});
 
 	const formatFileSize = (bytes) => {
@@ -366,7 +366,7 @@ function MultiDirectFile({
 			)}
 
 			{files.length > 0 && (
-				<div className="wpifycf-multi-direct-file-items" ref={containerRef}>
+				<div className="wpifycf-field-multi-direct-file__items" ref={containerRef}>
 					{files.map((file) => (
 						<DirectFileItem
 							key={file.id}

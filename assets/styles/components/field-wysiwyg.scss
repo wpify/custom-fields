@@ -21,7 +21,7 @@
   &__bubble {
     background: white;
     padding: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
-    border-radius: 5px;
+    border-radius: var(--wpifycf-border-radius-md);
     border: 1px solid var(--wpifycf-border-color);
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   }
@@ -39,10 +39,10 @@
     padding: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
     cursor: pointer;
 
-    &.active {
+    &--active {
       border: 1px solid var(--wpifycf-border-color);
       border-bottom: 0;
-      background: #f6f7f7;
+      background: var(--wpifycf-grey);
       position: relative;
       top: 1px;
     }
@@ -76,7 +76,7 @@
   // Editor container for inline TinyMCE.
   &__editor-container {
     .mce-tinymce {
-      border-radius: 0 0 4px 4px;
+      border-radius: 0 0 var(--wpifycf-border-radius-md) var(--wpifycf-border-radius-md);
     }
   }
 
@@ -84,31 +84,31 @@
   &__preview-wrapper {
     position: relative;
     border: 1px solid var(--wpifycf-border-color);
-    border-radius: 4px;
-    background: #fff;
+    border-radius: var(--wpifycf-border-radius-md);
+    background: white;
     overflow: hidden;
 
-    &.is-disabled {
-      background: #f6f7f7;
+    &--disabled {
+      background: var(--wpifycf-grey);
     }
   }
 
   &__preview {
-    padding: 12px;
+    padding: var(--wpifycf-gap-3);
     min-height: 100px;
     cursor: pointer;
     transition: background-color 0.2s ease;
 
-    .is-disabled & {
+    .wpifycf-field-wysiwyg__preview-wrapper--disabled & {
       cursor: default;
     }
 
-    &:hover:not(.is-disabled &) {
-      background: #f9f9f9;
+    &:hover:not(.wpifycf-field-wysiwyg__preview-wrapper--disabled &) {
+      background: var(--wpifycf-grey-hover);
     }
 
     &:focus {
-      outline: 2px solid #2271b1;
+      outline: 2px solid var(--wpifycf-blue);
       outline-offset: -2px;
     }
 
@@ -134,46 +134,46 @@
   }
 
   &__placeholder {
-    color: #757575;
+    color: var(--wpifycf-text-placeholder);
     font-style: italic;
   }
 
   &__edit-button {
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: var(--wpifycf-gap-2);
+    right: var(--wpifycf-gap-2);
   }
 
   // Delay initialization styles.
   &__delay-wrapper {
     border: 1px solid var(--wpifycf-border-color);
-    border-radius: 4px;
-    background: #f6f7f7;
+    border-radius: var(--wpifycf-border-radius-md);
+    background: var(--wpifycf-grey);
     cursor: pointer;
     display: flex;
     flex-direction: column;
     transition: border-color 0.2s ease;
 
     &:hover {
-      border-color: #2271b1;
+      border-color: var(--wpifycf-blue);
     }
 
     &:focus {
-      outline: 2px solid #2271b1;
+      outline: 2px solid var(--wpifycf-blue);
       outline-offset: -2px;
     }
   }
 
   &__delay-message {
-    padding: 12px;
+    padding: var(--wpifycf-gap-3);
     text-align: center;
-    color: #646970;
-    font-size: 14px;
+    color: var(--wpifycf-text-muted);
+    font-size: var(--wpifycf-font-size-lg);
     border-bottom: 1px solid var(--wpifycf-border-color);
   }
 
   &__delay-preview {
-    padding: 12px;
+    padding: var(--wpifycf-gap-3);
     flex: 1;
     overflow: auto;
     max-height: 300px;
@@ -194,7 +194,7 @@
   max-width: 900px;
   width: 90%;
 
-  &.is-fullscreen {
+  &--fullscreen {
     max-width: none;
     width: 100%;
   }
@@ -205,7 +205,7 @@
 }
 
 .wpifycf-wysiwyg-modal__editor {
-  padding: 16px;
+  padding: var(--wpifycf-gap-4);
   padding-bottom: 0;
 
   // Remove TinyMCE border in modal context.
@@ -216,7 +216,7 @@
 }
 
 .wpifycf-wysiwyg-modal__actions {
-  padding: 16px;
+  padding: var(--wpifycf-gap-4);
   border-top: 1px solid var(--wpifycf-border-color);
-  background: #f6f7f7;
+  background: var(--wpifycf-grey);
 }

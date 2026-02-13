@@ -1,10 +1,41 @@
 :root {
-  --wpifycf-gap-1: 5px;
-  --wpifycf-gap-2: 10px;
-  --wpifycf-gap-3: 20px;
+  /* Spacing — 4px increment scale */
+  --wpifycf-gap-1: 4px;
+  --wpifycf-gap-2: 8px;
+  --wpifycf-gap-3: 12px;
+  --wpifycf-gap-4: 16px;
+  --wpifycf-gap-5: 20px;
+
+  /* Border */
   --wpifycf-border-color: #ddd;
-  --wpifycf-grey: #f6f7f7;
-  --wpifycf-grey-hover: #f0f0f1;
+  --wpifycf-border-radius-sm: 3px;
+  --wpifycf-border-radius-md: 4px;
+
+  /* Colors — brand */
   --wpifycf-blue: #2271b1;
   --wpifycf-blue-hover: #0a4b78;
+
+  /* Colors — greys */
+  --wpifycf-grey: #f6f7f7;
+  --wpifycf-grey-hover: #f0f0f1;
+  --wpifycf-text-muted: #646970;
+  --wpifycf-text-secondary: #50575e;
+  --wpifycf-text-placeholder: #757575;
+  --wpifycf-border-gutenberg: #c3c4c7;
+
+  /* Colors — error/danger */
+  --wpifycf-red: #d63638;
+  --wpifycf-red-light: #fcf0f1;
+
+  /* Font sizes */
+  --wpifycf-font-size-sm: 11px;
+  --wpifycf-font-size-md: 13px;
+  --wpifycf-font-size-lg: 14px;
+
+  /* Field widths */
+  --wpifycf-field-width-sm: 20em;
+  --wpifycf-field-width-md: 25em;
+  --wpifycf-field-width-lg: 35em;
+  --wpifycf-field-width-xl: 60em;
+  --wpifycf-label-width: 150px;
 }
