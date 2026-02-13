@@ -1,12 +1,12 @@
 form:has([data-context="options"]),
 form:has([data-context="site-options"]),
 form:has([data-context="user"]) {
-  // hide the whole row if the field is hidden
+  // Table layout (legacy/user screens): hide the whole row if the field is hidden.
   tr:has(td > .wpifycf-field-instance > [data-hide-field="true"]) {
     display: none;
   }
 
-  // hide the label of the field if there is label from custom fields
+  // Table layout (legacy/user screens): hide the native label if custom label is present.
   tr > th[scope="row"]:has(.wpifycf-field__label) > label:not(.wpifycf-field__label) {
     display: none;
   }
@@ -20,5 +20,33 @@ form:has([data-context="user"]) {
       padding-left: 0;
       padding-right: 0;
     }
+  }
+}
+
+form:has([data-context="options"]),
+form:has([data-context="site-options"]) {
+  .wpifycf-options-section {
+    margin-bottom: var(--wpifycf-gap-3);
+  }
+
+  .wpifycf-options-section > h2 {
+    margin: 0 0 var(--wpifycf-gap-2);
+    padding: 0;
+  }
+
+  .wpifycf-options-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wpifycf-gap-2);
+  }
+
+  .wpifycf-field-instance:has(input[data-hide-field='true']) {
+    display: none;
+  }
+
+  .wpifycf-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wpifycf-gap-2);
   }
 }

@@ -54,6 +54,38 @@ abstract class OptionsIntegration extends BaseIntegration {
 	 * @param string $class_name Optional. Additional CSS class for the field element.
 	 */
 	public function print_field( array $item, array $data_attributes = array(), string $tag = 'div', string $class_name = '' ): void {
+		if ( 'section_start' === ( $item['type'] ?? '' ) ) {
+			$classes = array_filter(
+				array(
+					'wpifycf-section',
+					$item['class'] ?? null,
+					$item['className'] ?? null,
+				),
+				fn( $value ) => is_string( $value ) && '' !== trim( $value ),
+			);
+			?>
+			<div<?php echo ! empty( $classes ) ? ' class="' . esc_attr( implode( ' ', $classes ) ) . '"' : ''; ?>
+				<?php
+				if ( ! empty( $item['attributes'] ) && is_array( $item['attributes'] ) ) {
+					foreach ( $item['attributes'] as $key => $value ) {
+						printf( ' %s="%s"', esc_attr( $key ), esc_attr( $value ) );
+					}
+				}
+				?>
+			>
+			<?php
+
+			return;
+		}
+
+		if ( 'section_end' === ( $item['type'] ?? '' ) ) {
+			?>
+			</div>
+			<?php
+
+			return;
+		}
+
 		if ( empty( $this->option_name ) ) {
 			$name = $item['id'];
 

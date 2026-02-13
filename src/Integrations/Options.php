@@ -441,7 +441,7 @@ class Options extends OptionsIntegration {
 					settings_fields( $this->option_group );
 				}
 
-				do_settings_sections( $this->menu_slug );
+				$this->render_fields( $this->normalize_items( $this->items ) );
 
 				if ( false !== $this->submit_button ) {
 					if ( is_array( $this->submit_button ) ) {
@@ -499,6 +499,54 @@ class Options extends OptionsIntegration {
 
 		if ( ! empty( $this->help_sidebar ) ) {
 			get_current_screen()->set_help_sidebar( $this->help_sidebar );
+		}
+	}
+
+	/**
+	 * Renders fields grouped by section without Settings API table markup.
+	 *
+	 * @param array $items Normalized items.
+	 *
+	 * @return void
+	 */
+	private function render_fields( array $items ): void {
+		$items_by_section = array();
+
+		foreach ( $items as $item ) {
+			$section_id = $this->sections[ $item['section'] ]['id'] ?? $this->default_section;
+
+			if ( ! isset( $items_by_section[ $section_id ] ) ) {
+				$items_by_section[ $section_id ] = array();
+			}
+
+			$items_by_section[ $section_id ][] = $item;
+		}
+
+		foreach ( $this->sections as $section ) {
+			$section_id    = $section['id'];
+			$section_items = $items_by_section[ $section_id ] ?? array();
+			$section_title = $section['title'] ?? $section['label'] ?? '';
+
+			if ( empty( $section_items ) && empty( $section_title ) && empty( $section['callback'] ) ) {
+				continue;
+			}
+			?>
+			<div class="wpifycf-options-section wpifycf-options-section--<?php echo esc_attr( $section_id ); ?>">
+				<?php if ( ! empty( $section_title ) ) : ?>
+					<h2><?php echo wp_kses_post( $section_title ); ?></h2>
+				<?php endif; ?>
+				<?php
+				if ( ! empty( $section['callback'] ) && is_callable( $section['callback'] ) ) {
+					call_user_func( $section['callback'], $section['args'] ?? array() );
+				}
+				?>
+				<div class="wpifycf-options-fields">
+					<?php foreach ( $section_items as $item ) : ?>
+						<?php $this->print_field( $item ); ?>
+					<?php endforeach; ?>
+				</div>
+			</div>
+			<?php
 		}
 	}
 
@@ -580,32 +628,6 @@ class Options extends OptionsIntegration {
 					),
 					'show_in_rest'      => false,
 					'default'           => array(),
-				),
-			);
-		}
-
-		foreach ( $this->sections as $id => $section ) {
-			add_settings_section(
-				$id,
-				$section['title'] ?? '',
-				$section['callback'] ?? '__return_true',
-				$this->menu_slug,
-				$section['args'] ?? array(),
-			);
-		}
-
-		foreach ( $items as $item ) {
-			$section = $this->sections[ $item['section'] ]['id'] ?? $this->default_section;
-
-			add_settings_field(
-				$item['id'],
-				$item['label'],
-				array( $this, 'print_field' ),
-				$this->menu_slug,
-				$section,
-				array(
-					'label_for' => $item['id'],
-					...$item,
 				),
 			);
 		}
