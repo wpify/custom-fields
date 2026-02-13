@@ -21,8 +21,9 @@ abstract class OptionsIntegration extends BaseIntegration {
 	 * @param string $context The context in which the app is used.
 	 * @param array  $tabs Tabs data to be used in the app.
 	 * @param array  $data_attributes Optional. Additional data attributes.
+	 * @param array  $items Optional. Prepared field items to embed as data-fields.
 	 */
-	public function print_app( string $context, array $tabs, array $data_attributes = array() ): void {
+	public function print_app( string $context, array $tabs, array $data_attributes = array(), array $items = array() ): void {
 		if ( ! apply_filters( 'wpifycf_print_app', true, $this, $context, $tabs, $data_attributes ) ) {
 			return;
 		}
@@ -36,6 +37,7 @@ abstract class OptionsIntegration extends BaseIntegration {
 			data-integration-id="<?php echo esc_attr( $integration_id ); ?>"
 			data-tabs="<?php echo esc_attr( $this->custom_fields->helpers->json_encode( $tabs ) ); ?>"
 			data-context="<?php echo esc_attr( $context ); ?>"
+			data-fields="<?php echo esc_attr( $this->custom_fields->helpers->json_encode( $items ) ); ?>"
 			<?php
 			foreach ( $data_attributes as $key => $value ) {
 				printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );
@@ -46,16 +48,41 @@ abstract class OptionsIntegration extends BaseIntegration {
 	}
 
 	/**
-	 * Prints a field element with specific data attributes.
+	 * Prepares items for embedding as JSON in the app container.
 	 *
-	 * @param array  $item Item data to print as field.
-	 * @param array  $data_attributes Optional. Additional data attributes.
-	 * @param string $tag Optional. HTML tag to use.
-	 * @param string $class_name Optional. Additional CSS class for the field element.
+	 * Extracts name-building and value-fetching logic from print_field() into a reusable method.
+	 *
+	 * @param array $items Normalized items to prepare.
+	 * @param array $data_attributes Optional. Additional data attributes (e.g. loop).
+	 *
+	 * @return array Prepared items with name, value, and loop set.
 	 */
-	public function print_field( array $item, array $data_attributes = array(), string $tag = 'div', string $class_name = '' ): void {
+	public function prepare_items_for_js( array $items, array $data_attributes = array() ): array {
+		$prepared = array();
+
+		foreach ( $items as $item ) {
+			$name = $this->build_field_name( $item['id'], $data_attributes );
+
+			$item['name']  = $name;
+			$item['value'] = $this->get_field( $item['id'], $item );
+			$item['loop']  = $data_attributes['loop'] ?? '';
+			$prepared[]    = $item;
+		}
+
+		return $prepared;
+	}
+
+	/**
+	 * Builds the input name attribute for a field.
+	 *
+	 * @param string $field_id The field ID.
+	 * @param array  $data_attributes Optional. Additional data attributes (e.g. loop).
+	 *
+	 * @return string The constructed field name.
+	 */
+	private function build_field_name( string $field_id, array $data_attributes = array() ): string {
 		if ( empty( $this->option_name ) ) {
-			$name = $item['id'];
+			$name = $field_id;
 
 			if ( isset( $data_attributes['loop'] ) ) {
 				$name .= '[' . $data_attributes['loop'] . ']';
@@ -67,8 +94,22 @@ abstract class OptionsIntegration extends BaseIntegration {
 				$name .= '[' . $data_attributes['loop'] . ']';
 			}
 
-			$name .= '[' . $item['id'] . ']';
+			$name .= '[' . $field_id . ']';
 		}
+
+		return $name;
+	}
+
+	/**
+	 * Prints a field element with specific data attributes.
+	 *
+	 * @param array  $item Item data to print as field.
+	 * @param array  $data_attributes Optional. Additional data attributes.
+	 * @param string $tag Optional. HTML tag to use.
+	 * @param string $class_name Optional. Additional CSS class for the field element.
+	 */
+	public function print_field( array $item, array $data_attributes = array(), string $tag = 'div', string $class_name = '' ): void {
+		$name = $this->build_field_name( $item['id'], $data_attributes );
 
 		$item['name']   = $name;
 		$item['value']  = $this->get_field( $item['id'], $item );

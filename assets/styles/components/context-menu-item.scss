@@ -1,13 +1,5 @@
 .menu-item-settings {
-  .wpifycf-field-instance:has(input[data-hide-field='true']) {
-    display: none;
-  }
-
   .wpifycf-app-instance {
-    margin-bottom: var(--wpifycf-gap-2);
-  }
-
-  .wpifycf-field-instance:not(:last-child) {
     margin-bottom: var(--wpifycf-gap-2);
   }
 }

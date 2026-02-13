@@ -295,15 +295,8 @@ class CouponOptions extends ItemsIntegration {
 		?>
 		<div class="options_group">
 			<?php
-			$this->print_app( 'coupon-options', $this->tabs );
-
-			foreach ( $items as $item ) {
-				?>
-				<div class="form-field">
-					<?php $this->print_field( $item ); ?>
-				</div>
-				<?php
-			}
+			$prepared = $this->prepare_items_for_js( $items );
+			$this->print_app( 'coupon-options', $this->tabs, array(), $prepared );
 			?>
 		</div>
 		<?php

@@ -8,13 +8,12 @@ import { useContext, useEffect, useMemo } from 'react';
 import { FieldWrapper } from '@/components/FieldWrapper';
 import { ControlWrapper } from '@/components/ControlWrapper';
 import { FieldDescription } from '@/components/FieldDescription';
-import { getFieldComponentByType, maybePortal } from '@/helpers/functions';
+import { getFieldComponentByType } from '@/helpers/functions';
 import { AppContext } from '@/components/AppContext';
 
 export function Field ({
   type,
   name,
-  node,
   renderOptions,
   description,
   value,
@@ -75,21 +74,7 @@ export function Field ({
     ...(props.render_options || {}),
   };
 
-  if (combinedRenderOptions.noLabel && combinedRenderOptions.isRoot) {
-    const closestTd = node?.closest('td');
-    const closestTr = closestTd?.closest('tr');
-    const closestTh = closestTr?.querySelector(':scope > th');
-
-    if (closestTd) {
-      closestTd.setAttribute('colspan', 2);
-    }
-
-    if (closestTh) {
-      closestTh.remove();
-    }
-  }
-
-  return maybePortal(isHidden
+  return isHidden
     ? hiddenField
     : (
       <FieldWrapper renderOptions={combinedRenderOptions}>
@@ -97,7 +82,6 @@ export function Field ({
           renderOptions={combinedRenderOptions}
           type={type}
           className="wpifycf-field__label"
-          node={node}
           isRoot={isRoot}
           {...props}
         />
@@ -105,7 +89,6 @@ export function Field ({
           {hiddenField}
           {FieldComponent.descriptionPosition === 'before' && (
             <FieldDescription
-              renderOptions={combinedRenderOptions}
               description={description}
               descriptionPosition="before"
             />
@@ -141,12 +124,11 @@ export function Field ({
           ))}
           {FieldComponent.descriptionPosition !== 'before' && (
             <FieldDescription
-              renderOptions={combinedRenderOptions}
               description={description}
               descriptionPosition="after"
             />
           )}
         </ControlWrapper>
       </FieldWrapper>
-    ), node);
+    );
 }

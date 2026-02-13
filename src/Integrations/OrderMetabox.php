@@ -242,15 +242,9 @@ class OrderMetabox extends ItemsIntegration {
 		}
 
 		wp_nonce_field( $this->id, $this->nonce );
-		$this->print_app( 'order-meta', $this->tabs );
 
-		foreach ( $items as $item ) {
-			?>
-			<div class="form-field">
-				<?php $this->print_field( $item ); ?>
-			</div>
-			<?php
-		}
+		$prepared = $this->prepare_items_for_js( $items );
+		$this->print_app( 'order-meta', $this->tabs, array(), $prepared );
 	}
 
 	/**

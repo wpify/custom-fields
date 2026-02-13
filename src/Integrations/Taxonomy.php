@@ -131,13 +131,10 @@ class Taxonomy extends ItemsIntegration {
 	public function render_add_form(): void {
 		$this->term_id = 0;
 		$this->enqueue();
-		$this->print_app( 'add_term', $this->tabs );
 
-		$items = $this->normalize_items( $this->items );
-
-		foreach ( $items as $item ) {
-			$this->print_field( $item, array(), 'div', 'form-field' );
-		}
+		$items    = $this->normalize_items( $this->items );
+		$prepared = $this->prepare_items_for_js( $items );
+		$this->print_app( 'add_term', $this->tabs, array(), $prepared );
 	}
 
 	/**
@@ -150,19 +147,16 @@ class Taxonomy extends ItemsIntegration {
 	public function render_edit_form( WP_Term $term ): void {
 		$this->term_id = $term->term_id;
 		$this->enqueue();
+
+		$items    = $this->normalize_items( $this->items );
+		$prepared = $this->prepare_items_for_js( $items );
 		?>
 		<tr class="form-field">
 			<td colspan="2">
-				<?php $this->print_app( 'edit_term', $this->tabs ); ?>
+				<?php $this->print_app( 'edit_term', $this->tabs, array(), $prepared ); ?>
 			</td>
 		</tr>
 		<?php
-
-		$items = $this->normalize_items( $this->items );
-
-		foreach ( $items as $item ) {
-			$this->print_field( $item, array(), 'tr' );
-		}
 	}
 
 	/**

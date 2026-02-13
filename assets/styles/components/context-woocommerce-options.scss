@@ -1,14 +1,6 @@
 .woocommerce_page_wc-settings {
-  .wpifycf-app-instance  {
+  .wpifycf-app-instance {
     margin-bottom: var(--wpifycf-gap-3);
-  }
-  .wpifycf-field-instance  {
-    padding: var(--wpifycf-gap-2) 0;
-    margin-bottom: var(--wpifycf-gap-2);
-  }
-
-  .wpifycf-field-instance:has(input[data-hide-field='true']) {
-    display: none;
   }
 
   .wpifycf-field__label {

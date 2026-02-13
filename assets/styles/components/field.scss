@@ -6,7 +6,7 @@
   }
 }
 
-.wpifycf-field-instance {
+.wpifycf-app-instance {
   container-type: inline-size;
 }
 
@@ -34,6 +34,7 @@
 
   &__control {
     flex: 1;
+    container-type: inline-size;
   }
 
   &__description {

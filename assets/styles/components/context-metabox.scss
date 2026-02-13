@@ -1,10 +1,5 @@
 .postbox-container .inside {
-  .wpifycf-app-instance,
-  .wpifycf-field-instance {
+  .wpifycf-app-instance {
     margin-bottom: var(--wpifycf-gap-3);
-  }
-
-  .wpifycf-field-instance:has(input[data-hide-field='true']) {
-    display: none;
   }
 }

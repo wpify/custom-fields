@@ -136,20 +136,6 @@ class SiteOptions extends OptionsIntegration {
 	public readonly array $items;
 
 	/**
-	 * List of the sections to be defined.
-	 *
-	 * @var array
-	 */
-	public readonly array $sections;
-
-	/**
-	 * Default section name.
-	 *
-	 * @var string
-	 */
-	public readonly string $default_section;
-
-	/**
 	 * Tabs used for the custom fields.
 	 *
 	 * @var array
@@ -219,33 +205,6 @@ class SiteOptions extends OptionsIntegration {
 			? __( 'Settings saved', 'wpify-custom-fields' )
 			: $args['success_message'];
 
-		if ( empty( $args['sections'] ) ) {
-			$args['sections'] = array();
-		}
-
-		$sections = array();
-
-		foreach ( $args['sections'] as $key => $section ) {
-			if ( empty( $section['id'] ) && is_string( $key ) ) {
-				$section['id'] = $key;
-			}
-
-			$sections[ $section['id'] ] = $section;
-		}
-
-		if ( empty( $sections ) ) {
-			$sections = array(
-				'default' => array(
-					'id'       => 'default',
-					'title'    => '',
-					'callback' => '__return_true',
-					'page'     => $this->menu_slug,
-				),
-			);
-		}
-
-		$this->sections = $sections;
-
 		$this->id = sanitize_title(
 			join(
 				'-',
@@ -256,11 +215,6 @@ class SiteOptions extends OptionsIntegration {
 				),
 			),
 		);
-
-		foreach ( $this->sections as $section ) {
-			$this->default_section = $section['id'];
-			break;
-		}
 
 		if ( ! defined( 'WP_CLI' ) || false === WP_CLI ) {
 			add_filter( 'network_edit_site_nav_links', array( $this, 'create_tab' ) );
@@ -387,9 +341,11 @@ class SiteOptions extends OptionsIntegration {
 					<?php
 				}
 
-				$this->print_app( 'site-options', $this->tabs );
 				settings_fields( $this->option_group );
-				do_settings_sections( $this->menu_slug );
+
+				$items    = $this->normalize_items( $this->items );
+				$prepared = $this->prepare_items_for_js( $items );
+				$this->print_app( 'site-options', $this->tabs, array(), $prepared );
 
 				if ( false !== $this->submit_button ) {
 					if ( is_array( $this->submit_button ) ) {
@@ -507,32 +463,6 @@ class SiteOptions extends OptionsIntegration {
 					'sanitize_callback' => $this->custom_fields->sanitize_option_value( $items ),
 					'show_in_rest'      => false,
 					'default'           => array(),
-				),
-			);
-		}
-
-		foreach ( $this->sections as $id => $section ) {
-			add_settings_section(
-				$id,
-				$section['label'] ?? '',
-				$section['callback'] ?? '__return_true',
-				$this->menu_slug,
-				$section['args'] ?? array(),
-			);
-		}
-
-		foreach ( $items as $item ) {
-			$section = $this->sections[ $item['section'] ]['id'] ?? $this->default_section;
-
-			add_settings_field(
-				$item['id'],
-				$item['label'],
-				array( $this, 'print_field' ),
-				$this->menu_slug,
-				$section,
-				array(
-					'label_for' => $item['id'],
-					...$item,
 				),
 			);
 		}

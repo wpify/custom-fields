@@ -220,13 +220,11 @@ class Comment extends ItemsIntegration {
 
 		$this->set_comment( $comment->comment_ID );
 		$this->enqueue();
-		$this->print_app( 'comment', $this->tabs );
 
 		wp_nonce_field( $this->id, $this->nonce );
 
-		foreach ( $items as $item ) {
-			$this->print_field( $item );
-		}
+		$prepared = $this->prepare_items_for_js( $items );
+		$this->print_app( 'comment', $this->tabs, array(), $prepared );
 	}
 
 	/**

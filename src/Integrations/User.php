@@ -161,29 +161,9 @@ class User extends ItemsIntegration {
 			<h3><?php echo esc_html( $this->title ); ?></h3>
 			<?php
 		}
-		$this->print_app( 'user', $this->tabs );
-		?>
-		<table class="form-table" role="presentation">
-			<tbody>
-			<?php
-			foreach ( $items as $item ) {
-				?>
-				<tr>
-					<th scope="row">
-						<label for="<?php echo esc_attr( $item['id'] ); ?>">
-							<?php echo esc_html( $item['label'] ); ?>
-						</label>
-					</th>
-					<td>
-						<?php $this->print_field( $item ); ?>
-					</td>
-				</tr>
-				<?php
-			}
-			?>
-			</tbody>
-		</table>
-		<?php
+
+		$prepared = $this->prepare_items_for_js( $items );
+		$this->print_app( 'user', $this->tabs, array(), $prepared );
 	}
 
 	/**

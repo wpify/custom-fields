@@ -161,20 +161,6 @@ class Options extends OptionsIntegration {
 	public readonly array $items;
 
 	/**
-	 * List of the sections to be defined.
-	 *
-	 * @var array
-	 */
-	public readonly array $sections;
-
-	/**
-	 * Default section name.
-	 *
-	 * @var string
-	 */
-	public readonly string $default_section;
-
-	/**
 	 * Tabs used for the custom fields.
 	 *
 	 * @var array
@@ -253,33 +239,6 @@ class Options extends OptionsIntegration {
 			? __( 'Settings saved', 'wpify-custom-fields' )
 			: $args['success_message'];
 
-		if ( empty( $args['sections'] ) ) {
-			$args['sections'] = array();
-		}
-
-		$sections = array();
-
-		foreach ( $args['sections'] as $key => $section ) {
-			if ( empty( $section['id'] ) && is_string( $key ) ) {
-				$section['id'] = $key;
-			}
-
-			$sections[ $section['id'] ] = $section;
-		}
-
-		if ( empty( $sections ) ) {
-			$sections = array(
-				'default' => array(
-					'id'       => 'default',
-					'title'    => '',
-					'callback' => '__return_true',
-					'page'     => $this->menu_slug,
-				),
-			);
-		}
-
-		$this->sections = $sections;
-
 		$this->id = sanitize_title(
 			join(
 				'-',
@@ -292,11 +251,6 @@ class Options extends OptionsIntegration {
 				),
 			),
 		);
-
-		foreach ( $this->sections as $section ) {
-			$this->default_section = $section['id'];
-			break;
-		}
 
 		if ( ! defined( 'WP_CLI' ) || false === WP_CLI ) {
 			if ( ! empty( $this->option_name ) ) {
@@ -435,13 +389,13 @@ class Options extends OptionsIntegration {
 					wp_nonce_field( $this->get_network_save_action() );
 				}
 
-				$this->print_app( 'options', $this->tabs );
-
 				if ( $this->type !== $this::TYPE_NETWORK ) {
 					settings_fields( $this->option_group );
 				}
 
-				do_settings_sections( $this->menu_slug );
+				$items    = $this->normalize_items( $this->items );
+				$prepared = $this->prepare_items_for_js( $items );
+				$this->print_app( 'options', $this->tabs, array(), $prepared );
 
 				if ( false !== $this->submit_button ) {
 					if ( is_array( $this->submit_button ) ) {
@@ -580,32 +534,6 @@ class Options extends OptionsIntegration {
 					),
 					'show_in_rest'      => false,
 					'default'           => array(),
-				),
-			);
-		}
-
-		foreach ( $this->sections as $id => $section ) {
-			add_settings_section(
-				$id,
-				$section['title'] ?? '',
-				$section['callback'] ?? '__return_true',
-				$this->menu_slug,
-				$section['args'] ?? array(),
-			);
-		}
-
-		foreach ( $items as $item ) {
-			$section = $this->sections[ $item['section'] ]['id'] ?? $this->default_section;
-
-			add_settings_field(
-				$item['id'],
-				$item['label'],
-				array( $this, 'print_field' ),
-				$this->menu_slug,
-				$section,
-				array(
-					'label_for' => $item['id'],
-					...$item,
 				),
 			);
 		}

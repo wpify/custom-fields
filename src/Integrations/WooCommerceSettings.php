@@ -240,13 +240,10 @@ class WooCommerceSettings extends OptionsIntegration {
 		}
 
 		$this->enqueue();
-		$this->print_app( 'woocommerce-options', $this->tabs );
 
-		$items = $this->normalize_items( $this->items );
-
-		foreach ( $items as $item ) {
-			$this->print_field( $item );
-		}
+		$items    = $this->normalize_items( $this->items );
+		$prepared = $this->prepare_items_for_js( $items );
+		$this->print_app( 'woocommerce-options', $this->tabs, array(), $prepared );
 	}
 
 	/**

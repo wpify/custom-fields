@@ -2,6 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Self-Maintenance
+When your changes invalidate or create gaps in this file, update it as part of the same task. Typical triggers:
+- Build commands or scripts change
+- New coding conventions or naming patterns are established
+- New field types, integrations, or major features are added
+- File/directory structure changes that affect documented paths
+- Conditional logic operators or API surface changes
+
+Keep updates minimal, match the existing style, and do not add session-specific or speculative content.
+
 ## Build/Test Commands
 - Start dev server: `npm run start`
 - Build for production: `npm run build`
@@ -150,3 +160,4 @@ Each condition requires:
 - Conditional logic lives in `Field.js`, `hooks.js` (useConditions), and `functions.js`
 - Hidden fields are still submitted but have `data-hide-field="true"` attribute
 - Conditions are evaluated in real-time as users interact with the form
+

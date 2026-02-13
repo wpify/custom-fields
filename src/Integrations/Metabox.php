@@ -268,13 +268,11 @@ class Metabox extends ItemsIntegration {
 
 		$this->set_post( $post );
 		$this->enqueue();
-		$this->print_app( 'metabox', $this->tabs );
 
 		wp_nonce_field( $this->id, $this->nonce );
 
-		foreach ( $items as $item ) {
-			$this->print_field( $item );
-		}
+		$prepared = $this->prepare_items_for_js( $items );
+		$this->print_app( 'metabox', $this->tabs, array(), $prepared );
 	}
 
 	/**

@@ -100,20 +100,11 @@ class MenuItem extends ItemsIntegration {
 	public function render( string $item_id ): void {
 		$this->item_id = $item_id;
 		$this->enqueue();
-		$this->print_app(
-			'menu-item',
-			$this->tabs,
-			array( 'loop' => $item_id ),
-		);
 
-		$items = $this->normalize_items( $this->items );
-
-		foreach ( $items as $item ) {
-			$this->print_field(
-				$item,
-				array( 'loop' => $item_id ),
-			);
-		}
+		$data_attributes = array( 'loop' => $item_id );
+		$items           = $this->normalize_items( $this->items );
+		$prepared        = $this->prepare_items_for_js( $items, $data_attributes );
+		$this->print_app( 'menu-item', $this->tabs, $data_attributes, $prepared );
 	}
 
 	/**

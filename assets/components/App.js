@@ -10,10 +10,8 @@ export function App ({ form }) {
   const { validity, validate, handleValidityChange } = useValidity({ form });
 
   const renderOptions = useMemo(() => ({
-    noFieldWrapper: ['options', 'edit_term', 'add_term'].includes(context),
-    noControlWrapper: false,
     isRoot: true,
-  }), [context]);
+  }), []);
 
   const filteredFields = applyFilters('wpifycf_definition', fields, values, { context });
 

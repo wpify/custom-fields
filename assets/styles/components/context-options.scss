@@ -1,24 +1,5 @@
-form:has([data-context="options"]),
-form:has([data-context="site-options"]),
-form:has([data-context="user"]) {
-  // hide the whole row if the field is hidden
-  tr:has(td > .wpifycf-field-instance > [data-hide-field="true"]) {
-    display: none;
-  }
-
-  // hide the label of the field if there is label from custom fields
-  tr > th[scope="row"]:has(.wpifycf-field__label) > label:not(.wpifycf-field__label) {
-    display: none;
-  }
-
-  tr:has(.wpifycf-field--no-label.wpifycf-field--is-root) {
-    > thead > th {
-      display: none;
-    }
-
-    > tbody > td {
-      padding-left: 0;
-      padding-right: 0;
-    }
-  }
+.wpifycf-app-instance[data-context="options"],
+.wpifycf-app-instance[data-context="site-options"],
+.wpifycf-app-instance[data-context="user"] {
+  margin-bottom: var(--wpifycf-gap-3);
 }

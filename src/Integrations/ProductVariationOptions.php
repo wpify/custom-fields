@@ -267,14 +267,12 @@ class ProductVariationOptions extends ItemsIntegration {
 		if ( is_callable( $this->callback ) ) {
 			call_user_func( $this->callback );
 		}
+		$data_attributes = array( 'loop' => $loop );
 		?>
 		<div class="options_group">
 			<?php
-			$this->print_app( 'product-variation', $this->tabs, array( 'loop' => $loop ) );
-
-			foreach ( $items as $item ) {
-				$this->print_field( $item, array( 'loop' => $loop ), 'div', 'form-field' );
-			}
+			$prepared = $this->prepare_items_for_js( $items, $data_attributes );
+			$this->print_app( 'product-variation', $this->tabs, $data_attributes, $prepared );
 			?>
 		</div>
 		<?php
