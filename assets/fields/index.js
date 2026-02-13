@@ -53,6 +53,7 @@ import Title from './Title';
 import Toggle from './Toggle';
 import Url from './Url';
 import Week from './Week';
+import Wrapper from './Wrapper';
 import Wysiwyg from './Wysiwyg';
 
 export default {
@@ -111,5 +112,6 @@ export default {
   toggle: Toggle,
   url: Url,
   week: Week,
+  wrapper: Wrapper,
   wysiwyg: Wysiwyg,
 }

@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { getFieldComponentByType } from '@/helpers/functions';
+import { flattenWrapperItems, getFieldComponentByType } from '@/helpers/functions';
 
 export function stringRequired (value) {
   return typeof value === 'string' && value.trim() !== '';
@@ -63,7 +63,7 @@ export function checkValidityGroupType (value = {}, field) {
   const validity = [];
 
   if (Array.isArray(field.items)) {
-    field.items.forEach(item => {
+    flattenWrapperItems(field.items).forEach(item => {
       const FieldComponent = getFieldComponentByType(item.type);
 
       if (typeof FieldComponent.checkValidity === 'function') {

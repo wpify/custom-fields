@@ -347,6 +347,7 @@ class ProductOptions extends ItemsIntegration {
 	 */
 	public function register_meta(): void {
 		$items = $this->normalize_items( $this->items );
+		$items = $this->custom_fields->flatten_items( $items );
 
 		foreach ( $items as $item ) {
 			register_post_meta(

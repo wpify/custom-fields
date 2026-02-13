@@ -362,6 +362,30 @@ class CustomFields {
 	}
 
 	/**
+	 * Recursively flattens wrapper items, hoisting their children to the parent level.
+	 *
+	 * Wrapper fields are purely visual containers and do not nest values.
+	 * This method is used by storage operations to iterate over actual data fields.
+	 *
+	 * @param array $items The items array, potentially containing wrapper items.
+	 *
+	 * @return array Flattened items with wrapper children promoted to the parent level.
+	 */
+	public function flatten_items( array $items ): array {
+		$result = array();
+
+		foreach ( $items as $item ) {
+			if ( 'wrapper' === ( $item['type'] ?? '' ) && ! empty( $item['items'] ) ) {
+				$result = array_merge( $result, $this->flatten_items( $item['items'] ) );
+			} else {
+				$result[] = $item;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Sanitizes a given item's value based on its type using a closure.
 	 *
 	 * @param array $item The item array which contains the type and other relevant information.
@@ -412,7 +436,7 @@ class CustomFields {
 			} elseif ( 'group' === $item['type'] ) {
 				$value           = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
 				$sanitized_value = $value;
-				foreach ( $item['items'] as $sub_item ) {
+				foreach ( $this->flatten_items( $item['items'] ) as $sub_item ) {
 					$sanitized_value[ $sub_item['id'] ] = $this->sanitize_item_value( $sub_item )( $value[ $sub_item['id'] ] ?? null );
 				}
 			} elseif ( 'link' === $item['type'] ) {
@@ -495,6 +519,8 @@ class CustomFields {
 	 * @return Closure A closure that accepts an array of values to be sanitized and returns the sanitized array.
 	 */
 	public function sanitize_option_value( array $items = array(), mixed $previous_value = array() ): Closure {
+		$items = $this->flatten_items( $items );
+
 		return function ( array $value = array() ) use ( $items, $previous_value ): array {
 			$next_value = is_array( $previous_value ) ? $previous_value : array();
 			foreach ( $items as $item ) {
@@ -558,6 +584,10 @@ class CustomFields {
 	 * @return mixed The default value for the item.
 	 */
 	public function get_default_value( array $item ): mixed {
+		if ( 'wrapper' === ( $item['type'] ?? '' ) ) {
+			return null;
+		}
+
 		if ( isset( $item['default'] ) ) {
 			$default_value = $item['default'];
 		} elseif ( 'date_range' === $item['type'] ) {

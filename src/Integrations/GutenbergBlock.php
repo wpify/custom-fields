@@ -414,6 +414,7 @@ class GutenbergBlock extends BaseIntegration {
 	 */
 	public function get_attributes(): array {
 		$items      = $this->normalize_items( $this->items );
+		$items      = $this->custom_fields->flatten_items( $items );
 		$attributes = array();
 
 		foreach ( $items as $item ) {

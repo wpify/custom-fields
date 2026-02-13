@@ -506,6 +506,7 @@ class Options extends OptionsIntegration {
 	 */
 	public function register_settings(): void {
 		$items = $this->normalize_items( $this->items );
+		$items = $this->custom_fields->flatten_items( $items );
 
 		if ( empty( $this->option_name ) ) {
 			foreach ( $items as $item ) {

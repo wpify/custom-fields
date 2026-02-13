@@ -1,4 +1,3 @@
-import { addFilter } from '@wordpress/hooks';
 import { useMulti } from '@/helpers/hooks';
 import clsx from 'clsx';
 import { Button } from '@/components/Button';
@@ -7,6 +6,7 @@ import { IconButton } from '@/components/IconButton';
 import { checkValidityMultiGroupType } from '@/helpers/validators';
 import { Field } from '@/components/Field';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { flattenWrapperItems } from '@/helpers/functions';
 
 function MultiGroup ({
   value = [],
@@ -30,7 +30,7 @@ function MultiGroup ({
   }, [value, onChange]);
 
   const defaultValue = useMemo(() => {
-    return props.items.reduce((acc, item) => {
+    return flattenWrapperItems(props.items).reduce((acc, item) => {
       acc[item.id] = item.default;
       return acc;
     }, {});

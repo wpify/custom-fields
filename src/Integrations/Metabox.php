@@ -236,6 +236,7 @@ class Metabox extends ItemsIntegration {
 	 */
 	public function register_meta(): void {
 		$items = $this->normalize_items( $this->items );
+		$items = $this->custom_fields->flatten_items( $items );
 
 		foreach ( $this->post_types as $post_type ) {
 			foreach ( $items as $item ) {

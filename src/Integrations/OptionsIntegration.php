@@ -61,12 +61,17 @@ abstract class OptionsIntegration extends BaseIntegration {
 		$prepared = array();
 
 		foreach ( $items as $item ) {
-			$name = $this->build_field_name( $item['id'], $data_attributes );
+			if ( 'wrapper' === ( $item['type'] ?? '' ) && ! empty( $item['items'] ) ) {
+				$item['items'] = $this->prepare_items_for_js( $item['items'], $data_attributes );
+				$prepared[]    = $item;
+			} else {
+				$name = $this->build_field_name( $item['id'], $data_attributes );
 
-			$item['name']  = $name;
-			$item['value'] = $this->get_field( $item['id'], $item );
-			$item['loop']  = $data_attributes['loop'] ?? '';
-			$prepared[]    = $item;
+				$item['name']  = $name;
+				$item['value'] = $this->get_field( $item['id'], $item );
+				$item['loop']  = $data_attributes['loop'] ?? '';
+				$prepared[]    = $item;
+			}
 		}
 
 		return $prepared;
@@ -180,7 +185,8 @@ abstract class OptionsIntegration extends BaseIntegration {
 	 * @return void
 	 */
 	public function set_fields( string $option_name, array $sanitized_values, array $items ): void {
-		$data = array();
+		$items = $this->custom_fields->flatten_items( $items );
+		$data  = array();
 
 		foreach ( $items as $item ) {
 			if ( isset( $sanitized_values[ $item['id'] ] ) ) {
@@ -225,6 +231,8 @@ abstract class OptionsIntegration extends BaseIntegration {
 
 		// Nonce verification not needed here, is verified by caller.
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
+
+		$items = $this->custom_fields->flatten_items( $items );
 
 		if ( ! empty( $this->option_name ) ) {
 			if ( is_null( $loop_id ) ) {

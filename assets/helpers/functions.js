@@ -201,6 +201,15 @@ export function evaluateConditions (data, conditions, currentPath) {
   return result;
 }
 
+export function flattenWrapperItems (items) {
+  if (!Array.isArray(items)) return [];
+  return items.flatMap(item =>
+    item.type === 'wrapper' && Array.isArray(item.items)
+      ? flattenWrapperItems(item.items)
+      : [item]
+  );
+}
+
 export function stripHtml(html) {
   const div = document.createElement('div');
   div.innerHTML = html;

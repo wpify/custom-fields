@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
-import { addFilter } from '@wordpress/hooks';
 import { Field } from '@/components/Field';
 import { checkValidityGroupType } from '@/helpers/validators';
-import { stripHtml } from '@/helpers/functions';
+import { flattenWrapperItems, stripHtml } from '@/helpers/functions';
 
 function Group ({
   id,
@@ -19,10 +18,11 @@ function Group ({
   setTitle,
 }) {
   const fieldValidity = validity?.reduce((acc, item) => typeof item === 'object' ? { ...acc, ...item } : acc, {});
+  const flatItems = useMemo(() => flattenWrapperItems(items), [items]);
 
   const [titles, setTitles] = useState(() => {
     const nextItems = {};
-    for (const item of items) {
+    for (const item of flatItems) {
       if (value[item.id] !== 'undefined' && (typeof value[item.id] === 'string' || typeof value[item.id] === 'number') && Boolean(value[item.id])) {
         nextItems[item.id] = String(value[item.id]);
       }
@@ -31,7 +31,7 @@ function Group ({
   });
 
   const [currentTitle, setCurrentTitle] = useState(() => {
-    for (const item of items) {
+    for (const item of flatItems) {
       if (typeof titles[item.id] !== 'undefined' && Boolean(titles[item.id])) {
         return String(titles[item.id]);
       }
@@ -43,7 +43,7 @@ function Group ({
     if (titles[id] !== title) {
       const nextTitles = { ...titles, [id]: stripHtml(title) };
       let nextCurrentTitle = '';
-      for (const item of items) {
+      for (const item of flatItems) {
         if (typeof nextTitles[item.id] !== 'undefined' && Boolean(nextTitles[item.id])) {
           nextCurrentTitle = String(nextTitles[item.id]);
           break;
@@ -57,7 +57,7 @@ function Group ({
         setCurrentTitle(nextCurrentTitle);
       }
     }
-  }, [setTitles, currentTitle, titles, items, value]);
+  }, [setTitles, currentTitle, titles, flatItems, value]);
 
   useEffect(() => {
     setTitle(currentTitle);
@@ -79,10 +79,13 @@ function Group ({
           {...field}
           value={value[field.id] || ''}
           onChange={handleChange(field.id)}
+          parentValue={value}
+          parentOnChange={onChange}
           htmlId={`${htmlId}.${field.id}`}
           validity={fieldValidity[field.id]}
           fieldPath={`${fieldPath}.${field.id}`}
           setTitle={handleSetTitle(field.id)}
+          setTitleFactory={handleSetTitle}
         />
       ))}
     </div>
