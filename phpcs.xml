@@ -152,4 +152,12 @@
         <exclude-pattern>/path/to/Tests/*Test\.php</exclude-pattern>
     </rule>
     -->
+
+    <!-- FieldFactory uses get_defined_vars() to collect named params, so they appear unused. -->
+    <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed">
+        <exclude-pattern>src/FieldFactory.php</exclude-pattern>
+    </rule>
+    <rule ref="Universal.NamingConventions.NoReservedKeywordParameterNames.defaultFound">
+        <exclude-pattern>src/FieldFactory.php</exclude-pattern>
+    </rule>
 </ruleset>

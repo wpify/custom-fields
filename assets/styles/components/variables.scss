@@ -1,5 +1,6 @@
 :root {
   /* Spacing — 4px increment scale */
+  --wpifycf-gap-0: 0;
   --wpifycf-gap-1: 4px;
   --wpifycf-gap-2: 8px;
   --wpifycf-gap-3: 12px;
@@ -37,5 +38,7 @@
   --wpifycf-field-width-md: 25em;
   --wpifycf-field-width-lg: 35em;
   --wpifycf-field-width-xl: 60em;
-  --wpifycf-label-width: 150px;
+  --wpifycf-label-width: 40%;
+  --wpifycf-label-min-width: 100px;
+  --wpifycf-label-max-width: 200px;
 }

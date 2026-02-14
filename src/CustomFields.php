@@ -56,12 +56,20 @@ class CustomFields {
 	public readonly DirectFileField $direct_file_field;
 
 	/**
+	 * FieldFactory class.
+	 *
+	 * @var FieldFactory
+	 */
+	public readonly FieldFactory $field_factory;
+
+	/**
 	 * Custom fields constructor.
 	 */
 	public function __construct() {
 		$this->helpers           = new Helpers();
 		$this->api               = new Api( $this, $this->helpers );
 		$this->direct_file_field = new DirectFileField( $this );
+		$this->field_factory     = new FieldFactory();
 		$this->init_temp_cleanup();
 	}
 

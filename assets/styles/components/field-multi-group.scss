@@ -46,19 +46,22 @@
   }
 
   &__content {
-    padding: var(--wpifycf-gap-2);
     display: grid;
     grid-template-rows: 1fr;
-    transition: all 0.3s;
+    padding: var(--wpifycf-gap-2);
+    overflow: hidden;
+    transition: grid-template-rows 0.3s ease, padding 0.3s ease, max-height 0.3s ease;
+    max-height: 100%;
   }
 
   &__item--collapsed &__content {
     grid-template-rows: 0fr;
     padding-top: 1px;
     padding-bottom: 1px;
+    max-height: 0;
   }
 
-  &__content .wpifycf-field-group {
+  &__content > * {
     overflow: hidden;
   }
 }

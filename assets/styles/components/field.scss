@@ -22,19 +22,20 @@
   }
 
   &__wrapper {
-    display: flex;
-    flex-flow: column;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: var(--wpifycf-gap-1);
 
     @container (inline-size > 600px) {
-      flex-flow: row wrap;
-      gap: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
+      &:has(.wpifycf-field__label) {
+        grid-template-columns: minmax(var(--wpifycf-label-min-width), var(--wpifycf-label-max-width)) 1fr;
+        gap: var(--wpifycf-gap-1) var(--wpifycf-gap-2);
+      }
     }
   }
 
   &__control {
-    flex: 1;
-    container-type: inline-size;
+    min-width: 0;
   }
 
   &__description {
@@ -53,7 +54,6 @@
   }
 
   &__label {
-    width: var(--wpifycf-label-width);
     font-weight: 600;
     line-height: 1.3;
     font-size: var(--wpifycf-font-size-lg);
