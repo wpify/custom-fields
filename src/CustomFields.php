@@ -383,7 +383,7 @@ class CustomFields {
 		$result = array();
 
 		foreach ( $items as $item ) {
-			if ( 'wrapper' === ( $item['type'] ?? '' ) && ! empty( $item['items'] ) ) {
+			if ( in_array( $item['type'] ?? '', array( 'wrapper', 'columns' ), true ) && ! empty( $item['items'] ) ) {
 				$result = array_merge( $result, $this->flatten_items( $item['items'] ) );
 			} else {
 				$result[] = $item;
@@ -592,7 +592,7 @@ class CustomFields {
 	 * @return mixed The default value for the item.
 	 */
 	public function get_default_value( array $item ): mixed {
-		if ( 'wrapper' === ( $item['type'] ?? '' ) ) {
+		if ( in_array( $item['type'] ?? '', array( 'wrapper', 'columns' ), true ) ) {
 			return null;
 		}
 

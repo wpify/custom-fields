@@ -61,7 +61,7 @@ abstract class OptionsIntegration extends BaseIntegration {
 		$prepared = array();
 
 		foreach ( $items as $item ) {
-			if ( 'wrapper' === ( $item['type'] ?? '' ) && ! empty( $item['items'] ) ) {
+			if ( in_array( $item['type'] ?? '', array( 'wrapper', 'columns' ), true ) && ! empty( $item['items'] ) ) {
 				$item['items'] = $this->prepare_items_for_js( $item['items'], $data_attributes );
 				$prepared[]    = $item;
 			} else {

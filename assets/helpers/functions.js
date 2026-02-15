@@ -204,7 +204,7 @@ export function evaluateConditions (data, conditions, currentPath) {
 export function flattenWrapperItems (items) {
   if (!Array.isArray(items)) return [];
   return items.flatMap(item =>
-    item.type === 'wrapper' && Array.isArray(item.items)
+    (item.type === 'wrapper' || item.type === 'columns') && Array.isArray(item.items)
       ? flattenWrapperItems(item.items)
       : [item]
   );

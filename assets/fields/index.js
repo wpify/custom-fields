@@ -1,6 +1,7 @@
 import Attachment from './Attachment';
 import Button from './Button';
 import Checkbox from './Checkbox';
+import Columns from './Columns';
 import Code from './Code';
 import Color from './Color';
 import Date from './Date';
@@ -61,6 +62,7 @@ export default {
   button: Button,
   checkbox: Checkbox,
   code: Code,
+  columns: Columns,
   color: Color,
   date: Date,
   date_range: DateRange,

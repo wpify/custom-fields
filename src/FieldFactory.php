@@ -1492,6 +1492,58 @@ class FieldFactory {
 	}
 
 	/**
+	 * Creates a columns layout field definition.
+	 *
+	 * @param array       $items          Child field definitions.
+	 * @param int|null    $columns        Number of columns (default 2).
+	 * @param string|null $gap            CSS gap override.
+	 * @param string|null $classname      CSS class for the columns element.
+	 * @param string|null $label          Field label.
+	 * @param string|null $description    Field description.
+	 * @param bool|null   $required       Whether the field is required.
+	 * @param mixed       $default        Default value.
+	 * @param bool|null   $disabled       Whether the field is disabled.
+	 * @param string|null $tab            Tab identifier.
+	 * @param string|null $class_name     CSS class name.
+	 * @param array|null  $conditions     Conditional display rules.
+	 * @param array|null  $attributes     HTML attributes.
+	 * @param bool|null   $unfiltered     Whether to skip sanitization.
+	 * @param array|null  $render_options Render options.
+	 * @param string|null $generator      Generator identifier.
+	 *
+	 * @return array Field definition array.
+	 */
+	public function columns(
+		array $items = array(),
+		?int $columns = null,
+		?string $gap = null,
+		?string $classname = null,
+		?string $label = null,
+		?string $description = null,
+		?bool $required = null,
+		mixed $default = self::UNSET,
+		?bool $disabled = null,
+		?string $tab = null,
+		?string $class_name = null,
+		?array $conditions = null,
+		?array $attributes = null,
+		?bool $unfiltered = null,
+		?array $render_options = null,
+		?string $generator = null,
+	): array {
+		return $this->build_field(
+			'columns',
+			array(
+				'items'     => $items,
+				'columns'   => $columns,
+				'gap'       => $gap,
+				'classname' => $classname,
+			),
+			$this->extract_common( get_defined_vars(), array( 'items', 'columns', 'gap', 'classname' ) ),
+		);
+	}
+
+	/**
 	 * Creates an inner blocks field definition for Gutenberg.
 	 *
 	 * @param array|null  $allowed_blocks Allowed block types.
