@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `wrapper` field type for visual grouping of fields without value nesting
+- `columns` field type for multi-column grid layout
+- `FieldFactory` class for programmatic field creation
+- `setTitle` support for all field components
+
+### Changed
+- Removed React portals and render fields inside a single app container
+- Switched field layout to CSS grid
+- Cleaned up CSS/SCSS styles and React classnames
+
+### Fixed
+- Active tab now preserved after saving options page
+
 ## [4.4.2] - 2026-02-05
 
 ### Fixed
