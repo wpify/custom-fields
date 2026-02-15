@@ -1,7 +1,9 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { addFilter } from '@wordpress/hooks'
 import { ToggleControl } from '@wordpress/components'
 import { checkValidityMultiBooleanType } from '@/helpers/validators'
+import { useFieldTitle } from '@/helpers/hooks'
+import { stripHtml } from '@/helpers/functions'
 import clsx from 'clsx'
 
 function MultiToggle ({
@@ -12,7 +14,17 @@ function MultiToggle ({
   options,
   className,
   disabled = false,
+  setTitle,
 }) {
+  const titleValue = useMemo(() => {
+    if (!Array.isArray(value) || value.length === 0 || !options) return '';
+    return value
+      .map(v => options.find(o => o.value === v))
+      .filter(Boolean)
+      .map(o => stripHtml(o.label))
+      .join(', ');
+  }, [value, options]);
+  useFieldTitle(setTitle, titleValue);
   const handleChange = useCallback(optionValue => checked => {
     const nextValue = Array.isArray(value) ? [...value] : []
 

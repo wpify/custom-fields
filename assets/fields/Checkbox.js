@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
 import { checkValidityBooleanType } from '@/helpers/validators';
@@ -15,13 +15,14 @@ function Checkbox ({
   disabled = false,
   setTitle,
 }) {
+  useEffect(() => {
+    if (typeof setTitle === 'function') {
+      setTitle(value ? stripHtml(title) : '');
+    }
+  }, [setTitle, value, title]);
+
   const handleChange = useCallback(event => {
     onChange(event.target.checked);
-    if (event.target.checked) {
-      setTitle(stripHtml(title));
-    } else {
-      setTitle('');
-    }
   }, [onChange]);
 
   return (

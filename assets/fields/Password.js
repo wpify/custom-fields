@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
 import { checkValidityStringType } from '@/helpers/validators';
+import { useFieldTitle } from '@/helpers/hooks';
 
 function Password ({
   id,
@@ -11,7 +12,9 @@ function Password ({
   attributes = {},
   className,
   disabled = false,
+  setTitle,
 }) {
+  useFieldTitle(setTitle, value ? '••••••' : '');
   const handleChange = useCallback(event => onChange(String(event.target.value)), [onChange]);
 
   return (

@@ -4,6 +4,7 @@ import { addFilter } from '@wordpress/hooks';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { checkValidityStringType } from '@/helpers/validators';
+import { useFieldTitle } from '@/helpers/hooks';
 
 export function Tel ({
   id,
@@ -15,7 +16,9 @@ export function Tel ({
   default_country: defaultCountry = 'US',
   className,
   disabled = false,
+  setTitle,
 }) {
+  useFieldTitle(setTitle, value);
   useEffect(() => {
     if (typeof value !== 'string') {
       onChange('');

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState, useRef } from 'react';
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { AttachmentItem } from '@/fields/Attachment';
-import { useSortableList, useMediaLibrary } from '@/helpers/hooks';
+import { useSortableList, useMediaLibrary, useFieldTitle } from '@/helpers/hooks';
 import { Button } from '@/components/Button';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
@@ -14,7 +14,9 @@ function MultiAttachment ({
   onChange,
   className,
   disabled = false,
+  setTitle,
 }) {
+  useFieldTitle(setTitle, Array.isArray(value) && value.length > 0 ? sprintf(_n('%d attachment', '%d attachments', value.length, 'wpify-custom-fields'), value.length) : '');
   useEffect(() => {
     if (!Array.isArray(value)) {
       onChange([]);

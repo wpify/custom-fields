@@ -1,6 +1,8 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { addFilter } from '@wordpress/hooks'
 import { checkValidityMultiBooleanType } from '@/helpers/validators'
+import { useFieldTitle } from '@/helpers/hooks'
+import { stripHtml } from '@/helpers/functions'
 import clsx from 'clsx'
 
 function MultiCheckbox ({
@@ -12,7 +14,18 @@ function MultiCheckbox ({
   attributes = {},
   disabled = false,
   className,
+  setTitle,
 }) {
+  const titleValue = useMemo(() => {
+    if (!Array.isArray(value) || value.length === 0 || !options) return '';
+    const labels = value.slice(0, 3).map(v => {
+      const opt = options.find(o => o.value === v);
+      return opt ? stripHtml(opt.label) : v;
+    }).filter(Boolean);
+    if (value.length > 3) return labels.join(', ') + ` (+${value.length - 3})`;
+    return labels.join(', ');
+  }, [value, options]);
+  useFieldTitle(setTitle, titleValue);
   const handleChange = useCallback(optionValue => event => {
     const nextValue = Array.isArray(value) ? [...value] : []
 

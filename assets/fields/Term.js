@@ -1,10 +1,11 @@
 import { addFilter } from '@wordpress/hooks';
-import { useTerms } from '@/helpers/hooks';
-import React, { useState, useEffect, useCallback } from 'react';
+import { useTerms, useFieldTitle } from '@/helpers/hooks';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { IconButton } from '@/components/IconButton';
 import { Select } from '@/fields/Select';
 import { __ } from '@wordpress/i18n';
 import { checkValidityNonZeroIntegerType } from '@/helpers/validators';
+import { stripHtml } from '@/helpers/functions';
 import clsx from 'clsx';
 
 function isTermExpanded (category, value) {
@@ -21,8 +22,28 @@ export function Term ({
   onChange,
   className,
   disabled = false,
+  setTitle,
 }) {
   const { data: terms, isError, isFetching } = useTerms({ taxonomy });
+
+  // For CategoryTree path, find the selected term name for setTitle
+  const hasTree = !isFetching && !isError && terms.length > 0 && terms.some(term => term.children);
+  const selectedTermName = useMemo(() => {
+    if (!hasTree || !terms || !value) return null;
+    const findTerm = (items, id) => {
+      for (const item of items) {
+        if (item.id === parseInt(id)) return stripHtml(item.name);
+        if (item.children) {
+          const found = findTerm(item.children, id);
+          if (found) return found;
+        }
+      }
+      return '';
+    };
+    return findTerm(terms, value);
+  }, [hasTree, terms, value]);
+  // When terms form a tree, we handle the title here; otherwise the <Select> child manages it via its own setTitle prop
+  useFieldTitle(hasTree ? setTitle : undefined, selectedTermName || '');
 
   let content;
 
@@ -52,6 +73,7 @@ export function Term ({
         onChange={onChange}
         options={terms.map(term => ({ value: term.id, label: term.name }))}
         disabled={disabled}
+        setTitle={setTitle}
       />
     );
   }

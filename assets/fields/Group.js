@@ -20,47 +20,32 @@ function Group ({
   const fieldValidity = validity?.reduce((acc, item) => typeof item === 'object' ? { ...acc, ...item } : acc, {});
   const flatItems = useMemo(() => flattenWrapperItems(items), [items]);
 
-  const [titles, setTitles] = useState(() => {
-    const nextItems = {};
-    for (const item of flatItems) {
-      if (value[item.id] !== 'undefined' && (typeof value[item.id] === 'string' || typeof value[item.id] === 'number') && Boolean(value[item.id])) {
-        nextItems[item.id] = String(value[item.id]);
-      }
-    }
-    return nextItems;
-  });
+  const [titles, setTitles] = useState({});
 
-  const [currentTitle, setCurrentTitle] = useState(() => {
+  const handleSetTitle = useCallback(id => title => {
+    const stripped = stripHtml(title);
+    setTitles(prev => {
+      if (prev[id] === stripped) return prev;
+      return { ...prev, [id]: stripped };
+    });
+  }, []);
+
+  const currentTitle = useMemo(() => {
     for (const item of flatItems) {
-      if (typeof titles[item.id] !== 'undefined' && Boolean(titles[item.id])) {
-        return String(titles[item.id]);
+      const title = titles[item.id];
+      if (title) return String(title);
+      const v = value?.[item.id];
+      if (v != null && v !== '' && (typeof v === 'string' || typeof v === 'number')) {
+        return String(v);
       }
     }
     return '';
-  });
-
-  const handleSetTitle = useCallback(id => title => {
-    if (titles[id] !== title) {
-      const nextTitles = { ...titles, [id]: stripHtml(title) };
-      let nextCurrentTitle = '';
-      for (const item of flatItems) {
-        if (typeof nextTitles[item.id] !== 'undefined' && Boolean(nextTitles[item.id])) {
-          nextCurrentTitle = String(nextTitles[item.id]);
-          break;
-        } else if (value[item.id] !== 'undefined' && (typeof value[item.id] === 'string' || typeof value[item.id] === 'number') && Boolean(value[item.id])) {
-          nextCurrentTitle = String(value[item.id]);
-          break;
-        }
-      }
-      setTitles(nextTitles);
-      if (nextCurrentTitle !== currentTitle) {
-        setCurrentTitle(nextCurrentTitle);
-      }
-    }
-  }, [setTitles, currentTitle, titles, flatItems, value]);
+  }, [titles, flatItems, value]);
 
   useEffect(() => {
-    setTitle(currentTitle);
+    if (typeof setTitle === 'function') {
+      setTitle(currentTitle);
+    }
   }, [currentTitle, setTitle]);
 
   const handleChange = useCallback(

@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
 import { checkValidityStringType } from '@/helpers/validators';
+import { useFieldTitle } from '@/helpers/hooks';
 
 function Color ({
   id,
@@ -11,7 +12,9 @@ function Color ({
   attributes = {},
   disabled = false,
   className,
+  setTitle,
 }) {
+  useFieldTitle(setTitle, value);
   const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
 
   return (

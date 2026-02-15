@@ -1,6 +1,8 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import clsx from 'clsx';
 import { checkValidityStringType } from '@/helpers/validators';
+import { useFieldTitle } from '@/helpers/hooks';
+import { stripHtml } from '@/helpers/functions';
 
 export function Radio ({
   id,
@@ -11,7 +13,13 @@ export function Radio ({
   attributes = {},
   className,
   disabled = false,
+  setTitle,
 }) {
+  const selectedLabel = useMemo(() => {
+    const option = options.find(o => (o.value || o) === value);
+    return option ? stripHtml(option.label || option) : '';
+  }, [options, value]);
+  useFieldTitle(setTitle, selectedLabel);
   const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
 
   return (

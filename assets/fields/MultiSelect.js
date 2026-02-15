@@ -1,6 +1,6 @@
 import { addFilter } from '@wordpress/hooks';
 import { Select as SelectControl } from '@/components/Select.js';
-import { useMulti, useOptions, useOtherFieldValues } from '@/helpers/hooks';
+import { useMulti, useOptions, useOtherFieldValues, useFieldTitle } from '@/helpers/hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { IconButton } from '@/components/IconButton';
 import { checkValidityMultiStringType } from '@/helpers/validators';
@@ -18,6 +18,7 @@ export function MultiSelect ({
   disabled,
   async_params: asyncParams = {},
   fieldPath,
+  setTitle,
 }) {
   useEffect(() => {
     if (!Array.isArray(value)) {
@@ -84,6 +85,14 @@ export function MultiSelect ({
     },
     [realOptions, value],
   );
+
+  const titleValue = useMemo(() => {
+    if (!Array.isArray(value) || value.length === 0) return '';
+    const labels = value.slice(0, 3).map(v => allOptions[v] || v).filter(Boolean);
+    if (value.length > 3) return labels.join(', ') + ` (+${value.length - 3})`;
+    return labels.join(', ');
+  }, [value, allOptions]);
+  useFieldTitle(setTitle, titleValue);
 
   const {
     containerRef,

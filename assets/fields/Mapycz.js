@@ -34,12 +34,10 @@ export function Mapycz ({
   const mapycz = useMapyCzApiKey();
 
   useEffect(() => {
-    if (value.longitude && value.latitude) {
-      setTitle(`${value.longitude}:${value.latitude}`);
-    } else {
-      setTitle('');
+    if (typeof setTitle === 'function') {
+      setTitle(value.longitude && value.latitude ? `${value.longitude}:${value.latitude}` : '');
     }
-  }, [value]);
+  }, [value, setTitle]);
 
   return (
     <div className={clsx('wpifycf-field-mapycz', `wpifycf-field-mapycz--${id}`, className)}>

@@ -3,9 +3,9 @@ import { useState, useRef } from '@wordpress/element';
 import { Button, Icon, Spinner } from '@wordpress/components';
 import { upload as uploadIcon, trash as trashIcon, page as pageIcon } from '@wordpress/icons';
 import { checkValidityStringType } from '../helpers/validators';
-import { useDirectFileUpload, useDirectFileInfo } from '../helpers/hooks';
+import { useDirectFileUpload, useDirectFileInfo, useFieldTitle } from '../helpers/hooks';
 
-function DirectFile({ id, htmlId, value, onChange, required, allowed_types, max_size, ...props }) {
+function DirectFile({ id, htmlId, value, onChange, required, allowed_types, max_size, setTitle, ...props }) {
 	const [uploading, setUploading] = useState(false);
 	const [progress, setProgress] = useState(0);
 	const [error, setError] = useState(null);
@@ -13,6 +13,9 @@ function DirectFile({ id, htmlId, value, onChange, required, allowed_types, max_
 	const fileInputRef = useRef(null);
 	const uploadMutation = useDirectFileUpload();
 	const fileInfo = useDirectFileInfo(value);
+
+	const fileName = value && typeof value === 'string' ? value.split('/').pop() : '';
+	useFieldTitle(setTitle, fileName);
 
 	const formatFileSize = (bytes) => {
 		if (!bytes) return '';

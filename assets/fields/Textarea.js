@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
 import { checkValidityStringType } from '@/helpers/validators';
+import { useFieldTitle } from '@/helpers/hooks';
 
 export function Textarea ({
   id,
@@ -12,7 +13,9 @@ export function Textarea ({
   className,
   disabled = false,
   counter = false,
+  setTitle,
 }) {
+  useFieldTitle(setTitle, value ? String(value).substring(0, 50) : '');
   const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
 
   return (

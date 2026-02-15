@@ -36,6 +36,45 @@ function MultiGroup ({
     }, {});
   }, [props.items]);
 
+  const [titles, setTitles] = useState(() => {
+    if (!Array.isArray(value)) {
+      return [];
+    }
+    return value.map(() => '');
+  });
+
+  const handleSetTitle = useCallback(index => title => {
+    setTitles(prev => {
+      if (prev[index] === title) return prev;
+      const next = [...prev];
+      next[index] = title;
+      return next;
+    });
+  }, []);
+
+  const handleMutate = useCallback(({ type, ...args }) => {
+    setTitles(prev => {
+      switch (type) {
+        case 'sort':
+          return args.indexMap.map(oldIdx => prev[oldIdx] || '');
+        case 'remove': {
+          const next = [...prev];
+          next.splice(args.index, 1);
+          return next;
+        }
+        case 'duplicate': {
+          const next = [...prev];
+          next.splice(args.index, 0, prev[args.index]);
+          return next;
+        }
+        case 'add':
+          return [...prev, ''];
+        default:
+          return prev;
+      }
+    });
+  }, []);
+
   const {
     add,
     remove,
@@ -58,25 +97,10 @@ function MultiGroup ({
     disabled_buttons,
     disabled,
     dragHandle: '.wpifycf__move-handle',
+    onMutate: handleMutate,
   });
 
   const fieldsValidity = validity?.reduce((acc, item) => typeof item === 'object' ? { ...acc, ...item } : acc, {});
-  const [titles, setTitles] = useState(() => {
-    if (!Array.isArray(value)) {
-      return [];
-    }
-    return value.map((val, index) => '#' + (index + 1));
-  });
-
-  const handleSetTitle = useCallback(index => title => {
-    if (titles[index] !== title) {
-      setTitles(titles => {
-        const nextTitles = [...titles];
-        nextTitles[index] = title;
-        return nextTitles;
-      });
-    }
-  }, [titles, setTitles]);
 
   return (
     <div className={clsx('wpifycf-field-multi-group', `wpifycf-field-multi-group--${props.id}`, props.attributes?.class, className)}>

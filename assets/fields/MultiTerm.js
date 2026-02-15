@@ -1,5 +1,5 @@
-import { useTerms } from '@/helpers/hooks';
-import { __ } from '@wordpress/i18n';
+import { useTerms, useFieldTitle } from '@/helpers/hooks';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { MultiSelect } from '@/fields/MultiSelect';
 import { CategoryTree } from '@/fields/Term';
 import { useMemo } from 'react';
@@ -15,7 +15,10 @@ export function MultiTerm ({
   onChange,
   className,
   disabled = false,
+  setTitle,
 }) {
+  useFieldTitle(setTitle, Array.isArray(value) && value.length > 0 ? sprintf(_n('%d term', '%d terms', value.length, 'wpify-custom-fields'), value.length) : '');
+
   const { data: terms, isError, isFetching } = useTerms({ taxonomy });
 
   const termOptions = useMemo(

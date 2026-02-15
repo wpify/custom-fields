@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import clsx from 'clsx';
 import { checkValidityStringType } from '@/helpers/validators';
+import { useFieldTitle } from '@/helpers/hooks';
 
 export function Text ({
   id,
@@ -11,7 +12,9 @@ export function Text ({
   className,
   disabled = false,
   counter = false,
+  setTitle,
 }) {
+  useFieldTitle(setTitle, value);
   const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
 
   return (

@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
 import { checkValidityDateTimeType } from '@/helpers/validators';
+import { useFieldTitle } from '@/helpers/hooks';
 
 export function Datetime ({
   id,
@@ -13,7 +14,9 @@ export function Datetime ({
   attributes = {},
   disabled = false,
   className,
+  setTitle,
 }) {
+  useFieldTitle(setTitle, value);
   const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
 
   return (

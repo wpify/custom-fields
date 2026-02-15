@@ -14,7 +14,7 @@ export function useSortableList ({ containerRef, draggable, handle, items, setIt
     const nextItems = [...items];
     const [movedItem] = nextItems.splice(event.oldIndex, 1);
     nextItems.splice(event.newIndex, 0, movedItem);
-    setItems(nextItems);
+    setItems(nextItems, event.oldIndex, event.newIndex);
   }, [items, setItems]);
 
   const stopPropagation = useCallback(e => e.stopPropagation(), []);
@@ -115,6 +115,14 @@ export function useAttachment (id) {
   return { attachment, setAttachment };
 }
 
+export function useFieldTitle (setTitle, titleValue) {
+  useEffect(() => {
+    if (typeof setTitle === 'function') {
+      setTitle(titleValue != null && titleValue !== '' ? String(titleValue) : '');
+    }
+  }, [setTitle, titleValue]);
+}
+
 export function useMulti ({
   value,
   onChange,
@@ -123,7 +131,8 @@ export function useMulti ({
   defaultValue,
   disabled_buttons = [],
   dragHandle,
-  disabled = false
+  disabled = false,
+  onMutate,
 }) {
   const containerRef = useRef(null);
   const [keyPrefix, setKeyPrefix] = useState(uuidv4());
@@ -146,10 +155,12 @@ export function useMulti ({
   }, [value]);
 
   const add = useCallback(() => {
-    onChange([...value, defaultValue]);
+    const nextValue = [...value, defaultValue];
+    onChange(nextValue);
     setCollapsed((prevCollapsed) => [...prevCollapsed, false]);
     setKeyPrefix(uuidv4());
-  }, [value, defaultValue, onChange]);
+    if (onMutate) onMutate({ type: 'add', value: nextValue, oldValue: value });
+  }, [value, defaultValue, onChange, onMutate]);
 
   const remove = useCallback(
     (index) => () => {
@@ -164,13 +175,16 @@ export function useMulti ({
           nextCollapsed.splice(index, 1);
           return nextCollapsed;
         });
+
+        if (onMutate) onMutate({ type: 'remove', value: nextValues, oldValue: value, index });
       } else {
         onChange([]);
         setCollapsed([]);
         setKeyPrefix(uuidv4());
+        if (onMutate) onMutate({ type: 'remove', value: [], oldValue: value, index });
       }
     },
-    [value, onChange],
+    [value, onChange, onMutate],
   );
 
   const duplicate = useCallback(
@@ -185,8 +199,10 @@ export function useMulti ({
         nextCollapsed.splice(index + 1, 0, false);
         return nextCollapsed;
       });
+
+      if (onMutate) onMutate({ type: 'duplicate', value: nextValues, oldValue: value, index });
     },
-    [onChange, value],
+    [onChange, value, onMutate],
   );
 
   const handleChange = useCallback(
@@ -199,21 +215,25 @@ export function useMulti ({
   );
 
   const handleSort = useCallback(
-    (nextValue) => {
+    (nextValue, oldIndex, newIndex) => {
       if (!disabled) {
         setKeyPrefix(uuidv4());
         onChange(nextValue);
 
+        // Build index map from old/new indices: compute where each item in the new order was in the old order
+        const indexMap = Array.from({ length: nextValue.length }, (_, i) => i);
+        indexMap.splice(oldIndex, 1);
+        indexMap.splice(newIndex, 0, oldIndex);
+
         // Reorder the collapsed array to match the new order
         setCollapsed((prevCollapsed) => {
-          return nextValue.map((_, newIndex) => {
-            const oldIndex = value.findIndex((item) => item === nextValue[newIndex]);
-            return prevCollapsed[oldIndex];
-          });
+          return indexMap.map((idx) => prevCollapsed[idx]);
         });
+
+        if (onMutate) onMutate({ type: 'sort', value: nextValue, oldValue: value, indexMap });
       }
     },
-    [onChange, value, disabled],
+    [onChange, value, disabled, onMutate],
   );
 
   useSortableList({

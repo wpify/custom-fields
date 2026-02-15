@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
 import { normalizeUrl } from '@/helpers/functions';
 import { checkValidityStringType } from '@/helpers/validators';
+import { useFieldTitle } from '@/helpers/hooks';
 
 export function Url ({
   id,
@@ -12,7 +13,9 @@ export function Url ({
   attributes = {},
   className,
   disabled = false,
+  setTitle,
 }) {
+  useFieldTitle(setTitle, value);
   const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
 
   const handleBlur = useCallback(event => {

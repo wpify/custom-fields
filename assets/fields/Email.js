@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
 import { checkValidityEmailType } from '@/helpers/validators';
+import { useFieldTitle } from '@/helpers/hooks';
 
 export function Email ({
   id,
@@ -11,7 +12,9 @@ export function Email ({
   attributes = {},
   disabled = false,
   className,
+  setTitle,
 }) {
+  useFieldTitle(setTitle, value);
   const handleChange = useCallback(function (event) {
     if (typeof onChange === 'function') {
       onChange(event.target.value);

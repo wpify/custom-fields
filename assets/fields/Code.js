@@ -13,6 +13,7 @@ import { xml } from '@codemirror/lang-xml';
 import { json } from '@codemirror/lang-json';
 import { EditorView } from '@codemirror/view'
 import { checkValidityStringType } from '@/helpers/validators';
+import { useFieldTitle } from '@/helpers/hooks';
 
 export function Code ({
   id,
@@ -24,7 +25,9 @@ export function Code ({
   attributes = {},
   className,
   disabled = false,
+  setTitle,
 }) {
+  useFieldTitle(setTitle, value ? String(value).substring(0, 50) : '');
   const extensions = [EditorView.lineWrapping];
   const languageExtension = getLanguageExtension(language);
 

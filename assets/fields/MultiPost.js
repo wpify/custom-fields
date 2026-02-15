@@ -1,8 +1,9 @@
 import { addFilter } from '@wordpress/hooks';
 import { useCallback, useEffect } from 'react';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { PostSelect } from '@/components/PostSelect';
 import { PostPreview } from '@/fields/Post';
-import { useMulti, usePosts } from '@/helpers/hooks';
+import { useMulti, usePosts, useFieldTitle } from '@/helpers/hooks';
 import { checkValidityMultiNonZeroType } from '@/helpers/validators';
 import clsx from 'clsx';
 
@@ -13,7 +14,10 @@ export function MultiPost ({
   post_type: postType,
   className,
   disabled = false,
+  setTitle,
 }) {
+  useFieldTitle(setTitle, Array.isArray(value) && value.length > 0 ? sprintf(_n('%d post', '%d posts', value.length, 'wpify-custom-fields'), value.length) : '');
+
   useEffect(() => {
     if (!Array.isArray(value)) {
       onChange([]);

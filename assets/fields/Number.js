@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
 import { checkValidityNumberType } from '@/helpers/validators';
+import { useFieldTitle } from '@/helpers/hooks';
 
 export function NumberInput ({
   id,
@@ -14,7 +15,9 @@ export function NumberInput ({
   attributes = {},
   className,
   disabled = false,
+  setTitle,
 }) {
+  useFieldTitle(setTitle, value);
   const handleChange = useCallback(event => onChange(Number(event.target.value)), [onChange]);
 
   return (

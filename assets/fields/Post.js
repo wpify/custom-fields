@@ -3,6 +3,7 @@ import { addFilter } from '@wordpress/hooks';
 import { PostSelect } from '@/components/PostSelect';
 import { IconButton } from '@/components/IconButton';
 import { checkValidityNumberType } from '@/helpers/validators';
+import { useFieldTitle } from '@/helpers/hooks';
 import clsx from 'clsx';
 import defaultThumbnail from '@/images/placeholder-image.svg';
 import { stripHtml } from '@/helpers/functions';
@@ -14,8 +15,10 @@ export function Post ({
   post_type: postType,
   className,
   disabled = false,
+  setTitle,
 }) {
   const [selected, setSelected] = useState(null);
+  useFieldTitle(setTitle, selected ? stripHtml(selected.title) : '');
   const handleDelete = useCallback(() => onChange(null), [onChange]);
 
   return (

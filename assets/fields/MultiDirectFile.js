@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState, useRef } from 'react';
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button, Icon, Spinner } from '@wordpress/components';
 import { upload as uploadIcon, trash as trashIcon, page as pageIcon } from '@wordpress/icons';
-import { useSortableList, useDirectFileUpload, useDirectFileInfo } from '@/helpers/hooks';
+import { useSortableList, useDirectFileUpload, useDirectFileInfo, useFieldTitle } from '@/helpers/hooks';
 import { IconButton } from '@/components/IconButton';
 import clsx from 'clsx';
 import { checkValidityMultiNonZeroType } from '@/helpers/validators';
@@ -118,7 +118,10 @@ function MultiDirectFile({
 	disabled = false,
 	allowed_types,
 	max_size,
+	setTitle,
 }) {
+	useFieldTitle(setTitle, Array.isArray(value) && value.length > 0 ? sprintf(_n('%d file', '%d files', value.length, 'wpify-custom-fields'), value.length) : '');
+
 	useEffect(() => {
 		if (!Array.isArray(value)) {
 			onChange([]);

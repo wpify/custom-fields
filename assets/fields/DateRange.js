@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import clsx from 'clsx';
 import { checkValidityDateRangeType } from '@/helpers/validators';
+import { useFieldTitle } from '@/helpers/hooks';
 
 export function DateRange ({
   id,
@@ -12,11 +13,14 @@ export function DateRange ({
   max,
   disabled = false,
   className,
+  setTitle,
 }) {
   // Normalize value to array format internally
   const normalizedValue = Array.isArray(value) ? value : [null, null];
   const startDate = normalizedValue[0] || '';
   const endDate = normalizedValue[1] || '';
+
+  useFieldTitle(setTitle, [startDate, endDate].filter(Boolean).join(' — '));
 
   // Calculate dynamic min/max constraints
   // Start date max: the lesser of endDate and max
