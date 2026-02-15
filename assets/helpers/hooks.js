@@ -535,6 +535,13 @@ export function useValidity ({ form } = {}) {
       event.target.querySelectorAll('.submitbox .spinner.is-active').forEach(el => el.classList.remove('is-active'));
       setValidate(true);
     } else {
+      const hash = window.location.hash;
+      if (hash) {
+        const referer = event.target.querySelector('input[name="_wp_http_referer"]');
+        if (referer) {
+          referer.value = referer.value.replace(/#.*$/, '') + hash;
+        }
+      }
       setValidate(false);
     }
   }, [validity, setValidate]);
