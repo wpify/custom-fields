@@ -23,4 +23,5 @@
 * [Order Metabox](integrations/order-metabox.md)
 * [WooCommerce Settings](integrations/woocommerce-settings.md)
 * [Subscription Metabox](integrations/subscription-metabox.md)
+* [Coupon Options](integrations/coupon-options.md)
 * [WooCommerce Membership Plan Options](integrations/wc-membership-plan-options.md)

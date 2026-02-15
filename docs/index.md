@@ -87,6 +87,26 @@ Organize your custom fields into tabs.
 
 Learn how to create new custom field types.
 
+### [► Field Factory](features/field-factory.md)
+
+Build field definitions with a fluent, IDE-friendly PHP API.
+
+### [► Generators](features/generators.md)
+
+Auto-populate field values (e.g., UUID) on first render.
+
+### [► Validation](features/validation.md)
+
+Client-side validation system for all field types.
+
+### [► REST API](features/rest-api.md)
+
+Internal REST endpoints used by field components.
+
+### [► Type Aliases](features/type-aliases.md)
+
+Backward-compatible field type name mappings.
+
 ## Migration guides
 
 * [From v3.x to v4.x migration guide](migration-3-to-4.md)

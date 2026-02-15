@@ -191,6 +191,7 @@ This is useful for dependent dropdowns, dynamic field values based on other fiel
 * [Mapy.cz](field-types/mapycz.md) `mapycz`
 * [WYSIWYG editor (TinyMCE)](field-types/wysiwyg.md) `wysiwyg`
 * [Inner Blocks](field-types/inner_blocks.md) `inner_blocks`
+* [Wrapper](field-types/wrapper.md) `wrapper`
 
 ## Repeater field types
 
