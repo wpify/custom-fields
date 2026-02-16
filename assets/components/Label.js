@@ -14,6 +14,10 @@ export function Label ({
     return null;
   }
 
+  if (!label) {
+    return <span className={`wpifycf-field__label wpifycf-field__label--${type}`} />;
+  }
+
   return (
     <label
       htmlFor={htmlId}
