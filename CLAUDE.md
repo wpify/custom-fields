@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-WPify Custom Fields — WordPress plugin providing 59 field types across 15 integration points (metaboxes, options pages, taxonomy terms, users, WooCommerce products/orders/coupons, Gutenberg blocks, etc.). PHP 8.1+ / WordPress 6.2+ / React 18.
+WPify Custom Fields — WordPress plugin providing 58 field types across 15 integration points (metaboxes, options pages, taxonomy terms, users, WooCommerce products/orders/coupons, Gutenberg blocks, etc.). PHP 8.1+ / WordPress 6.2+ / React 18.
 
 Entry point: `custom-fields.php` → singleton `wpify_custom_fields()` returns `CustomFields` instance.
 
