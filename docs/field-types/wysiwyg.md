@@ -1,6 +1,6 @@
 # WYSIWYG Field Type
 
-The WYSIWYG (What You See Is What You Get) field type provides a rich text editor for creating formatted content. It integrates WordPress's TinyMCE editor, offering a familiar interface for creating HTML content with buttons for text formatting, links, lists, and more.
+The WYSIWYG (What You See Is What You Get) field type provides a rich text editor powered by WordPress's TinyMCE, offering a familiar interface for creating HTML content with formatting, links, lists, and more.
 
 ## Field Type: `wysiwyg`
 
@@ -15,72 +15,61 @@ array(
 
 ## Properties
 
-### Default Field Properties
-
-These properties are available for all field types:
-
-- `id` _(string)_ - Unique identifier for the field
-- `type` _(string)_ - Must be set to `wysiwyg` for this field type
-- `label` _(string)_ - The field label displayed in the admin interface
-- `description` _(string)_ - Help text displayed below the field
-- `required` _(boolean)_ - Whether the field must have a value
-- `tab` _(string)_ - The tab ID where this field should appear (if using tabs)
-- `className` _(string)_ - Additional CSS class for the field container
-- `conditions` _(array)_ - Conditions that determine when to show this field
-- `disabled` _(boolean)_ - Whether the field should be disabled
-- `default` _(string)_ - Default HTML content for the editor
-- `attributes` _(array)_ - HTML attributes to add to the field
-- `unfiltered` _(boolean)_ - Whether the value should remain unfiltered when saved
-- `render_options` _(array)_ - Options for customizing field rendering
+For Default Field Properties, see [Field Types Definition](../field-types.md).
 
 ### Specific Properties
 
-#### `height` _(integer)_ - Optional, default: `200`
+#### `height` _(integer)_ — Optional
 
-The height of the editor in pixels. This controls the vertical size of the editing area.
+The height of the editor in pixels. Defaults to `200`.
 
-## User Interface
+#### `toolbar` _(string)_ — Optional
 
-The WYSIWYG field provides a comprehensive editing experience with:
+The toolbar configuration for the editor. Controls which formatting options are available.
 
-1. **Visual/HTML Tabs**: Switch between visual editing and HTML code view
-2. **Formatting Toolbar**: Standard WordPress editor toolbar with formatting options
-3. **Content Area**: The main editing area where content is created and formatted
-4. **Modal Dialog**: When used within the Gutenberg editor, the WYSIWYG opens in a modal dialog
+#### `delay` _(boolean)_ — Optional
+
+When set to `true`, delays the initialization of the editor until the field is interacted with.
+
+#### `tabs` _(string)_ — Optional
+
+Controls the visibility of Visual/HTML editing tabs in the editor.
+
+#### `force_modal` _(boolean)_ — Optional
+
+When set to `true`, forces the editor to always open in a modal dialog regardless of context.
 
 ## Stored Value
 
-The field stores the content as HTML markup in the database.
+The field stores the content as an HTML string in the database.
 
 ## Example Usage
 
 ### Basic Content Editor
 
 ```php
-'product_description' => array(
+array(
 	'type'        => 'wysiwyg',
 	'id'          => 'product_description',
 	'label'       => 'Product Description',
 	'description' => 'Add a detailed product description with formatting.',
 	'height'      => 300,
-),
+)
 ```
 
 ### Editor with Initial Content
 
 ```php
-'terms_conditions' => array(
-	'type'        => 'wysiwyg',
-	'id'          => 'terms_conditions',
-	'label'       => 'Terms and Conditions',
-	'description' => 'Modify the default terms and conditions as needed.',
-	'default'     => '<h3>Terms and Conditions</h3>
-	                 <p>Welcome to our website. If you continue to browse and use this website, you are agreeing to comply with and be bound by the following terms and conditions of use.</p>
-	                 <p><strong>The content of the pages of this website is for your general information and use only.</strong> It is subject to change without notice.</p>',
-),
+array(
+	'type'    => 'wysiwyg',
+	'id'      => 'terms_conditions',
+	'label'   => 'Terms and Conditions',
+	'default' => '<h3>Terms and Conditions</h3><p>Welcome to our website.</p>',
+	'height'  => 400,
+)
 ```
 
-### Using WYSIWYG Content in Your Theme
+### Using Values in Your Theme
 
 ```php
 // Get the WYSIWYG content from the meta field
@@ -88,27 +77,24 @@ $product_description = get_post_meta( get_the_ID(), 'product_description', true 
 
 if ( ! empty( $product_description ) ) {
 	echo '<div class="product-description">';
-	
-	// Apply WordPress filters to the content (optional)
-	echo apply_filters( 'the_content', $product_description );
-	
-	// Or output the raw HTML content directly
-	// echo $product_description;
-	
+
+	// Apply WordPress filters for auto-paragraphs and other content features
+	echo wp_kses_post( apply_filters( 'the_content', $product_description ) );
+
 	echo '</div>';
 }
 ```
 
-### WYSIWYG Field with Conditional Logic
+### With Conditional Logic
 
 ```php
-'show_extra_content' => array(
+array(
 	'type'  => 'toggle',
 	'id'    => 'show_extra_content',
 	'label' => 'Additional Content',
 	'title' => 'Include additional content',
 ),
-'extra_content' => array(
+array(
 	'type'        => 'wysiwyg',
 	'id'          => 'extra_content',
 	'label'       => 'Additional Content',
@@ -117,41 +103,27 @@ if ( ! empty( $product_description ) ) {
 	'conditions'  => array(
 		array( 'field' => 'show_extra_content', 'value' => true ),
 	),
-),
+)
 ```
 
-## Modes
+## Field Factory
 
-The WYSIWYG editor provides two editing modes:
+```php
+$f = new \Wpify\CustomFields\FieldFactory();
 
-### Visual Editor Mode
-
-The visual mode provides a WYSIWYG interface with formatting buttons similar to word processors. This is suitable for most users who want to create formatted content without writing HTML code directly.
-
-### HTML Mode
-
-The HTML mode provides a code editor view where you can directly edit the HTML markup. This is useful for:
-- Adding custom HTML elements not available in the visual editor
-- Fine-tuning the HTML structure
-- Adding custom attributes to elements
-- Including embedded content like iframes
-
-## Gutenberg Integration
-
-When used within the Gutenberg editor, the WYSIWYG field behaves slightly differently:
-
-1. It initially displays as a preview of the content
-2. Clicking the content or the "Edit" button opens a modal dialog with the full editor
-3. The modal includes a fullscreen option for larger editing space
-4. Changes are applied when clicking the "OK" button
+$f->wysiwyg(
+	label: 'Content',
+	height: 300,
+	toolbar: 'full',
+);
+```
 
 ## Notes
 
-- The WYSIWYG field uses WordPress's TinyMCE editor, providing a familiar editing experience
-- The editor includes the standard WordPress formatting options
-- Content is stored as HTML, which can be output directly or processed with `apply_filters( 'the_content', $content )`
-- The field tracks changes and updates the value as you type
-- For simple text without formatting, consider using the `textarea` field type instead
-- For code editing with syntax highlighting, use the `code` field type
-- The field doesn't support file uploads directly through the editor - use separate attachment fields
-- When displaying WYSIWYG content, apply WordPress's content filters with `apply_filters( 'the_content', $content )` to enable auto-paragraphs and other WordPress content features
+- The WYSIWYG field uses WordPress's TinyMCE editor, providing a familiar editing experience with standard formatting options
+- The editor provides two editing modes: Visual (WYSIWYG) and HTML (code view) for direct markup editing
+- When used within the Gutenberg editor, the field displays as a content preview; clicking it opens a modal dialog with the full editor and a fullscreen option
+- Content is stored as HTML, which can be output with `wp_kses_post( apply_filters( 'the_content', $content ) )` to enable auto-paragraphs and other WordPress content features
+- For simple text without formatting, consider using the [`textarea`](textarea.md) field type instead
+- For code editing with syntax highlighting, use the [`code`](code.md) field type instead
+- The field does not support file uploads directly through the editor; use separate [`attachment`](attachment.md) fields for media

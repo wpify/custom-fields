@@ -19,27 +19,11 @@ array(
 
 ## Properties
 
-### Default Field Properties
-
-These properties are available for all field types:
-
-- `id` _(string)_ - Unique identifier for the field
-- `type` _(string)_ - Must be set to `radio` for this field type
-- `label` _(string)_ - The field label displayed in the admin interface
-- `description` _(string)_ - Help text displayed below the field
-- `required` _(boolean)_ - Whether the field must have a value selected
-- `tab` _(string)_ - The tab ID where this field should appear (if using tabs)
-- `className` _(string)_ - Additional CSS class for the field container
-- `conditions` _(array)_ - Conditions that determine when to show this field
-- `disabled` _(boolean)_ - Whether the field should be disabled
-- `default` _(string)_ - Default selected value
-- `attributes` _(array)_ - HTML attributes to add to the field
-- `unfiltered` _(boolean)_ - Whether the value should remain unfiltered when saved
-- `render_options` _(array)_ - Options for customizing field rendering
+For Default Field Properties, see [Field Types Definition](../field-types.md).
 
 ### Specific Properties
 
-#### `options` _(array|callable)_ - Required
+#### `options` _(array|callable)_ — Required
 
 An associative array of options where the keys are the values to store and the array values are the labels to display. **Please be aware that value must be always string!** Alternatively, you can use an array of objects with `value` and `label` properties:
 
@@ -72,7 +56,7 @@ You have to define the `custom_get_sizes` function in your theme or plugin:
 ```php
 function custom_get_sizes( array $args ): array {
 	// Perform any logic to fetch or generate options
-	
+
 	return array(
 		'small'  => 'Small',
 		'medium' => 'Medium',
@@ -88,7 +72,7 @@ The function accepts an array of arguments with the following keys:
 
 The function should return the option that is currently selected (value) and options that match the search term. The returned array should be in the same format as the static options.
 
-#### `async_params` _(array)_ - Optional
+#### `async_params` _(array)_ — Optional
 
 Additional parameters to pass to the API when fetching options dynamically. Useful for filtering or customizing the returned options.
 
@@ -122,9 +106,8 @@ The field stores the value (key) of the selected option as a string in the datab
 	'label'       => 'Product Size',
 	'description' => 'Select the product size.',
 	'options'     => function ( array $args ): array {
-		// Get sizes based on product category
 		$category = get_post_meta( get_the_ID(), 'product_category', true );
-		
+
 		if ( $category === 'clothing' ) {
 			return array(
 				'xs' => 'Extra Small',
@@ -143,27 +126,22 @@ The field stores the value (key) of the selected option as a string in the datab
 ),
 ```
 
-### Using Radio Values in Your Theme
+### Using Values in Your Theme
 
 ```php
-// Get the selected radio value
 $post_status = get_post_meta( get_the_ID(), 'post_status', true );
 
-// Use the value to control functionality
 if ( $post_status === 'private' ) {
-	// Check if user is logged in
 	if ( ! is_user_logged_in() ) {
 		wp_redirect( wp_login_url( get_permalink() ) );
 		exit;
 	}
 } elseif ( $post_status === 'draft' ) {
-	// Only show to editors and above
 	if ( ! current_user_can( 'edit_posts' ) ) {
-		wp_die( 'This content is not yet published.' );
+		wp_die( esc_html__( 'This content is not yet published.', 'wpify-custom-fields' ) );
 	}
 }
 
-// Display the selected option label
 $status_options = array(
 	'public'  => 'Public',
 	'private' => 'Private',
@@ -173,6 +151,40 @@ $status_options = array(
 echo '<div class="post-status">';
 echo 'Status: ' . esc_html( $status_options[ $post_status ] ?? 'Unknown' );
 echo '</div>';
+```
+
+### With Conditional Logic
+
+```php
+'layout_type' => array(
+	'type'    => 'radio',
+	'id'      => 'layout_type',
+	'label'   => 'Layout',
+	'options' => array(
+		'default' => 'Default',
+		'custom'  => 'Custom',
+	),
+	'default' => 'default',
+),
+'custom_layout_columns' => array(
+	'type'       => 'number',
+	'id'         => 'custom_layout_columns',
+	'label'      => 'Number of Columns',
+	'conditions' => array(
+		array( 'field' => 'layout_type', 'value' => 'custom' ),
+	),
+),
+```
+
+## Field Factory
+
+```php
+$f = new \Wpify\CustomFields\FieldFactory();
+
+$f->radio(
+	label: 'Layout',
+	options: array( 'left' => 'Left', 'right' => 'Right' ),
+);
 ```
 
 ## Notes

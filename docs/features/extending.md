@@ -80,12 +80,14 @@ export function MyCustomField({
 	attributes = {},
 	className,
 	disabled = false,
-    allValues = {},
+	fieldPath,
+	allValues = {},
+	getValue,
 }) {
 	const handleChange = useCallback(event => onChange(event.target.value), [onChange]);
-  
+
 	return (
-		<div 
+		<div
 			className={clsx('wpifycf-field-my-custom-field', `wpifycf-field-my-custom-field--${id}`, attributes.class, className)}
 		>
 			{/* Your field implementation */}
@@ -101,6 +103,27 @@ export function MyCustomField({
 	);
 }
 ```
+
+### Available Component Props
+
+Every field component receives the following props:
+
+- `id` _(string)_ — The field's unique identifier.
+- `htmlId` _(string)_ — The HTML `id` attribute for the input element.
+- `onChange` _(function)_ — Callback to update the field's value.
+- `value` — The current field value.
+- `attributes` _(object)_ — Additional HTML attributes from the field definition.
+- `className` _(string)_ — Additional CSS class name.
+- `disabled` _(boolean)_ — Whether the field is disabled.
+- `fieldPath` _(string)_ — The current field's path in the form hierarchy. It identifies the field's position, which is especially useful for nested fields in groups or repeaters. The path uses dot notation (e.g., `parent_group.child_field`) and array indices for repeater items (e.g., `multi_group[0].field_name`). This property is used internally for relative path resolution and accessing sibling/parent field values.
+- `allValues` _(object)_ — An object containing all current form field values, where keys are field IDs. This allows field components to access any other field's value in the form.
+- `getValue` _(function)_ — A helper function to access other field values using path syntax. The function signature is `getValue(path: string): any`. The path syntax supports:
+  - Dot notation for nested fields: `parent.child`
+  - Relative references using hash: `#` (parent), `##` (grandparent)
+  - Array bracket notation: `multi_field[0]`
+  - Combinations: `#.sibling_field[0].name`
+
+The `fieldPath`, `allValues`, and `getValue` props are useful for building fields that depend on other field values, such as dependent dropdowns or dynamically computed values.
 
 ### 2. Validation Method
 

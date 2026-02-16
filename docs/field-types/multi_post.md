@@ -6,47 +6,38 @@ The Multi Post field type allows users to select multiple WordPress posts, pages
 
 ```php
 array(
-	'type'        => 'multi_post',
-	'id'          => 'example_multi_post',
-	'label'       => 'Example Multi Post',
-	'description' => 'Select multiple related posts',
-	'post_type'   => 'post', // Can be a single post type or an array of post types
+	'type'      => 'multi_post',
+	'id'        => 'example_multi_post',
+	'label'     => 'Related Articles',
+	'post_type' => 'post',
+	'min'       => 1,
+	'max'       => 5,
 )
 ```
 
 ## Properties
 
-### Default Field Properties
-
-These properties are available for all field types:
-
-- `id` _(string)_ - Unique identifier for the field
-- `type` _(string)_ - Must be set to `multi_post` for this field type
-- `label` _(string)_ - The field label displayed in the admin interface
-- `description` _(string)_ - Help text displayed below the field
-- `required` _(boolean)_ - Whether the field must have at least one post selected
-- `tab` _(string)_ - The tab ID where this field should appear (if using tabs)
-- `className` _(string)_ - Additional CSS class for the field container
-- `conditions` _(array)_ - Conditions that determine when to show this field
-- `disabled` _(boolean)_ - Whether the field should be disabled
-- `default` _(array)_ - Default values as an array of post IDs
-- `attributes` _(array)_ - HTML attributes to add to the field
-- `unfiltered` _(boolean)_ - Whether the value should remain unfiltered when saved
-- `render_options` _(array)_ - Options for customizing field rendering
+For Default Field Properties, see [Field Types Definition](../field-types.md).
 
 ### Specific Properties
 
-#### `post_type` _(string|array)_ - Required
-
-Specifies which post types can be selected. Can be a single post type as a string (e.g., 'post', 'page', 'product') or an array of post types (e.g., ['post', 'page']).
+- `post_type` _(string|array)_ — The post type(s) available for selection. Can be a single post type string (e.g., `'post'`, `'page'`, `'product'`) or an array of post types (e.g., `array( 'post', 'page' )`)
+- `min` _(integer)_ — Optional: Minimum number of items
+- `max` _(integer)_ — Optional: Maximum number of items
+- `buttons` _(array)_ — Optional: Custom button labels (add, remove, duplicate)
+- `disabled_buttons` _(array)_ — Optional: Buttons to disable (move, delete, duplicate)
 
 ## Stored Value
 
-The field stores an array of post IDs (integers) in the database. These IDs can be used with WordPress functions like `get_post()` to retrieve the full post objects.
+The field stores an array of post IDs (integers) in the database:
+
+```php
+array( 42, 87, 153 )
+```
 
 ## Example Usage
 
-### Basic Multi Post Field
+### Basic Multi Post
 
 ```php
 'related_posts' => array(
@@ -70,168 +61,63 @@ The field stores an array of post IDs (integers) in the database. These IDs can 
 ),
 ```
 
-### Multi Post for WooCommerce Related Products
+### Multi Post with Min/Max Constraints
 
 ```php
-'related_products' => array(
+'recommended_products' => array(
 	'type'        => 'multi_post',
-	'id'          => 'related_products',
-	'label'       => 'Related Products',
-	'description' => 'Select products that are related to this product',
+	'id'          => 'recommended_products',
+	'label'       => 'Recommended Products',
+	'description' => 'Select 2 to 6 recommended products',
 	'post_type'   => 'product',
+	'min'         => 2,
+	'max'         => 6,
 ),
 ```
 
-### Retrieving and Displaying Multi Post Values
+### Using Values in Your Theme
 
 ```php
-// Get the array of post IDs
 $related_posts = get_post_meta( get_the_ID(), 'related_posts', true );
 
 if ( ! empty( $related_posts ) && is_array( $related_posts ) ) {
 	echo '<div class="related-posts">';
-	echo '<h3>Related Articles</h3>';
+	echo '<h3>' . esc_html__( 'Related Articles', 'flavor' ) . '</h3>';
 	echo '<div class="post-grid">';
-	
+
 	foreach ( $related_posts as $post_id ) {
-		// Get the post object
 		$related_post = get_post( $post_id );
-		
-		if ( ! $related_post || $related_post->post_status !== 'publish' ) {
-			continue; // Skip if post doesn't exist or is not published
+
+		if ( ! $related_post || 'publish' !== $related_post->post_status ) {
+			continue;
 		}
-		
-		// Get featured image
-		$thumbnail = get_the_post_thumbnail_url( $post_id, 'medium' );
-		if ( ! $thumbnail ) {
-			$thumbnail = '/wp-content/plugins/wpify-custom-fields/assets/images/placeholder-image.svg';
-		}
-		
+
 		echo '<div class="post-card">';
 		echo '<a href="' . esc_url( get_permalink( $post_id ) ) . '">';
-		echo '<img src="' . esc_url( $thumbnail ) . '" alt="' . esc_attr( get_the_title( $post_id ) ) . '" />';
+
+		if ( has_post_thumbnail( $post_id ) ) {
+			echo get_the_post_thumbnail( $post_id, 'medium' );
+		}
+
 		echo '<h4>' . esc_html( get_the_title( $post_id ) ) . '</h4>';
 		echo '</a>';
 		echo '<p>' . esc_html( wp_trim_words( get_the_excerpt( $post_id ), 15 ) ) . '</p>';
 		echo '</div>';
 	}
-	
+
 	echo '</div>';
 	echo '</div>';
 }
 ```
 
-### Advanced Usage: Custom Query with Multi Post Selections
-
-```php
-// Get the array of post IDs
-$featured_content = get_post_meta( get_the_ID(), 'featured_content', true );
-
-if ( ! empty( $featured_content ) && is_array( $featured_content ) ) {
-	// Create a custom query with the selected posts in a specific order
-	$featured_query = new WP_Query( array(
-		'post_type'      => array( 'post', 'page' ),
-		'post__in'       => $featured_content, // Use the selected post IDs
-		'orderby'        => 'post__in', // Preserve the order of selection
-		'posts_per_page' => -1, // Show all selected posts
-	) );
-	
-	if ( $featured_query->have_posts() ) {
-		echo '<div class="featured-content-slider">';
-		
-		while ( $featured_query->have_posts() ) {
-			$featured_query->the_post();
-			
-			echo '<div class="slide">';
-			
-			if ( has_post_thumbnail() ) {
-				echo '<div class="slide-image">';
-				the_post_thumbnail( 'large' );
-				echo '</div>';
-			}
-			
-			echo '<div class="slide-content">';
-			echo '<h2>' . get_the_title() . '</h2>';
-			echo '<div class="excerpt">' . get_the_excerpt() . '</div>';
-			echo '<a href="' . get_permalink() . '" class="read-more">Read More</a>';
-			echo '</div>';
-			
-			echo '</div>';
-		}
-		
-		echo '</div>';
-		
-		// Restore original post data
-		wp_reset_postdata();
-	}
-}
-```
-
-### Cross-Post Type Relationships
-
-```php
-// Function to display team members associated with a project
-function display_project_team_members() {
-	$team_member_ids = get_post_meta( get_the_ID(), 'project_team', true );
-	
-	if ( empty( $team_member_ids ) || ! is_array( $team_member_ids ) ) {
-		return;
-	}
-	
-	$args = array(
-		'post__in'       => $team_member_ids,
-		'post_type'      => 'team_member', // Specific post type
-		'posts_per_page' => -1,
-		'orderby'        => 'post__in', // Maintain the selection order
-	);
-	
-	$team_query = new WP_Query( $args );
-	
-	if ( $team_query->have_posts() ) {
-		echo '<div class="project-team">';
-		echo '<h3>Project Team</h3>';
-		echo '<div class="team-members">';
-		
-		while ( $team_query->have_posts() ) {
-			$team_query->the_post();
-			
-			$position = get_post_meta( get_the_ID(), 'position', true );
-			
-			echo '<div class="team-member">';
-			if ( has_post_thumbnail() ) {
-				echo '<div class="team-member-photo">';
-				the_post_thumbnail( 'thumbnail' );
-				echo '</div>';
-			}
-			
-			echo '<div class="team-member-info">';
-			echo '<h4>' . get_the_title() . '</h4>';
-			
-			if ( $position ) {
-				echo '<p class="position">' . esc_html( $position ) . '</p>';
-			}
-			
-			echo '<a href="' . esc_url( get_permalink() ) . '">View Profile</a>';
-			echo '</div>'; // .team-member-info
-			
-			echo '</div>'; // .team-member
-		}
-		
-		echo '</div>'; // .team-members
-		echo '</div>'; // .project-team
-		
-		wp_reset_postdata();
-	}
-}
-```
-
-### Multi Post with Conditional Logic
+### With Conditional Logic
 
 ```php
 'show_team_members' => array(
 	'type'  => 'toggle',
 	'id'    => 'show_team_members',
 	'label' => 'Show Team Members',
+	'title' => 'Display team members section',
 ),
 'team_members' => array(
 	'type'       => 'multi_post',
@@ -244,22 +130,25 @@ function display_project_team_members() {
 ),
 ```
 
+## Field Factory
+
+```php
+$f = new \Wpify\CustomFields\FieldFactory();
+
+$f->multi_post(
+	label: 'Related Articles',
+	post_type: 'post',
+	min: 1,
+	max: 5,
+);
+```
+
 ## Notes
 
 - The Multi Post field provides a searchable dropdown to select posts
-- Each selected post shows a preview with:
-  - Thumbnail image (if available)
-  - Post title
-  - Post excerpt
-  - A remove button to delete the selection
+- Each selected post shows a preview with thumbnail, title, and excerpt
 - Selected posts are stored as an ordered array of post IDs
 - The field prevents duplicate selections
-- The order of posts in the admin area is preserved when retrieving and displaying the values
-- When retrieving values, always check if posts still exist and are published
+- The order of posts is preserved when retrieving and displaying the values
+- When retrieving values, always verify that posts still exist and are published
 - Works with any registered post type in WordPress
-- This field is ideal for creating content relationships such as:
-  - Related posts
-  - Product recommendations
-  - Team member associations
-  - Featured content selections
-  - Content cross-referencing

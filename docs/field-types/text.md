@@ -6,41 +6,22 @@ The Text field type provides a single-line text input for short text content. It
 
 ```php
 array(
-	'type'  => 'text',
-	'id'    => 'example_text',
-	'label' => 'Title',
+	'type'    => 'text',
+	'id'      => 'example_text',
+	'label'   => 'Title',
+	'counter' => true,
 )
 ```
 
 ## Properties
 
-**For Default Field Properties, see [Field Types Definition](../field-types.md)**.
+For Default Field Properties, see [Field Types Definition](../field-types.md).
 
-### `attributes` _(array)_ - Optional
+### Specific Properties
 
-You can pass HTML attributes to the input element. Common attributes include:
-
-```php
-'attributes' => array(
-	'placeholder' => 'Enter text here...',
-	'maxlength'   => 100,
-	'class'       => 'custom-text-input',
-),
-```
-
-The most useful attributes for text inputs are:
-
-- `placeholder`: Hint text displayed when the field is empty
-- `maxlength`: Maximum number of characters allowed
-- `class`: Additional CSS classes for styling
-
-### `counter` _(boolean)_ - Optional
+#### `counter` _(boolean)_ — Optional
 
 When set to `true`, displays a character counter below the input showing the current character count.
-
-```php
-'counter' => true,
-```
 
 ## Stored Value
 
@@ -51,19 +32,19 @@ The field stores the text content as a string in the database. Values are saniti
 ### Basic Text Field
 
 ```php
-'product_title' => array(
+array(
 	'type'        => 'text',
 	'id'          => 'product_title',
 	'label'       => 'Product Title',
 	'description' => 'Enter the product title.',
 	'required'    => true,
-),
+)
 ```
 
 ### Text Field with Character Counter
 
 ```php
-'meta_title' => array(
+array(
 	'type'        => 'text',
 	'id'          => 'meta_title',
 	'label'       => 'Meta Title',
@@ -72,13 +53,13 @@ The field stores the text content as a string in the database. Values are saniti
 	'attributes'  => array(
 		'maxlength' => 60,
 	),
-),
+)
 ```
 
 ### Text Field with Attributes
 
 ```php
-'company_name' => array(
+array(
 	'type'        => 'text',
 	'id'          => 'company_name',
 	'label'       => 'Company Name',
@@ -88,10 +69,10 @@ The field stores the text content as a string in the database. Values are saniti
 		'maxlength'   => 100,
 		'class'       => 'company-name-input',
 	),
-),
+)
 ```
 
-### Using Text Values in Your Theme
+### Using Values in Your Theme
 
 ```php
 // Get the text content from the meta field
@@ -109,15 +90,15 @@ if ( ! empty( $company_name ) ) {
 }
 ```
 
-### Text Field with Conditional Logic
+### With Conditional Logic
 
 ```php
-'enable_custom_title' => array(
+array(
 	'type'  => 'toggle',
 	'id'    => 'enable_custom_title',
 	'label' => 'Use Custom Title',
 ),
-'custom_title' => array(
+array(
 	'type'        => 'text',
 	'id'          => 'custom_title',
 	'label'       => 'Custom Title',
@@ -128,7 +109,19 @@ if ( ! empty( $company_name ) ) {
 	'conditions'  => array(
 		array( 'field' => 'enable_custom_title', 'value' => true ),
 	),
-),
+)
+```
+
+## Field Factory
+
+```php
+$f = new \Wpify\CustomFields\FieldFactory();
+
+$f->text(
+	label: 'Title',
+	required: true,
+	counter: true,
+);
 ```
 
 ## Notes
@@ -139,4 +132,3 @@ if ( ! empty( $company_name ) ) {
 - The `counter` property is useful for SEO fields or any input where character count matters
 - Use the `maxlength` attribute to enforce a character limit at the browser level
 - The field validates that a value is provided when the `required` property is set to `true`
-- CSS classes follow the pattern `wpifycf-field-text` and `wpifycf-field-text--{id}` for custom styling

@@ -1,6 +1,6 @@
 # Multi Select Field Type
 
-The Multi Select field type allows users to select multiple options from a dropdown menu. It provides a modern, searchable interface with the ability to add or remove multiple selected values. This field is ideal for categorization, tagging, or any scenario where multiple choices from a predefined set need to be selected.
+The Multi Select field type allows users to select multiple options from a searchable dropdown. It provides a modern interface with add/remove functionality, making it ideal for categorization, tagging, or any scenario requiring multiple selections from a predefined set.
 
 ## Field Type: `multi_select`
 
@@ -8,173 +8,41 @@ The Multi Select field type allows users to select multiple options from a dropd
 array(
 	'type'    => 'multi_select',
 	'id'      => 'example_multi_select',
-	'label'   => 'Example Multi Select',
-	'description' => 'Select multiple options',
+	'label'   => 'Tags',
 	'options' => array(
-		'red'   => 'Red',
-		'green' => 'Green',
-		'blue'  => 'Blue',
-		'yellow' => 'Yellow',
+		'php' => 'PHP',
+		'js'  => 'JavaScript',
 	),
+	'min'     => 1,
+	'max'     => 5,
 )
 ```
 
 ## Properties
 
-### Default Field Properties
-
-These properties are available for all field types:
-
-- `id` _(string)_ - Unique identifier for the field
-- `type` _(string)_ - Must be set to `multi_select` for this field type
-- `label` _(string)_ - The field label displayed in the admin interface
-- `description` _(string)_ - Help text displayed below the field
-- `required` _(boolean)_ - Whether the field must have at least one value selected
-- `tab` _(string)_ - The tab ID where this field should appear (if using tabs)
-- `className` _(string)_ - Additional CSS class for the field container
-- `conditions` _(array)_ - Conditions that determine when to show this field
-- `disabled` _(boolean)_ - Whether the field should be disabled
-- `default` _(array)_ - Default values as an array of option values
-- `attributes` _(array)_ - HTML attributes to add to the field
-- `unfiltered` _(boolean)_ - Whether the value should remain unfiltered when saved
-- `render_options` _(array)_ - Options for customizing field rendering
+For Default Field Properties, see [Field Types Definition](../field-types.md).
 
 ### Specific Properties
 
-#### `options` _(array|callable)_ - Required
-
-An associative array of options where the keys are the values to store and the array values are the labels to display. Alternatively, you can use an array of objects with `value` and `label` properties:
-
-```php
-'options' => array(
-	array( 'value' => 'red', 'label' => 'Red' ),
-	array( 'value' => 'green', 'label' => 'Green' ),
-	array( 'value' => 'blue', 'label' => 'Blue' ),
-),
-```
-
-You can also use an associative array:
-
-```php
-'options' => array(
-    'red'   => 'Red',
-    'green' => 'Green',
-    'blue'  => 'Blue',
-),
-```
-
-Another option is to use a callable function that returns the options array. This is useful for dynamic options:
-
-```php
-'options' => 'custom_get_colors',
-```
-
-You have to define the `custom_get_colors` function in your theme or plugin:
-
-```php
-function custom_get_colors( array $args ): array {
-    // Perform any logic to fetch or generate options
-    
-    return array(
-        'red'   => 'Red',
-        'green' => 'Green',
-        'blue'  => 'Blue',
-    );
-}
-```
-The function accepts an array of arguments with the following keys:
-- `value`: The current value of the field
-- `search`: The search term entered by the user
-- additional parameters passed via `async_params`
-
-The function should return the option that is currently selected (value) and options that match the search term. The returned array should be in the same format as the static options.
-
-#### `async_params` _(array)_ - Optional
-
-Additional parameters to pass to the API when fetching options with `options_key`. Useful for filtering or customizing the returned options.
-
-The `async_params` support dynamic value replacement using placeholders. You can reference values from other fields using the `{{field_path}}` syntax:
-
-```php
-'product_type' => array(
-    'type' => 'select',
-    'id' => 'product_type',
-    'label' => 'Product Type',
-    'options' => array(
-        'physical' => 'Physical Product',
-        'digital' => 'Digital Product',
-        'service' => 'Service',
-    ),
-),
-'product_features' => array(
-    'type' => 'multi_select',
-    'id' => 'product_features',
-    'label' => 'Product Features',
-    'options' => 'get_product_features',
-    'async_params' => array(
-        'type' => '{{product_type}}', // Will be replaced with the value from product_type field
-    ),
-),
-```
-
-In this example, when the user selects a product type, the multi-select field for features will automatically update its available options based on the selected type.
-
-**Field Path Syntax:**
-
-The field path syntax follows the same rules as described in the [Conditions documentation](../features/conditions.md#field-path-references):
-
-- Use dot notation for nested fields: `{{parent_field.nested_field}}`
-- Use `#` for relative references: `{{#.sibling_field}}` (references a sibling field)
-- Use multiple `#` for parent levels: `{{##.parent_sibling_field}}`
-- Access array elements: `{{my_multi_field[0]}}`
-
-**Example with Complex Filtering:**
-
-```php
-'product_settings' => array(
-    'type' => 'group',
-    'id' => 'product_settings',
-    'items' => array(
-        'category' => array(
-            'type' => 'select',
-            'id' => 'category',
-            'label' => 'Category',
-            'options' => 'get_categories',
-        ),
-        'brand' => array(
-            'type' => 'select',
-            'id' => 'brand',
-            'label' => 'Brand',
-            'options' => 'get_brands',
-        ),
-        'available_tags' => array(
-            'type' => 'multi_select',
-            'id' => 'available_tags',
-            'label' => 'Available Tags',
-            'options' => 'get_product_tags',
-            'async_params' => array(
-                'category' => '{{#.category}}', // References category in the same group
-                'brand' => '{{#.brand}}',       // References brand in the same group
-                'store_id' => '{{store_info.id}}', // References a field outside the group
-            ),
-        ),
-    ),
-),
-```
-
-This feature is particularly useful for creating dependent select fields where the available options in one field depend on the selections made in other fields.
+- `options` _(array|callable)_ — The available options for selection. Can be an associative array (`'value' => 'Label'`), an array of arrays with `value` and `label` keys, or a callable that returns options dynamically
+- `options_key` _(string)_ — Optional: A key referencing a registered REST endpoint for fetching options asynchronously
+- `async_params` _(array)_ — Optional: Additional parameters passed to the options callback. Supports dynamic value replacement using `{{field_path}}` placeholders
+- `min` _(integer)_ — Optional: Minimum number of items
+- `max` _(integer)_ — Optional: Maximum number of items
+- `buttons` _(array)_ — Optional: Custom button labels (add, remove, duplicate)
+- `disabled_buttons` _(array)_ — Optional: Buttons to disable (move, delete, duplicate)
 
 ## Stored Value
 
-The field stores an array of selected option values in the database. For example:
+The field stores an array of selected option values (strings) in the database:
 
 ```php
-array( 'red', 'blue' )
+array( 'php', 'js' )
 ```
 
 ## Example Usage
 
-### Basic Multi Select Field
+### Basic Multi Select
 
 ```php
 'product_tags' => array(
@@ -187,93 +55,118 @@ array( 'red', 'blue' )
 		'sale'     => 'Sale',
 		'featured' => 'Featured',
 		'limited'  => 'Limited Edition',
-		'organic'  => 'Organic',
-		'popular'  => 'Popular',
 	),
 	'default'     => array( 'new' ),
 ),
 ```
 
-### Multi Select with Dynamic Options from Callback
+### Multi Select with Array of Objects
 
 ```php
-'country' => array(
-	'type'        => 'select',
-	'label'       => 'Country',
-	'description' => 'Select the country.',
-	'options'     => function ( array $args ): array {
-        return array(
-            array( 'value' => 'us', 'label' => 'United States' ),
-            array( 'value' => 'ca', 'label' => 'Canada' ),
-            array( 'value' => 'mx', 'label' => 'Mexico' ),
-            // More countries...
-        );
-    },
-	'default'     => 'us',
+'color_choices' => array(
+	'type'    => 'multi_select',
+	'id'      => 'color_choices',
+	'label'   => 'Colors',
+	'options' => array(
+		array( 'value' => 'red', 'label' => 'Red' ),
+		array( 'value' => 'green', 'label' => 'Green' ),
+		array( 'value' => 'blue', 'label' => 'Blue' ),
+	),
 ),
 ```
 
-### Retrieving and Using Multi Select Values
+### Multi Select with Dynamic Options
 
 ```php
-// Get the array of selected values
+'country' => array(
+	'type'    => 'multi_select',
+	'id'      => 'country',
+	'label'   => 'Countries',
+	'options' => function ( array $args ): array {
+		return array(
+			'us' => 'United States',
+			'ca' => 'Canada',
+			'mx' => 'Mexico',
+		);
+	},
+),
+```
+
+The callback receives an array with the following keys:
+- `value`: The current value of the field
+- `search`: The search term entered by the user
+- Additional parameters passed via `async_params`
+
+### Multi Select with Async Params
+
+```php
+'product_type' => array(
+	'type'    => 'select',
+	'id'      => 'product_type',
+	'label'   => 'Product Type',
+	'options' => array(
+		'physical' => 'Physical Product',
+		'digital'  => 'Digital Product',
+	),
+),
+'product_features' => array(
+	'type'         => 'multi_select',
+	'id'           => 'product_features',
+	'label'        => 'Product Features',
+	'options'      => 'get_product_features',
+	'async_params' => array(
+		'type' => '{{product_type}}',
+	),
+),
+```
+
+The `async_params` support dynamic value replacement using `{{field_path}}` placeholders, following the same path syntax as [Conditions](../features/conditions.md#field-path-references):
+- Dot notation for nested fields: `{{parent_field.nested_field}}`
+- `#` for relative references: `{{#.sibling_field}}`
+- Multiple `#` for parent levels: `{{##.parent_sibling_field}}`
+
+### Using Values in Your Theme
+
+```php
 $product_tags = get_post_meta( get_the_ID(), 'product_tags', true );
 
 if ( ! empty( $product_tags ) && is_array( $product_tags ) ) {
-	echo '<div class="product-tags">';
-	
-	// Define labels for display
 	$tag_labels = array(
 		'new'      => 'New',
 		'sale'     => 'Sale',
 		'featured' => 'Featured',
 		'limited'  => 'Limited Edition',
-		'organic'  => 'Organic',
-		'popular'  => 'Popular',
 	);
-	
+
+	echo '<div class="product-tags">';
 	foreach ( $product_tags as $tag ) {
-		// Skip if no label is defined
-		if ( ! isset( $tag_labels[ $tag ] ) ) {
-			continue;
+		if ( isset( $tag_labels[ $tag ] ) ) {
+			echo '<span class="product-tag product-tag--' . esc_attr( $tag ) . '">';
+			echo esc_html( $tag_labels[ $tag ] );
+			echo '</span>';
 		}
-		
-		$label = $tag_labels[ $tag ];
-		echo '<span class="product-tag product-tag--' . esc_attr( $tag ) . '">';
-		echo esc_html( $label );
-		echo '</span>';
 	}
-	
 	echo '</div>';
-	
-	// Example: Add a class to the body for each selected tag
-	add_filter( 'body_class', function( $classes ) use ( $product_tags ) {
-		foreach ( $product_tags as $tag ) {
-			$classes[] = 'has-product-tag-' . sanitize_html_class( $tag );
-		}
-		return $classes;
-	} );
 }
 ```
 
-### Multi Select with Conditional Logic
+### With Conditional Logic
 
 ```php
 'has_variations' => array(
 	'type'  => 'toggle',
 	'id'    => 'has_variations',
 	'label' => 'Product has variations?',
+	'title' => 'Enable product variations',
 ),
 'variation_attributes' => array(
 	'type'       => 'multi_select',
 	'id'         => 'variation_attributes',
 	'label'      => 'Variation Attributes',
-	'description' => 'Select attributes used for variations',
 	'options'    => array(
-		'color' => 'Color',
-		'size'  => 'Size',
+		'color'    => 'Color',
+		'size'     => 'Size',
 		'material' => 'Material',
-		'style' => 'Style',
 	),
 	'conditions' => array(
 		array( 'field' => 'has_variations', 'value' => true ),
@@ -281,20 +174,24 @@ if ( ! empty( $product_tags ) && is_array( $product_tags ) ) {
 ),
 ```
 
+## Field Factory
+
+```php
+$f = new \Wpify\CustomFields\FieldFactory();
+
+$f->multi_select(
+	label: 'Tags',
+	options: array( 'php' => 'PHP', 'js' => 'JavaScript' ),
+	min: 1,
+	max: 5,
+);
+```
+
 ## Notes
 
-- The Multi Select field is based on React Select, providing a modern user experience
-- Users can:
-  - Search for options using the dropdown search field
-  - View all selected options above the dropdown
-  - Remove individual options with a delete button
-  - Clear the search input after selecting an option
+- The Multi Select field is based on React Select, providing a modern searchable dropdown
 - Selected options appear as chips/tags that can be individually removed
 - The field prevents duplicate selections
 - The stored value is always an array, even if only one option is selected
-- Empty values are not stored in the array
-- This field is ideal for:
-  - Categorization (tags, categories, attributes)
-  - Multi-selection of related items
-  - Filtering options for products or content
-  - Any scenario where selecting multiple items from a list is needed
+- Options can be provided as a static array, a callable, or via async REST endpoints
+- Dynamic `async_params` allow creating dependent select fields where available options update based on other field values

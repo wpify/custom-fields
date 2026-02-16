@@ -9,7 +9,6 @@ The layout is responsive: columns automatically reduce when they would be narrow
 ```php
 array(
 	'type'    => 'columns',
-	'id'      => 'contact_columns',
 	'columns' => 3,
 	'items'   => array(
 		'first_name' => array(
@@ -30,52 +29,21 @@ array(
 
 ## Properties
 
-### Default Field Properties
-
-These properties are available for all field types:
-
-- `id` _(string)_ - Unique identifier for the field
-- `type` _(string)_ - Must be set to `columns` for this field type
-- `label` _(string)_ - The field label displayed in the admin interface
-- `description` _(string)_ - Help text displayed below the field
-- `required` _(boolean)_ - Whether the field must have a value
-- `tab` _(string)_ - The tab ID where this field should appear (if using tabs)
-- `className` _(string)_ - Additional CSS class for the field container
-- `conditions` _(array)_ - Conditions that determine when to show this field
-- `disabled` _(boolean)_ - Whether the field should be disabled
-- `attributes` _(array)_ - HTML attributes to add to the field
-- `unfiltered` _(boolean)_ - Whether the value should remain unfiltered when saved
-- `render_options` _(array)_ - Options for customizing field rendering
+For Default Field Properties, see [Field Types Definition](../field-types.md).
 
 ### Specific Properties
 
-#### `items` _(array)_ - Required
-
-An array of field definitions that make up the columns' content. Each item is a complete field definition with its own type, label, and other properties.
-
-#### `columns` _(integer)_
-
-The number of columns in the grid layout. Defaults to `2`. This is the maximum number of columns — the actual number may be lower on narrow containers (see [Responsive Behavior](#responsive-behavior)).
-
-#### `gap` _(string)_
-
-A CSS gap value to override the default spacing between columns and rows. For example, `'16px'`, `'1rem'`, or `'8px 16px'` (row gap / column gap).
-
-#### `classname` _(string)_
-
-A CSS class name added to the columns container element. This is applied alongside the default `wpifycf-field-columns` class.
+- `items` _(array)_ — An array of field definitions that make up the columns' content. Each item is a complete field definition with its own type, label, and other properties.
+- `columns` _(integer)_ — The number of columns in the grid layout. Defaults to `2`. This is the maximum number of columns — the actual number may be lower on narrow containers (see [Responsive Behavior](#responsive-behavior)).
+- `gap` _(string)_ — A CSS gap value to override the default spacing between columns and rows. For example, `'16px'`, `'1rem'`, or `'8px 16px'` (row gap / column gap).
+- `classname` _(string)_ — A CSS class name added to the columns container element. This is applied alongside the default `wpifycf-field-columns` class.
 
 ### Per-Child Properties
 
 These properties can be set on individual field definitions inside `items` to control their placement within the grid:
 
-#### `column` _(integer)_
-
-A 1-based column index specifying which column the field should start in. When omitted, the field is auto-placed by CSS Grid.
-
-#### `column_span` _(integer)_
-
-The number of columns the field should span. Defaults to `1`. Useful for fields that need more horizontal space, such as textareas or WYSIWYG editors.
+- `column` _(integer)_ — A 1-based column index specifying which column the field should start in. When omitted, the field is auto-placed by CSS Grid.
+- `column_span` _(integer)_ — The number of columns the field should span. Defaults to `1`. Useful for fields that need more horizontal space, such as textareas or WYSIWYG editors.
 
 #### Placement Rules
 
@@ -101,7 +69,7 @@ This means a `columns: 4` layout on a 900px-wide container will display as 3 col
 
 ## Stored Value
 
-The Columns field does **not** store its own value. Children of a columns field store their values flat at the parent level, as if the columns container did not exist.
+This field does not store its own value. Children store their values flat at the parent level.
 
 This behavior is identical to the [Wrapper](wrapper.md) field type.
 
@@ -239,22 +207,6 @@ Use a columns field to show or hide a block of side-by-side fields together:
 )
 ```
 
-### With FieldFactory
-
-```php
-$f = new \Wpify\CustomFields\FieldFactory();
-
-$f->columns(
-	columns: 3,
-	items: array(
-		$f->text( label: 'First Name' ),
-		$f->text( label: 'Last Name' ),
-		$f->email( label: 'Email' ),
-		$f->textarea( label: 'Bio', column_span: 3 ),
-	),
-);
-```
-
 ### Custom Gap
 
 Override the default gap between columns:
@@ -277,6 +229,22 @@ Override the default gap between columns:
 		),
 	),
 )
+```
+
+## Field Factory
+
+```php
+$f = new \Wpify\CustomFields\FieldFactory();
+
+$f->columns(
+	columns: 3,
+	items: array(
+		$f->text( label: 'First Name' ),
+		$f->text( label: 'Last Name' ),
+		$f->email( label: 'Email' ),
+		$f->textarea( label: 'Bio', column_span: 3 ),
+	),
+);
 ```
 
 ## Notes

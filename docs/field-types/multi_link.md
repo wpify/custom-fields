@@ -1,58 +1,64 @@
 # Multi Link Field Type
 
-The Multi Link field type allows users to add multiple links with URLs, labels, and additional options. Each link can be a direct URL or a reference to a WordPress post. This field type is useful for creating navigation menus, lists of related resources, or any collection of links.
+The Multi Link field type allows users to add multiple links with URLs, labels, and additional options. Each link can be a direct URL or a reference to a WordPress post, making it useful for navigation menus, related resources, or any collection of links.
 
 ## Field Type: `multi_link`
 
 ```php
 array(
-	'type'        => 'multi_link',
-	'id'          => 'example_multi_link',
-	'label'       => 'Example Multi Link',
-	'description' => 'Add multiple links',
-	'post_type'   => array( 'post', 'page' ), // Optional, limits post selection to specific post types
+	'type'      => 'multi_link',
+	'id'        => 'example_multi_link',
+	'label'     => 'Navigation Links',
+	'post_type' => 'page',
+	'min'       => 1,
+	'max'       => 10,
 )
 ```
 
 ## Properties
 
-### Default Field Properties
-
-These properties are available for all field types:
-
-- `id` _(string)_ - Unique identifier for the field
-- `type` _(string)_ - Must be set to `multi_link` for this field type
-- `label` _(string)_ - The field label displayed in the admin interface
-- `description` _(string)_ - Help text displayed below the field
-- `required` _(boolean)_ - Whether the field must have at least one value
-- `tab` _(string)_ - The tab ID where this field should appear (if using tabs)
-- `className` _(string)_ - Additional CSS class for the field container
-- `conditions` _(array)_ - Conditions that determine when to show this field
-- `disabled` _(boolean)_ - Whether the field should be disabled
-- `default` _(array)_ - Default values as an array of link objects
-- `attributes` _(array)_ - HTML attributes to add to the field
-- `unfiltered` _(boolean)_ - Whether the value should remain unfiltered when saved
-- `render_options` _(array)_ - Options for customizing field rendering
+For Default Field Properties, see [Field Types Definition](../field-types.md).
 
 ### Specific Properties
 
-#### `post_type` _(string|array)_ - Optional
-
-Specifies which post types can be selected when creating a link to an internal post. Can be a single post type as a string or an array of post types. If not provided, all public post types will be available.
+- `post_type` _(string|array)_ — Optional: Post types available in the post picker when creating internal links. Can be a single post type or an array. If not provided, all public post types are available
+- `min` _(integer)_ — Optional: Minimum number of items
+- `max` _(integer)_ — Optional: Maximum number of items
+- `buttons` _(array)_ — Optional: Custom button labels (add, remove, duplicate)
+- `disabled_buttons` _(array)_ — Optional: Buttons to disable (move, delete, duplicate)
 
 ## Stored Value
 
-The field stores an array of link objects in the database. Each link object contains the following properties:
+The field stores an array of link objects in the database. Each link object contains:
 
-- `url` _(string)_ - The URL of the link (either manually entered or generated from a post)
-- `label` _(string)_ - The text to display for the link
-- `target` _(string|null)_ - Set to `_blank` if the link should open in a new tab, or `null` otherwise
-- `post` _(int|null)_ - The post ID if the link is to an internal post, or `null` for external links
-- `post_type` _(string|null)_ - The post type if the link is to an internal post, or `null` for external links
+- `url` _(string)_ — The URL of the link
+- `label` _(string)_ — The display text for the link
+- `target` _(string|null)_ — `'_blank'` if the link opens in a new tab, or `null`
+- `post` _(int|null)_ — The post ID for internal links, or `null` for external links
+- `post_type` _(string|null)_ — The post type for internal links, or `null` for external links
+
+```php
+array(
+	array(
+		'url'       => 'https://example.com/about',
+		'label'     => 'About Us',
+		'target'    => null,
+		'post'      => 42,
+		'post_type' => 'page',
+	),
+	array(
+		'url'       => 'https://external.com',
+		'label'     => 'External Resource',
+		'target'    => '_blank',
+		'post'      => null,
+		'post_type' => null,
+	),
+)
+```
 
 ## Example Usage
 
-### Basic Multi Link Field
+### Basic Multi Link
 
 ```php
 'related_resources' => array(
@@ -85,103 +91,84 @@ The field stores an array of link objects in the database. Each link object cont
 	'description' => 'Add links to your social media profiles',
 	'default'     => array(
 		array(
-			'url'    => 'https://twitter.com/example',
-			'label'  => 'Twitter',
-			'target' => '_blank',
-			'post'   => null,
-			'post_type' => null,
-		),
-		array(
-			'url'    => 'https://linkedin.com/in/example',
-			'label'  => 'LinkedIn',
-			'target' => '_blank',
-			'post'   => null,
+			'url'       => 'https://twitter.com/example',
+			'label'     => 'Twitter',
+			'target'    => '_blank',
+			'post'      => null,
 			'post_type' => null,
 		),
 	),
 ),
 ```
 
-### Retrieving and Displaying Multi Link Values
+### Using Values in Your Theme
 
 ```php
-// Get the array of links
 $related_resources = get_post_meta( get_the_ID(), 'related_resources', true );
 
 if ( ! empty( $related_resources ) && is_array( $related_resources ) ) {
 	echo '<div class="related-resources">';
-	echo '<h3>Related Resources</h3>';
+	echo '<h3>' . esc_html__( 'Related Resources', 'flavor' ) . '</h3>';
 	echo '<ul>';
-	
+
 	foreach ( $related_resources as $link ) {
-		// Skip links without URL or label
 		if ( empty( $link['url'] ) || empty( $link['label'] ) ) {
 			continue;
 		}
-		
+
 		$target = ! empty( $link['target'] ) ? ' target="' . esc_attr( $link['target'] ) . '"' : '';
-		$rel = ( ! empty( $link['target'] ) && $link['target'] === '_blank' ) ? ' rel="noopener noreferrer"' : '';
-		
+		$rel    = ( '_blank' === ( $link['target'] ?? '' ) ) ? ' rel="noopener noreferrer"' : '';
+
 		echo '<li>';
 		echo '<a href="' . esc_url( $link['url'] ) . '"' . $target . $rel . '>';
 		echo esc_html( $link['label'] );
 		echo '</a>';
 		echo '</li>';
 	}
-	
+
 	echo '</ul>';
 	echo '</div>';
 }
 ```
 
-### Advanced Usage: Creating a Navigation Menu
+### With Conditional Logic
 
 ```php
-// Get the menu links
-$menu_links = get_option( 'site_footer_menu', array() );
+'show_resources' => array(
+	'type'  => 'toggle',
+	'id'    => 'show_resources',
+	'label' => 'Show Resources',
+	'title' => 'Display a list of related resources',
+),
+'resource_links' => array(
+	'type'       => 'multi_link',
+	'id'         => 'resource_links',
+	'label'      => 'Resource Links',
+	'post_type'  => array( 'post', 'page' ),
+	'conditions' => array(
+		array( 'field' => 'show_resources', 'value' => true ),
+	),
+),
+```
 
-if ( ! empty( $menu_links ) && is_array( $menu_links ) ) {
-	echo '<nav class="footer-navigation">';
-	echo '<ul class="menu">';
-	
-	foreach ( $menu_links as $index => $link ) {
-		if ( empty( $link['url'] ) || empty( $link['label'] ) ) {
-			continue;
-		}
-		
-		$classes = array( 'menu-item' );
-		$classes[] = 'menu-item-' . $index;
-		
-		// Add active class if this is the current page
-		if ( ! empty( $link['post'] ) && is_singular() && get_the_ID() === intval( $link['post'] ) ) {
-			$classes[] = 'current-menu-item';
-		}
-		
-		$target = ! empty( $link['target'] ) ? ' target="' . esc_attr( $link['target'] ) . '"' : '';
-		$rel = ( ! empty( $link['target'] ) && $link['target'] === '_blank' ) ? ' rel="noopener noreferrer"' : '';
-		
-		echo '<li class="' . esc_attr( implode( ' ', $classes ) ) . '">';
-		echo '<a href="' . esc_url( $link['url'] ) . '"' . $target . $rel . '>';
-		echo esc_html( $link['label'] );
-		echo '</a>';
-		echo '</li>';
-	}
-	
-	echo '</ul>';
-	echo '</nav>';
-}
+## Field Factory
+
+```php
+$f = new \Wpify\CustomFields\FieldFactory();
+
+$f->multi_link(
+	label: 'Navigation Links',
+	post_type: 'page',
+	min: 1,
+	max: 10,
+);
 ```
 
 ## Notes
 
-- The Multi Link field provides an "Add" button to add additional link inputs
-- Each added link includes a "Remove" button to delete it
-- The stored value is always an array of link objects, even if only one link is provided
-- For each link, users can:
-  - Enter a URL directly or select an internal post from the dropdown
-  - Specify a label for the link
-  - Choose whether the link should open in a new tab
+- Each link can be entered as a direct URL or selected from an internal post picker
 - When a URL is entered and the field loses focus, the system attempts to fetch the page title as a suggested label
-- The field automatically normalizes URLs (adding `https://` if missing)
+- The field automatically normalizes URLs by adding `https://` if missing
+- Users can choose whether each link opens in a new tab
 - Empty links (with no URL or post selected) are not stored in the array
-- This field is ideal for creating collections of links like related resources, navigation menus, or social media profiles
+- The stored value is always an array of link objects, even if only one link is provided

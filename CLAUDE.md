@@ -1,163 +1,151 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Project Overview
+
+WPify Custom Fields — WordPress plugin providing 59 field types across 15 integration points (metaboxes, options pages, taxonomy terms, users, WooCommerce products/orders/coupons, Gutenberg blocks, etc.). PHP 8.1+ / WordPress 6.2+ / React 18.
+
+Entry point: `custom-fields.php` → singleton `wpify_custom_fields()` returns `CustomFields` instance.
+
+## Directory Structure
+
+```
+src/                        # PHP source (PSR-4: Wpify\CustomFields)
+  CustomFields.php          # Main class — factory methods, sanitization, type mapping
+  Api.php                   # REST API endpoints (/wpifycf/v1/)
+  FieldFactory.php          # Fluent PHP API for building field definitions
+  Helpers.php               # URL fetching, post/term queries, file operations
+  Fields/                   # PHP field type handlers (DirectFileField)
+  Integrations/             # All 15 integration classes
+  Exceptions/               # MissingArgumentException, CustomFieldsException
+assets/                     # JS/React source (@ alias in imports)
+  custom-fields.js          # Entry point — bootstraps React apps from DOM containers
+  components/               # Shared: App, Field, AppContext, MultiField, GutenbergBlock, Tabs, Label, etc.
+  fields/                   # 59 field type React components
+  helpers/                  # hooks.js, functions.js, validators.js, field-types.js, generators.js
+  styles/                   # SCSS with CSS custom properties and container queries
+docs/                       # Markdown documentation (field-types/, integrations/, features/)
+build/                      # Webpack output (generated)
+```
+
+## Build Commands
+
+- Dev server: `npm run start`
+- Production build: `npm run build`
+- Bundle analysis: `npm run build:analyze`
+- PHP code standards: `composer run phpcs`
+- PHP auto-fix: `composer run phpcbf`
+
+## Architecture
+
+### PHP Integration Class Hierarchy
+
+```
+BaseIntegration (abstract)
+│   normalize_items(), enqueue(), register_rest_options()
+│
+├── OptionsIntegration (abstract)
+│   │   print_app(), prepare_items_for_js(), get/set_field(), set_fields_from_post_request()
+│   │
+│   ├── Options              — Admin menu pages (get_option / update_option)
+│   ├── SiteOptions          — Multisite network options
+│   ├── WooCommerceSettings  — WC settings tabs
+│   │
+│   └── ItemsIntegration (abstract)
+│       │   Adds get_item_id() for item-bound storage
+│       │
+│       ├── Metabox                    — Post meta boxes
+│       ├── Taxonomy                   — Term meta fields
+│       ├── User                       — User profile fields
+│       ├── Comment                    — Comment meta
+│       ├── MenuItem                   — Nav menu item meta
+│       ├── ProductOptions             — WC product data tabs
+│       ├── ProductVariationOptions    — WC product variations
+│       ├── CouponOptions              — WC coupon fields
+│       ├── OrderMetabox               — WC orders (HPOS compatible)
+│       ├── SubscriptionMetabox        — WC Subscriptions
+│       └── WcMembershipPlanOptions    — WC Memberships
+│
+└── GutenbergBlock — Block attributes, server-side rendering, InnerBlocks
+```
+
+### Data Flow: PHP → JavaScript
+
+1. **Normalize** — `normalize_items()` adds IDs, global_ids, resolves type aliases, registers async option endpoints
+2. **Prepare** — `prepare_items_for_js()` builds input names, fetches current values from DB
+3. **Render** — `print_app()` outputs a `.wpifycf-app-instance` container with all field data in `data-fields` JSON attribute
+4. **Bootstrap** — JS entry reads `data-fields`, creates React root with `AppContextProvider`
+5. **Render tree** — `App` → `RootFields` → `Field` (dispatcher) → specific field component
+6. **Submit** — Hidden `<input>` elements carry values; PHP `set_fields_from_post_request()` sanitizes and saves
+7. **Gutenberg** — Uses controlled state (`attributes` / `setAttributes`) instead of form submission
+
+### Key JS Components
+
+- **`Field.js`** — Central dispatcher: resolves type to component via `getFieldComponentByType()`, evaluates conditions (`useConditions`), runs validation (`checkValidity`), handles generators
+- **`AppContext.js`** — Global state provider: values, fields, tabs, config. Supports both controlled (Gutenberg) and uncontrolled (form) modes
+- **`MultiField.js`** — Generic repeater: add/remove/reorder (Sortable.js), min/max constraints. All `multi_*` types are thin wrappers around this
+- **`GutenbergBlock.js`** — View/Edit mode toggle, server-side block rendering, InnerBlocks via HTML comment replacement
+- **`functions.js`** — `evaluateConditions()`, `getValueByPath()` (dot notation + relative `#`/`##` paths), `interpolateFieldValues()`
+- **`validators.js`** — `checkValidityStringType`, `checkValidityNumberType`, `checkValidityGroupType`, `checkValidityMultiFieldType()` factory
+- **`hooks.js`** — `useConditions`, `useMulti`, `usePosts`, `useTerms`, `useOptions`, `useMediaLibrary`, `useValidity`, `useSortableList`
+
+## Code Style
+
+- **PHP**: WordPress Coding Standards (WPCS) — see `phpcs.xml` for project customizations
+- **JS**: WordPress scripts standards via `@wordpress/scripts`
+- **CSS**: SCSS, BEM-style with `wpifycf-` prefix, CSS custom properties (`--wpifycf-*`), container queries on `.wpifycf-app-instance` and `.wpifycf-field__control`
+- **Naming**: PHP namespace `Wpify\CustomFields` (PSR-4), React components PascalCase, JS helpers camelCase
+- **Prefix**: PHP globals `wpifycf`, text domain `wpify-custom-fields`
+- **JS imports**: `@` alias = `assets/` directory
+- **Docs**: PHPDoc in code, markdown in `docs/`. Follow WordPress Coding Standards in PHP examples (tabs, spaces in parentheses/functions). Always escape output: `esc_html()`, `esc_attr()`, `esc_url()`, `wp_kses()`
+
+## Key Patterns
+
+### Integration Lifecycle
+- **Render**: `normalize_items()` → `prepare_items_for_js()` → `print_app(context, tabs, attrs, items)`
+- **Save**: `normalize_items()` → `set_fields_from_post_request(items)`
+- **Register meta**: `normalize_items()` → `flatten_items()` → `register_{type}_meta()` per field
+
+### Field Type Aliases (backward compatibility)
+`switch` → `toggle`, `multiswitch` → `multi_toggle`, `multiselect` → `multi_select`, `colorpicker` → `color`, `gallery` → `multi_attachment`, `repeater` → `multi_group`
+
+### PHP Extensibility Filters
+- `wpifycf_sanitize_{type}` — custom sanitization
+- `wpifycf_wp_type_{type}` — WordPress data type mapping (integer, number, boolean, object, array, string)
+- `wpifycf_default_value_{type}` — default values
+- `wpifycf_items` — filter normalized items
+
+### JS Extensibility Filters (@wordpress/hooks)
+- `wpifycf_field_{type}` — register custom field component
+- `wpifycf_definition` — filter field definitions before render
+- `wpifycf_generator_{name}` — auto-generate field values (e.g., UUID)
+
+### Extending Field Types
+- **PHP**: Register `wpifycf_sanitize_{type}`, `wpifycf_wp_type_{type}`, `wpifycf_default_value_{type}` filters
+- **JS**: Create component in `assets/fields/`, add static `checkValidity(value, field)` method, register with `addFilter('wpifycf_field_{type}', ...)`
+- **Multi-version**: Wrap with `MultiField`, use `checkValidityMultiFieldType(type)` helper
+- Full guide: `docs/features/extending.md`
+
+### Conditional Logic
+Conditions array with operators (`==`, `!=`, `>`, `>=`, `<`, `<=`, `between`, `contains`, `not_contains`, `in`, `not_in`, `empty`, `not_empty`), `and`/`or` combinators, nested groups, relative path refs (`#` parent, `##` grandparent). Hidden fields still submit values with `data-hide-field="true"`. Full docs: `docs/features/conditions.md`
+
+### Validation
+Field components export static `checkValidity(value, field)` → array of error strings. Form submission blocked if errors. Validators in `assets/helpers/validators.js`. Full docs: `docs/features/validation.md`
+
+## Documentation
+
+When writing or updating docs in `docs/`:
+- Follow existing templates — consistent structure for field types, integrations, and features (see any existing file as reference)
+- PHP examples: WordPress Coding Standards with tabs, spaces in parentheses/functions
+- Always escape output in examples (`esc_html()`, `esc_attr()`, `esc_url()`, `wp_kses()`)
+- Parameter format: `name` _(type)_ — description
+- File organization: `docs/field-types/`, `docs/integrations/`, `docs/features/`
 
 ## Self-Maintenance
+
 When your changes invalidate or create gaps in this file, update it as part of the same task. Typical triggers:
 - Build commands or scripts change
-- New coding conventions or naming patterns are established
-- New field types, integrations, or major features are added
-- File/directory structure changes that affect documented paths
-- Conditional logic operators or API surface changes
+- New integrations, field types, or major features are added
+- Class hierarchy or data flow changes
+- File/directory structure changes
 
-Keep updates minimal, match the existing style, and do not add session-specific or speculative content.
-
-## Build/Test Commands
-- Start dev server: `npm run start`
-- Build for production: `npm run build`
-- Analyze bundle: `npm run build:analyze`
-- PHP code standards check: `composer run phpcs`
-- PHP code beautifier: `composer run phpcbf`
-
-## Code Style Guidelines
-- PHP: WordPress Coding Standards (WPCS) with customizations in phpcs.xml
-- PHP version: 8.1+
-- WordPress version: 6.2+
-- JS: Use WordPress scripts standards
-- Prefix PHP globals with `wpifycf`
-- Translation text domain: `wpify-custom-fields`
-- React components use PascalCase
-- JS helpers use camelCase
-- Namespace: `Wpify\CustomFields`
-- PHP class files match class name (PSR-4)
-- Import paths: Use `@` alias for assets directory in JS
-- Error handling: Use custom exceptions in `Exceptions` directory
-- Documentation is in PHPDoc format and in docs folder in md format
-- When generating PHP code, always use WordPress Coding Standards
-
-## Extending Field Types
-To create a custom field type, the following components are required:
-
-1. **PHP Filters**:
-   - `wpifycf_sanitize_{type}` - For sanitizing field values
-   - `wpifycf_wp_type_{type}` - To specify WordPress data type (integer, number, boolean, object, array, string)
-   - `wpifycf_default_value_{type}` - To define default values
-
-2. **JavaScript Components**:
-   - Create a React component for the field
-   - Add validation method to the component (`YourComponent.checkValidity`)
-   - Register the field via `addFilter('wpifycf_field_{type}', 'wpify_custom_fields', () => YourComponent)`
-
-3. **Multi-field Types**:
-   - Custom field types can have multi-versions by prefixing with `multi_`
-   - Leverage the existing `MultiField` component for implementation
-   - Use `checkValidityMultiFieldType` helper for validation
-
-4. **Field Component Structure**:
-   - Field components receive props like `id`, `htmlId`, `onChange`, `value`, etc.
-   - CSS classes should follow pattern: `wpifycf-field-{type}`
-   - Return JSX with appropriate HTML elements
-
-## Documentation Standards
-When writing or updating documentation:
-
-### PHP Code Examples
-- Use tabs for indentation, not spaces
-- Follow WordPress Coding Standards for all PHP examples:
-  - Add spaces inside parentheses for conditions: `if ( ! empty( $var ) )`
-  - Add spaces after control structure keywords: `if (...) {`
-  - Add spaces around logical operators: `$a && $b`, `! $condition`
-  - Add spaces around string concatenation: `$a . ' ' . $b`
-  - Add spaces for function parameters: `function_name( $param1, $param2 )`
-  - Use proper array formatting with tabs for indentation:
-    ```php
-    array(
-    	'key1' => 'value1',
-    	'key2' => 'value2',
-    )
-    ```
-  - Maintain consistent spacing around array arrow operators: `'key' => 'value'`
-  - Use spaces in associative array access: `$array[ 'key' ]`
-
-### Documentation Structure for Field Types
-Field type documentation should follow this consistent structure:
-1. **Title and Description** - Clear explanation of the field's purpose
-2. **Field Type Definition** - Example code following WordPress coding standards
-3. **Properties Section**:
-   - Default field properties
-   - Specific properties unique to the field type
-4. **Stored Value** - Explanation of how data is stored in the database
-5. **Example Usage** - Real-world examples with WordPress coding standards
-6. **Notes** - Important details about the field's behavior and uses
-
-### Documentation Structure for Integrations
-Integration documentation should follow this consistent structure:
-1. **Title and Overview** - Clear explanation of the integration's purpose
-2. **Requirements** - Any specific plugins or dependencies required (if applicable)
-3. **Usage Example** - PHP code example following WordPress coding standards
-4. **Parameters Section**:
-   - Required parameters with descriptions
-   - Optional parameters with descriptions and default values
-5. **Data Storage** - How and where the integration stores its data
-6. **Retrieving Data** - How to access stored data programmatically
-7. **Advanced Usage** - Examples of tabs, conditional display, etc. (as applicable)
-
-### Security in Examples
-- Always include proper data escaping in examples:
-  - `esc_html()` for plain text output
-  - `esc_attr()` for HTML attributes
-  - `esc_url()` for URLs
-  - `wp_kses()` for allowing specific HTML
-
-### Consistency
-- Maintain consistent terminology across all documentation files
-- Use consistent formatting for property descriptions
-- Keep parameter documentation format consistent: `name` _(type)_ - description
-- When documenting integrations, use consistent parameter naming and structure
-
-### Integration-Specific Notes
-- For WooCommerce integrations, always mention compatibility with HPOS when applicable
-- Product Options integrations should list common tab IDs from WooCommerce
-- Order and Subscription integrations should include examples of retrieving meta
-- All integration documentation should include examples of tabs and conditional display
-- When documenting options pages, always include proper menu/page configuration
-
-### File Organization
-- Field type documentation goes in `docs/field-types/`
-- Integration documentation goes in `docs/integrations/`
-- Feature documentation goes in `docs/features/`
-- All documentation files should use `.md` extension
-- Main index files (integrations.md, field-types.md) should link to all related docs
-
-## Conditional Fields
-The plugin provides a robust conditional logic system for dynamically showing/hiding fields:
-
-### Condition Structure
-Each condition requires:
-- `field`: The ID of the field to check (can use path references)
-- `condition`: The comparison operator
-- `value`: The value to compare against
-
-### Available Operators
-- `==`: Equal (default)
-- `!=`: Not equal
-- `>`, `>=`, `<`, `<=`: Comparison operators
-- `between`: Value is between two numbers, inclusive 
-- `contains`, `not_contains`: String contains/doesn't contain value
-- `in`, `not_in`: Value is/isn't in an array
-- `empty`, `not_empty`: Value is/isn't empty
-
-### Multiple Conditions
-- Combine with `'and'` (default) or `'or'` between conditions
-- Create nested condition groups with sub-arrays for complex logic
-
-### Path References
-- Dot notation for nested fields: `parent.child`
-- Hash symbols for relative paths: `#` (parent), `##` (grandparent)
-- Array access: `multi_field[0]` for specific items
-
-### Technical Implementation
-- Conditional logic lives in `Field.js`, `hooks.js` (useConditions), and `functions.js`
-- Hidden fields are still submitted but have `data-hide-field="true"` attribute
-- Conditions are evaluated in real-time as users interact with the form
-
+Keep updates minimal, match existing style, do not add session-specific or speculative content.

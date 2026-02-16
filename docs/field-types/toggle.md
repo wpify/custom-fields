@@ -1,37 +1,27 @@
 # Toggle Field Type
 
-The Toggle field type provides a modern on/off switch control for boolean values. It's a user-friendly alternative to checkboxes, offering a clear visual indication of the current state while taking up minimal space in the interface.
+The Toggle field type provides a modern on/off switch control for boolean values. It is a user-friendly alternative to checkboxes, offering a clear visual indication of the current state while taking up minimal space in the interface.
 
 ## Field Type: `toggle`
 
 ```php
 array(
-    'type'  => 'toggle',
-    'id'    => 'example_toggle',
-    'label' => 'Feature Setting',
-    'title' => 'Enable this feature',
+	'type'  => 'toggle',
+	'id'    => 'example_toggle',
+	'label' => 'Feature Setting',
+	'title' => 'Enable this feature',
 )
 ```
 
 ## Properties
 
-**For Default Field Properties, see [Field Types Definition](../field-types.md)**.
+For Default Field Properties, see [Field Types Definition](../field-types.md).
 
-### `title` _(string)_ - Required
+### Specific Properties
+
+#### `title` _(string)_ — Required
 
 The text displayed directly next to the toggle switch, explaining what the toggle controls. HTML tags are allowed in this property.
-
-### `default` _(boolean)_ - Optional, default: `false`
-
-The default state of the toggle (true for on, false for off).
-
-## User Interface
-
-The Toggle field renders as a switch control with:
-
-1. A label above (from the `label` property)
-2. A title next to the switch (from the `title` property)
-3. An animated switch that slides between on and off states
 
 ## Stored Value
 
@@ -45,12 +35,12 @@ The field stores a boolean value in the database:
 
 ```php
 'enable_feature' => array(
-    'type'        => 'toggle',
-    'id'          => 'enable_feature',
-    'label'       => 'Feature Control',
-    'title'       => 'Enable this feature',
-    'description' => 'Turn this feature on or off.',
-    'default'     => false,
+	'type'        => 'toggle',
+	'id'          => 'enable_feature',
+	'label'       => 'Feature Control',
+	'title'       => 'Enable this feature',
+	'description' => 'Turn this feature on or off.',
+	'default'     => false,
 ),
 ```
 
@@ -58,79 +48,81 @@ The field stores a boolean value in the database:
 
 ```php
 'show_related' => array(
-    'type'    => 'toggle',
-    'id'      => 'show_related',
-    'label'   => 'Related Content',
-    'title'   => 'Show related content <span class="recommended">(Recommended)</span>',
-    'default' => true,
+	'type'    => 'toggle',
+	'id'      => 'show_related',
+	'label'   => 'Related Content',
+	'title'   => 'Show related content <span class="recommended">(Recommended)</span>',
+	'default' => true,
 ),
 ```
 
-### Using Toggle Values in Your Theme
+### Using Values in Your Theme
 
 ```php
-// Get the toggle value from the meta field
-$enable_feature = get_post_meta(get_the_ID(), 'enable_feature', true);
+$enable_feature = get_post_meta( get_the_ID(), 'enable_feature', true );
 
 // Convert to proper boolean if needed
-$enable_feature = filter_var($enable_feature, FILTER_VALIDATE_BOOLEAN);
+$enable_feature = filter_var( $enable_feature, FILTER_VALIDATE_BOOLEAN );
 
-if ($enable_feature) {
-    // Feature is enabled, implement the functionality
-    echo '<div class="special-feature">';
-    // Feature content...
-    echo '</div>';
-    
-    // Add specific classes or functionality
-    add_filter('body_class', function($classes) {
-        $classes[] = 'feature-enabled';
-        return $classes;
-    });
+if ( $enable_feature ) {
+	echo '<div class="special-feature">';
+	// Feature content...
+	echo '</div>';
+
+	add_filter( 'body_class', function ( $classes ) {
+		$classes[] = 'feature-enabled';
+		return $classes;
+	} );
 }
 ```
 
-### Toggle Field Controlling Other Fields
+### With Conditional Logic
 
 Toggles are commonly used with conditional logic to show/hide other fields:
 
 ```php
 'custom_colors' => array(
-    'type'    => 'toggle',
-    'id'      => 'custom_colors',
-    'label'   => 'Custom Colors',
-    'title'   => 'Use custom colors instead of theme defaults',
-    'default' => false,
+	'type'    => 'toggle',
+	'id'      => 'custom_colors',
+	'label'   => 'Custom Colors',
+	'title'   => 'Use custom colors instead of theme defaults',
+	'default' => false,
 ),
 'primary_color' => array(
-    'type'        => 'color',
-    'id'          => 'primary_color',
-    'label'       => 'Primary Color',
-    'description' => 'Select a custom primary color.',
-    'conditions'  => array(
-        array('field' => 'custom_colors', 'value' => true),
-    ),
+	'type'       => 'color',
+	'id'         => 'primary_color',
+	'label'      => 'Primary Color',
+	'conditions' => array(
+		array( 'field' => 'custom_colors', 'value' => true ),
+	),
 ),
 'secondary_color' => array(
-    'type'        => 'color',
-    'id'          => 'secondary_color',
-    'label'       => 'Secondary Color',
-    'description' => 'Select a custom secondary color.',
-    'conditions'  => array(
-        array('field' => 'custom_colors', 'value' => true),
-    ),
+	'type'       => 'color',
+	'id'         => 'secondary_color',
+	'label'      => 'Secondary Color',
+	'conditions' => array(
+		array( 'field' => 'custom_colors', 'value' => true ),
+	),
 ),
+```
+
+## Field Factory
+
+```php
+$f = new \Wpify\CustomFields\FieldFactory();
+
+$f->toggle(
+	label: 'Feature',
+	title: 'Enable this feature',
+	default: false,
+);
 ```
 
 ## Notes
 
-- The Toggle field automatically updates its title to match the `title` property when toggled on
-- When toggled off, the field title is empty
-- Toggle fields are particularly useful for:
-  - Enabling/disabling features
-  - Showing/hiding additional form fields (with conditional logic)
-  - Boolean settings like yes/no or on/off options
-- The field provides visual feedback when toggled, making it more intuitive than checkboxes
+- The Toggle field automatically updates its title to match the `title` property when toggled on; when toggled off, the field title is empty
+- Toggle fields are particularly useful for enabling/disabling features, showing/hiding additional form fields (with conditional logic), and boolean settings like yes/no or on/off options
 - The field validates as a boolean type when required
-- Unlike checkboxes, the toggle UI clearly communicates its current state
+- Unlike checkboxes, the toggle UI clearly communicates its current state with visual feedback
 - For multiple boolean options that should be toggled independently, use separate Toggle fields
 - For selecting multiple options from a set, consider using the `multi_toggle` field type instead

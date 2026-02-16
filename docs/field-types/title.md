@@ -1,36 +1,27 @@
 # Title Field Type
 
-The Title field type provides a way to add section headings or dividers within your custom fields interface. It's a display-only field that doesn't store any data but helps organize and structure your form layout.
+The Title field type provides a way to add section headings or dividers within your custom fields interface. It is a display-only field that helps organize and structure your form layout.
 
 ## Field Type: `title`
 
 ```php
 array(
-    'type'  => 'title',
-    'id'    => 'section_heading',
-    'title' => 'Advanced Settings',
+	'type'  => 'title',
+	'title' => 'Advanced Settings',
 )
 ```
 
 ## Properties
 
-**For Default Field Properties, see [Field Types Definition](../field-types.md)**.
+For Default Field Properties, see [Field Types Definition](../field-types.md).
 
-### `title` _(string)_ - Required
+### Specific Properties
 
-The text to display as the section heading. HTML tags are allowed and will be rendered properly.
-
-### `className` _(string)_ - Optional
-
-Additional CSS class to apply to the title container for custom styling.
-
-## User Interface
-
-The Title field renders as an `<h2>` heading element within a container div. It doesn't display the standard field wrapper, label, or description elements that other field types use.
+- `title` _(string)_ — The text to display as the section heading. HTML tags are allowed and will be rendered properly.
 
 ## Stored Value
 
-The Title field type doesn't store any data in the database. It's purely for visual organization of your custom fields interface.
+This field does not store any value.
 
 ## Example Usage
 
@@ -38,9 +29,8 @@ The Title field type doesn't store any data in the database. It's purely for vis
 
 ```php
 'general_section' => array(
-    'type'  => 'title',
-    'id'    => 'general_section',
-    'title' => 'General Information',
+	'type'  => 'title',
+	'title' => 'General Information',
 ),
 ```
 
@@ -48,9 +38,8 @@ The Title field type doesn't store any data in the database. It's purely for vis
 
 ```php
 'advanced_section' => array(
-    'type'  => 'title',
-    'id'    => 'advanced_section',
-    'title' => 'Advanced Settings <span class="beta-tag">Beta</span>',
+	'type'  => 'title',
+	'title' => 'Advanced Settings <span class="beta-tag">Beta</span>',
 ),
 ```
 
@@ -59,79 +48,64 @@ The Title field type doesn't store any data in the database. It's purely for vis
 ```php
 // Example of using title fields to organize a complex form
 $fields = array(
-    'general_section' => array(
-        'type'  => 'title',
-        'id'    => 'general_section',
-        'title' => 'General Information',
-    ),
-    'name' => array(
-        'type'     => 'text',
-        'id'       => 'name',
-        'label'    => 'Name',
-        'required' => true,
-    ),
-    'email' => array(
-        'type'     => 'email',
-        'id'       => 'email',
-        'label'    => 'Email Address',
-        'required' => true,
-    ),
-    
-    'appearance_section' => array(
-        'type'  => 'title',
-        'id'    => 'appearance_section',
-        'title' => 'Appearance Settings',
-    ),
-    'theme_color' => array(
-        'type'    => 'color',
-        'id'      => 'theme_color',
-        'label'   => 'Theme Color',
-        'default' => '#3366cc',
-    ),
-    'font_size' => array(
-        'type'    => 'select',
-        'id'      => 'font_size',
-        'label'   => 'Font Size',
-        'options' => array(
-            'small'  => 'Small',
-            'medium' => 'Medium',
-            'large'  => 'Large',
-        ),
-    ),
-    
-    'advanced_section' => array(
-        'type'  => 'title',
-        'id'    => 'advanced_section',
-        'title' => 'Advanced Options',
-    ),
-    // More fields...
+	'general_section' => array(
+		'type'  => 'title',
+		'title' => 'General Information',
+	),
+	'name' => array(
+		'type'     => 'text',
+		'label'    => 'Name',
+		'required' => true,
+	),
+	'email' => array(
+		'type'     => 'email',
+		'label'    => 'Email Address',
+		'required' => true,
+	),
+
+	'appearance_section' => array(
+		'type'  => 'title',
+		'title' => 'Appearance Settings',
+	),
+	'theme_color' => array(
+		'type'    => 'color',
+		'label'   => 'Theme Color',
+		'default' => '#3366cc',
+	),
+	'font_size' => array(
+		'type'    => 'select',
+		'label'   => 'Font Size',
+		'options' => array(
+			'small'  => 'Small',
+			'medium' => 'Medium',
+			'large'  => 'Large',
+		),
+	),
+
+	'advanced_section' => array(
+		'type'  => 'title',
+		'title' => 'Advanced Options',
+	),
+	// More fields...
 );
 ```
 
-## Styling Title Fields
+## Field Factory
 
-You can customize the appearance of title fields using CSS:
+```php
+$f = new \Wpify\CustomFields\FieldFactory();
 
-```css
-/* Target all title fields */
-.wpify-field-title h2 {
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    color: #23282d;
-}
-
-/* Target a specific title field */
-.wpify-field-title--advanced_section h2 {
-    color: #dc3232;
-}
+$f->title(
+	title: 'Section Title',
+);
 ```
 
 ## Notes
 
-- The Title field doesn't store or retrieve any data
-- It's purely for visual organization of your custom fields interface
-- Unlike most field types, it doesn't have a label or description
-- It doesn't participate in validation or conditional logic evaluations
-- The field can accept HTML in the title property, allowing for rich formatting
-- Consider using title fields to break up long forms into logical sections
-- When combined with the `tab` property for fields, you can organize complex forms with multiple sections under different tabs
+- The Title field does not store or retrieve any data.
+- It is purely for visual organization of your custom fields interface.
+- Unlike most field types, it does not have a label or description.
+- The field renders as an `<h2>` heading element within a container div.
+- The field can accept HTML in the title property, allowing for rich formatting.
+- Consider using title fields to break up long forms into logical sections.
+- When combined with the `tab` property for fields, you can organize complex forms with multiple sections under different tabs.

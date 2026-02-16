@@ -1,6 +1,6 @@
 # Hidden Field Type
 
-The Hidden field type allows you to include invisible input fields that store values without displaying them to users in the admin interface. This is useful for storing metadata, tracking information, or other values that shouldn't be edited directly but need to be submitted with the form.
+The Hidden field type allows you to include invisible input fields that store values without displaying them to users in the admin interface. This is useful for storing metadata, tracking information, or other values that should not be edited directly but need to be submitted with the form.
 
 ## Field Type: `hidden`
 
@@ -14,24 +14,11 @@ array(
 
 ## Properties
 
-**For Default Field Properties, see [Field Types Definition](../field-types.md)**.
+For Default Field Properties, see [Field Types Definition](../field-types.md).
 
-The hidden field type primarily uses just a subset of the default field properties since it doesn't have a visual interface:
+### Specific Properties
 
-### `default` _(mixed)_ - Optional
-
-The default value for the field. This is particularly important for hidden fields since they're not visible for editing.
-
-### `attributes` _(array)_ - Optional
-
-You can pass HTML attributes to the hidden input field if needed. For example:
-
-```php
-'attributes' => array(
-	'class'       => 'custom-hidden-field',
-	'data-source' => 'system-generated',
-),
-```
+This field type has no additional specific properties beyond the default ones. It primarily uses the `default` and `attributes` properties from the common set since it has no visual interface.
 
 ## Stored Value
 
@@ -69,30 +56,35 @@ The field stores the value as a string in the database.
 ),
 ```
 
-### Using Hidden Field Values in PHP
+### Using Values in Your Theme
 
 ```php
-// Get the hidden value from the meta field
 $timestamp = get_post_meta( get_the_ID(), 'timestamp', true );
 
 if ( ! empty( $timestamp ) ) {
-	// Format the timestamp
 	$formatted_date = date_i18n( get_option( 'date_format' ), $timestamp );
-	
+
 	echo '<div class="submission-date">';
 	echo 'Submitted on: ' . esc_html( $formatted_date );
 	echo '</div>';
 }
 ```
 
+## Field Factory
+
+```php
+$f = new \Wpify\CustomFields\FieldFactory();
+
+$f->hidden(
+	default: 'some_value',
+	generator: 'uuid',
+);
+```
+
 ## Notes
 
 - Hidden fields do not appear in the visual interface, so users cannot directly modify their values
-- They are particularly useful for:
-  - Storing system-generated values like timestamps or unique IDs
-  - Tracking form submission sources
-  - Maintaining state between requests
-  - Including values that should always be submitted but never edited
+- They are particularly useful for storing system-generated values like timestamps or unique IDs, tracking form submission sources, maintaining state between requests, and including values that should always be submitted but never edited
 - Though hidden from the interface, the values are still stored and processed like any other field
-- Unlike most field types, hidden fields don't have a label or description since they're not visible
+- Unlike most field types, hidden fields do not have a label or description since they are not visible
 - Hidden fields can still be used in conditional logic to control the display of other fields

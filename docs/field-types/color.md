@@ -15,27 +15,11 @@ array(
 
 ## Properties
 
-### Default Field Properties
-
-These properties are available for all field types:
-
-- `id` _(string)_ - Unique identifier for the field
-- `type` _(string)_ - Must be set to `color` for this field type
-- `label` _(string)_ - The field label displayed in the admin interface
-- `description` _(string)_ - Help text displayed below the field
-- `required` _(boolean)_ - Whether the field must have a value
-- `tab` _(string)_ - The tab ID where this field should appear (if using tabs)
-- `className` _(string)_ - Additional CSS class for the field container
-- `conditions` _(array)_ - Conditions that determine when to show this field
-- `disabled` _(boolean)_ - Whether the field should be disabled
-- `default` _(string)_ - Default color value in hexadecimal format (e.g., `#ff0000`)
-- `attributes` _(array)_ - HTML attributes to add to the field
-- `unfiltered` _(boolean)_ - Whether the value should remain unfiltered when saved
-- `render_options` _(array)_ - Options for customizing field rendering
+For Default Field Properties, see [Field Types Definition](../field-types.md).
 
 ### Specific Properties
 
-This field type doesn't have any additional specific properties beyond the default ones.
+This field type has no additional specific properties beyond the default ones.
 
 ## Stored Value
 
@@ -55,13 +39,11 @@ The field stores the color value as a string in hexadecimal format (e.g., `#ff00
 ),
 ```
 
-### Using the Color Value in Your Theme
+### Using Values in Your Theme
 
 ```php
-// Get the color value from the meta field
 $header_color = get_post_meta( get_the_ID(), 'header_color', true );
 
-// Use the color value in your CSS
 echo '<style>
 	.site-header {
 		background-color: ' . esc_attr( $header_color ) . ';
@@ -69,13 +51,14 @@ echo '<style>
 </style>';
 ```
 
-### Color Field with Conditional Logic
+### With Conditional Logic
 
 ```php
 'use_custom_color' => array(
 	'type'  => 'toggle',
 	'id'    => 'use_custom_color',
 	'label' => 'Use Custom Color',
+	'title' => 'Enable custom color',
 ),
 'custom_color' => array(
 	'type'       => 'color',
@@ -86,6 +69,17 @@ echo '<style>
 		array( 'field' => 'use_custom_color', 'value' => true ),
 	),
 ),
+```
+
+## Field Factory
+
+```php
+$f = new \Wpify\CustomFields\FieldFactory();
+
+$f->color(
+	label: 'Primary Color',
+	default: '#000000',
+);
 ```
 
 ## Notes

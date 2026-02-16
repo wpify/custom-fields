@@ -6,35 +6,23 @@ The Week field type provides a specialized input for selecting a specific week o
 
 ```php
 array(
-    'type'  => 'week',
-    'id'    => 'example_week',
-    'label' => 'Reporting Week',
-    'min'   => '2023-W01',
-    'max'   => '2023-W52',
+	'type'  => 'week',
+	'id'    => 'example_week',
+	'label' => 'Reporting Week',
+	'min'   => '2023-W01',
+	'max'   => '2023-W52',
 )
 ```
 
 ## Properties
 
-**For Default Field Properties, see [Field Types Definition](../field-types.md)**.
+For Default Field Properties, see [Field Types Definition](../field-types.md).
 
-### `min` _(string)_ - Optional
+### Specific Properties
 
-The earliest week that can be selected. The value should be in ISO format (YYYY-Www), where YYYY is the year and ww is the week number (e.g., `2023-W01`).
+`min` _(string)_ — The earliest week that can be selected. The value should be in ISO format (YYYY-Www), where YYYY is the year and ww is the week number (e.g., `2023-W01`).
 
-### `max` _(string)_ - Optional
-
-The latest week that can be selected. The value should be in ISO format (YYYY-Www).
-
-### `attributes` _(array)_ - Optional
-
-You can pass HTML attributes to the week input field. For example:
-
-```php
-'attributes' => array(
-    'class' => 'custom-week-picker',
-),
-```
+`max` _(string)_ — The latest week that can be selected. The value should be in ISO format (YYYY-Www).
 
 ## Stored Value
 
@@ -46,11 +34,11 @@ The field stores the week value as a string in ISO format (YYYY-Www), for exampl
 
 ```php
 'report_week' => array(
-    'type'        => 'week',
-    'id'          => 'report_week',
-    'label'       => 'Weekly Report Period',
-    'description' => 'Select the week this report covers.',
-    'required'    => true,
+	'type'        => 'week',
+	'id'          => 'report_week',
+	'label'       => 'Weekly Report Period',
+	'description' => 'Select the week this report covers.',
+	'required'    => true,
 ),
 ```
 
@@ -58,109 +46,105 @@ The field stores the week value as a string in ISO format (YYYY-Www), for exampl
 
 ```php
 'fiscal_quarter_1' => array(
-    'type'        => 'week',
-    'id'          => 'fiscal_quarter_1',
-    'label'       => 'Q1 Planning Week',
-    'description' => 'Select a week in the first quarter for planning.',
-    'min'         => date('Y') . '-W01', // First week of current year
-    'max'         => date('Y') . '-W13', // 13th week (roughly Q1)
+	'type'        => 'week',
+	'id'          => 'fiscal_quarter_1',
+	'label'       => 'Q1 Planning Week',
+	'description' => 'Select a week in the first quarter for planning.',
+	'min'         => date( 'Y' ) . '-W01', // First week of current year
+	'max'         => date( 'Y' ) . '-W13', // 13th week (roughly Q1)
 ),
 ```
 
-### Current Year Weeks
+### Using Values in Your Theme
 
 ```php
-// Dynamic min/max constraints for the current year
-'current_year_week' => array(
-    'type'        => 'week',
-    'id'          => 'current_year_week',
-    'label'       => 'Week Selection',
-    'description' => 'Select a week in the current year.',
-    'min'         => date('Y') . '-W01', // First week of current year
-    'max'         => date('Y') . '-W52', // Last week of current year (may be W53 in some years)
-),
-```
+// Get the week value from the meta field.
+$report_week = get_post_meta( get_the_ID(), 'report_week', true );
 
-### Using Week Values in Your Theme
+if ( ! empty( $report_week ) ) {
+	// Parse the week value.
+	list( $year, $week_number ) = explode( '-W', $report_week );
 
-```php
-// Get the week value from the meta field
-$report_week = get_post_meta(get_the_ID(), 'report_week', true);
+	// Calculate the date of the first day of the week (Monday).
+	$date = new DateTime();
+	$date->setISODate( (int) $year, (int) $week_number );
+	$start_date = $date->format( 'M j, Y' );
 
-if (!empty($report_week)) {
-    // Parse the week value
-    list($year, $week_number) = explode('-W', $report_week);
-    
-    // Calculate the date of the first day of the week (Monday)
-    $date = new DateTime();
-    $date->setISODate($year, $week_number);
-    $start_date = $date->format('M j, Y');
-    
-    // Calculate the end date (Sunday)
-    $date->modify('+6 days');
-    $end_date = $date->format('M j, Y');
-    
-    echo '<div class="report-period">';
-    echo 'Report Period: Week ' . esc_html($week_number) . ', ' . esc_html($year);
-    echo ' (' . esc_html($start_date) . ' to ' . esc_html($end_date) . ')';
-    echo '</div>';
+	// Calculate the end date (Sunday).
+	$date->modify( '+6 days' );
+	$end_date = $date->format( 'M j, Y' );
+
+	echo '<div class="report-period">';
+	echo 'Report Period: Week ' . esc_html( $week_number ) . ', ' . esc_html( $year );
+	echo ' (' . esc_html( $start_date ) . ' to ' . esc_html( $end_date ) . ')';
+	echo '</div>';
 }
 ```
 
-### Week Field with Conditional Logic
-
-```php
-'weekly_report' => array(
-    'type'    => 'toggle',
-    'id'      => 'weekly_report',
-    'label'   => 'Weekly Report',
-    'title'   => 'Include weekly report data',
-),
-'report_week' => array(
-    'type'        => 'week',
-    'id'          => 'report_week',
-    'label'       => 'Report Week',
-    'description' => 'Select the week for this report.',
-    'conditions'  => array(
-        array('field' => 'weekly_report', 'value' => true),
-    ),
-),
-```
-
-## Working with Week Data
+### Working with Week Data
 
 The ISO week format (YYYY-Www) requires some special handling to convert to dates:
 
 ```php
 /**
- * Convert a week string to start and end dates
+ * Convert a week string to start and end dates.
  *
- * @param string $week_string ISO week string (e.g., '2023-W16')
- * @return array Array with start and end dates
+ * @param string $week_string ISO week string (e.g., '2023-W16').
+ * @return array Array with start and end dates.
  */
-function convert_week_to_dates($week_string) {
-    list($year, $week) = explode('-W', $week_string);
-    
-    // Create DateTime object for the first day of the week (Monday)
-    $date_start = new DateTime();
-    $date_start->setISODate((int)$year, (int)$week);
-    
-    // Create DateTime object for the last day of the week (Sunday)
-    $date_end = clone $date_start;
-    $date_end->modify('+6 days');
-    
-    return array(
-        'start' => $date_start,
-        'end'   => $date_end,
-        'year'  => (int)$year,
-        'week'  => (int)$week,
-    );
+function convert_week_to_dates( $week_string ) {
+	list( $year, $week ) = explode( '-W', $week_string );
+
+	// Create DateTime object for the first day of the week (Monday).
+	$date_start = new DateTime();
+	$date_start->setISODate( (int) $year, (int) $week );
+
+	// Create DateTime object for the last day of the week (Sunday).
+	$date_end = clone $date_start;
+	$date_end->modify( '+6 days' );
+
+	return array(
+		'start' => $date_start,
+		'end'   => $date_end,
+		'year'  => (int) $year,
+		'week'  => (int) $week,
+	);
 }
 
-// Usage
-$week_data = convert_week_to_dates('2023-W16');
-echo 'Week starts on: ' . $week_data['start']->format('F j, Y');
-echo 'Week ends on: ' . $week_data['end']->format('F j, Y');
+// Usage.
+$week_data = convert_week_to_dates( '2023-W16' );
+echo 'Week starts on: ' . esc_html( $week_data['start']->format( 'F j, Y' ) );
+echo 'Week ends on: ' . esc_html( $week_data['end']->format( 'F j, Y' ) );
+```
+
+### With Conditional Logic
+
+```php
+'weekly_report' => array(
+	'type'  => 'toggle',
+	'id'    => 'weekly_report',
+	'label' => 'Weekly Report',
+	'title' => 'Include weekly report data',
+),
+'report_week' => array(
+	'type'        => 'week',
+	'id'          => 'report_week',
+	'label'       => 'Report Week',
+	'description' => 'Select the week for this report.',
+	'conditions'  => array(
+		array( 'field' => 'weekly_report', 'value' => true ),
+	),
+),
+```
+
+## Field Factory
+
+```php
+$f = new \Wpify\CustomFields\FieldFactory();
+
+$f->week(
+	label: 'Start Week',
+);
 ```
 
 ## Notes
@@ -170,6 +154,6 @@ echo 'Week ends on: ' . $week_data['end']->format('F j, Y');
 - Weeks in ISO 8601 start on Monday and end on Sunday
 - The first week of the year (W01) is the week containing the first Thursday of the year
 - Some years have 53 weeks according to ISO 8601
-- When retrieving week values, use PHP's DateTime class with setISODate() to properly handle week calculations
-- The field validates that a value is provided when the field is required
+- When retrieving week values, use PHP's DateTime class with `setISODate()` to properly handle week calculations
+- The `min` and `max` constraints are passed through the field definition array; the FieldFactory method does not expose them as named parameters
 - The week format is particularly useful for applications requiring week-based reporting, scheduling, or planning

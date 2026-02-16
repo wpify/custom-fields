@@ -6,44 +6,28 @@ The attachment field type allows selecting a single file from the WordPress medi
 
 ```php
 array(
-	'type'           => 'attachment',
-	'id'             => 'example_attachment',
-	'label'          => 'Example Attachment',
-	'attachment_type' => '', // Optional, limit to specific media types
+	'type'            => 'attachment',
+	'id'              => 'hero_image',
+	'label'           => 'Hero Image',
+	'attachment_type' => 'image',
 )
 ```
 
 ## Properties
 
-### Default Field Properties
-
-These properties are available for all field types:
-
-- `id` _(string)_ - Unique identifier for the field
-- `type` _(string)_ - Must be set to `attachment` for this field type
-- `label` _(string)_ - The field label displayed in the admin interface
-- `description` _(string)_ - Help text displayed below the field
-- `required` _(boolean)_ - Whether the field must have a value
-- `tab` _(string)_ - The tab ID where this field should appear (if using tabs)
-- `className` _(string)_ - Additional CSS class for the field container
-- `conditions` _(array)_ - Conditions that determine when to show this field
-- `disabled` _(boolean)_ - Whether the field should be disabled
-- `default` _(mixed)_ - Default value for the field
-- `attributes` _(array)_ - HTML attributes to add to the field
-- `unfiltered` _(boolean)_ - Whether the value should remain unfiltered when saved
-- `render_options` _(array)_ - Options for customizing field rendering
+For Default Field Properties, see [Field Types Definition](../field-types.md).
 
 ### Specific Properties
 
-#### `attachment_type` _(string)_
+#### `attachment_type` _(string)_ — Optional
 
-Optional parameter that limits the type of files that can be selected from the media library. Common values include:
+Limits the type of files that can be selected from the media library. Common values include:
 
-- Empty string (default) - allows all media types
-- `image` - limits selection to images only
-- `video` - limits selection to video files
-- `audio` - limits selection to audio files
-- `application/pdf` - limits selection to PDF documents
+- Empty string (default) — allows all media types
+- `image` — limits selection to images only
+- `video` — limits selection to video files
+- `audio` — limits selection to audio files
+- `application/pdf` — limits selection to PDF documents
 
 ## Stored Value
 
@@ -51,21 +35,64 @@ The field stores the attachment ID (integer) in the database. This ID can be use
 
 ## Example Usage
 
-```php
-// Define the field
-'hero_image' => array(
-	'type'           => 'attachment',
-	'id'             => 'hero_image',
-	'label'          => 'Hero Image',
-	'attachment_type' => 'image',
-	'description'    => 'Select an image to display in the header.',
-),
+### Basic Image Field
 
-// Retrieve and use the attachment in your theme
+```php
+array(
+	'type'            => 'attachment',
+	'id'              => 'hero_image',
+	'label'           => 'Hero Image',
+	'attachment_type' => 'image',
+	'description'     => 'Select an image to display in the header.',
+),
+```
+
+### Document Attachment
+
+```php
+array(
+	'type'            => 'attachment',
+	'id'              => 'pdf_document',
+	'label'           => 'PDF Document',
+	'attachment_type' => 'application/pdf',
+	'description'     => 'Upload a PDF document.',
+),
+```
+
+### Using Values in Your Theme
+
+```php
 $image_id = get_post_meta( get_the_ID(), 'hero_image', true );
+
 if ( ! empty( $image_id ) ) {
+	// Display the image
 	echo wp_get_attachment_image( $image_id, 'full', false, array( 'class' => 'hero-image' ) );
+
+	// Or get the URL directly
+	$image_url = wp_get_attachment_url( $image_id );
+	if ( $image_url ) {
+		echo '<img src="' . esc_url( $image_url ) . '" alt="' . esc_attr( get_post_meta( $image_id, '_wp_attachment_image_alt', true ) ) . '">';
+	}
 }
+```
+
+### With Conditional Logic
+
+```php
+'show_hero' => array(
+	'type'  => 'toggle',
+	'id'    => 'show_hero',
+	'label' => 'Show Hero Image',
+),
+'hero_image' => array(
+	'type'            => 'attachment',
+	'id'              => 'hero_image',
+	'label'           => 'Hero Image',
+	'attachment_type' => 'image',
+	'conditions'      => array(
+		array( 'field' => 'show_hero', 'value' => true ),
+	),
+),
 ```
 
 ## User Interface
@@ -75,3 +102,20 @@ The attachment field provides:
 1. An "Add attachment" button when no file is selected
 2. A preview of the selected file (thumbnail for images, icon for other file types)
 3. Edit and remove buttons for managing the selected attachment
+
+## Field Factory
+
+```php
+$f = new \Wpify\CustomFields\FieldFactory();
+
+$f->attachment(
+	label: 'Hero Image',
+	attachment_type: 'image',
+);
+```
+
+## Notes
+
+- The stored attachment ID can be used with all standard WordPress attachment functions
+- For selecting multiple attachments, use the [`multi_attachment`](multi_attachment.md) field type instead
+- When an attachment is deleted from the media library, the field will show an empty state when edited

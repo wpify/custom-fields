@@ -1,186 +1,131 @@
-# MultiTime
+# Multi Time Field Type
 
-MultiTime field allows users to select and manage multiple time values. It's useful when you need to store a collection of times, such as operating hours, appointment slots, class schedules, or other time-related data.
+The Multi Time field type allows users to select and manage multiple time values. It provides a repeatable time picker interface for collecting multiple times, such as operating hours, appointment slots, or class schedules.
 
-## Field Configuration
+## Field Type: `multi_time`
 
 ```php
-[
-    'id' => 'class_schedule',
-    'type' => 'multi_time',
-    'label' => 'Class Schedule',
-    'description' => 'Add multiple class times',
-    'min' => 1,
-    'max' => 8,
-]
+array(
+	'type'    => 'multi_time',
+	'id'      => 'class_schedule',
+	'label'   => 'Class Schedule',
+	'min'     => 1,
+	'max'     => 5,
+	'buttons' => array(
+		'add'    => 'Add Time',
+		'remove' => 'Remove',
+	),
+)
 ```
 
-### Default Field Properties
+## Properties
 
-These properties are available for all field types:
-
-- `id` _(string)_ - Unique identifier for the field
-- `type` _(string)_ - Must be set to `code` for this field type
-- `label` _(string)_ - The field label displayed in the admin interface
-- `description` _(string)_ - Help text displayed below the field
-- `required` _(boolean)_ - Whether the field must have a value
-- `tab` _(string)_ - The tab ID where this field should appear (if using tabs)
-- `className` _(string)_ - Additional CSS class for the field container
-- `conditions` _(array)_ - Conditions that determine when to show this field
-- `disabled` _(boolean)_ - Whether the field should be disabled
-- `default` _(string)_ - Default value for the field
-- `attributes` _(array)_ - HTML attributes to add to the field
-- `unfiltered` _(boolean)_ - Whether the value should remain unfiltered when saved
-- `render_options` _(array)_ - Options for customizing field rendering
+For Default Field Properties, see [Field Types Definition](../field-types.md).
 
 ### Specific Properties
 
-- **min** (number, optional): Sets the minimum number of time inputs. If set, the user won't be able to remove items below this number.
-- **max** (number, optional): Sets the maximum number of time inputs. If set, the user won't be able to add more items beyond this number.
-- **buttons** (array, optional): Customize button labels.
-  - **add** (string, optional): Custom label for the add button. Default is an icon button.
-  - **remove** (string, optional): Custom label for the remove button. Default is an icon button.
-- **disabled_buttons** (array, optional): Array of buttons to disable. Options: 'move', 'delete'.
+#### `min` _(integer)_ — Optional
+Minimum number of items. Users cannot remove items below this count.
 
-For the individual time inputs, the following properties from the standard Time field apply:
+#### `max` _(integer)_ — Optional
+Maximum number of items. Users cannot add items beyond this count.
 
-- **min** (string, optional): Sets the minimum time that can be selected (format: "HH:MM").
-- **max** (string, optional): Sets the maximum time that can be selected (format: "HH:MM").
+#### `buttons` _(array)_ — Optional
+Custom button labels. Supports keys: `add`, `remove`, `duplicate`.
 
-## Stored Value Format
+#### `disabled_buttons` _(array)_ — Optional
+Array of buttons to disable. Options: `'move'`, `'delete'`, `'duplicate'`.
 
-The MultiTime field stores data as an array of time strings in 24-hour format:
+## Stored Value
+
+Array of time strings in 24-hour format (HH:MM):
 
 ```php
-[
-    '09:00',
-    '12:30',
-    '15:45',
-    '18:00'
-]
+array(
+	'09:00',
+	'12:30',
+	'15:45',
+	'18:00',
+)
 ```
 
-## Usage Examples
+## Example Usage
 
-### Retrieving Data
+### Appointment Slots
 
 ```php
-// Get the field value
-$class_times = get_post_meta(get_the_ID(), 'class_schedule', true);
+'appointment_times' => array(
+	'type'        => 'multi_time',
+	'id'          => 'appointment_times',
+	'label'       => 'Available Appointment Times',
+	'description' => 'Add the available time slots for appointments.',
+	'min'         => 1,
+	'max'         => 8,
+),
+```
 
-// Loop through each time
-if (!empty($class_times) && is_array($class_times)) {
-    echo '<ul class="class-times">';
-    foreach ($class_times as $time) {
-        // Display the time (optionally format it)
-        echo '<li>' . esc_html($time) . '</li>';
-        
-        // To display in 12-hour format with AM/PM
-        $datetime = DateTime::createFromFormat('H:i', $time);
-        if ($datetime) {
-            echo '<li>' . $datetime->format('g:i A') . '</li>';
-        }
-    }
-    echo '</ul>';
+### Using Values in Your Theme
+
+```php
+$class_times = get_post_meta( get_the_ID(), 'class_schedule', true );
+
+if ( ! empty( $class_times ) && is_array( $class_times ) ) {
+	sort( $class_times );
+
+	echo '<div class="schedule-container">';
+	echo '<h3>' . esc_html__( 'Class Schedule', 'your-theme' ) . '</h3>';
+	echo '<ul class="time-list">';
+
+	foreach ( $class_times as $time ) {
+		$datetime = DateTime::createFromFormat( 'H:i', $time );
+
+		if ( $datetime ) {
+			echo '<li>' . esc_html( $datetime->format( 'g:i A' ) ) . '</li>';
+		}
+	}
+
+	echo '</ul>';
+	echo '</div>';
 }
 ```
 
-### Theme Implementation
+### With Conditional Logic
 
 ```php
-// Function to display class schedule
-function display_class_schedule() {
-    $class_times = get_post_meta(get_the_ID(), 'class_schedule', true);
-    
-    if (empty($class_times) || !is_array($class_times)) {
-        return;
-    }
-    
-    // Sort times chronologically
-    sort($class_times);
-    
-    echo '<div class="schedule-container">';
-    echo '<h3>Class Schedule</h3>';
-    echo '<div class="time-slots">';
-    
-    foreach ($class_times as $time) {
-        // Convert to DateTime for formatting
-        $datetime = DateTime::createFromFormat('H:i', $time);
-        if (!$datetime) {
-            continue;
-        }
-        
-        $formatted_time = $datetime->format('g:i A'); // 12-hour format with AM/PM
-        
-        echo '<div class="time-slot">';
-        echo '<span class="time">' . esc_html($formatted_time) . '</span>';
-        echo '</div>';
-    }
-    
-    echo '</div>'; // .time-slots
-    echo '</div>'; // .schedule-container
-}
+'has_schedule' => array(
+	'type'  => 'toggle',
+	'id'    => 'has_schedule',
+	'label' => 'Has class schedule',
+),
+'class_times' => array(
+	'type'        => 'multi_time',
+	'id'          => 'class_times',
+	'label'       => 'Class Times',
+	'description' => 'Select times when classes are held.',
+	'conditions'  => array(
+		array( 'field' => 'has_schedule', 'value' => true ),
+	),
+),
 ```
 
-### Advanced Usage: Sorting and Grouping Times
+## Field Factory
 
 ```php
-function display_weekly_schedule() {
-    $monday_times = get_post_meta(get_the_ID(), 'monday_schedule', true);
-    $tuesday_times = get_post_meta(get_the_ID(), 'tuesday_schedule', true);
-    // ... other days
-    
-    $days = [
-        'monday' => [
-            'label' => 'Monday',
-            'times' => $monday_times
-        ],
-        'tuesday' => [
-            'label' => 'Tuesday',
-            'times' => $tuesday_times
-        ],
-        // ... other days
-    ];
-    
-    echo '<div class="weekly-schedule">';
-    
-    foreach ($days as $day) {
-        echo '<div class="day-schedule">';
-        echo '<h4>' . esc_html($day['label']) . '</h4>';
-        
-        if (!empty($day['times']) && is_array($day['times'])) {
-            // Sort times
-            sort($day['times']);
-            
-            echo '<ul class="time-list">';
-            foreach ($day['times'] as $time) {
-                $datetime = DateTime::createFromFormat('H:i', $time);
-                if (!$datetime) {
-                    continue;
-                }
-                
-                echo '<li>' . esc_html($datetime->format('g:i A')) . '</li>';
-            }
-            echo '</ul>';
-        } else {
-            echo '<p class="no-times">No classes scheduled</p>';
-        }
-        
-        echo '</div>'; // .day-schedule
-    }
-    
-    echo '</div>'; // .weekly-schedule
-}
+$f = new \Wpify\CustomFields\FieldFactory();
+
+$f->multi_time(
+	label: 'Available Times',
+	min: 1,
+	max: 5,
+);
 ```
 
-## Features and Notes
+## Notes
 
-- **Drag and Drop Reordering**: Users can easily reorder times using drag and drop.
-- **Multiple Times**: Add as many time inputs as needed.
-- **Input Validation**: Ensures that entered values are valid time formats.
-- **Min/Max Constraints**: Set minimum and maximum allowed times for each input.
-- **Minimum/Maximum Items**: Enforce a minimum or maximum number of time inputs.
-- **HTML5 Time Inputs**: Uses native HTML5 time inputs for consistent and user-friendly time selection.
-- **24-Hour Format Storage**: Times are stored in 24-hour format for easy sorting and comparison.
-
-The MultiTime field is ideal for scenarios where multiple time values need to be collected and managed, such as business hours, appointment scheduling, event planning, or any time-based data collections.
+- Each time input has the same properties and behavior as the standard `time` field type
+- Users can reorder times by dragging and dropping
+- Times are stored in 24-hour format for easy sorting and comparison
+- Uses native HTML5 time inputs for consistent and user-friendly time selection
+- The stored value is always an array, even if only one time is selected
+- Empty values are not stored in the array
+- For date and time together, use the `multi_datetime` field type instead

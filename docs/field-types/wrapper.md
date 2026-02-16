@@ -7,7 +7,6 @@ The Wrapper field type allows you to visually group multiple fields together wit
 ```php
 array(
 	'type'  => 'wrapper',
-	'id'    => 'contact_wrapper',
 	'items' => array(
 		'name' => array(
 			'type'  => 'text',
@@ -27,40 +26,17 @@ array(
 
 ## Properties
 
-### Default Field Properties
-
-These properties are available for all field types:
-
-- `id` _(string)_ - Unique identifier for the field
-- `type` _(string)_ - Must be set to `wrapper` for this field type
-- `label` _(string)_ - The field label displayed in the admin interface
-- `description` _(string)_ - Help text displayed below the field
-- `required` _(boolean)_ - Whether the field must have a value
-- `tab` _(string)_ - The tab ID where this field should appear (if using tabs)
-- `className` _(string)_ - Additional CSS class for the field container
-- `conditions` _(array)_ - Conditions that determine when to show this field
-- `disabled` _(boolean)_ - Whether the field should be disabled
-- `attributes` _(array)_ - HTML attributes to add to the field
-- `unfiltered` _(boolean)_ - Whether the value should remain unfiltered when saved
-- `render_options` _(array)_ - Options for customizing field rendering
+For Default Field Properties, see [Field Types Definition](../field-types.md).
 
 ### Specific Properties
 
-#### `items` _(array)_ - Required
-
-An array of field definitions that make up the wrapper's content. Each item is a complete field definition with its own type, label, and other properties.
-
-#### `tag` _(string)_
-
-The HTML tag used for the wrapper container element. Defaults to `div`. You can use any valid HTML tag such as `section`, `fieldset`, `aside`, etc.
-
-#### `classname` _(string)_
-
-A CSS class name added to the wrapper container element. This is applied alongside the default `wpifycf-field-wrapper` class.
+- `items` _(array)_ — An array of field definitions that make up the wrapper's content. Each item is a complete field definition with its own type, label, and other properties.
+- `tag` _(string)_ — The HTML tag used for the wrapper container element. Defaults to `div`. You can use any valid HTML tag such as `section`, `fieldset`, `aside`, etc.
+- `classname` _(string)_ — A CSS class name added to the wrapper container element. This is applied alongside the default `wpifycf-field-wrapper` class.
 
 ## Stored Value
 
-The Wrapper field does **not** store its own value. Children of a wrapper store their values flat at the parent level, as if the wrapper did not exist.
+This field does not store its own value. Children store their values flat at the parent level.
 
 ### Comparison with Group
 
@@ -223,6 +199,21 @@ Use a wrapper to show or hide a block of related fields together based on a cond
 ```
 
 When the toggle is off, all three social link fields are hidden together.
+
+## Field Factory
+
+```php
+$f = new \Wpify\CustomFields\FieldFactory();
+
+$f->wrapper(
+	items: array(
+		$f->text( label: 'First Name' ),
+		$f->text( label: 'Last Name' ),
+	),
+	tag: 'div',
+	classname: 'my-wrapper',
+);
+```
 
 ## Notes
 
