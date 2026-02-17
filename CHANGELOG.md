@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.5.0] - 2026-02-17
+
 ### Added
 - `collapse` prop for MultiGroup field to control item collapsibility
 - `wrapper` field type for visual grouping of fields without value nesting
