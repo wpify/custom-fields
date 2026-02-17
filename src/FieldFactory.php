@@ -2790,6 +2790,7 @@ class FieldFactory {
 	 * @param int|null    $max               Maximum number of items.
 	 * @param array|null  $buttons           Custom buttons for the multi-field.
 	 * @param array|null  $disabled_buttons  Buttons to disable.
+	 * @param bool|null   $collapse          Whether items can be collapsed.
 	 * @param string|null $label             Field label.
 	 * @param string|null $description       Field description.
 	 * @param bool|null   $required          Whether the field is required.
@@ -2811,6 +2812,7 @@ class FieldFactory {
 		?int $max = null,
 		?array $buttons = null,
 		?array $disabled_buttons = null,
+		?bool $collapse = null,
 		?string $label = null,
 		?string $description = null,
 		?bool $required = null,
@@ -2832,8 +2834,9 @@ class FieldFactory {
 				'max'              => $max,
 				'buttons'          => $buttons,
 				'disabled_buttons' => $disabled_buttons,
+				'collapse'         => $collapse,
 			),
-			$this->extract_common( get_defined_vars(), array( 'items', 'min', 'max', 'buttons', 'disabled_buttons' ) ),
+			$this->extract_common( get_defined_vars(), array( 'items', 'min', 'max', 'buttons', 'disabled_buttons', 'collapse' ) ),
 		);
 	}
 }

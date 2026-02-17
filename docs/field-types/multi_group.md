@@ -46,6 +46,7 @@ For Default Field Properties, see [Field Types Definition](../field-types.md).
   - `remove` _(string)_ — Custom label for the remove button. Default is an icon button.
   - `duplicate` _(string)_ — Custom label for the duplicate button. Default is an icon button.
 - `disabled_buttons` _(array)_ — Array of buttons to disable. Options: `'move'`, `'delete'`, `'duplicate'`.
+- `collapse` _(boolean)_ — Whether group items can be collapsed. Default `true`. When `false`, all items are always expanded and cannot be collapsed.
 - `setTitle` _(function)_ — Function that sets a custom title for each group item in the UI.
 
 ## Stored Value
@@ -152,12 +153,13 @@ $f->multi_group(
 	),
 	min: 1,
 	max: 10,
+	collapse: false,
 );
 ```
 
 ## Notes
 
-- Each group item can be collapsed and expanded to save space in the admin interface.
+- Each group item can be collapsed and expanded to save space in the admin interface. Set `collapse` to `false` to keep all items always expanded.
 - Users can reorder group items using drag and drop.
 - Users can duplicate existing items to create new ones with the same values.
 - The field can display dynamic titles for each group item based on their content (using the first text field's value by default).

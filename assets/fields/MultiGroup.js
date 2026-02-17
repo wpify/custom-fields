@@ -20,6 +20,7 @@ function MultiGroup ({
   validity = [],
   fieldPath,
   disabled = false,
+  collapse = true,
   setTitle,
   ...props
 }) {
@@ -96,6 +97,7 @@ function MultiGroup ({
     defaultValue,
     disabled_buttons,
     disabled,
+    collapse,
     dragHandle: '.wpifycf__move-handle',
     onMutate: handleMutate,
   });
@@ -110,17 +112,18 @@ function MultiGroup ({
             className={clsx(
               'wpifycf-field-multi-group__item',
               collapsed[index] && 'wpifycf-field-multi-group__item--collapsed',
+              !collapse && 'wpifycf-field-multi-group__item--not-collapsible',
               fieldsValidity[index] && 'wpifycf-field-multi-group__item--invalid',
             )}
             key={keyPrefix + '.' + index}
           >
             <div className="wpifycf-field-multi-group__item-header wpifycf__move-handle">
               {canMove && (
-                <div className="wpifycf-field-multi-group__sort" onClick={toggleCollapsed(index)}>
+                <div className="wpifycf-field-multi-group__sort" onClick={collapse ? toggleCollapsed(index) : undefined}>
                   <IconButton icon="move" className="wpifycf-sort" />
                 </div>
               )}
-              <div className="wpifycf-field-multi-group__title" onClick={toggleCollapsed(index)}>
+              <div className="wpifycf-field-multi-group__title" onClick={collapse ? toggleCollapsed(index) : undefined}>
                 {titles[index] || `#${index + 1}`}
               </div>
               <div className={clsx('wpifycf-field-multi-group__header-actions')}>

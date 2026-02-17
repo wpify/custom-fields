@@ -132,11 +132,12 @@ export function useMulti ({
   disabled_buttons = [],
   dragHandle,
   disabled = false,
+  collapse = true,
   onMutate,
 }) {
   const containerRef = useRef(null);
   const [keyPrefix, setKeyPrefix] = useState(uuidv4());
-  const [collapsed, setCollapsed] = useState(() => Array(value.length).fill(true));
+  const [collapsed, setCollapsed] = useState(() => Array(value.length).fill(collapse));
 
   useEffect(() => {
     if (!Array.isArray(value)) {
@@ -263,17 +264,22 @@ export function useMulti ({
   const canMove = !disabled && !disabled_buttons.includes('move') && length > 1;
   const canDuplicate = !disabled && !disabled_buttons.includes('duplicate');
 
-  const toggleCollapsed = useCallback((index, forceCollapsed = null) => () => {
-    setCollapsed((prevCollapsed) => {
-      const nextCollapsed = [...prevCollapsed];
-      if (forceCollapsed !== null) {
-        nextCollapsed[index] = forceCollapsed;
-      } else {
-        nextCollapsed[index] = !nextCollapsed[index];
-      }
-      return nextCollapsed;
-    });
-  }, []);
+  const toggleCollapsed = useCallback((index, forceCollapsed = null) => {
+    if (!collapse) {
+      return () => {};
+    }
+    return () => {
+      setCollapsed((prevCollapsed) => {
+        const nextCollapsed = [...prevCollapsed];
+        if (forceCollapsed !== null) {
+          nextCollapsed[index] = forceCollapsed;
+        } else {
+          nextCollapsed[index] = !nextCollapsed[index];
+        }
+        return nextCollapsed;
+      });
+    };
+  }, [collapse]);
 
   return {
     add,
