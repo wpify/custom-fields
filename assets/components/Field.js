@@ -79,11 +79,11 @@ export function Field ({
     : (
       <FieldWrapper renderOptions={combinedRenderOptions}>
         <Label
+          {...props}
           renderOptions={combinedRenderOptions}
           type={type}
           className="wpifycf-field__label"
           isRoot={isRoot}
-          {...props}
         />
         <ControlWrapper renderOptions={combinedRenderOptions}>
           {hiddenField}
@@ -101,6 +101,7 @@ export function Field ({
             )}
           >
             <FieldComponent
+              {...props}
               type={type}
               value={value}
               className={clsx(
@@ -114,7 +115,6 @@ export function Field ({
               fieldPath={fieldPath}
               allValues={allValues}
               getValue={getValue}
-              {...props}
             />
           </ErrorBoundary>
           {validityMessages.map((message, index) => (
