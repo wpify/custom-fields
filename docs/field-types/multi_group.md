@@ -47,7 +47,6 @@ For Default Field Properties, see [Field Types Definition](../field-types.md).
   - `duplicate` _(string)_ — Custom label for the duplicate button. Default is an icon button.
 - `disabled_buttons` _(array)_ — Array of buttons to disable. Options: `'move'`, `'delete'`, `'duplicate'`.
 - `collapse` _(boolean)_ — Whether group items can be collapsed. Default `true`. When `false`, all items are always expanded and cannot be collapsed.
-- `setTitle` _(function)_ — Function that sets a custom title for each group item in the UI.
 
 ## Stored Value
 

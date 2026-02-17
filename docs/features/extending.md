@@ -122,6 +122,7 @@ Every field component receives the following props:
   - Relative references using hash: `#` (parent), `##` (grandparent)
   - Array bracket notation: `multi_field[0]`
   - Combinations: `#.sibling_field[0].name`
+- `setTitle` _(function)_ — A callback prop `(title: string) => void` that lets a field report its human-readable title or summary to a parent container. This is used by `MultiGroup` to display collapsed row headers based on the field's current value. It is not configurable from PHP — it is an internal React prop passed by parent components. Use the `useFieldTitle(setTitle, titleValue)` helper hook from `@/helpers/hooks` to call `setTitle` reactively whenever the field's display value changes.
 
 The `fieldPath`, `allValues`, and `getValue` props are useful for building fields that depend on other field values, such as dependent dropdowns or dynamically computed values.
 
