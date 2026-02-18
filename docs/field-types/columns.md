@@ -34,7 +34,7 @@ For Default Field Properties, see [Field Types Definition](../field-types.md).
 ### Specific Properties
 
 - `items` _(array)_ — An array of field definitions that make up the columns' content. Each item is a complete field definition with its own type, label, and other properties.
-- `columns` _(integer)_ — The number of columns in the grid layout. Defaults to `2`. This is the maximum number of columns — the actual number may be lower on narrow containers (see [Responsive Behavior](#responsive-behavior)).
+- `columns` _(integer|array)_ — The number of columns in the grid layout, or an array of CSS column widths (e.g. `array( '1fr', '50px', '2fr' )`). When an array, the number of columns is the array length and each entry defines that column's width. When an integer, all columns are equal width (`1fr`). Defaults to `2`. This is the maximum number of columns — the actual number may be lower on narrow containers (see [Responsive Behavior](#responsive-behavior)).
 - `gap` _(string)_ — A CSS gap value to override the default spacing between columns and rows. For example, `'16px'`, `'1rem'`, or `'8px 16px'` (row gap / column gap).
 - `classname` _(string)_ — A CSS class name added to the columns container element. This is applied alongside the default `wpifycf-field-columns` class.
 
@@ -64,6 +64,7 @@ The Columns field automatically adapts to the available container width:
 2. If the container is too narrow for the requested number of columns, columns are reduced: `effectiveColumns = floor(containerWidth / 300)`
 3. The minimum is always **1 column**
 4. When columns collapse below the requested count, all explicit `column` placements are ignored — fields flow naturally in row order
+5. When using an array of custom widths and columns collapse, the custom widths are replaced with equal-width (`1fr`) columns
 
 This means a `columns: 4` layout on a 900px-wide container will display as 3 columns, and on a 500px container as 1 column.
 
@@ -207,6 +208,33 @@ Use a columns field to show or hide a block of side-by-side fields together:
 )
 ```
 
+### Custom Column Widths
+
+Use an array to define individual column widths instead of equal-width columns:
+
+```php
+'sidebar_layout' => array(
+	'type'    => 'columns',
+	'columns' => array( '1fr', '50px', '2fr' ),
+	'items'   => array(
+		'sidebar' => array(
+			'type'  => 'textarea',
+			'label' => 'Sidebar Content',
+		),
+		'divider' => array(
+			'type'  => 'text',
+			'label' => 'Divider',
+		),
+		'main' => array(
+			'type'  => 'textarea',
+			'label' => 'Main Content',
+		),
+	),
+)
+```
+
+The three columns will be sized `1fr`, `50px`, and `2fr` respectively. When the container is too narrow, the layout collapses to fewer equal-width columns.
+
 ### Custom Gap
 
 Override the default gap between columns:
@@ -236,6 +264,7 @@ Override the default gap between columns:
 ```php
 $f = new \Wpify\CustomFields\FieldFactory();
 
+// Equal-width columns
 $f->columns(
 	columns: 3,
 	items: array(
@@ -243,6 +272,16 @@ $f->columns(
 		$f->text( label: 'Last Name' ),
 		$f->email( label: 'Email' ),
 		$f->textarea( label: 'Bio', column_span: 3 ),
+	),
+);
+
+// Custom column widths
+$f->columns(
+	columns: array( '200px', '1fr', '1fr' ),
+	items: array(
+		$f->attachment( label: 'Avatar' ),
+		$f->text( label: 'First Name' ),
+		$f->text( label: 'Last Name' ),
 	),
 );
 ```

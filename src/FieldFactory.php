@@ -1515,7 +1515,7 @@ class FieldFactory {
 	 */
 	public function columns(
 		array $items = array(),
-		?int $columns = null,
+		int|array|null $columns = null,
 		?string $gap = null,
 		?string $classname = null,
 		?string $label = null,

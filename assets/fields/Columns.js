@@ -55,14 +55,18 @@ function Columns ({
     [parentValue, parentOnChange]
   );
 
-  const effectiveColumns = containerWidth > 0
-    ? Math.max(1, Math.min(columns, Math.floor(containerWidth / 300)))
-    : columns;
+  const columnCount = Array.isArray(columns) ? columns.length : columns;
+  const columnWidths = Array.isArray(columns) ? columns : null;
 
-  const isCollapsed = effectiveColumns < columns;
+  const effectiveColumns = containerWidth > 0
+    ? Math.max(1, Math.min(columnCount, Math.floor(containerWidth / 100)))
+    : columnCount;
+
+  const isCollapsed = effectiveColumns < columnCount;
 
   const style = {
     '--wpifycf-columns': effectiveColumns,
+    ...(columnWidths && !isCollapsed ? { '--wpifycf-columns-template': columnWidths.join(' ') } : {}),
     ...(gap ? { '--wpifycf-columns-gap': gap } : {}),
   };
 
