@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.5.1] - 2026-02-18
+
+### Added
+- Custom column widths support for Columns field via array syntax
+
+### Fixed
+- Child normalization in Columns field
+
 ## [4.5.0] - 2026-02-17
 
 ### Added
