@@ -1,6 +1,7 @@
 require('@/fields/Attachment');
 require('@/fields/Button');
 require('@/fields/Checkbox');
+require('@/fields/Cloudflare');
 require('@/fields/Code');
 require('@/fields/Color');
 require('@/fields/Date');

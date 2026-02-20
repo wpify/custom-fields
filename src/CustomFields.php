@@ -467,6 +467,15 @@ class CustomFields {
 				$sanitized_value['city']      = sanitize_text_field( $value['city'] ?? '' );
 				$sanitized_value['cityPart']  = sanitize_text_field( $value['cityPart'] ?? '' );
 				$sanitized_value['country']   = sanitize_text_field( $value['country'] ?? '' );
+			} elseif ( 'cloudflare' === $item['type'] ) {
+				$value                           = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
+				$sanitized_value                 = array();
+				$sanitized_value['email']        = sanitize_email( $value['email'] ?? '' );
+				$sanitized_value['api_key']      = sanitize_text_field( $value['api_key'] ?? '' );
+				$sanitized_value['zone_id']      = sanitize_text_field( $value['zone_id'] ?? '' );
+				$sanitized_value['zone_name']    = sanitize_text_field( $value['zone_name'] ?? '' );
+				$sanitized_value['account_id']   = sanitize_text_field( $value['account_id'] ?? '' );
+				$sanitized_value['account_name'] = sanitize_text_field( $value['account_name'] ?? '' );
 			} elseif ( 'date_range' === $item['type'] ) {
 				$value = is_string( $value ) ? json_decode( $value, true ) : $value;
 				if ( ! is_array( $value ) || ( empty( $value[0] ) && empty( $value[1] ) ) ) {
@@ -566,6 +575,7 @@ class CustomFields {
 		} elseif ( in_array(
 			$item['type'],
 			array(
+				'cloudflare',
 				'group',
 				'link',
 				'mapycz',

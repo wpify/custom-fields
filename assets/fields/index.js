@@ -1,6 +1,7 @@
 import Attachment from './Attachment';
 import Button from './Button';
 import Checkbox from './Checkbox';
+import Cloudflare from './Cloudflare';
 import Columns from './Columns';
 import Code from './Code';
 import Color from './Color';
@@ -61,6 +62,7 @@ export default {
   attachment: Attachment,
   button: Button,
   checkbox: Checkbox,
+  cloudflare: Cloudflare,
   code: Code,
   columns: Columns,
   color: Color,

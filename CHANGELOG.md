@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Cloudflare field type for Cloudflare zone connection
+
 ## [4.5.1] - 2026-02-18
 
 ### Added

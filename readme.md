@@ -5,7 +5,7 @@
 ![License](https://img.shields.io/badge/License-GPL--3.0--or--later-blue)
 ![Packagist Version](https://img.shields.io/packagist/v/wpify/custom-fields)
 
-A developer-oriented WordPress library for custom fields. 58 field types, 15 integration points (metaboxes, options pages, taxonomies, users, Gutenberg blocks, WooCommerce products/orders/coupons, and more), zero PHP dependencies, native WordPress storage — values are plain `get_post_meta()` / `get_option()` calls with no proprietary getters.
+A developer-oriented WordPress library for custom fields. 59 field types, 15 integration points (metaboxes, options pages, taxonomies, users, Gutenberg blocks, WooCommerce products/orders/coupons, and more), zero PHP dependencies, native WordPress storage — values are plain `get_post_meta()` / `get_option()` calls with no proprietary getters.
 
 ## Quick Start
 
@@ -52,7 +52,7 @@ $image = get_post_meta( $post_id, 'cover_image', true ); // Attachment ID.
 
 ## Why This Library
 
-- **58 field types** in 6 categories — from simple inputs to repeaters, groups, maps, code editors, and more
+- **59 field types** in 6 categories — from simple inputs to repeaters, groups, maps, code editors, and more
 - **15 integration points** — post metaboxes, options pages, taxonomies, users, comments, menu items, Gutenberg blocks, WooCommerce products/variations/orders/coupons/settings/subscriptions/memberships, multisite
 - **Native WordPress storage** — uses `post_meta`, `term_meta`, `options`, block attributes; no custom tables, no lock-in
 - **Zero PHP dependencies** — a single Composer package, nothing extra to manage
@@ -105,11 +105,12 @@ $image = get_post_meta( $post_id, 'cover_image', true ); // Attachment ID.
 | `link` | Link with URL, title, and target |
 | `multi_link` | Multiple links |
 
-### Complex (5)
+### Complex (6)
 
 | Type | Description |
 |---|---|
 | `group` | Field group (nested fields) |
+| `cloudflare` | Cloudflare zone connection |
 | `code` | Code editor with syntax highlighting |
 | `wysiwyg` | TinyMCE rich text editor |
 | `mapycz` | Mapy.cz map with coordinates |

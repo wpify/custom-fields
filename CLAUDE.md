@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-WPify Custom Fields — WordPress plugin providing 58 field types across 15 integration points (metaboxes, options pages, taxonomy terms, users, WooCommerce products/orders/coupons, Gutenberg blocks, etc.). PHP 8.1+ / WordPress 6.2+ / React 18.
+WPify Custom Fields — WordPress plugin providing 59 field types across 15 integration points (metaboxes, options pages, taxonomy terms, users, WooCommerce products/orders/coupons, Gutenberg blocks, etc.). PHP 8.1+ / WordPress 6.2+ / React 18.
 
 Entry point: `custom-fields.php` → singleton `wpify_custom_fields()` returns `CustomFields` instance.
 
@@ -20,7 +20,7 @@ src/                        # PHP source (PSR-4: Wpify\CustomFields)
 assets/                     # JS/React source (@ alias in imports)
   custom-fields.js          # Entry point — bootstraps React apps from DOM containers
   components/               # Shared: App, Field, AppContext, MultiField, GutenbergBlock, Tabs, Label, etc.
-  fields/                   # 59 field type React components
+  fields/                   # 60 field type React components
   helpers/                  # hooks.js, functions.js, validators.js, field-types.js, generators.js
   styles/                   # SCSS with CSS custom properties and container queries
 docs/                       # Markdown documentation (field-types/, integrations/, features/)

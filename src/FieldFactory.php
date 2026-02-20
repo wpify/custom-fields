@@ -699,6 +699,45 @@ class FieldFactory {
 	}
 
 	/**
+	 * Creates a Cloudflare zone connection field definition.
+	 *
+	 * @param string|null $label          Field label.
+	 * @param string|null $description    Field description.
+	 * @param bool|null   $required       Whether the field is required.
+	 * @param mixed       $default        Default value.
+	 * @param bool|null   $disabled       Whether the field is disabled.
+	 * @param string|null $tab            Tab identifier.
+	 * @param string|null $class_name      CSS class name.
+	 * @param array|null  $conditions     Conditional display rules.
+	 * @param array|null  $attributes     HTML attributes.
+	 * @param bool|null   $unfiltered     Whether to skip sanitization.
+	 * @param array|null  $render_options Render options.
+	 * @param string|null $generator      Generator identifier.
+	 *
+	 * @return array Field definition array.
+	 */
+	public function cloudflare(
+		?string $label = null,
+		?string $description = null,
+		?bool $required = null,
+		mixed $default = self::UNSET,
+		?bool $disabled = null,
+		?string $tab = null,
+		?string $class_name = null,
+		?array $conditions = null,
+		?array $attributes = null,
+		?bool $unfiltered = null,
+		?array $render_options = null,
+		?string $generator = null,
+	): array {
+		return $this->build_field(
+			'cloudflare',
+			array(),
+			$this->extract_common( get_defined_vars() ),
+		);
+	}
+
+	/**
 	 * Creates a toggle field definition.
 	 *
 	 * @param string|null $title          Toggle title text.

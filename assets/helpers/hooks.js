@@ -590,3 +590,19 @@ export function useOtherFieldValues(fieldPath) {
 
   return { values, getValue };
 }
+
+export function useCloudflareZones ({ email, apiKey, page = 1 }) {
+  const { config } = useContext(AppContext);
+
+  return useQuery({
+    queryKey: ['cloudflare-zones', email, apiKey, page],
+    queryFn: () => post(config.api_path + '/cloudflare/zones', {
+      email,
+      api_key: apiKey,
+      page,
+    }),
+    enabled: !!config.api_path && !!email && !!apiKey,
+    ...defaultQueryOptions,
+    cacheTime: 0,
+  });
+}

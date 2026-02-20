@@ -165,6 +165,7 @@ Array of options that are passed to the field renderer. It can be used to custom
 
 ## Complex field types
 
+* [Cloudflare](field-types/cloudflare.md) `cloudflare`
 * [Code Editor](field-types/code.md) `code`
 * [Group](field-types/group.md) `group`
 * [Mapy.cz](field-types/mapycz.md) `mapycz`
