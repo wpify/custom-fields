@@ -437,10 +437,7 @@ class GutenbergBlock extends BaseIntegration {
 	 * @return string The rendered block content.
 	 */
 	public function render( array $attributes, string $content, WP_Block $block ): string {
-		if (
-			( defined( 'REST_REQUEST' ) && REST_REQUEST && filter_input( INPUT_GET, 'context' ) !== 'edit' )
-			|| ( null === $this->render_callback )
-		) {
+		if ( ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || null === $this->render_callback ) {
 			return $content;
 		}
 
