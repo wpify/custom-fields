@@ -437,7 +437,7 @@ class GutenbergBlock extends BaseIntegration {
 	 * @return string The rendered block content.
 	 */
 	public function render( array $attributes, string $content, WP_Block $block ): string {
-		if ( null === $this->render_callback || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || wp_doing_ajax() || filter_input( INPUT_GET, 'meta-box-loader' ) ) {
+		if ( null === $this->render_callback || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || wp_doing_ajax() || is_admin() || filter_input( INPUT_GET, 'meta-box-loader' ) ) {
 			return $content;
 		}
 
