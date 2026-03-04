@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.6.4] - 2026-03-04
+
 ### Fixed
 - Option value sanitization now handles non-array values gracefully instead of throwing a type error
 
