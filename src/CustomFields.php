@@ -538,7 +538,8 @@ class CustomFields {
 	public function sanitize_option_value( array $items = array(), mixed $previous_value = array() ): Closure {
 		$items = $this->flatten_items( $items );
 
-		return function ( array $value = array() ) use ( $items, $previous_value ): array {
+		return function ( mixed $value = array() ) use ( $items, $previous_value ): array {
+			$value      = is_array( $value ) ? $value : array();
 			$next_value = is_array( $previous_value ) ? $previous_value : array();
 			foreach ( $items as $item ) {
 				if ( isset( $value[ $item['id'] ] ) ) {

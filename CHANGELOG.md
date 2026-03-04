@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Option value sanitization now handles non-array values gracefully instead of throwing a type error
+
+## [4.6.3] - 2026-03-04
+
+### Fixed
+- Do not render Gutenberg block in REST requests
+
 ## [4.6.0] - 2026-02-20
 
 ### Added
