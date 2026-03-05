@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.6.5] - 2026-03-05
+
+### Fixed
+- Properly set up global `$post` in `render_from_api` for Gutenberg block editor previews
+- Pass `postId` context to `WP_Block` in `render_from_api`
+
 ## [4.6.4] - 2026-03-04
 
 ### Fixed
