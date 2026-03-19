@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Fixed multiple TinyMCE instances failing to initialize in non-iframe Gutenberg mode when multiple blocks of the same type contain a Wysiwyg field
+
 ## [4.6.5] - 2026-03-05
 
 ### Fixed

@@ -17,6 +17,8 @@ import { fullscreen } from '@wordpress/icons';
 const VIEW_VISUAL = 'visual';
 const VIEW_HTML = 'html';
 
+let instanceCounter = 0;
+
 /**
  * Get the Gutenberg editor iframe element (if exists).
  * Returns null if not in iframe mode.
@@ -318,6 +320,13 @@ function TinyMCE( {
 		[ htmlId ]
 	);
 
+	// Generate a unique editor ID to avoid collisions when multiple instances share the same htmlId.
+	const instanceIdRef = useRef( null );
+	if ( instanceIdRef.current === null ) {
+		instanceIdRef.current = sanitizedId + '_inst_' + ( ++instanceCounter );
+	}
+	const editorId = instanceIdRef.current;
+
 	/**
 	 * Initialize TinyMCE editor.
 	 */
@@ -364,8 +373,8 @@ function TinyMCE( {
 			},
 		};
 
-		TinyMCEManager.initialize( sanitizedId, init );
-	}, [ sanitizedId, height, toolbar, onChange, value, disabled ] );
+		TinyMCEManager.initialize( editorId, init );
+	}, [ editorId, height, toolbar, onChange, value, disabled ] );
 
 	/**
 	 * Handle delayed initialization click.
@@ -396,11 +405,11 @@ function TinyMCE( {
 	useEffect( () => {
 		return () => {
 			if ( editorRef.current ) {
-				TinyMCEManager.destroy( sanitizedId );
+				TinyMCEManager.destroy( editorId );
 				editorRef.current = null;
 			}
 		};
-	}, [ sanitizedId ] );
+	}, [ editorId ] );
 
 	/**
 	 * Sync external value changes to editor.
@@ -449,7 +458,7 @@ function TinyMCE( {
 		<div className="wpifycf-field-wysiwyg__editor-container">
 			<textarea
 				ref={ textareaRef }
-				id={ sanitizedId }
+				id={ editorId }
 				defaultValue={ value || '' }
 				style={ { height } }
 				disabled={ disabled }
@@ -478,14 +487,16 @@ function ModalTinyMCE( {
 	const [ isInitialized, setIsInitialized ] = useState( false );
 
 	// Generate unique ID for modal editor.
-	const modalEditorId = useMemo(
-		() => `wpifycf_modal_${ htmlId }`
+	const modalInstanceIdRef = useRef( null );
+	if ( modalInstanceIdRef.current === null ) {
+		const sanitized = `wpifycf_modal_${ htmlId }`
 			.replace( /\./g, '__' )
 			.replace( /\[/g, '_' )
 			.replace( /\]/g, '_' )
-			.replace( /[^a-zA-Z0-9_-]/g, '_' ),
-		[ htmlId ]
-	);
+			.replace( /[^a-zA-Z0-9_-]/g, '_' );
+		modalInstanceIdRef.current = sanitized + '_inst_' + ( ++instanceCounter );
+	}
+	const modalEditorId = modalInstanceIdRef.current;
 
 	// Sync external value to local.
 	useEffect( () => {
