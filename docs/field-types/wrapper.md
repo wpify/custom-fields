@@ -32,7 +32,7 @@ For Default Field Properties, see [Field Types Definition](../field-types.md).
 
 - `items` _(array)_ — An array of field definitions that make up the wrapper's content. Each item is a complete field definition with its own type, label, and other properties.
 - `tag` _(string)_ — The HTML tag used for the wrapper container element. Defaults to `div`. You can use any valid HTML tag such as `section`, `fieldset`, `aside`, etc.
-- `classname` _(string)_ — A CSS class name added to the wrapper container element. This is applied alongside the default `wpifycf-field-wrapper` class.
+- `class_name` _(string)_ — A CSS class name added to the wrapper container element. This is applied alongside the default `wpifycf-field-wrapper` class.
 
 ## Stored Value
 
@@ -147,7 +147,7 @@ You can change the wrapper's HTML tag to add semantic meaning:
 'settings_section' => array(
 	'type'      => 'wrapper',
 	'tag'       => 'section',
-	'classname' => 'my-settings-section',
+	'class_name' => 'my-settings-section',
 	'items'     => array(
 		'enable_feature' => array(
 			'type'  => 'toggle',
@@ -211,7 +211,7 @@ $f->wrapper(
 		$f->text( label: 'Last Name' ),
 	),
 	tag: 'div',
-	classname: 'my-wrapper',
+	class_name: 'my-wrapper',
 );
 ```
 

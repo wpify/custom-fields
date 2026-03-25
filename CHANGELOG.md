@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Inconsistent `classname` attribute naming in wrapper and columns fields — now consistently uses `className` (camelCase) in JS like all other fields, with backward-compatible support for `classname` and `class_name` variants in PHP
+
 ## [4.6.6] - 2026-03-19
 
 ### Fixed

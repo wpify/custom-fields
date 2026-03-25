@@ -36,7 +36,7 @@ For Default Field Properties, see [Field Types Definition](../field-types.md).
 - `items` _(array)_ — An array of field definitions that make up the columns' content. Each item is a complete field definition with its own type, label, and other properties.
 - `columns` _(integer|array)_ — The number of columns in the grid layout, or an array of CSS column widths (e.g. `array( '1fr', '50px', '2fr' )`). When an array, the number of columns is the array length and each entry defines that column's width. When an integer, all columns are equal width (`1fr`). Defaults to `2`. This is the maximum number of columns — the actual number may be lower on narrow containers (see [Responsive Behavior](#responsive-behavior)).
 - `gap` _(string)_ — A CSS gap value to override the default spacing between columns and rows. For example, `'16px'`, `'1rem'`, or `'8px 16px'` (row gap / column gap).
-- `classname` _(string)_ — A CSS class name added to the columns container element. This is applied alongside the default `wpifycf-field-columns` class.
+- `class_name` _(string)_ — A CSS class name added to the columns container element. This is applied alongside the default `wpifycf-field-columns` class.
 
 ### Per-Child Properties
 

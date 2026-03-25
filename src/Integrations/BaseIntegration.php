@@ -89,6 +89,16 @@ abstract class BaseIntegration {
 			unset( $item['custom_attributes'] );
 		}
 
+		if ( isset( $item['classname'] ) && ! isset( $item['className'] ) ) {
+			$item['className'] = $item['classname'];
+			unset( $item['classname'] );
+		}
+
+		if ( isset( $item['class_name'] ) && ! isset( $item['className'] ) ) {
+			$item['className'] = $item['class_name'];
+			unset( $item['class_name'] );
+		}
+
 		if ( ! empty( $item['title'] ) && empty( $item['label'] ) ) {
 			$item['label'] = $item['title'];
 		}

@@ -31,7 +31,7 @@ function Columns ({
   items = [],
   columns = 2,
   gap,
-  classname,
+  className,
   attributes = {},
   disabled = false,
   fieldPath,
@@ -73,7 +73,7 @@ function Columns ({
   return (
     <div
       ref={containerRef}
-      className={clsx('wpifycf-field-columns', classname)}
+      className={clsx('wpifycf-field-columns', className)}
       style={style}
       {...attributes}
     >

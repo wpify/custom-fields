@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(composer run phpcs:*)",
+      "Bash(vendor/bin/phpcs:*)",
+      "Bash(php -l:*)",
+      "Bash(php -r:*)",
+      "Bash(grep:*)",
+      "WebSearch",
+      "Bash(git config:*)",
+      "Bash(echo:*)",
+      "Bash(git branch:*)",
+      "Bash(git reset:*)",
+      "Skill(code-review)",
+      "Bash(git -C /Users/mejta/sites/customfields/wp-content/plugins/wpify-custom-fields status --short)",
+      "Bash(git -C /Users/mejta/sites/customfields/wp-content/plugins/wpify-custom-fields diff -- ':\\(exclude\\)build/*')",
+      "WebFetch(domain:claude.com)",
+      "Skill(changelog)",
+      "Bash(composer run phpcbf:*)",
+      "WebFetch(domain:www.cloudflare.com)",
+      "WebFetch(domain:cf-assets.www.cloudflare.com)",
+      "WebFetch(domain:cf-icons.pages.dev)",
+      "Bash(npm pack:*)",
+      "Bash(tar xzf:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

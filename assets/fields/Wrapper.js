@@ -10,7 +10,7 @@ function Wrapper ({
   htmlId,
   items = [],
   tag: Tag = 'div',
-  classname,
+  className,
   attributes = {},
   disabled = false,
   fieldPath,
@@ -34,7 +34,7 @@ function Wrapper ({
 
   return (
     <Tag
-      className={clsx('wpifycf-field-wrapper', classname)}
+      className={clsx('wpifycf-field-wrapper', className)}
       {...attributes}
     >
       {items.map(field => {
