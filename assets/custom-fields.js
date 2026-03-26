@@ -19,7 +19,12 @@ import { AppContextProvider } from '@/components/AppContext';
     document.querySelectorAll('.wpifycf-app-instance[data-loaded=false][data-instance="' + config.instance + '"]').forEach(container => {
       const defs = JSON.parse(container.dataset.fields || '[]');
       const fields = defs.map(({ value, ...props }) => props);
-      const initialValues = defs.reduce((acc, { id, value }) => ({ ...acc, [id]: value }), {});
+      const initialValues = defs.reduce(function collectValues(acc, item) {
+        if (item.items) {
+          return item.items.reduce(collectValues, acc);
+        }
+        return { ...acc, [item.id]: item.value };
+      }, {});
 
       createRoot(container).render(
         <AppContextProvider
