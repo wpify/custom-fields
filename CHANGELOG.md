@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.6.8] - 2026-03-27
+
+### Fixed
+- Fix initial values not loading for fields inside `group` and `multi_group` containers
+- Fix WYSIWYG editors inside groups overwriting each other's content when switching between editors
+
 ## [4.6.7] - 2026-03-26
 
 ### Fixed

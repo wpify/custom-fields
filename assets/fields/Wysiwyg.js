@@ -310,6 +310,10 @@ function TinyMCE( {
 	const [ isDelayed, setIsDelayed ] = useState( delay );
 	const initTimeoutRef = useRef( null );
 
+	// Keep a ref to the latest onChange to avoid stale closures in TinyMCE event handlers.
+	const onChangeRef = useRef( onChange );
+	onChangeRef.current = onChange;
+
 	// Sanitize ID for use as HTML ID and TinyMCE selector.
 	const sanitizedId = useMemo(
 		() => htmlId
@@ -358,7 +362,7 @@ function TinyMCE( {
 				ed.on( 'change keyup', () => {
 					ed.save();
 					const content = ed.getContent();
-					onChange?.( content );
+					onChangeRef.current?.( content );
 				} );
 
 				// Gutenberg block selection fix - dispatch mouseup to window.
@@ -374,7 +378,7 @@ function TinyMCE( {
 		};
 
 		TinyMCEManager.initialize( editorId, init );
-	}, [ editorId, height, toolbar, onChange, value, disabled ] );
+	}, [ editorId, height, toolbar, value, disabled ] );
 
 	/**
 	 * Handle delayed initialization click.

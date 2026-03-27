@@ -20,7 +20,7 @@ import { AppContextProvider } from '@/components/AppContext';
       const defs = JSON.parse(container.dataset.fields || '[]');
       const fields = defs.map(({ value, ...props }) => props);
       const initialValues = defs.reduce(function collectValues(acc, item) {
-        if (item.items) {
+        if (item.items && !('value' in item)) {
           return item.items.reduce(collectValues, acc);
         }
         return { ...acc, [item.id]: item.value };
