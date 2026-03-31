@@ -139,10 +139,6 @@ export function useMulti ({
   const [keyPrefix, setKeyPrefix] = useState(uuidv4());
   const [collapsed, setCollapsed] = useState(() => Array(value.length).fill(collapse));
 
-  // Keep a ref to the latest value to avoid stale closures in rapid sequential changes.
-  const valueRef = useRef(value);
-  valueRef.current = value;
-
   useEffect(() => {
     if (!Array.isArray(value)) {
       onChange([]);
@@ -160,22 +156,18 @@ export function useMulti ({
   }, [value]);
 
   const add = useCallback(() => {
-    const currentValue = valueRef.current;
-    const nextValue = [...currentValue, defaultValue];
-    valueRef.current = nextValue;
+    const nextValue = [...value, defaultValue];
     onChange(nextValue);
     setCollapsed((prevCollapsed) => [...prevCollapsed, false]);
     setKeyPrefix(uuidv4());
-    if (onMutate) onMutate({ type: 'add', value: nextValue, oldValue: currentValue });
-  }, [defaultValue, onChange, onMutate]);
+    if (onMutate) onMutate({ type: 'add', value: nextValue, oldValue: value });
+  }, [value, defaultValue, onChange, onMutate]);
 
   const remove = useCallback(
     (index) => () => {
-      const currentValue = valueRef.current;
-      if (Array.isArray(currentValue)) {
-        const nextValues = [...currentValue];
+      if (Array.isArray(value)) {
+        const nextValues = [...value];
         nextValues.splice(index, 1);
-        valueRef.current = nextValues;
         onChange(nextValues);
         setKeyPrefix(uuidv4());
 
@@ -185,24 +177,21 @@ export function useMulti ({
           return nextCollapsed;
         });
 
-        if (onMutate) onMutate({ type: 'remove', value: nextValues, oldValue: currentValue, index });
+        if (onMutate) onMutate({ type: 'remove', value: nextValues, oldValue: value, index });
       } else {
-        valueRef.current = [];
         onChange([]);
         setCollapsed([]);
         setKeyPrefix(uuidv4());
-        if (onMutate) onMutate({ type: 'remove', value: [], oldValue: currentValue, index });
+        if (onMutate) onMutate({ type: 'remove', value: [], oldValue: value, index });
       }
     },
-    [onChange, onMutate],
+    [value, onChange, onMutate],
   );
 
   const duplicate = useCallback(
     (index) => () => {
-      const currentValue = valueRef.current;
-      const nextValues = [...currentValue];
+      const nextValues = [...value];
       nextValues.splice(index, 0, nextValues[index]);
-      valueRef.current = nextValues;
       onChange(nextValues);
       setKeyPrefix(uuidv4());
 
@@ -212,27 +201,24 @@ export function useMulti ({
         return nextCollapsed;
       });
 
-      if (onMutate) onMutate({ type: 'duplicate', value: nextValues, oldValue: currentValue, index });
+      if (onMutate) onMutate({ type: 'duplicate', value: nextValues, oldValue: value, index });
     },
-    [onChange, onMutate],
+    [onChange, value, onMutate],
   );
 
   const handleChange = useCallback(
     (index) => (fieldValue) => {
-      const nextValues = [...valueRef.current];
+      const nextValues = [...value];
       nextValues[index] = fieldValue;
-      valueRef.current = nextValues;
       onChange(nextValues);
     },
-    [onChange],
+    [value, onChange],
   );
 
   const handleSort = useCallback(
     (nextValue, oldIndex, newIndex) => {
       if (!disabled) {
-        const currentValue = valueRef.current;
         setKeyPrefix(uuidv4());
-        valueRef.current = nextValue;
         onChange(nextValue);
 
         // Build index map from old/new indices: compute where each item in the new order was in the old order
@@ -245,10 +231,10 @@ export function useMulti ({
           return indexMap.map((idx) => prevCollapsed[idx]);
         });
 
-        if (onMutate) onMutate({ type: 'sort', value: nextValue, oldValue: currentValue, indexMap });
+        if (onMutate) onMutate({ type: 'sort', value: nextValue, oldValue: value, indexMap });
       }
     },
-    [onChange, disabled, onMutate],
+    [onChange, value, disabled, onMutate],
   );
 
   useSortableList({
