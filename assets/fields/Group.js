@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Field } from '@/components/Field';
 import { checkValidityGroupType } from '@/helpers/validators';
@@ -48,9 +48,17 @@ function Group ({
     }
   }, [currentTitle, setTitle]);
 
+  // Keep a ref to the latest value to avoid stale closures in rapid sequential changes.
+  const valueRef = useRef(value);
+  valueRef.current = value;
+
   const handleChange = useCallback(
-    id => fieldValue => onChange({ ...value, [id]: fieldValue }),
-    [value, onChange]
+    id => fieldValue => {
+      const nextValue = { ...valueRef.current, [id]: fieldValue };
+      valueRef.current = nextValue;
+      onChange(nextValue);
+    },
+    [onChange]
   );
 
   return (
