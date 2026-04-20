@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.6.9] - 2026-04-20
+
+### Added
+- Clear control on the Color field when `required` is not set — clicking the trash icon resets the stored value to an empty string, and empty swatches render with a checkerboard indicator so "no color" is distinguishable from a solid black value
+
 ## [4.6.8] - 2026-03-27
 
 ### Fixed

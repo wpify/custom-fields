@@ -87,3 +87,4 @@ $f->color(
 - The color picker uses the browser's native color input, which may look different across different browsers and operating systems
 - The saved value is always in hexadecimal format
 - This field is useful for creating customizable color schemes for themes or for allowing users to specify custom brand colors
+- When `required` is not set (or is `false`), the field displays a clear icon next to the swatch once a color has been picked. Clicking it resets the stored value to an empty string. Required fields do not show the clear icon.

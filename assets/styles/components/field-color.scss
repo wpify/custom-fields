@@ -1,0 +1,19 @@
+.wpifycf-field-color-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--wpifycf-gap-1);
+}
+
+.wpifycf-field-color-wrapper--empty {
+  input[type="color"]::-webkit-color-swatch {
+    background:
+      linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%) 0 0 / 10px 10px,
+      linear-gradient(45deg, #ccc 25%, #fff     25%, #fff     75%, #ccc 75%) 5px 5px / 10px 10px;
+  }
+
+  input[type="color"]::-moz-color-swatch {
+    background:
+      linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%) 0 0 / 10px 10px,
+      linear-gradient(45deg, #ccc 25%, #fff     25%, #fff     75%, #ccc 75%) 5px 5px / 10px 10px;
+  }
+}
