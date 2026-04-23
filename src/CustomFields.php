@@ -492,7 +492,7 @@ class CustomFields {
 				$sanitized_value = sanitize_textarea_field( $value );
 			} elseif ( 'url' === $item['type'] ) {
 				$sanitized_value = esc_url( $value );
-			} elseif ( 'wysiwyg' === $item['type'] ) {
+			} elseif ( in_array( $item['type'], array( 'wysiwyg', 'richtext' ), true ) ) {
 				$sanitized_value = wp_kses_post( $value );
 			} elseif ( in_array( $item['type'], array( 'multi_checkbox', 'multi_toggle' ), true ) ) {
 				$value           = is_string( $value ) ? json_decode( $value, true ) : (array) $value;

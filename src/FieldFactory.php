@@ -1013,6 +1013,58 @@ class FieldFactory {
 	}
 
 	/**
+	 * Creates a rich text (Lexical) field definition.
+	 *
+	 * @param string|array|null $toolbar        Preset name ('full'|'basic'|'minimal') or array of button IDs.
+	 * @param int|null          $height         Editor body min-height in px.
+	 * @param bool|null         $word_count     Show word/character counter footer.
+	 * @param string|null       $default_view   Initial view ('visual'|'code').
+	 * @param string|null       $label          Field label.
+	 * @param string|null       $description    Field description.
+	 * @param bool|null         $required       Whether the field is required.
+	 * @param mixed             $default        Default value.
+	 * @param bool|null         $disabled       Whether the field is disabled.
+	 * @param string|null       $tab            Tab identifier.
+	 * @param string|null       $class_name     HTML class name.
+	 * @param array|null        $conditions     Conditional display rules.
+	 * @param array|null        $attributes     HTML attributes.
+	 * @param bool|null         $unfiltered     Whether to skip sanitization.
+	 * @param array|null        $render_options Render options.
+	 * @param string|null       $generator      Generator identifier.
+	 *
+	 * @return array Field definition array.
+	 */
+	public function richtext(
+		string|array|null $toolbar = null,
+		?int $height = null,
+		?bool $word_count = null,
+		?string $default_view = null,
+		?string $label = null,
+		?string $description = null,
+		?bool $required = null,
+		mixed $default = self::UNSET,
+		?bool $disabled = null,
+		?string $tab = null,
+		?string $class_name = null,
+		?array $conditions = null,
+		?array $attributes = null,
+		?bool $unfiltered = null,
+		?array $render_options = null,
+		?string $generator = null,
+	): array {
+		return $this->build_field(
+			'richtext',
+			array(
+				'toolbar'      => $toolbar,
+				'height'       => $height,
+				'word_count'   => $word_count,
+				'default_view' => $default_view,
+			),
+			$this->extract_common( get_defined_vars(), array( 'toolbar', 'height', 'word_count', 'default_view' ) ),
+		);
+	}
+
+	/**
 	 * Creates an attachment field definition.
 	 *
 	 * @param string|null $attachment_type Allowed attachment type (e.g. image, video).

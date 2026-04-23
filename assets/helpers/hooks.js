@@ -73,6 +73,7 @@ export function useSortableList ({ containerRef, draggable, handle, items, setIt
 export function useMediaLibrary ({
   value,
   onChange,
+  onSelect,
   multiple = false,
   title,
   button,
@@ -87,22 +88,26 @@ export function useMediaLibrary ({
     const frame = wp.media(config);
     frame
       .on('select', () => {
-        let nextValue;
+        const selection = frame.state().get('selection');
 
-        if (multiple) {
-          const attachments = frame.state().get('selection').toJSON();
-          nextValue = Array.from(new Set([...attachments.map((attachment) => attachment.id), ...value]));
-        } else {
-          const attachment = frame.state().get('selection').first().toJSON();
-          nextValue = attachment.id;
+        if (typeof onSelect === 'function') {
+          const payload = multiple ? selection.toJSON() : selection.first().toJSON();
+          onSelect(payload);
         }
 
         if (typeof onChange === 'function') {
+          let nextValue;
+          if (multiple) {
+            const attachments = selection.toJSON();
+            nextValue = Array.from(new Set([...attachments.map((attachment) => attachment.id), ...(value || [])]));
+          } else {
+            nextValue = selection.first().toJSON().id;
+          }
           onChange(nextValue);
         }
       })
       .open();
-  }, [value, onChange, multiple, title, button, type]);
+  }, [value, onChange, onSelect, multiple, title, button, type]);
 }
 
 export function useAttachment (id) {

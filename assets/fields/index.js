@@ -31,6 +31,7 @@ import MultiMapycz from './MultiMapycz';
 import MultiMonth from './MultiMonth';
 import MultiNumber from './MultiNumber';
 import MultiPost from './MultiPost';
+import MultiRichText from './MultiRichText';
 import MultiSelect from './MultiSelect';
 import MultiTel from './MultiTel';
 import MultiTerm from './MultiTerm';
@@ -45,6 +46,7 @@ import Password from './Password';
 import Post from './Post';
 import Radio from './Radio';
 import Range from './Range';
+import RichText from './RichText';
 import Select from './Select';
 import Tel from './Tel';
 import Term from './Term';
@@ -92,6 +94,7 @@ export default {
   multi_month: MultiMonth,
   multi_number: MultiNumber,
   multi_post: MultiPost,
+  multi_richtext: MultiRichText,
   multi_select: MultiSelect,
   multi_tel: MultiTel,
   multi_term: MultiTerm,
@@ -106,6 +109,7 @@ export default {
   post: Post,
   radio: Radio,
   range: Range,
+  richtext: RichText,
   select: Select,
   tel: Tel,
   term: Term,
