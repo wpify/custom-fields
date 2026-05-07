@@ -241,6 +241,19 @@ abstract class OptionsIntegration extends BaseIntegration {
 				$post_data = isset( $_POST[ $this->option_name ][ $loop_id ] ) ? wp_unslash( $_POST[ $this->option_name ][ $loop_id ] ) : array();
 			}
 
+			$blocked = array_filter( $items, static fn( array $item ) => $item['disabled'] ?? false );
+			if ( ! empty( $blocked ) ) {
+				$stored = $this->get_stored_option_value( $loop_id );
+				foreach ( $blocked as $item ) {
+					$id = $item['id'];
+					if ( isset( $stored[ $id ] ) ) {
+						$post_data[ $id ] = $stored[ $id ];
+					} else {
+						unset( $post_data[ $id ] );
+					}
+				}
+			}
+
 			$this->set_fields(
 				$this->option_name,
 				$this->custom_fields->sanitize_option_value( $items )( $post_data ),
@@ -248,6 +261,10 @@ abstract class OptionsIntegration extends BaseIntegration {
 			);
 		} else {
 			foreach ( $items as $item ) {
+				if ( $item['disabled'] ?? false ) {
+					continue;
+				}
+
 				$wp_type = $this->custom_fields->get_wp_type( $item );
 
 				if ( is_null( $loop_id ) ) {
@@ -276,5 +293,23 @@ abstract class OptionsIntegration extends BaseIntegration {
 			}
 		}
 		// phpcs:enable
+	}
+
+	/**
+	 * Reads the currently stored option value, used to preserve capability-blocked field values.
+	 *
+	 * @param mixed $loop_id Optional loop id when the option stores a per-loop array.
+	 *
+	 * @return array
+	 */
+	private function get_stored_option_value( mixed $loop_id ): array {
+		$value = $this->get_option_value( $this->option_name, array() );
+		if ( ! is_array( $value ) ) {
+			return array();
+		}
+		if ( null !== $loop_id && isset( $value[ $loop_id ] ) && is_array( $value[ $loop_id ] ) ) {
+			return $value[ $loop_id ];
+		}
+		return $value;
 	}
 }

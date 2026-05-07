@@ -206,23 +206,187 @@ class Helpers {
 	}
 
 	/**
-	 * Sanitizes and resolves directory path (relative or absolute).
+	 * Writes hardening files (.htaccess, web.config) into the directory if they are missing.
 	 *
-	 * @param string $directory The directory path from field definition.
+	 * Idempotent and self-healing: runs every call, only writes files that don't exist.
+	 * If the directory is not writable, logs and continues — the WP allowlist via
+	 * wp_handle_upload() is the primary defense against executable uploads; hardening
+	 * files are defense in depth.
 	 *
-	 * @return string The absolute, sanitized directory path.
+	 * @param string $dir Absolute path to the directory to harden.
+	 *
+	 * @return void
 	 */
-	public function sanitize_directory_path( string $directory ): string {
-		// Remove any traversal attempts.
-		$directory = str_replace( array( '../', '..' ), '', $directory );
+	public function harden_directory( string $dir ): void {
+		static $hardened = array();
 
-		// If path is absolute, use it as-is.
-		if ( path_is_absolute( $directory ) ) {
-			return trailingslashit( $directory );
+		if ( isset( $hardened[ $dir ] ) ) {
+			return;
 		}
 
-		// Otherwise, treat as relative to ABSPATH.
-		return trailingslashit( ABSPATH ) . trailingslashit( $directory );
+		if ( ! is_dir( $dir ) || ! wp_is_writable( $dir ) ) {
+			return;
+		}
+
+		$hardened[ $dir ] = true;
+
+		$htaccess  = trailingslashit( $dir ) . '.htaccess';
+		$webconfig = trailingslashit( $dir ) . 'web.config';
+
+		if ( ! file_exists( $htaccess ) ) {
+			$contents = <<<'HTACCESS'
+# Disable parsing of any code by Apache.
+<IfModule mod_php.c>
+  php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+  php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+  php_flag engine off
+</IfModule>
+<FilesMatch "\.(?i:php|phtml|phar|php\d|pl|py|cgi|rb|sh|jsp)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+Options -Indexes
+HTACCESS;
+
+			if ( false === @file_put_contents( $htaccess, $contents, LOCK_EX ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+				error_log( sprintf( 'wpify/custom-fields: failed to write hardening .htaccess to %s', $dir ) ); // phpcs:ignore
+			}
+		}
+
+		if ( ! file_exists( $webconfig ) ) {
+			$contents = <<<'WEBCONFIG'
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <system.webServer>
+    <handlers accessPolicy="Read" />
+    <staticContent>
+      <clear />
+      <mimeMap fileExtension=".*" mimeType="application/octet-stream" />
+    </staticContent>
+  </system.webServer>
+</configuration>
+WEBCONFIG;
+
+			if ( false === @file_put_contents( $webconfig, $contents, LOCK_EX ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+				error_log( sprintf( 'wpify/custom-fields: failed to write hardening web.config to %s', $dir ) ); // phpcs:ignore
+			}
+		}
+	}
+
+	/**
+	 * Resolves and validates a directory path supplied via a field definition.
+	 *
+	 * Restricts writes to under WP_CONTENT_DIR by default. Symlink-safe via realpath()
+	 * on whatever ancestor of the path exists on disk. Throws on rejection because
+	 * misconfigured `directory` values come from PHP code, not user input — this is
+	 * a developer error and should surface loudly during development.
+	 *
+	 * The `wpifycf_direct_file_directory_allowed` filter lets developers extend the
+	 * allowed prefix for legitimate exotic cases (CDN sync mounts, etc.).
+	 *
+	 * @param string $directory The directory path from the field definition.
+	 *
+	 * @return string The absolute, canonical, validated directory path with trailing slash.
+	 *
+	 * @throws \Wpify\CustomFields\Exceptions\CustomFieldsException When the path resolves outside the allowed prefix.
+	 */
+	public function sanitize_directory_path( string $directory ): string {
+		$resolved = path_is_absolute( $directory )
+			? $directory
+			: ABSPATH . ltrim( $directory, '/\\' );
+
+		$resolved          = wp_normalize_path( $resolved );
+		$resolved          = $this->collapse_path_segments( $resolved );
+		$canonical         = $this->realpath_with_unresolved_tail( $resolved );
+		$wp_content_real   = realpath( WP_CONTENT_DIR );
+		$wp_content_anchor = false !== $wp_content_real ? $wp_content_real : WP_CONTENT_DIR;
+		$allowed_prefix    = wp_normalize_path( trailingslashit( $wp_content_anchor ) );
+
+		$allowed = str_starts_with( trailingslashit( $canonical ), $allowed_prefix );
+		$allowed = (bool) apply_filters(
+			'wpifycf_direct_file_directory_allowed',
+			$allowed,
+			$canonical,
+			$directory,
+		);
+
+		if ( ! $allowed ) {
+			throw new \Wpify\CustomFields\Exceptions\CustomFieldsException(
+				esc_html(
+					sprintf(
+						'wpify/custom-fields: direct_file `directory` must resolve under WP_CONTENT_DIR. Got input %s, resolved to %s.',
+						$directory,
+						$canonical,
+					)
+				),
+			);
+		}
+
+		return trailingslashit( $canonical );
+	}
+
+	/**
+	 * Collapses `.` and `..` segments in a path string without touching the filesystem.
+	 *
+	 * @param string $path Forward-slash-normalized path.
+	 *
+	 * @return string
+	 */
+	private function collapse_path_segments( string $path ): string {
+		$is_absolute = str_starts_with( $path, '/' );
+		$segments    = array_filter( explode( '/', $path ), static fn( string $s ) => '' !== $s && '.' !== $s );
+		$result      = array();
+
+		foreach ( $segments as $segment ) {
+			if ( '..' === $segment ) {
+				array_pop( $result );
+			} else {
+				$result[] = $segment;
+			}
+		}
+
+		$joined = implode( '/', $result );
+		return $is_absolute ? '/' . $joined : $joined;
+	}
+
+	/**
+	 * Resolves symlinks on whatever ancestor of $path exists; re-appends the unresolved tail.
+	 *
+	 * Lets us canonicalize directories that don't yet exist on disk while still defeating
+	 * symlink escapes in any existing portion of the path.
+	 *
+	 * @param string $path Forward-slash-normalized, already-collapsed path.
+	 *
+	 * @return string
+	 */
+	private function realpath_with_unresolved_tail( string $path ): string {
+		$parts = explode( '/', $path );
+		$tail  = array();
+
+		while ( ! empty( $parts ) ) {
+			$candidate = implode( '/', $parts );
+			if ( '' !== $candidate ) {
+				$real = realpath( $candidate );
+				if ( false !== $real ) {
+					$real = wp_normalize_path( $real );
+					return empty( $tail )
+						? $real
+						: $real . '/' . implode( '/', array_reverse( $tail ) );
+				}
+			}
+			$tail[] = array_pop( $parts );
+		}
+
+		return $path;
 	}
 
 	/**
@@ -259,6 +423,8 @@ class Helpers {
 				return false;
 			}
 		}
+
+		$this->harden_directory( $target_directory );
 
 		// Check if temp file exists.
 		if ( ! file_exists( $temp_path ) ) {

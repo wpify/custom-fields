@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.8.0] - 2026-05-07
+
+### Security
+- Fix arbitrary file upload via the `direct-file-upload` REST endpoint (CVSS 9.9, CVE-TBD). The endpoint previously accepted any file type from any user with `edit_posts` (Contributor and above) and stored it in a web-accessible directory under `wp-content/uploads/wpifycf-temp/`. A Contributor could upload `.php` and execute it. Now requires `upload_files`, validates uploads via `wp_handle_upload()` (which uses WordPress's built-in MIME allowlist, blocking executables), and writes `.htaccess` + `web.config` hardening files into the temp and target directories on every upload. See [docs/security/CVE-TBD-direct-file-upload.md](docs/security/CVE-TBD-direct-file-upload.md). Affected versions: 4.1.0–4.7.0.
+- Restrict `direct-file-info` REST endpoint to file paths under `WP_CONTENT_DIR` (resolved via `realpath()`) to prevent filesystem information disclosure.
+- Restrict `mapycz-api-key` POST and `cloudflare/zones` REST endpoints to `manage_options`. The `mapycz-api-key` GET stays at `edit_posts` so the map field continues to render for editor users.
+- Restrict `direct_file` field `directory` parameter to paths under `WP_CONTENT_DIR` (with `wpifycf_direct_file_directory_allowed` filter for legitimate exotic cases). Symlink-safe via `realpath()`.
+- Add capability-aware UI: fields requiring a capability the current user lacks (`direct_file`, `multi_direct_file` → `upload_files`; `cloudflare` → `manage_options`) render disabled, and their values are preserved on save. Filterable via `wpifycf_field_required_capability`.
+
+### Changed
+- `Api::register_rest_route()` now requires a per-route `$permission_callback` parameter. The previous global `permissions_callback` is removed. Internal callsites in `BaseIntegration::register_options_route()` and `GutenbergBlock::register_routes()` are updated to pass appropriate per-route capabilities.
+
+### Fixed
+- `direct_file` and `multi_direct_file` fields now correctly move uploaded files from the temp directory to the configured `directory` on the very first save. Previously, when no prior value was stored in the database, the equality short-circuit in `DirectFileField::sanitize_direct_file()` returned the temp-directory path verbatim, leaving the file in `wpifycf-temp/` instead of relocating it.
+
 ## [4.7.0] - 2026-04-23
 
 ### Added

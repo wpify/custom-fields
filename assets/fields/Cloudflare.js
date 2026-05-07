@@ -1,4 +1,3 @@
-import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import { useCallback, useEffect, useState } from 'react';
 import { useCloudflareZones } from '@/helpers/hooks';
@@ -249,6 +248,28 @@ export function Cloudflare ({
   const handleBackToCredentials = useCallback(() => {
     setView('credentials');
   }, []);
+
+  if (disabled) {
+    return (
+      <div className={clsx('wpifycf-field-cloudflare', `wpifycf-field-cloudflare--${id}`, className)}>
+        {currentValue.zone_id ? (
+          <div className="wpifycf-field-cloudflare__card wpifycf-field-cloudflare__connected">
+            <div className="wpifycf-field-cloudflare__connected-icon">
+              <CloudflareIcon />
+            </div>
+            <div className="wpifycf-field-cloudflare__connected-info">
+              <span className="wpifycf-field-cloudflare__connected-zone">{currentValue.zone_name}</span>
+              <span className="wpifycf-field-cloudflare__connected-account">{currentValue.account_name}</span>
+            </div>
+          </div>
+        ) : (
+          <p className="wpifycf-field-cloudflare__no-zone">
+            {__('(no zone configured)', 'wpify-custom-fields')}
+          </p>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className={clsx('wpifycf-field-cloudflare', `wpifycf-field-cloudflare--${id}`, className)}>

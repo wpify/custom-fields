@@ -5,7 +5,7 @@ import { upload as uploadIcon, trash as trashIcon, page as pageIcon } from '@wor
 import { checkValidityStringType } from '../helpers/validators';
 import { useDirectFileUpload, useDirectFileInfo, useFieldTitle } from '../helpers/hooks';
 
-function DirectFile({ id, htmlId, value, onChange, required, allowed_types, max_size, setTitle, ...props }) {
+function DirectFile({ id, value, onChange, allowed_types, max_size, setTitle, disabled = false }) {
 	const [uploading, setUploading] = useState(false);
 	const [progress, setProgress] = useState(0);
 	const [error, setError] = useState(null);
@@ -125,7 +125,7 @@ function DirectFile({ id, htmlId, value, onChange, required, allowed_types, max_
 				accept={allowed_types && allowed_types.length > 0 ? allowed_types.join(',') : undefined}
 			/>
 
-			{!hasFile && !uploading && (
+			{!hasFile && !uploading && !disabled && (
 				<div className="wpifycf-direct-file__empty">
 					<Button
 						variant="secondary"
@@ -181,25 +181,27 @@ function DirectFile({ id, htmlId, value, onChange, required, allowed_types, max_
 							</span>
 						</div>
 					</div>
-					<div className="wpifycf-direct-file__actions">
-						<Button
-							variant="secondary"
-							onClick={handleButtonClick}
-							icon={uploadIcon}
-							isSmall
-						>
-							{__('Replace', 'wpify-custom-fields')}
-						</Button>
-						<Button
-							variant="secondary"
-							onClick={handleDelete}
-							icon={trashIcon}
-							isDestructive
-							isSmall
-						>
-							{__('Remove', 'wpify-custom-fields')}
-						</Button>
-					</div>
+					{!disabled && (
+						<div className="wpifycf-direct-file__actions">
+							<Button
+								variant="secondary"
+								onClick={handleButtonClick}
+								icon={uploadIcon}
+								isSmall
+							>
+								{__('Replace', 'wpify-custom-fields')}
+							</Button>
+							<Button
+								variant="secondary"
+								onClick={handleDelete}
+								icon={trashIcon}
+								isDestructive
+								isSmall
+							>
+								{__('Remove', 'wpify-custom-fields')}
+							</Button>
+						</div>
+					)}
 				</div>
 			)}
 

@@ -72,14 +72,16 @@ class DirectFileField {
 			return '';
 		}
 
-		// If value is the same as original, no change needed.
-		if ( $value === $original_value ) {
+		$temp_dir = $this->helpers->get_direct_file_temp_dir();
+		$is_temp  = strpos( $value, $temp_dir ) === 0;
+
+		// If value is the same as original and isn't a pending temp file, no change needed.
+		if ( $value === $original_value && ! $is_temp ) {
 			return sanitize_text_field( $value );
 		}
 
 		// Check if this is a temp file that needs to be moved.
-		$temp_dir = $this->helpers->get_direct_file_temp_dir();
-		if ( strpos( $value, $temp_dir ) === 0 ) {
+		if ( $is_temp ) {
 			// This is a temp file, move it to the target directory.
 			$target_directory = $this->get_target_directory( $item );
 			$filename         = $this->helpers->get_filename_from_path( $value );

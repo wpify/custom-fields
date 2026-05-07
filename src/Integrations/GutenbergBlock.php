@@ -465,6 +465,8 @@ class GutenbergBlock extends BaseIntegration {
 			'render-block/' . $this->name,
 			WP_REST_Server::CREATABLE,
 			array( $this, 'render_from_api' ),
+			array(),
+			array( $this->custom_fields->api, 'cap_edit_posts' ),
 		);
 	}
 

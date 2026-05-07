@@ -35,6 +35,19 @@ use Wpify\CustomFields\Integrations\WooCommerceSettings;
  */
 class CustomFields {
 	/**
+	 * Field types that require a non-default capability beyond the integration's page-level cap.
+	 *
+	 * Field types not listed here inherit the integration's page capability.
+	 *
+	 * @var array<string,string>
+	 */
+	public const FIELD_CAPABILITIES = array(
+		'direct_file'       => 'upload_files',
+		'multi_direct_file' => 'upload_files',
+		'cloudflare'        => 'manage_options',
+	);
+
+	/**
 	 * Helpers class.
 	 *
 	 * @var Helpers
@@ -624,6 +637,20 @@ class CustomFields {
 		}
 
 		return apply_filters( 'wpifycf_default_value_' . $item['type'], $default_value, $item );
+	}
+
+	/**
+	 * Returns the WordPress capability required to edit a field of the given type.
+	 *
+	 * Null means "no extra capability required beyond the integration's page-level cap".
+	 *
+	 * @param string $type Field type (canonical, post-alias-resolution).
+	 *
+	 * @return string|null
+	 */
+	public function get_field_required_capability( string $type ): ?string {
+		$cap = self::FIELD_CAPABILITIES[ $type ] ?? null;
+		return apply_filters( 'wpifycf_field_required_capability', $cap, $type );
 	}
 
 	/**
