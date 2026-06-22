@@ -1,4 +1,6 @@
 {
+  "name": "wpify-custom-fields",
+  "private": true,
   "scripts": {
     "postinstall": "cp -R .githooks/* .git/hooks/ && chmod +x .git/hooks/*",
     "start": "wp-scripts start",
