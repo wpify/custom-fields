@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.9.2] - 2026-06-22
+
+### Fixed
+- `select` async search now debounces (300ms) before requesting options, so typing a query no longer fires one REST request per keystroke. `multi_select` already debounced; `Select` was missing it.
+
 ## [4.9.1] - 2026-06-22
 
 ### Fixed

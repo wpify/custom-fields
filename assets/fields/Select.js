@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { checkValidityStringType } from '@/helpers/validators';
 import clsx from 'clsx';
 import { stripHtml, interpolateFieldValues } from '@/helpers/functions'
+import { useDebounce } from '@uidotdev/usehooks';
 
 export function Select ({
   id,
@@ -19,6 +20,7 @@ export function Select ({
   fieldPath,
 }) {
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 300);
   const { getValue } = useOtherFieldValues(fieldPath);
 
   const processedAsyncParams = useMemo(() => interpolateFieldValues(asyncParams, getValue), [asyncParams, getValue]);
@@ -27,7 +29,7 @@ export function Select ({
     optionsKey,
     enabled: !!optionsKey,
     initialData: options,
-    search,
+    search: debouncedSearch,
     sendValue: !cacheOptions,
     value,
     ...processedAsyncParams,
