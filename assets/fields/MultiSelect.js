@@ -1,6 +1,6 @@
 import { addFilter } from '@wordpress/hooks';
 import { Select as SelectControl } from '@/components/Select.js';
-import { useMulti, useOptions, useOtherFieldValues, useFieldTitle } from '@/helpers/hooks';
+import { useMulti, useOptions, useOtherFieldValues, useFieldTitle, useSelectedOptionLabels } from '@/helpers/hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { IconButton } from '@/components/IconButton';
 import { checkValidityMultiStringType } from '@/helpers/validators';
@@ -17,6 +17,7 @@ export function MultiSelect ({
   className,
   disabled,
   async_params: asyncParams = {},
+  cache_options: cacheOptions = true,
   fieldPath,
   setTitle,
 }) {
@@ -28,34 +29,28 @@ export function MultiSelect ({
 
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 300);
-  const [allOptions, setAllOptions] = useState({});
   const { getValue } = useOtherFieldValues(fieldPath);
 
-  // Interpolate field values into async parameters
-  const processedAsyncParams = useMemo(() => {
-    return interpolateFieldValues(asyncParams, getValue);
-  }, [asyncParams, getValue]);
+  const processedAsyncParams = useMemo(() => interpolateFieldValues(asyncParams, getValue), [asyncParams, getValue]);
 
   const { data, isSuccess, isFetching } = useOptions({
     optionsKey,
     enabled: !!optionsKey,
     initialData: options,
     search: debouncedSearch,
+    sendValue: !cacheOptions,
     value,
     ...processedAsyncParams,
   });
 
-  useEffect(() => {
-    if (isSuccess) {
-      setAllOptions((allOptions) => ({
-        ...allOptions,
-        ...data.reduce((acc, option) => {
-          acc[option.value] = stripHtml(option.label);
-          return acc;
-        }, {})
-      }));
-    }
-  }, [data, isSuccess]);
+  const { labels: allOptions, mergeBrowse } = useSelectedOptionLabels({
+    optionsKey,
+    values: value,
+    asyncParams: processedAsyncParams,
+    sendValue: !cacheOptions,
+  });
+
+  useEffect(() => { if (isSuccess) mergeBrowse(data); }, [data, isSuccess, mergeBrowse]);
 
   const realOptions = useMemo(
     () => (optionsKey

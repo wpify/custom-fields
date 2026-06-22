@@ -25,6 +25,7 @@ import { AppContextProvider } from '@/components/AppContext';
         }
         return { ...acc, [item.id]: item.value };
       }, {});
+      const preresolvedOptions = JSON.parse(container.dataset.preresolvedOptions || '{}');
 
       createRoot(container).render(
         <AppContextProvider
@@ -32,6 +33,7 @@ import { AppContextProvider } from '@/components/AppContext';
           config={config}
           tabs={JSON.parse(container.dataset.tabs)}
           fields={fields}
+          preresolvedOptions={preresolvedOptions}
           initialValues={initialValues}
         >
           <QueryClientProvider client={queryClient}>
@@ -81,6 +83,7 @@ import { AppContextProvider } from '@/components/AppContext';
           config={config}
           tabs={event.detail.tabs}
           fields={event.detail.items}
+          preresolvedOptions={{}}
           values={attributes}
           updateValue={updateValue}
         >

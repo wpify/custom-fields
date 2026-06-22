@@ -72,7 +72,7 @@ BaseIntegration (abstract)
 
 1. **Normalize** — `normalize_items()` adds IDs, global_ids, resolves type aliases, registers async option endpoints
 2. **Prepare** — `prepare_items_for_js()` builds input names, fetches current values from DB
-3. **Render** — `print_app()` outputs a `.wpifycf-app-instance` container with all field data in `data-fields` JSON attribute
+3. **Render** — `print_app()` outputs a `.wpifycf-app-instance` container with all field data in `data-fields` JSON attribute (plus `data-preresolved-options`: a per-`options_key` value→label map so async selects show their selected label without a value-bound request)
 4. **Bootstrap** — JS entry reads `data-fields`, creates React root with `AppContextProvider`
 5. **Render tree** — `App` → `RootFields` → `Field` (dispatcher) → specific field component
 6. **Submit** — Hidden `<input>` elements carry values; PHP `set_fields_from_post_request()` sanitizes and saves

@@ -38,6 +38,7 @@ abstract class OptionsIntegration extends BaseIntegration {
 			data-tabs="<?php echo esc_attr( $this->custom_fields->helpers->json_encode( $tabs ) ); ?>"
 			data-context="<?php echo esc_attr( $context ); ?>"
 			data-fields="<?php echo esc_attr( $this->custom_fields->helpers->json_encode( $items ) ); ?>"
+			data-preresolved-options="<?php echo esc_attr( $this->custom_fields->helpers->json_encode( $this->build_preresolved_options( $items ) ) ); ?>"
 			<?php
 			foreach ( $data_attributes as $key => $value ) {
 				printf( ' data-%s="%s"', esc_attr( $key ), esc_attr( $value ) );
@@ -75,6 +76,62 @@ abstract class OptionsIntegration extends BaseIntegration {
 		}
 
 		return $prepared;
+	}
+
+	/**
+	 * Builds a per-options_key map of selected value => label, resolving each
+	 * key's selected values with a single in-process callback call. Embedded in
+	 * the page so the UI can show selected labels without a value-bound request.
+	 *
+	 * Note: async_params placeholders ({{field}}) are NOT interpolated here, so
+	 * dependent/cascading selects should set cache_options=false and rely on the
+	 * client resolve path instead.
+	 *
+	 * @param array $items Prepared items (with values).
+	 *
+	 * @return array<string, array<string, string>>
+	 */
+	public function build_preresolved_options( array $items ): array {
+		$callbacks = array();
+
+		// Index callbacks + static async_params by options_key from the flat tree.
+		$walker = function ( array $items ) use ( &$walker, &$callbacks ) {
+			foreach ( $items as $item ) {
+				if ( ! empty( $item['options_key'] ) && ! empty( $item['options_callback'] ) ) {
+					$callbacks[ $item['options_key'] ] = array(
+						'callback'     => $item['options_callback'],
+						'async_params' => $item['async_params'] ?? array(),
+					);
+				}
+				if ( isset( $item['items'] ) ) {
+					$walker( $item['items'] );
+				}
+			}
+		};
+		$walker( $items );
+
+		// Collect selected values per key. Prepared items carry their own
+		// `value`, so collect_async_values reads them straight from the tree.
+		$by_key = $this->custom_fields->collect_async_values( $items, array() );
+
+		$preresolved = array();
+		foreach ( $by_key as $key => $vals ) {
+			if ( empty( $callbacks[ $key ] ) ) {
+				continue;
+			}
+			$vals    = array_values( array_unique( $vals ) );
+			$params  = array_merge( $callbacks[ $key ]['async_params'], array( 'value' => $vals ) );
+			$options = call_user_func( $callbacks[ $key ]['callback'], $params );
+			$options = is_array( $options ) ? $this->normalize_options( $options ) : array();
+
+			foreach ( $options as $option ) {
+				if ( in_array( (string) $option['value'], $vals, true ) ) {
+					$preresolved[ $key ][ (string) $option['value'] ] = (string) $option['label'];
+				}
+			}
+		}
+
+		return $preresolved;
 	}
 
 	/**

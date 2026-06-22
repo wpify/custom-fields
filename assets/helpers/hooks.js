@@ -381,18 +381,77 @@ export function useOptions ({
   initialData = [{ value: '', label: 'Loading...' }],
   enabled = true,
   select,
+  sendValue = false,
+  value,
   ...args
 }) {
   const { config } = useContext(AppContext);
+  // Legacy opt-out: only include `value` when a field requests it.
+  const params = sendValue ? { ...args, value } : args;
 
   return useQuery({
-    queryKey: ['options', optionsKey, args],
-    queryFn: () => get(config.api_path + '/options/' + optionsKey, args),
+    queryKey: ['options', optionsKey, params],
+    queryFn: () => get(config.api_path + '/options/' + optionsKey, params),
     initialData,
+    // Treat initialData as immediately stale so the query still fetches on
+    // mount/search; staleTime then dedupes refetches after a real fetch.
+    initialDataUpdatedAt: 0,
     enabled: enabled && !!config.api_path && !!optionsKey,
     select,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
     ...defaultQueryOptions,
   });
+}
+
+export function useResolveOptions ({ optionsKey, values = [], asyncParams = {}, enabled = true }) {
+  const { config } = useContext(AppContext);
+  const list = (Array.isArray(values) ? values : [values]).filter(v => v !== null && v !== undefined && v !== '');
+
+  return useQuery({
+    queryKey: ['options-resolve', optionsKey, list, asyncParams],
+    queryFn: () => get(config.api_path + '/options/' + optionsKey, { ...asyncParams, resolve: 1, value: list }),
+    initialData: [],
+    // Treat initialData as immediately stale so the resolve query actually
+    // fetches (otherwise labels would never load, e.g. in Gutenberg).
+    initialDataUpdatedAt: 0,
+    enabled: enabled && !!config.api_path && !!optionsKey && list.length > 0,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    ...defaultQueryOptions,
+  });
+}
+
+export function useSelectedOptionLabels ({ optionsKey, values, asyncParams = {}, sendValue = false }) {
+  const { preresolvedOptions = {} } = useContext(AppContext);
+  const seed = (optionsKey && preresolvedOptions[optionsKey]) || {};
+  const [labels, setLabels] = useState(() => ({ ...seed }));
+
+  const list = (Array.isArray(values) ? values : [values]).filter(v => v !== null && v !== undefined && v !== '');
+  const missing = list.map(String).filter(v => !(v in labels));
+
+  // Legacy fields keep sending value in browse; no separate resolve needed.
+  // The resolve endpoint returns every requested value in one response, so a
+  // field's missing set is satisfied by a single batched call.
+  const { data: resolved } = useResolveOptions({
+    optionsKey,
+    values: missing,
+    asyncParams,
+    enabled: !sendValue && missing.length > 0,
+  });
+
+  useEffect(() => {
+    if (resolved && resolved.length) {
+      setLabels(prev => ({ ...prev, ...resolved.reduce((acc, o) => { acc[String(o.value)] = o.label; return acc; }, {}) }));
+    }
+  }, [resolved]);
+
+  const mergeBrowse = useCallback(options => {
+    if (!Array.isArray(options) || options.length === 0) return;
+    setLabels(prev => ({ ...prev, ...options.reduce((acc, o) => { acc[String(o.value)] = o.label; return acc; }, {}) }));
+  }, []);
+
+  return { labels, mergeBrowse };
 }
 
 export function useRenderBlock ({ blockName, attributes, postId }) {

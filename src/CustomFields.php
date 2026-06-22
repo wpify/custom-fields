@@ -407,6 +407,59 @@ class CustomFields {
 	}
 
 	/**
+	 * Walks an item tree alongside its values and collects, per options_key,
+	 * the set of currently-selected values for async fields (those carrying an
+	 * options_callback). Recurses into group (object value) and multi_group
+	 * (array-of-rows value). Skips fields opting out via cache_options=false.
+	 *
+	 * @param array $items  Normalized (or prepared) items.
+	 * @param array $values Values keyed by item id, matching the items' shape.
+	 *
+	 * @return array<string, array<int, string>> Map of options_key => values.
+	 */
+	public function collect_async_values( array $items, array $values ): array {
+		$collected = array();
+
+		foreach ( $items as $item ) {
+			$id    = $item['id'] ?? null;
+			$value = ( null !== $id && array_key_exists( $id, $values ) ) ? $values[ $id ] : ( $item['value'] ?? null );
+
+			if ( isset( $item['items'] ) && 'multi_group' === ( $item['type'] ?? '' ) ) {
+				foreach ( (array) $value as $row ) {
+					foreach ( $this->collect_async_values( $item['items'], (array) $row ) as $key => $vals ) {
+						$collected[ $key ] = array_merge( $collected[ $key ] ?? array(), $vals );
+					}
+				}
+				continue;
+			}
+
+			if ( isset( $item['items'] ) && in_array( $item['type'] ?? '', array( 'group', 'wrapper', 'columns' ), true ) ) {
+				foreach ( $this->collect_async_values( $item['items'], (array) $value ) as $key => $vals ) {
+					$collected[ $key ] = array_merge( $collected[ $key ] ?? array(), $vals );
+				}
+				continue;
+			}
+
+			if ( empty( $item['options_callback'] ) || empty( $item['options_key'] ) ) {
+				continue;
+			}
+
+			if ( isset( $item['cache_options'] ) && false === $item['cache_options'] ) {
+				continue;
+			}
+
+			$key  = $item['options_key'];
+			$vals = array_filter( array_map( 'strval', (array) $value ), static fn( $v ) => '' !== $v );
+
+			if ( ! empty( $vals ) ) {
+				$collected[ $key ] = array_merge( $collected[ $key ] ?? array(), $vals );
+			}
+		}
+
+		return $collected;
+	}
+
+	/**
 	 * Sanitizes a given item's value based on its type using a closure.
 	 *
 	 * @param array $item The item array which contains the type and other relevant information.

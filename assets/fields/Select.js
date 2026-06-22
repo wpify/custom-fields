@@ -1,5 +1,5 @@
 import { Select as SelectControl } from '@/components/Select.js';
-import { useOptions, useOtherFieldValues } from '@/helpers/hooks';
+import { useOptions, useOtherFieldValues, useSelectedOptionLabels } from '@/helpers/hooks';
 import { useEffect, useMemo, useState } from 'react';
 import { checkValidityStringType } from '@/helpers/validators';
 import clsx from 'clsx';
@@ -15,24 +15,32 @@ export function Select ({
   disabled = false,
   setTitle,
   async_params: asyncParams = {},
+  cache_options: cacheOptions = true,
   fieldPath,
 }) {
   const [search, setSearch] = useState('');
   const { getValue } = useOtherFieldValues(fieldPath);
 
-  // Interpolate field values into async parameters
-  const processedAsyncParams = useMemo(() => {
-    return interpolateFieldValues(asyncParams, getValue);
-  }, [asyncParams, getValue]);
+  const processedAsyncParams = useMemo(() => interpolateFieldValues(asyncParams, getValue), [asyncParams, getValue]);
 
   const { data: fetchedOptions, isFetching } = useOptions({
     optionsKey,
     enabled: !!optionsKey,
     initialData: options,
     search,
+    sendValue: !cacheOptions,
     value,
     ...processedAsyncParams,
   });
+
+  const { labels, mergeBrowse } = useSelectedOptionLabels({
+    optionsKey,
+    values: value,
+    asyncParams: processedAsyncParams,
+    sendValue: !cacheOptions,
+  });
+
+  useEffect(() => { mergeBrowse(fetchedOptions); }, [fetchedOptions, mergeBrowse]);
 
   const realOptions = useMemo(
     () => (optionsKey ? fetchedOptions : options).map(option => ({ ...option, label: stripHtml(option.label) })),
@@ -40,15 +48,14 @@ export function Select ({
   );
 
   const valueOption = useMemo(() => {
-    if (Array.isArray(realOptions)) {
-      return realOptions.find(option => String(option.value) === String(value));
-    }
-    return null;
-  }, [realOptions, value]);
+    if (value === '' || value === null || value === undefined) return null;
+    const found = Array.isArray(realOptions) ? realOptions.find(o => String(o.value) === String(value)) : null;
+    if (found) return { ...found, label: stripHtml(found.label) };
+    // Off-slice selected value: fall back to the label store.
+    return { value, label: stripHtml(labels[String(value)] || String(value)) };
+  }, [realOptions, value, labels]);
 
-  useEffect(() => {
-    setTitle && setTitle(stripHtml(valueOption?.label || ''));
-  }, [valueOption, setTitle]);
+  useEffect(() => { setTitle && setTitle(stripHtml(valueOption?.label || '')); }, [valueOption, setTitle]);
 
   return (
     <SelectControl

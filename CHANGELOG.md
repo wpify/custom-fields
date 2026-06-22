@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.9.0] - 2026-06-22
+
+### Added
+- `cache_options` option (default `true`) for `select` and `multi_select`. When enabled, an async option list is fetched once and shared across all fields using the same `options_key`/`async_params` instead of once per field. Set to `false` to restore the legacy per-field request — needed only for callbacks whose `async_params` use dynamic `{{field}}` placeholders or that otherwise depend on `value` when returning the browse list. Documented in `docs/field-types/select.md` and `docs/field-types/multi_select.md`.
+- `list_id` is now accepted as an alias for `options_key` in field definitions (`BaseIntegration::normalize_items()`), for backward compatibility with integrations that used the older key name.
+
+### Changed
+- Async `select`/`multi_select` options requests no longer carry the field's `value`, so otherwise-identical fields share a single cached REST response instead of each firing its own request. Previously a page with N selects backed by the same list issued N near-identical `/wpifycf/v1/options/{key}?…&value=…` calls (one per field), which caused excessive load when many such fields were present. Selected-option labels are now resolved independently of the browse list: storage-backed integrations embed a preresolved value→label map in the app container's `data-preresolved-options` attribute (resolved server-side in one batched callback call per key, no extra request); the Gutenberg block editor resolves them via a batched `resolve` request on the same endpoint; and fetched browse slices are accumulated client-side so selected labels persist across searches. `staleTime`/`gcTime` were added to the options queries so identical requests are reused across remounts.
+
 ### Fixed
 - Saving a field set that contains an empty `multi_email`, `multi_richtext`, `multi_url`, or `multi_number` repeater item no longer triggers a fatal `TypeError` (HTTP 500 on save). A new empty repeater item serializes as `[]`, which `sanitize_email()`, `wp_kses_post()`, and `esc_url()` reject — only `sanitize_text_field()`/`sanitize_textarea_field()` guard arrays internally. `CustomFields::sanitize_item_value()` now coerces non-string input to an empty string for the `email`, `url`, `wysiwyg`, and `richtext` branches and to `null` for `number`/`range`, so the save succeeds.
 - `SubscriptionMetabox::render()` no longer fatals on classic (non-HPOS) order storage. Its signature required `WC_Order`, but WordPress passes a `WP_Post` to the metabox callback on the legacy subscription edit screen. It now accepts `WP_Post|WC_Abstract_Order` and resolves the order via `wc_get_order()`, matching the existing `OrderMetabox::render()` behaviour.

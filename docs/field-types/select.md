@@ -151,6 +151,17 @@ The field path syntax follows the same rules as described in the [Conditions doc
 ),
 ```
 
+#### `cache_options` _(bool)_ — Optional
+
+Defaults to `true`. When `true`, the async options list is fetched once and
+shared across all fields using the same `options_key`/`async_params` (the
+request does not include the field's `value`), and the selected option's label
+is resolved separately (server-side for storage-backed integrations, or via a
+batched resolve request in the block editor). Set to `false` to restore the
+legacy behavior where each field sends its `value` in the options request —
+needed only for callbacks whose `async_params` use dynamic `{{field}}`
+placeholders or that otherwise depend on `value` when returning the browse list. When labels are resolved separately, the callback receives `value` as an array of the value(s) to resolve.
+
 ## Stored Value
 
 The field stores the value (key) of the selected option as a string in the database.
