@@ -129,6 +129,16 @@ abstract class OptionsIntegration extends BaseIntegration {
 					$preresolved[ $key ][ (string) $option['value'] ] = (string) $option['label'];
 				}
 			}
+
+			// Cover every stored value so the UI never has to issue a per-value
+			// resolve request. Values the callback could not resolve (e.g. a saved
+			// option that no longer exists in the source) fall back to the raw
+			// value as its own label — matching the client-side display fallback.
+			foreach ( $vals as $value ) {
+				if ( ! isset( $preresolved[ $key ][ $value ] ) ) {
+					$preresolved[ $key ][ $value ] = $value;
+				}
+			}
 		}
 
 		return $preresolved;

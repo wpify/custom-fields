@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.9.1] - 2026-06-22
+
+### Fixed
+- `OptionsIntegration::build_preresolved_options()` now includes **every** stored async value in the embedded `data-preresolved-options` map, falling back to the raw value as its own label when the options callback cannot resolve it (e.g. a saved option that no longer exists in the source). Previously such values were absent from the map, so each one triggered its own client-side `resolve` request — producing one request per field on pages with many `select`/`multi_select` fields bound to the same list with stale or out-of-window values. The selected value still displays as before; only the redundant requests are eliminated.
+
 ## [4.9.0] - 2026-06-22
 
 ### Added
