@@ -1,11 +1,11 @@
 import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
 
-export function get (path, data = {}) {
+export function get (path, data = {}, options = {}) {
   if (path.match(/^https?:\/\//)) {
-    return apiFetch({ url: addQueryArgs(path, data) });
+    return apiFetch({ url: addQueryArgs(path, data), ...options });
   } else {
-    return apiFetch({ path: addQueryArgs(path, data) });
+    return apiFetch({ path: addQueryArgs(path, data), ...options });
   }
 }
 

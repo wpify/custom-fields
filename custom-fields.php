@@ -3,7 +3,7 @@
  * Plugin Name: WPify Custom Fields
  * Plugin URI: https://wpify.io
  * Description: Modern custom fields for WordPress
- * Version: 4.9.2
+ * Version: 4.9.3
  * Author: WPify
  * Author URI: https://wpify.io
  * Text Domain: wpify-custom-fields

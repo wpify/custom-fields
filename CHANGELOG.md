@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.9.3] - 2026-06-22
+
+### Fixed
+- Async option requests are now aborted when superseded. Typing a new search (or otherwise changing the query) cancels the previous in-flight `options`/`options-resolve` request via the React Query `AbortSignal`, which is now forwarded through `get()` to `apiFetch`. Prevents a slow earlier response from overwriting newer results and avoids wasted in-flight requests.
+
 ## [4.9.2] - 2026-06-22
 
 ### Fixed

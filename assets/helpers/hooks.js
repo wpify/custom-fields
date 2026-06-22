@@ -391,7 +391,7 @@ export function useOptions ({
 
   return useQuery({
     queryKey: ['options', optionsKey, params],
-    queryFn: () => get(config.api_path + '/options/' + optionsKey, params),
+    queryFn: ({ signal }) => get(config.api_path + '/options/' + optionsKey, params, { signal }),
     initialData,
     // Treat initialData as immediately stale so the query still fetches on
     // mount/search; staleTime then dedupes refetches after a real fetch.
@@ -410,7 +410,7 @@ export function useResolveOptions ({ optionsKey, values = [], asyncParams = {}, 
 
   return useQuery({
     queryKey: ['options-resolve', optionsKey, list, asyncParams],
-    queryFn: () => get(config.api_path + '/options/' + optionsKey, { ...asyncParams, resolve: 1, value: list }),
+    queryFn: ({ signal }) => get(config.api_path + '/options/' + optionsKey, { ...asyncParams, resolve: 1, value: list }, { signal }),
     initialData: [],
     // Treat initialData as immediately stale so the resolve query actually
     // fetches (otherwise labels would never load, e.g. in Gutenberg).
