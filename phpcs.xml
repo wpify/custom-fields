@@ -21,6 +21,15 @@
     <!-- Exclude the Build directory. -->
     <exclude-pattern>/build/*</exclude-pattern>
 
+    <!-- Exclude a local WordPress install used by the dev/test environment. -->
+    <exclude-pattern>/wp/*</exclude-pattern>
+
+    <!-- Exclude local dev/test scaffolding (companion plugin, setup scripts). -->
+    <exclude-pattern>/dev/*</exclude-pattern>
+
+    <!-- Exclude the local DDEV config + generated files. -->
+    <exclude-pattern>/.ddev/*</exclude-pattern>
+
     <!-- Exclude Javascript files. -->
     <exclude-pattern>*.js</exclude-pattern>
 
