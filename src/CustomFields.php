@@ -453,7 +453,7 @@ class CustomFields {
 			) ) {
 				$sanitized_value = sanitize_text_field( $value );
 			} elseif ( 'email' === $item['type'] ) {
-				$sanitized_value = sanitize_email( $value );
+				$sanitized_value = is_string( $value ) ? sanitize_email( $value ) : '';
 			} elseif ( 'group' === $item['type'] ) {
 				$value           = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
 				$sanitized_value = $value;
@@ -500,13 +500,13 @@ class CustomFields {
 					);
 				}
 			} elseif ( in_array( $item['type'], array( 'number', 'range' ), true ) ) {
-				$sanitized_value = floatval( $value );
+				$sanitized_value = is_scalar( $value ) ? floatval( $value ) : null;
 			} elseif ( 'textarea' === $item['type'] ) {
 				$sanitized_value = sanitize_textarea_field( $value );
 			} elseif ( 'url' === $item['type'] ) {
-				$sanitized_value = esc_url( $value );
+				$sanitized_value = is_string( $value ) ? esc_url( $value ) : '';
 			} elseif ( in_array( $item['type'], array( 'wysiwyg', 'richtext' ), true ) ) {
-				$sanitized_value = wp_kses_post( $value );
+				$sanitized_value = is_string( $value ) ? wp_kses_post( $value ) : '';
 			} elseif ( in_array( $item['type'], array( 'multi_checkbox', 'multi_toggle' ), true ) ) {
 				$value           = is_string( $value ) ? json_decode( $value, true ) : (array) $value;
 				$sanitized_value = array();

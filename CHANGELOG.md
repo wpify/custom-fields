@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Saving a field set that contains an empty `multi_email`, `multi_richtext`, `multi_url`, or `multi_number` repeater item no longer triggers a fatal `TypeError` (HTTP 500 on save). A new empty repeater item serializes as `[]`, which `sanitize_email()`, `wp_kses_post()`, and `esc_url()` reject — only `sanitize_text_field()`/`sanitize_textarea_field()` guard arrays internally. `CustomFields::sanitize_item_value()` now coerces non-string input to an empty string for the `email`, `url`, `wysiwyg`, and `richtext` branches and to `null` for `number`/`range`, so the save succeeds.
+- `SubscriptionMetabox::render()` no longer fatals on classic (non-HPOS) order storage. Its signature required `WC_Order`, but WordPress passes a `WP_Post` to the metabox callback on the legacy subscription edit screen. It now accepts `WP_Post|WC_Abstract_Order` and resolves the order via `wc_get_order()`, matching the existing `OrderMetabox::render()` behaviour.
+
 ## [4.8.0] - 2026-05-07
 
 ### Security

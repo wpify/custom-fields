@@ -9,8 +9,10 @@ namespace Wpify\CustomFields\Integrations;
 
 use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 use Closure;
+use WC_Abstract_Order;
 use WC_Order;
 use WC_Order_Refund;
+use WP_Post;
 use Wpify\CustomFields\CustomFields;
 use Wpify\CustomFields\Exceptions\MissingArgumentException;
 
@@ -232,15 +234,18 @@ class SubscriptionMetabox extends ItemsIntegration {
 	/**
 	 * Renders the order meta details.
 	 *
-	 * @param WC_Order $order The order object containing order details.
+	 * @param WP_Post|WC_Abstract_Order $post The subscription, passed as a WP_Post on
+	 *                                        legacy post storage or as a WC order object on HPOS.
 	 *
 	 * @return void
 	 */
-	public function render( WC_Order $order ): void {
+	public function render( WP_Post|WC_Abstract_Order $post ): void {
 		if ( ! current_user_can( $this->capability ) ) {
 			return;
 		}
 
+		$id             = is_a( $post, 'WC_Abstract_Order' ) ? $post->get_id() : $post->ID;
+		$order          = wc_get_order( $id );
 		$this->order_id = $order->get_id();
 		$this->enqueue();
 
