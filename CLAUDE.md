@@ -149,3 +149,17 @@ When your changes invalidate or create gaps in this file, update it as part of t
 - File/directory structure changes
 
 Keep updates minimal, match existing style, do not add session-specific or speculative content.
+
+## Agent skills
+
+### Issue tracker
+
+Issues are tracked in GitHub Issues (`wpify/custom-fields`) via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default label vocabulary — `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context layout — `CONTEXT.md` and `docs/adr/` at the repo root, created lazily. See `docs/agents/domain.md`.
