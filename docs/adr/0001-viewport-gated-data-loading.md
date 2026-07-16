@@ -1,0 +1,11 @@
+# Viewport-gated (lazy) field data loading
+
+Admin pages with many fields — or several admin pages opened at once — fired one REST request per data-backed field on mount, hammering the server with requests for data nobody was looking at. We decided that a field only starts fetching once it is *loadable*: mounted (existing tab/conditions gating), intersecting the viewport extended by a 200px preload margin for at least a 200ms dwell, and in a visible browser tab. See the glossary in `CONTEXT.md` (Loadable, Latch, Dwell, Focus bypass) and `docs/features/lazy-loading.md`.
+
+## Consequences
+
+- **Latch, not continuous gating**: once loadable, a field behaves exactly as before, forever. The problem being solved is the initial request burst, not steady-state traffic; continuous gating would add refetch churn and interaction bugs for no gain. The one exception is the Gutenberg render-block preview, which re-fires on every attribute change rather than loading once — it is continuously gated (no renders while off-canvas, catch-up render on return, previous preview kept on screen).
+- **Background browser tabs render "cold"**: opening an admin page in a background tab to "let it load" no longer preloads field data. This is the accepted trade-off, not a bug.
+- **Collapsed `multi_group` row titles degrade**: titles derived from `post`/`term`/`attachment`/`link` fetches show the `#N` fallback until the row is expanded (`display: none` content never intersects). Titles from async selects stay correct via server-side preresolved labels. Deliberately accepted over latching children on row-header visibility, which would reintroduce the request burst for large repeaters — the heaviest case this decision exists to fix. Follow-up: extend server-side preresolution to post/term/attachment/link titles.
+- **No per-field opt-out** (`lazy: false` was rejected as YAGNI): correctness never depends on eager fetching — values submit via always-rendered hidden inputs, validation runs on values, and focusing a field loads it instantly. An opt-out can be added compatibly if a real case appears.
+- **Enforced centrally**: the gate lives in `Field.js` (sentinel + shared `IntersectionObserver` + `LoadableContext`) and the shared data hooks, so every current and future field gets identical behavior; hooks used outside a `Field` fail open (eager).

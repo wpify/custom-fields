@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, useRef } from 'react';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { AttachmentItem } from '@/fields/Attachment';
 import { useSortableList, useMediaLibrary, useFieldTitle } from '@/helpers/hooks';
+import { useLoadable } from '@/helpers/visibility';
 import { Button } from '@/components/Button';
 import clsx from 'clsx';
 import { addFilter } from '@wordpress/hooks';
@@ -38,8 +39,10 @@ function MultiAttachment ({
     disabled,
   });
 
+  const loadable = useLoadable();
+
   useEffect(() => {
-    if (value.length > 0) {
+    if (loadable && value.length > 0) {
       Promise.allSettled(
         value.map(id => wp.media.attachment(String(id)).fetch()),
       ).then(
@@ -50,7 +53,7 @@ function MultiAttachment ({
         ),
       );
     }
-  }, [value]);
+  }, [value, loadable]);
 
   const openMediaLibrary = useMediaLibrary({
     value,

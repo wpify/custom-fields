@@ -6,6 +6,7 @@ import { desktop, edit, Icon } from '@wordpress/icons';
 import { applyFilters } from '@wordpress/hooks';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useValidity } from '@/helpers/hooks';
+import { useInViewport } from '@/helpers/visibility';
 import { AppContext } from '@/components/AppContext';;
 import { RootFields } from '@/components/RootFields';
 import { Tabs } from '@/components/Tabs';
@@ -107,11 +108,13 @@ function RenderedView ({ name, attributes, title, fields }) {
   );
 
   const debouncedAttributes = useDebounce(attributes, 500);
+  const { ref, visible } = useInViewport();
 
   const renderer = useRenderBlock({
     blockName: name,
     attributes: debouncedAttributes,
     postId,
+    enabled: visible,
   });
 
   // Find inner_blocks field configuration
@@ -138,25 +141,29 @@ function RenderedView ({ name, attributes, title, fields }) {
     }
   };
 
-  if (renderer.isFetching) {
-    return <LoadingResponse title={title} name={name} />;
-  }
+  // The wrapper must always render: it is the element observed for viewport
+  // visibility, which in turn enables the render query.
+  let content;
 
   if (renderer.isError) {
-    return <ErrorResponse title={title} name={name} />;
+    content = <ErrorResponse title={title} name={name} />;
+  } else if (!renderer.data) {
+    // Pending covers both "fetching" and "waiting to become visible"; the
+    // previous render is kept on screen across attribute changes.
+    content = renderer.isPending
+      ? <LoadingResponse title={title} name={name} />
+      : <EmptyResponse title={title} name={name} />;
+  } else {
+    content = (
+      <ErrorBoundary fallback={<ErrorResponse title={title} name={name} />}>
+        <div className="wpifycf-gutenberg-block__ssr">
+          {parse(renderer.data, parseOptions)}
+        </div>
+      </ErrorBoundary>
+    );
   }
 
-  if (!renderer.data) {
-    return <EmptyResponse title={title} name={name} />;
-  }
-
-  return (
-    <ErrorBoundary fallback={<ErrorResponse title={title} name={name} />}>
-      <div className="wpifycf-gutenberg-block__ssr">
-        {parse(renderer.data, parseOptions)}
-      </div>
-    </ErrorBoundary>
-  );
+  return <div ref={ref}>{content}</div>;
 }
 
 function EditorView ({ fields, values, updateValue }) {

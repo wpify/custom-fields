@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.10.0] - 2026-07-16
+
+### Added
+- Lazy field data loading: fields now call the REST API only once they are visible — in the viewport (with a 200px preload margin and 200ms dwell against fast scrolling) and in a visible browser tab. Applies uniformly to `select`/`multi_select` async options and label resolution, `post`/`multi_post`, `term`/`multi_term`, `attachment`/`multi_attachment`, `link`, `direct_file`/`multi_direct_file`, and Gutenberg server-side block previews (which additionally skip re-renders while scrolled off-canvas and catch up on return). Focusing a field loads it immediately. Once loaded, a field never unloads. Documented in `docs/features/lazy-loading.md`; rationale in `docs/adr/0001-viewport-gated-data-loading.md`.
+
+### Changed
+- **Perceived behavior change**: admin pages opened in background browser tabs no longer preload field data; loading starts when the tab is first viewed. Stored `select`/`multi_select` values still display their labels immediately (server-side preresolution); `post`/`term`/`attachment`/`link`/`direct_file` value previews and collapsed `multi_group` item titles derived from them appear when the field first becomes visible.
+
 ## [4.9.3] - 2026-06-22
 
 ### Fixed

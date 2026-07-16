@@ -1,12 +1,13 @@
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import Sortable from 'sortablejs';
 import { v4 as uuidv4 } from 'uuid';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { get, post } from '@/helpers/api.js';
 import { useSelect } from '@wordpress/data';
 import '@wordpress/core-data';
 import { evaluateConditions, getValueByPath } from '@/helpers/functions';
 import { AppContext } from '@/components/AppContext';
+import { useLoadable } from '@/helpers/visibility';
 
 export function useSortableList ({ containerRef, draggable, handle, items, setItems, disabled = false }) {
   const onEnd = useCallback((event) => {
@@ -111,12 +112,13 @@ export function useMediaLibrary ({
 }
 
 export function useAttachment (id) {
+  const loadable = useLoadable();
   const [attachment, setAttachment] = useState(null);
   useEffect(() => {
-    if (id) {
+    if (id && loadable) {
       wp.media.attachment(id).fetch().then(setAttachment);
     }
-  }, [id]);
+  }, [id, loadable]);
   return { attachment, setAttachment };
 }
 
@@ -311,10 +313,11 @@ const defaultQueryOptions = {
 
 export function useUrlTitle (url) {
   const { config } = useContext(AppContext);
+  const loadable = useLoadable();
   return useQuery({
     queryKey: ['url-title', url],
     queryFn: () => get(config.api_path + '/url-title', { url }),
-    enabled: !!config.api_path && !!url,
+    enabled: loadable && !!config.api_path && !!url,
     initialData: '',
     ...defaultQueryOptions,
   });
@@ -328,6 +331,7 @@ export function usePosts ({
   ...args
 }) {
   const { config } = useContext(AppContext);
+  const loadable = useLoadable();
 
   return useQuery({
     queryKey: ['posts', postType, args.search, args],
@@ -336,7 +340,7 @@ export function usePosts ({
       ...args,
     }),
     initialData,
-    enabled: enabled && !!postType && !!config.api_path,
+    enabled: enabled && loadable && !!postType && !!config.api_path,
     select,
     ...defaultQueryOptions,
   });
@@ -350,12 +354,13 @@ export function useTerms ({
   ...args
 }) {
   const { config } = useContext(AppContext);
+  const loadable = useLoadable();
 
   return useQuery({
     queryKey: ['terms', taxonomy, args],
     queryFn: () => get(config.api_path + '/terms', { taxonomy, ...args }),
     initialData,
-    enabled: enabled && !!taxonomy && !!config.api_path,
+    enabled: enabled && loadable && !!taxonomy && !!config.api_path,
     select,
     ...defaultQueryOptions,
   });
@@ -386,6 +391,7 @@ export function useOptions ({
   ...args
 }) {
   const { config } = useContext(AppContext);
+  const loadable = useLoadable();
   // Legacy opt-out: only include `value` when a field requests it.
   const params = sendValue ? { ...args, value } : args;
 
@@ -396,7 +402,7 @@ export function useOptions ({
     // Treat initialData as immediately stale so the query still fetches on
     // mount/search; staleTime then dedupes refetches after a real fetch.
     initialDataUpdatedAt: 0,
-    enabled: enabled && !!config.api_path && !!optionsKey,
+    enabled: enabled && loadable && !!config.api_path && !!optionsKey,
     select,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
@@ -406,6 +412,7 @@ export function useOptions ({
 
 export function useResolveOptions ({ optionsKey, values = [], asyncParams = {}, enabled = true }) {
   const { config } = useContext(AppContext);
+  const loadable = useLoadable();
   const list = (Array.isArray(values) ? values : [values]).filter(v => v !== null && v !== undefined && v !== '');
 
   return useQuery({
@@ -415,7 +422,7 @@ export function useResolveOptions ({ optionsKey, values = [], asyncParams = {}, 
     // Treat initialData as immediately stale so the resolve query actually
     // fetches (otherwise labels would never load, e.g. in Gutenberg).
     initialDataUpdatedAt: 0,
-    enabled: enabled && !!config.api_path && !!optionsKey && list.length > 0,
+    enabled: enabled && loadable && !!config.api_path && !!optionsKey && list.length > 0,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
     ...defaultQueryOptions,
@@ -454,13 +461,19 @@ export function useSelectedOptionLabels ({ optionsKey, values, asyncParams = {},
   return { labels, mergeBrowse };
 }
 
-export function useRenderBlock ({ blockName, attributes, postId }) {
+export function useRenderBlock ({ blockName, attributes, postId, enabled = true }) {
   const { config } = useContext(AppContext);
 
   return useQuery({
     queryKey: ['render-block', postId, blockName, attributes],
     queryFn: () => post(config.api_path + '/render-block/' + blockName, { attributes, postId }),
-    enabled: !!config.api_path,
+    // Continuously gated by block visibility (no latch): attribute changes
+    // while the block is off-canvas don't render; the query catches up when
+    // the block scrolls back into view. Previous render stays on screen.
+    enabled: enabled && !!config.api_path,
+    placeholderData: keepPreviousData,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
     ...defaultQueryOptions,
   });
 }
@@ -554,11 +567,12 @@ export function useDirectFileUpload() {
 
 export function useDirectFileInfo(filePath) {
   const { config } = useContext(AppContext);
+  const loadable = useLoadable();
 
   return useQuery({
     queryKey: ['direct-file-info', filePath],
     queryFn: () => get(config.api_path + '/direct-file-info', { file_path: filePath }),
-    enabled: !!config.api_path && !!filePath && typeof filePath === 'string' && filePath !== '',
+    enabled: loadable && !!config.api_path && !!filePath && typeof filePath === 'string' && filePath !== '',
     ...defaultQueryOptions,
   });
 }

@@ -131,6 +131,9 @@ Conditions array with operators (`==`, `!=`, `>`, `>=`, `<`, `<=`, `between`, `c
 ### Validation
 Field components export static `checkValidity(value, field)` → array of error strings. Form submission blocked if errors. Validators in `assets/helpers/validators.js`. Full docs: `docs/features/validation.md`
 
+### Lazy Data Loading
+Fields fetch remote data only once visible: viewport intersection (200px preload margin, 200ms dwell) + visible browser tab; focus loads immediately; once loaded, latched forever. Central gate: sentinel in `Field.js` + `LoadableContext` (`assets/helpers/visibility.js`) consumed by the data hooks in `helpers/hooks.js`. Gutenberg render-block is continuously gated instead (no renders off-canvas). Full docs: `docs/features/lazy-loading.md`, rationale: `docs/adr/0001-viewport-gated-data-loading.md`
+
 ## Documentation
 
 When writing or updating docs in `docs/`:

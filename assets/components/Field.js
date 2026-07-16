@@ -10,6 +10,7 @@ import { ControlWrapper } from '@/components/ControlWrapper';
 import { FieldDescription } from '@/components/FieldDescription';
 import { getFieldComponentByType } from '@/helpers/functions';
 import { AppContext } from '@/components/AppContext';
+import { LoadableContext, useLoadableLatch } from '@/helpers/visibility';
 
 export function Field ({
   type,
@@ -31,6 +32,7 @@ export function Field ({
   const shown = useConditions({ conditions, fieldPath });
   const isCurrentTab = !tab || !currentTab || currentTab === tab;
   const isHidden = !shown || !isCurrentTab || type === 'hidden';
+  const { sentinelRef, loadable } = useLoadableLatch(isHidden);
 
   const validity = useMemo(
     () => !isHidden && typeof FieldComponent.checkValidity === 'function'
@@ -87,6 +89,12 @@ export function Field ({
         />
         <ControlWrapper renderOptions={combinedRenderOptions}>
           {hiddenField}
+          <span
+            ref={sentinelRef}
+            aria-hidden="true"
+            style={{ display: 'block', width: 0, height: 0 }}
+          />
+
           {FieldComponent.descriptionPosition === 'before' && (
             <FieldDescription
               description={description}
@@ -100,22 +108,24 @@ export function Field ({
               </div>
             )}
           >
-            <FieldComponent
-              {...props}
-              type={type}
-              value={value}
-              className={clsx(
-                'wpifycf-field',
-                `wpifycf-field--${type}`,
-                props.className,
-                validityMessages.length > 0 && 'wpifycf-field--invalid',
-                combinedRenderOptions.noLabel && 'wpifycf-field--no-label',
-                combinedRenderOptions.isRoot && 'wpifycf-field--is-root',
-              )}
-              fieldPath={fieldPath}
-              allValues={allValues}
-              getValue={getValue}
-            />
+            <LoadableContext.Provider value={loadable}>
+              <FieldComponent
+                {...props}
+                type={type}
+                value={value}
+                className={clsx(
+                  'wpifycf-field',
+                  `wpifycf-field--${type}`,
+                  props.className,
+                  validityMessages.length > 0 && 'wpifycf-field--invalid',
+                  combinedRenderOptions.noLabel && 'wpifycf-field--no-label',
+                  combinedRenderOptions.isRoot && 'wpifycf-field--is-root',
+                )}
+                fieldPath={fieldPath}
+                allValues={allValues}
+                getValue={getValue}
+              />
+            </LoadableContext.Provider>
           </ErrorBoundary>
           {validityMessages.map((message, index) => (
             <label htmlFor={props.htmlId} key={index} className="wpifycf-field__error">
