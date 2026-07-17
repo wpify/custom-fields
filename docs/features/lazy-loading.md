@@ -36,6 +36,14 @@ Once a field has started loading, it stays active for good: scrolling away or sw
 
 The server-side render preview of a Gutenberg block is gated *continuously* instead of once: render requests are only made while the block is visible in the editor canvas. Editing a block's attributes (for example from the sidebar inspector) while the block is scrolled off-canvas does not trigger renders; the preview catches up with a single request when the block scrolls back into view. The previous preview stays on screen while a new one is being rendered.
 
+Before a block has rendered for the first time, its loading placeholder reserves height (500px by default) so that blocks further down the post stay outside the viewport gate — otherwise every placeholder would fit on screen at once and all blocks would render immediately on editor open. As each block's real content arrives, the next placeholder scrolls into view and loads in turn. The reserved height can be adjusted per site with CSS:
+
+```css
+.editor-styles-wrapper {
+	--wpifycf-block-placeholder-height: 200px;
+}
+```
+
 ## What you may notice
 
 - A page opened in a background browser tab shows loading placeholders until it is first viewed; data then loads for the fields in view.

@@ -10,5 +10,15 @@
     &--error {
       border-color: var(--wpifycf-red);
     }
+
+    // The reserved height (--wpifycf-block-placeholder-height) is set inline
+    // in GutenbergBlock.js so it cannot race stylesheet loading in the editor
+    // canvas iframe; this rule only centers the text within it.
+    &--loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
   }
 }

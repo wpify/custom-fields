@@ -218,6 +218,9 @@ function LoadingResponse ({ title, name }) {
   return (
     <div
       className="wpifycf-gutenberg-block__placeholder wpifycf-gutenberg-block__placeholder--loading"
+      // Inline so the reserved height applies from first paint: the viewport
+      // gate must not race the stylesheet loading in the editor canvas iframe.
+      style={{ minHeight: 'var(--wpifycf-block-placeholder-height, 500px)' }}
       dangerouslySetInnerHTML={{
         __html: sprintf(__('Loading block <strong>%1$s</strong> (<code>%2$s</code>)...'), title, name),
       }}

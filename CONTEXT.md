@@ -25,3 +25,7 @@ Glossary of domain terms. Terms are capitalized when used in their glossary sens
 - **Focus bypass** — user interaction (focus) with a field latches it
   immediately, skipping both Dwell and viewport intersection. An interacted
   field is by definition visible and must never wait for its data.
+- **Placeholder reserve** — the height a not-yet-rendered Gutenberg block
+  preview reserves on screen, so the blocks below it stay outside the viewport
+  gate instead of all counting as visible at once. Applies only before a
+  block's first render; once real content arrives it takes over the space.

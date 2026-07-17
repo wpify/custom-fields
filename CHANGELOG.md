@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.10.1] - 2026-07-17
+
+### Fixed
+- Gutenberg block lazy loading now actually defers off-screen blocks. The pre-render loading placeholder was only one line tall, so on editor open every block in a post fit inside the viewport and all server-side render requests fired at once. The loading placeholder now reserves height (`min-height: 500px`, overridable via the `--wpifycf-block-placeholder-height` CSS custom property), so blocks below the fold stay outside the viewport gate and render top-down as the content above them settles. Empty and error placeholders remain compact.
+
 ## [4.10.0] - 2026-07-16
 
 ### Added
