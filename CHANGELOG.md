@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.10.2] - 2026-07-21
+
+### Added
+- New `wpifycf_register_term_meta` action fires after a taxonomy integration registers its term meta, passing the flattened field definitions and the taxonomy slug — the term-side counterpart of `wpifycf_register_post_meta`, so integrations (e.g. RosettaPress) can discover term field schemas.
+
+### Fixed
+- The `wpifycf_register_post_meta` action now actually fires. Since its introduction it was invoked with `add_action()` instead of `do_action()`, so listeners never received post meta registrations and integrations built on it silently did nothing.
+
 ## [4.10.1] - 2026-07-17
 
 ### Fixed

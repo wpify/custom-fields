@@ -253,7 +253,7 @@ class Metabox extends ItemsIntegration {
 					),
 				);
 			}
-			add_action( 'wpifycf_register_post_meta', $items, $post_type );
+			do_action( 'wpifycf_register_post_meta', $items, $post_type );
 		}
 	}
 

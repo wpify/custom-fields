@@ -185,6 +185,8 @@ class Taxonomy extends ItemsIntegration {
 				),
 			);
 		}
+
+		do_action( 'wpifycf_register_term_meta', $items, $this->taxonomy );
 	}
 
 	/**
