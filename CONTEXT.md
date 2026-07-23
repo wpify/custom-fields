@@ -29,3 +29,18 @@ Glossary of domain terms. Terms are capitalized when used in their glossary sens
   preview reserves on screen, so the blocks below it stay outside the viewport
   gate instead of all counting as visible at once. Applies only before a
   block's first render; once real content arrives it takes over the space.
+
+## Testing
+
+- **Canonical integration** — the single integration surface (Options) through
+  which the entire field-type axis is tested. Other surfaces are tested with a
+  small representative field set only.
+- **Named exception** — a known field-type × integration coupling that breaks
+  the two-axis independence and therefore gets its own dedicated tests:
+  Gutenberg controlled state, `multi_*`/`group` nested value shapes,
+  WooCommerce variation index-suffixed input names.
+- **Mount-sweep** — the jsdom test that mounts every field component with a
+  minimal definition and asserts it renders without crashing.
+- **Smoke set** — the fixed list of 8 browser E2E specs; the only tests that
+  run in a real browser. Growth requires removing or justifying a spec, not
+  just appending.

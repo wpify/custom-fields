@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<phpunit
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+	bootstrap="tests/php/bootstrap.php"
+	backupGlobals="false"
+	colors="true"
+	convertErrorsToExceptions="true"
+	convertWarningsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertDeprecationsToExceptions="false"
+	beStrictAboutTestsThatDoNotTestAnything="false"
+	failOnWarning="false"
+>
+	<testsuites>
+		<!--
+			The "core" suite runs WITHOUT WooCommerce loaded. It covers the
+			field-type axis (sanitization, wp_type, defaults, normalization),
+			the canonical Options round-trip, the non-WooCommerce integration
+			surfaces, the REST API, meta registration, and asserts that the
+			plugin degrades gracefully when WooCommerce is absent.
+		-->
+		<testsuite name="core">
+			<directory suffix="Test.php">tests/php/Core</directory>
+		</testsuite>
+
+		<!--
+			The "woocommerce" suite runs with WooCommerce loaded (requires the
+			WPCF_WITH_WOOCOMMERCE=1 environment variable so the bootstrap loads
+			and installs the plugin). Use `composer test:wc`.
+		-->
+		<testsuite name="woocommerce">
+			<directory suffix="Test.php">tests/php/WooCommerce</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>

@@ -1,0 +1,133 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+
+jobs:
+  php-tests:
+    name: PHP integration tests
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mariadb:10.11
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wpcf_tests
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      # Consumed by tests/php/wp-tests-config.php. Matches the MariaDB service.
+      WPCF_DB_HOST: 127.0.0.1
+      WPCF_DB_USER: root
+      WPCF_DB_PASSWORD: root
+      WPCF_DB_NAME: wpcf_tests
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mysqli, pdo_mysql, json, mbstring
+          coverage: none
+          tools: composer
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist --no-interaction
+
+      - name: Run core test suite (no WooCommerce, multisite)
+        run: composer test
+
+      - name: Run WooCommerce test suite
+        run: composer test:wc
+
+  js-tests:
+    name: JS unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Run JS unit tests
+        run: npm run test:unit
+
+  build:
+    name: Build assets
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build production assets
+        run: npm run build
+
+  e2e-tests:
+    name: E2E smoke tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      # The plugin is mapped into wp-env as a live directory, so its built
+      # assets must exist before WordPress loads it.
+      - name: Build production assets
+        run: npm run build
+
+      - name: Start wp-env
+        run: npm run wp-env start
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E smoke tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: tests/e2e/artifacts/playwright-report
+          retention-days: 7

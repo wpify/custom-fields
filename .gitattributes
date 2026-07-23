@@ -1,8 +1,18 @@
-.githooks         export-ignore
-.github           export-ignore
-assets            export-ignore
-docs              export-ignore
-.gitignore        export-ignore
-package.json      export-ignore
-package-lock.json export-ignore
-webpack.config.js export-ignore
+# Files excluded from the distributed package (`git archive` / dist builds).
+# The shipped plugin needs only: src/, build/, custom-fields.php, readme/license,
+# composer.json + vendor/. Everything below is dev, test, or CI machinery.
+.githooks           export-ignore
+.github             export-ignore
+assets              export-ignore
+docs                export-ignore
+tests               export-ignore
+.gitignore          export-ignore
+.gitattributes      export-ignore
+.nvmrc              export-ignore
+package.json        export-ignore
+package-lock.json   export-ignore
+webpack.config.js   export-ignore
+jest.config.js      export-ignore
+phpunit.xml.dist    export-ignore
+.wp-env.json        export-ignore
+playwright.config.js export-ignore

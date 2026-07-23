@@ -169,4 +169,27 @@
     <rule ref="Universal.NamingConventions.NoReservedKeywordParameterNames.defaultFound">
         <exclude-pattern>src/FieldFactory.php</exclude-pattern>
     </rule>
+
+    <!--
+    Test code follows PHPUnit / wp-phpunit conventions that legitimately conflict
+    with a few production-oriented sniffs: it manipulates WordPress globals
+    ($wp_rest_server, $post), fires and filters core hooks (rest_api_init,
+    wpifycf_* filters), defines test config constants, uses short ternaries, and
+    calls putenv() from the bootstrap. These sniffs are relaxed for tests/ only.
+    -->
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+    <rule ref="WordPress.WP.GlobalVariablesOverride">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+    <rule ref="WordPress.PHP.DiscouragedPHPFunctions">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+    <rule ref="Universal.Operators.DisallowShortTernary">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+    <rule ref="Generic.Commenting.DocComment.ShortNotCapital">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
 </ruleset>

@@ -2,3 +2,5 @@
 node_modules
 vendor
 docs/superpowers/
+.phpunit.result.cache
+tests/e2e/artifacts/

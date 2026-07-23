@@ -1,0 +1,17 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/wp-env.json",
+	"core": "WordPress/WordPress#6.9.5",
+	"phpVersion": "8.1",
+	"plugins": [
+		"https://downloads.wordpress.org/plugin/woocommerce.zip"
+	],
+	"mappings": {
+		"wp-content/plugins/wpify-custom-fields": ".",
+		"wp-content/plugins/wcf-demo": "./tests/fixtures/wcf-demo"
+	},
+	"config": {
+		"WP_DEBUG": true,
+		"WP_DEBUG_DISPLAY": false,
+		"SCRIPT_DEBUG": false
+	}
+}
