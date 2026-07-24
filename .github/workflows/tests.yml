@@ -110,8 +110,15 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      # The plugin is mapped into wp-env as a live directory, so its built
-      # assets must exist before WordPress loads it.
+      # The plugin is mapped into wp-env as a live directory: it needs its
+      # Composer autoloader (custom-fields.php silently skips a missing
+      # vendor/autoload.php and then fatals on the undeclared classes) and
+      # its built assets before WordPress loads it. Runtime deps only —
+      # the dev dependencies (WP core, WooCommerce, wp-phpunit) belong to
+      # the php-tests job.
+      - name: Install Composer runtime autoloader
+        run: composer install --no-dev --no-progress --prefer-dist --no-interaction
+
       - name: Build production assets
         run: npm run build
 
