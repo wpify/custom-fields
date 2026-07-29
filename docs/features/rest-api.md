@@ -54,7 +54,17 @@ Searches and retrieves posts with pagination. Used by the Post, Multi Post, and 
 | `per_page` | No | Number of results per page |
 | `include` | No | Array of specific post IDs to include |
 
-**Response:** Array of post objects with `id`, `title`, and other relevant fields.
+**Response:** Array of post objects with `id`, `title`, `post_type`, `post_status`, `post_status_label`, `permalink`, `thumbnail`, `excerpt`, and `sku`.
+
+`sku` is always present. It holds the WooCommerce SKU when the post is a product
+or a product variation and WooCommerce is active, and an empty string otherwise.
+
+When the requested post types include `product` or `product_variation` and
+WooCommerce is active, the search query also matches product SKUs, and exact SKU
+matches are returned first. See [Post](../field-types/post.md) for details.
+
+Each post object passes through the `wpifycf_post_data` filter before it is
+returned, so integrations can attach their own data.
 
 ---
 

@@ -40,6 +40,54 @@ class WithoutWooCommerceTest extends TestCase {
 	}
 
 	/**
+	 * Post search stays title-only and adds no SKU join when WooCommerce is absent.
+	 */
+	public function test_post_search_without_woocommerce(): void {
+		global $wpdb;
+
+		$this->assertEmpty( $wpdb->wc_product_meta_lookup ?? null );
+
+		$match = self::factory()->post->create( array( 'post_title' => 'Findable headline' ) );
+		self::factory()->post->create( array( 'post_title' => 'Unrelated' ) );
+
+		$enabled = null;
+
+		$capture = static function ( $value ) use ( &$enabled ) {
+			$enabled = $value;
+
+			return $value;
+		};
+
+		add_filter( 'wpifycf_search_posts_by_sku', $capture );
+
+		$results = $this->cf->helpers->get_posts(
+			array(
+				'post_type' => 'product',
+				's'         => 'Findable',
+			)
+		);
+
+		remove_filter( 'wpifycf_search_posts_by_sku', $capture );
+
+		// Even for the product post type, the SKU search never switches on.
+		$this->assertFalse( $enabled );
+
+		// 'product' does not exist without WooCommerce, so nothing matches.
+		$this->assertSame( array(), $results );
+
+		// The same search against a real post type still works and reports an empty SKU.
+		$posts = $this->cf->helpers->get_posts(
+			array(
+				'post_type' => 'post',
+				's'         => 'Findable',
+			)
+		);
+
+		$this->assertSame( array( $match ), array_map( static fn( $post ) => (int) $post['id'], $posts ) );
+		$this->assertSame( '', $posts[0]['sku'] );
+	}
+
+	/**
 	 * The WooCommerce product options integration constructs without fatal.
 	 */
 	public function test_product_options_constructs(): void {

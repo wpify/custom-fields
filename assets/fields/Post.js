@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { addFilter } from '@wordpress/hooks';
 import { PostSelect } from '@/components/PostSelect';
+import { PostSku } from '@/components/PostSku';
 import { IconButton } from '@/components/IconButton';
 import { checkValidityNumberType } from '@/helpers/validators';
 import { useFieldTitle } from '@/helpers/hooks';
@@ -60,6 +61,7 @@ export function PostPreview ({ post, onDelete, disabled }) {
             <a href={post.permalink} target="_blank">
               {post.id}: {stripHtml(post.title)}
             </a>
+            <PostSku sku={post.sku} />
           </div>
           <div className="wpifycf-post-preview__excerpt">{post.excerpt.length > 125 ? post.excerpt.substring(0, 125) + '...' : post.excerpt}</div>
         </>

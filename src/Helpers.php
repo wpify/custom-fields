@@ -14,6 +14,13 @@ use WP_Post;
  */
 class Helpers {
 	/**
+	 * Post types whose posts carry a WooCommerce SKU.
+	 *
+	 * @var string[]
+	 */
+	private const SKU_POST_TYPES = array( 'product', 'product_variation' );
+
+	/**
 	 * Retrieves the title of the webpage specified by the given URL.
 	 *
 	 * @param string $url The URL of the webpage to retrieve the title from.
@@ -56,6 +63,14 @@ class Helpers {
 			$args['numberposts'] = 50;
 		}
 
+		if ( $this->should_search_by_sku( $args ) ) {
+			$args['wpifycf_search_sku'] = (string) $args['s'];
+
+			// get_posts() suppresses the posts_* clause filters by default, and the
+			// SKU search is implemented through them.
+			$args['suppress_filters'] = false;
+		}
+
 		if ( empty( $args['post_status'] ) ) {
 			$args['post_status'] = 'any';
 		}
@@ -71,6 +86,12 @@ class Helpers {
 		}
 
 		unset( $args['exclude'] );
+
+		if ( ! empty( $args['wpifycf_search_sku'] ) ) {
+			add_filter( 'posts_search', array( $this, 'sku_search_where' ), 10, 2 );
+			add_filter( 'posts_join', array( $this, 'sku_search_join' ), 10, 2 );
+			add_filter( 'posts_orderby', array( $this, 'sku_search_orderby' ), 10, 2 );
+		}
 
 		if ( ! empty( $args['ensure'] ) && is_array( $args['ensure'] ) ) {
 			$ensured_posts = get_posts(
@@ -95,6 +116,12 @@ class Helpers {
 			),
 		);
 
+		if ( ! empty( $args['wpifycf_search_sku'] ) ) {
+			remove_filter( 'posts_search', array( $this, 'sku_search_where' ), 10 );
+			remove_filter( 'posts_join', array( $this, 'sku_search_join' ), 10 );
+			remove_filter( 'posts_orderby', array( $this, 'sku_search_orderby' ), 10 );
+		}
+
 		foreach ( $ensured_posts as $post ) {
 			$posts[]       = $post;
 			$added_posts[] = $post->ID;
@@ -109,20 +136,185 @@ class Helpers {
 		}
 
 		$placeholder = plugin_dir_url( __DIR__ ) . 'assets/images/placeholder-image.svg';
+		$skus        = $this->get_skus( $posts );
 
 		return array_map(
-			fn( WP_Post $post ) => array(
-				'id'                => $post->ID,
-				'title'             => $post->post_title,
-				'post_type'         => $post->post_type,
-				'post_status'       => $post->post_status,
-				'post_status_label' => get_post_status_object( $post->post_status )->label,
-				'permalink'         => get_permalink( $post ),
-				'thumbnail'         => get_the_post_thumbnail_url( $post ) ?? $placeholder,
-				'excerpt'           => get_the_excerpt( $post ),
+			/**
+			 * Filters the data of a single post returned by the posts REST endpoint.
+			 *
+			 * @param array   $data The post data sent to the JavaScript field components.
+			 * @param WP_Post $post The post the data was built from.
+			 * @param array   $args The arguments the posts were queried with.
+			 */
+			fn( WP_Post $post ) => apply_filters(
+				'wpifycf_post_data',
+				array(
+					'id'                => $post->ID,
+					'title'             => $post->post_title,
+					'post_type'         => $post->post_type,
+					'post_status'       => $post->post_status,
+					'post_status_label' => get_post_status_object( $post->post_status )->label,
+					'permalink'         => get_permalink( $post ),
+					'thumbnail'         => get_the_post_thumbnail_url( $post ) ?? $placeholder,
+					'excerpt'           => get_the_excerpt( $post ),
+					'sku'               => $skus[ $post->ID ] ?? '',
+				),
+				$post,
+				$args,
 			),
 			$posts,
 		);
+	}
+
+	/**
+	 * Checks whether the WooCommerce product lookup table is available.
+	 *
+	 * The table is registered on $wpdb by WooCommerce itself, so its presence
+	 * doubles as the "is WooCommerce loaded" guard.
+	 *
+	 * @return bool
+	 */
+	private function has_product_lookup_table(): bool {
+		global $wpdb;
+
+		return ! empty( $wpdb->wc_product_meta_lookup );
+	}
+
+	/**
+	 * Decides whether the given query should search WooCommerce SKUs as well as titles.
+	 *
+	 * @param array $args Arguments the posts are queried with.
+	 *
+	 * @return bool
+	 */
+	private function should_search_by_sku( array $args ): bool {
+		$post_types = array_filter( (array) ( $args['post_type'] ?? array() ), 'is_string' );
+		$enabled    = ! empty( $args['s'] )
+			&& $this->has_product_lookup_table()
+			&& count( array_intersect( $post_types, self::SKU_POST_TYPES ) ) > 0;
+
+		/**
+		 * Filters whether a posts query searches WooCommerce SKUs in addition to titles.
+		 *
+		 * @param bool     $enabled    Whether the SKU search applies.
+		 * @param string[] $post_types The post types being queried.
+		 * @param array    $args       The arguments the posts are queried with.
+		 */
+		return (bool) apply_filters( 'wpifycf_search_posts_by_sku', $enabled, $post_types, $args );
+	}
+
+	/**
+	 * Retrieves the SKUs of the given posts, keyed by post ID.
+	 *
+	 * @param WP_Post[] $posts Posts to retrieve the SKUs for.
+	 *
+	 * @return array<int, string>
+	 */
+	private function get_skus( array $posts ): array {
+		global $wpdb;
+
+		if ( ! $this->has_product_lookup_table() ) {
+			return array();
+		}
+
+		$product_ids = array();
+
+		foreach ( $posts as $post ) {
+			if ( in_array( $post->post_type, self::SKU_POST_TYPES, true ) ) {
+				$product_ids[] = (int) $post->ID;
+			}
+		}
+
+		if ( empty( $product_ids ) ) {
+			return array();
+		}
+
+		$ids = implode( ', ', array_map( 'absint', $product_ids ) );
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$rows = $wpdb->get_results(
+			"SELECT product_id, sku FROM {$wpdb->wc_product_meta_lookup} WHERE product_id IN ( {$ids} )",
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		$skus = array();
+
+		foreach ( $rows as $row ) {
+			$skus[ (int) $row->product_id ] = (string) $row->sku;
+		}
+
+		return $skus;
+	}
+
+	/**
+	 * Adds the SKU condition to the search clause of a SKU-aware posts query.
+	 *
+	 * @param string    $search The search clause, already prefixed with AND.
+	 * @param \WP_Query $query  The query being filtered.
+	 *
+	 * @return string
+	 */
+	public function sku_search_where( string $search, $query ): string {
+		global $wpdb;
+
+		$term = $query->get( 'wpifycf_search_sku' );
+
+		if ( empty( $term ) || empty( $search ) ) {
+			return $search;
+		}
+
+		// The search clause is already prepared SQL containing literal % characters,
+		// so only the SKU condition may be passed through prepare().
+		$sku_where = $wpdb->prepare(
+			' OR ( wpifycf_sku_lookup.sku LIKE %s )',
+			'%' . $wpdb->esc_like( $term ) . '%',
+		);
+
+		return ' AND ( ( 1 = 1 ' . $search . ' ) ' . $sku_where . ' )';
+	}
+
+	/**
+	 * Joins the WooCommerce product lookup table into a SKU-aware posts query.
+	 *
+	 * @param string    $join  The join clause.
+	 * @param \WP_Query $query The query being filtered.
+	 *
+	 * @return string
+	 */
+	public function sku_search_join( string $join, $query ): string {
+		global $wpdb;
+
+		if ( empty( $query->get( 'wpifycf_search_sku' ) ) ) {
+			return $join;
+		}
+
+		return $join . " LEFT JOIN {$wpdb->wc_product_meta_lookup} wpifycf_sku_lookup ON wpifycf_sku_lookup.product_id = {$wpdb->posts}.ID ";
+	}
+
+	/**
+	 * Ranks exact SKU matches first, then partial SKU matches, then WordPress relevance.
+	 *
+	 * @param string    $orderby The order by clause.
+	 * @param \WP_Query $query   The query being filtered.
+	 *
+	 * @return string
+	 */
+	public function sku_search_orderby( string $orderby, $query ): string {
+		global $wpdb;
+
+		$term = $query->get( 'wpifycf_search_sku' );
+
+		if ( empty( $term ) ) {
+			return $orderby;
+		}
+
+		$rank = $wpdb->prepare(
+			'CASE WHEN wpifycf_sku_lookup.sku = %s THEN 0 WHEN wpifycf_sku_lookup.sku LIKE %s THEN 1 ELSE 2 END ASC',
+			$term,
+			'%' . $wpdb->esc_like( $term ) . '%',
+		);
+
+		return empty( $orderby ) ? $rank : $rank . ', ' . $orderby;
 	}
 
 	/**

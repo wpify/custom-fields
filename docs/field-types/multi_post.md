@@ -27,6 +27,14 @@ For Default Field Properties, see [Field Types Definition](../field-types.md).
 - `buttons` _(array)_ — Optional: Custom button labels (add, remove, duplicate)
 - `disabled_buttons` _(array)_ — Optional: Buttons to disable (move, delete, duplicate)
 
+## WooCommerce Products
+
+When `post_type` includes `product` or `product_variation` and WooCommerce is
+active, the picker searches product SKUs as well as titles, lists exact SKU
+matches first, and shows the SKU next to each product name — in the dropdown and
+in the preview of every already selected product. No configuration is needed.
+See [Post](post.md) for details.
+
 ## Stored Value
 
 The field stores an array of post IDs (integers) in the database:

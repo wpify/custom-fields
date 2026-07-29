@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.11.0] - 2026-07-29
+
+### Added
+- The `post` and `multi_post` field types are now WooCommerce-aware. When `post_type` includes `product` or `product_variation` and WooCommerce is active, the picker searches product SKUs as well as titles, lists exact SKU matches first, and shows the SKU next to the product name in both the dropdown and the preview of a selected product. No configuration is needed; without WooCommerce the fields behave exactly as before. See [ADR 0003](docs/adr/0003-woocommerce-aware-post-search.md).
+- The `posts` REST endpoint returns a `sku` key on every post — the WooCommerce SKU for products, an empty string otherwise.
+- New `wpifycf_search_posts_by_sku` filter to switch the SKU search on or off, and new `wpifycf_post_data` filter to attach custom data to every post returned by the `posts` endpoint.
+
 ## [4.10.2] - 2026-07-21
 
 ### Added

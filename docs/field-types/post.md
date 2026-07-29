@@ -23,6 +23,31 @@ For Default Field Properties, see [Field Types Definition](../field-types.md).
 
 Specifies which post types can be selected. Can be a single post type as a string (e.g., `'post'`) or multiple post types as an array (e.g., `array( 'post', 'page', 'product' )`).
 
+## WooCommerce Products
+
+When `post_type` includes `product` or `product_variation` and WooCommerce is
+active, the field becomes SKU-aware automatically — no configuration is needed:
+
+- The search matches product SKUs as well as titles, so typing a SKU (or part of
+  one) finds the product even when its name doesn't match.
+- An exact SKU match is always listed first.
+- The SKU is displayed next to the product name, both in the dropdown and in the
+  preview of the selected product.
+
+In a mixed `post_type` array such as `array( 'post', 'product' )`, posts are
+searched by title and products additionally by SKU.
+
+Without WooCommerce the field behaves exactly as it does for any other post type.
+
+```php
+array(
+	'type'      => 'post',
+	'id'        => 'related_product',
+	'label'     => 'Related Product',
+	'post_type' => 'product',
+),
+```
+
 ## Stored Value
 
 The field stores the post ID as an integer in the database.

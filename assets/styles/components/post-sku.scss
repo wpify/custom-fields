@@ -1,0 +1,10 @@
+.wpifycf-post-sku {
+  margin-left: var(--wpifycf-gap-2);
+  color: var(--wpifycf-text-muted);
+  font-size: var(--wpifycf-font-size-sm);
+  white-space: nowrap;
+}
+
+.wpifycf-select__option--is-selected .wpifycf-post-sku {
+  color: inherit;
+}

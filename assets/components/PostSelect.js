@@ -3,6 +3,7 @@ import { useDebounce } from '@uidotdev/usehooks';
 import { usePosts } from '@/helpers/hooks';
 import Select from 'react-select';
 import { stripHtml } from '@/helpers/functions';
+import { PostSku } from '@/components/PostSku';
 
 export function PostSelect ({
   postType,
@@ -45,9 +46,17 @@ export function PostSelect ({
     }
   }, [onChange, onSelect]);
 
+  const formatOptionLabel = useCallback(option => (
+    <span className="wpifycf-select__label">
+      {option.label}
+      <PostSku sku={option.sku} />
+    </span>
+  ), []);
+
   return (
     <Select
       unstyled
+      formatOptionLabel={formatOptionLabel}
       isLoading={isLoading}
       isClearable
       options={options}

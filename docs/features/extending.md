@@ -60,6 +60,52 @@ add_filter('wpifycf_default_value_my_custom_field', function($default_value, $it
 }, 10, 2);
 ```
 
+## Post Search Filters
+
+The Post, Multi Post, and Link fields fetch their options from the `posts` REST
+endpoint (see [REST API](rest-api.md)). Two filters shape what it returns.
+
+### `wpifycf_search_posts_by_sku`
+
+Controls whether a posts query searches WooCommerce SKUs in addition to titles.
+It is enabled by default when the queried post types include `product` or
+`product_variation` and WooCommerce is active.
+
+```php
+add_filter(
+	'wpifycf_search_posts_by_sku',
+	function ( $enabled, $post_types, $args ) {
+		// Extend the SKU search to a custom post type that stores its code
+		// in the WooCommerce product lookup table.
+		if ( in_array( 'my_catalog_item', $post_types, true ) ) {
+			return true;
+		}
+
+		return $enabled;
+	},
+	10,
+	3
+);
+```
+
+### `wpifycf_post_data`
+
+Filters the data of every post returned by the endpoint, so custom field
+components can receive extra information.
+
+```php
+add_filter(
+	'wpifycf_post_data',
+	function ( $data, $post, $args ) {
+		$data['author_name'] = get_the_author_meta( 'display_name', $post->post_author );
+
+		return $data;
+	},
+	10,
+	3
+);
+```
+
 ## JavaScript Components
 
 ### 1. Field Component Definition

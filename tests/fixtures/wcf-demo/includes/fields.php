@@ -100,6 +100,27 @@ function wcf_demo_showcase_fields(): array {
 		);
 	}
 
+	// Product pickers search and display the WooCommerce SKU, so they only make
+	// sense when WooCommerce is active.
+	$product_relations = array();
+
+	if ( class_exists( 'WooCommerce' ) ) {
+		$product_relations = array(
+			'f_product'       => array(
+				'type'      => 'post',
+				'label'     => 'Product (searchable by SKU)',
+				'tab'       => 'relations',
+				'post_type' => 'product',
+			),
+			'f_multi_product' => array(
+				'type'      => 'multi_post',
+				'label'     => 'Multi product (searchable by SKU)',
+				'tab'       => 'relations',
+				'post_type' => array( 'product', 'product_variation' ),
+			),
+		);
+	}
+
 	return array_merge(
 		array(
 			// --- Basic inputs ---------------------------------------------
@@ -492,6 +513,7 @@ function wcf_demo_showcase_fields(): array {
 			),
 		),
 		$direct_file,
+		$product_relations,
 		array(
 			// --- Conditions & validation ----------------------------------
 			'f_required'    => array(
