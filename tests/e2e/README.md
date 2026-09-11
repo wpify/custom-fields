@@ -70,6 +70,8 @@ The DDEV site already has the plugin and the `wcf-demo` fixture active (see
 
 - `../../.wp-env.json` — WordPress core pin, PHP 8.1, WooCommerce, and the two
   local plugins mapped in (`.` as `wpify-custom-fields`, `tests/fixtures/wcf-demo`).
+  WooCommerce is pinned to 9.9.7, matching `composer.lock`; keep the pin compatible
+  with the configured WordPress and PHP versions when updating dependencies.
 - `../../playwright.config.js` — single chromium project, serial (one worker,
   shared site state), `baseURL` from `WP_BASE_URL` (default `http://localhost:8889`),
   retries + trace-on-retry in CI.
