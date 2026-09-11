@@ -1,5 +1,6 @@
 import { applyFilters } from '@wordpress/hooks';
 import fieldTypes from '@/fields';
+import { v4 as uuidv4 } from 'uuid';
 
 export function addStyleSheet (url) {
   if (Array.isArray(url)) {
@@ -208,6 +209,23 @@ export function flattenWrapperItems (items) {
       ? flattenWrapperItems(item.items)
       : [item]
   );
+}
+
+// Refresh identifiers before inserting the copy, including fields that are not mounted.
+export function duplicateGroupValue (value, items) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return value;
+
+  const copy = { ...value };
+  for (const item of flattenWrapperItems(items)) {
+    if (item.generator === 'uuid') {
+      copy[item.id] = uuidv4();
+    } else if (item.type === 'group') {
+      copy[item.id] = duplicateGroupValue(value[item.id], item.items);
+    } else if (item.type === 'multi_group' && Array.isArray(value[item.id])) {
+      copy[item.id] = value[item.id].map(row => duplicateGroupValue(row, item.items));
+    }
+  }
+  return copy;
 }
 
 export function stripHtml(html) {

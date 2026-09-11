@@ -141,6 +141,7 @@ export function useMulti ({
   disabled = false,
   collapse = true,
   onMutate,
+  duplicateValue,
 }) {
   const containerRef = useRef(null);
   const [keyPrefix, setKeyPrefix] = useState(uuidv4());
@@ -198,7 +199,8 @@ export function useMulti ({
   const duplicate = useCallback(
     (index) => () => {
       const nextValues = [...value];
-      nextValues.splice(index, 0, nextValues[index]);
+      const copy = duplicateValue ? duplicateValue(value[index]) : value[index];
+      nextValues.splice(index, 0, copy);
       onChange(nextValues);
       setKeyPrefix(uuidv4());
 
@@ -210,7 +212,7 @@ export function useMulti ({
 
       if (onMutate) onMutate({ type: 'duplicate', value: nextValues, oldValue: value, index });
     },
-    [onChange, value, onMutate],
+    [onChange, value, onMutate, duplicateValue],
   );
 
   const handleChange = useCallback(

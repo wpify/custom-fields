@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.11.1] - 2026-09-11
+
+### Fixed
+- Duplicating a group now regenerates UUID fields, including those in nested groups and layout wrappers, while preserving the original group's identifiers and other field values.
+
 ## [4.11.0] - 2026-07-29
 
 ### Added

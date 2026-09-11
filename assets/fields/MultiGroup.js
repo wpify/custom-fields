@@ -6,7 +6,7 @@ import { IconButton } from '@/components/IconButton';
 import { checkValidityMultiGroupType } from '@/helpers/validators';
 import { Field } from '@/components/Field';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { flattenWrapperItems } from '@/helpers/functions';
+import { duplicateGroupValue, flattenWrapperItems } from '@/helpers/functions';
 
 function MultiGroup ({
   value = [],
@@ -76,6 +76,8 @@ function MultiGroup ({
     });
   }, []);
 
+  const duplicateValue = useCallback(value => duplicateGroupValue(value, props.items), [props.items]);
+
   const {
     add,
     remove,
@@ -100,6 +102,7 @@ function MultiGroup ({
     collapse,
     dragHandle: '.wpifycf__move-handle',
     onMutate: handleMutate,
+    duplicateValue,
   });
 
   const fieldsValidity = validity?.reduce((acc, item) => typeof item === 'object' ? { ...acc, ...item } : acc, {});
