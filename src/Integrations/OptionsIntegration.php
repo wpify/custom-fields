@@ -83,9 +83,11 @@ abstract class OptionsIntegration extends BaseIntegration {
 	 * key's selected values with a single in-process callback call. Embedded in
 	 * the page so the UI can show selected labels without a value-bound request.
 	 *
-	 * Note: async_params placeholders ({{field}}) are NOT interpolated here, so
-	 * dependent/cascading selects should set cache_options=false and rely on the
-	 * client resolve path instead.
+	 * Fields with cache_options=false (dependent/cascading selects) are
+	 * included as well. Their async_params placeholders ({{field}}) cannot be
+	 * interpolated server-side, so those params are dropped and the callback
+	 * receives only the static params plus `value` — labels of saved values
+	 * rarely depend on the dynamic params that shape the browse list.
 	 *
 	 * @param array $items Prepared items (with values).
 	 *
@@ -100,7 +102,7 @@ abstract class OptionsIntegration extends BaseIntegration {
 				if ( ! empty( $item['options_key'] ) && ! empty( $item['options_callback'] ) ) {
 					$callbacks[ $item['options_key'] ] = array(
 						'callback'     => $item['options_callback'],
-						'async_params' => $item['async_params'] ?? array(),
+						'async_params' => $this->static_async_params( $item['async_params'] ?? array() ),
 					);
 				}
 				if ( isset( $item['items'] ) ) {
@@ -141,7 +143,32 @@ abstract class OptionsIntegration extends BaseIntegration {
 			}
 		}
 
-		return $preresolved;
+		/**
+		 * Filters the preresolved value => label map embedded in the app
+		 * container. Lets integrations supply labels the options callback
+		 * cannot produce without its dynamic async_params.
+		 *
+		 * @param array<string, array<string, string>> $preresolved Map of options_key => ( value => label ).
+		 * @param array<string, array<int, string>>    $by_key      Map of options_key => selected values.
+		 * @param array                                $items       Prepared items (with values).
+		 */
+		return apply_filters( 'wpifycf_preresolved_options', $preresolved, $by_key, $items );
+	}
+
+	/**
+	 * Returns async_params without entries whose value contains a `{{…}}`
+	 * placeholder. Placeholders reference other fields' current values, which
+	 * only the client knows, so they cannot be interpolated when preresolving.
+	 *
+	 * @param array $async_params Raw async_params from the field definition.
+	 *
+	 * @return array
+	 */
+	private function static_async_params( array $async_params ): array {
+		return array_filter(
+			$async_params,
+			static fn( $param ) => ! ( is_string( $param ) && 1 === preg_match( '/\{\{.+?\}\}/', $param ) )
+		);
 	}
 
 	/**

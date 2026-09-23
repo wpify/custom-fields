@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.12.0] - 2026-09-23
+
+### Added
+- New `wpifycf_preresolved_options` filter over the value→label map embedded in `data-preresolved-options`, receiving the map, the saved values per `options_key`, and the prepared items. Lets integrations supply labels an options callback cannot produce from `value` alone.
+- The async demo page in the `wcf-demo` fixture gains a dependent select (`cache_options => false`, `{{field}}` placeholder param) pre-filled with a saved value, so the preresolve path for cascading selects is visible.
+
+### Fixed
+- Async `select` / `multi_select` fields with `cache_options => false` (dependent/cascading selects whose `async_params` use `{{field}}` placeholders) now get their saved values preresolved server-side too. Previously `collect_async_values()` skipped them and, since the client-side resolve request only runs in the block editor, options pages and metaboxes rendered the saved value as a raw ID. Placeholder `async_params` are dropped for the preresolve call, so the callback receives the static params plus `value`; the browse list stays per-field as before.
+
 ## [4.11.2] - 2026-09-23
 
 ### Fixed

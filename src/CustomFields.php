@@ -412,7 +412,8 @@ class CustomFields {
 	 * options_callback). Recurses into group (object value) and multi_group
 	 * (array-of-rows value). Layout wrappers (wrapper, columns) carry no id or
 	 * value, so their children are collected in the wrapper's own value scope.
-	 * Skips fields opting out via cache_options=false.
+	 * Fields with cache_options=false are included too: the browse list may
+	 * depend on dynamic params, but saved values still need labels.
 	 *
 	 * @param array $items  Normalized (or prepared) items.
 	 * @param array $values Values keyed by item id, matching the items' shape.
@@ -450,10 +451,6 @@ class CustomFields {
 			}
 
 			if ( empty( $item['options_callback'] ) || empty( $item['options_key'] ) ) {
-				continue;
-			}
-
-			if ( isset( $item['cache_options'] ) && false === $item['cache_options'] ) {
 				continue;
 			}
 

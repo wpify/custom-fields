@@ -214,10 +214,10 @@ class CollectAsyncValuesTest extends TestCase {
 	}
 
 	/**
-	 * Fields opting out via cache_options=false stay excluded inside a layout
-	 * wrapper too.
+	 * Fields with cache_options=false are collected too: their saved values
+	 * still need labels even though the browse list is per-field.
 	 */
-	public function test_cache_options_false_inside_columns_is_skipped(): void {
+	public function test_cache_options_false_inside_columns_is_collected(): void {
 		$items = array(
 			array(
 				'id'    => 'group',
@@ -226,13 +226,13 @@ class CollectAsyncValuesTest extends TestCase {
 				'items' => array(
 					$this->layout(
 						'columns',
-						array( $this->leaf( 'terms', 'opted_out', 'multi_select', array( 'cache_options' => false ) ) )
+						array( $this->leaf( 'terms', 'dependent', 'multi_select', array( 'cache_options' => false ) ) )
 					),
 				),
 			),
 		);
 
-		$this->assertSame( array(), $this->cf->collect_async_values( $items, array() ) );
+		$this->assertSame( array( 'dependent' => array( '69' ) ), $this->cf->collect_async_values( $items, array() ) );
 	}
 
 	/**

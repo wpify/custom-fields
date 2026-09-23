@@ -155,12 +155,43 @@ The field path syntax follows the same rules as described in the [Conditions doc
 
 Defaults to `true`. When `true`, the async options list is fetched once and
 shared across all fields using the same `options_key`/`async_params` (the
-request does not include the field's `value`), and the selected option's label
-is resolved separately (server-side for storage-backed integrations, or via a
-batched resolve request in the block editor). Set to `false` to restore the
+request does not include the field's `value`). Set to `false` to restore the
 legacy behavior where each field sends its `value` in the options request —
 needed only for callbacks whose `async_params` use dynamic `{{field}}`
-placeholders or that otherwise depend on `value` when returning the browse list. When labels are resolved separately, the callback receives `value` as an array of the value(s) to resolve.
+placeholders or that otherwise depend on `value` when returning the browse list.
+
+Regardless of `cache_options`, labels of saved values are resolved separately
+from the browse list: server-side for storage-backed integrations (embedded in
+the page as a per-`options_key` value→label map), or via a batched resolve
+request in the block editor. In that call the callback receives `value` as an
+array of the value(s) to resolve. Server-side, `async_params` entries containing
+a `{{field}}` placeholder are dropped (their values are only known in the
+browser), so the callback gets the static params plus `value` and must be able
+to label a value from `value` alone. If it cannot, supply the labels yourself
+via the `wpifycf_preresolved_options` filter:
+
+```php
+add_filter(
+	'wpifycf_preresolved_options',
+	function ( array $preresolved, array $by_key ) {
+		foreach ( $by_key['my_terms'] ?? array() as $term_id ) {
+			$term = get_term( (int) $term_id );
+
+			if ( $term instanceof WP_Term ) {
+				$preresolved['my_terms'][ $term_id ] = $term->name;
+			}
+		}
+
+		return $preresolved;
+	},
+	10,
+	2
+);
+```
+
+`$preresolved` is the map of `options_key` => ( value => label ), `$by_key` the
+map of `options_key` => saved values; a third argument carries the prepared
+items.
 
 ## Stored Value
 

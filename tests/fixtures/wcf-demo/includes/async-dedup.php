@@ -114,6 +114,44 @@ function wcf_demo_async_colors_callback( array $params ): array {
 }
 
 /**
+ * Dependent (cascading) list: the browse list depends on the `family` param
+ * (fed from another field via a `{{…}}` placeholder), but labels do not — a
+ * given shade id always has the same name. Mirrors the "filter_value depends
+ * on type" shape from the bug report.
+ *
+ * @param array $params Request params (`family`, `search`, `value`).
+ *
+ * @return array<int, array{value: string, label: string}>
+ */
+function wcf_demo_async_shades_callback( array $params ): array {
+	$all = array();
+	foreach ( range( 1, 40 ) as $i ) {
+		$family               = 0 === $i % 2 ? 'cool' : 'warm';
+		$all[ 'shade-' . $i ] = array(
+			'family' => $family,
+			'label'  => sprintf( 'Shade #%02d (%s)', $i, $family ),
+		);
+	}
+
+	$values  = array_map( 'strval', (array) ( $params['value'] ?? array() ) );
+	$family  = isset( $params['family'] ) ? (string) $params['family'] : '';
+	$options = array();
+
+	foreach ( $all as $value => $shade ) {
+		$selected = in_array( $value, $values, true );
+		if ( ! $selected && '' !== $family && $shade['family'] !== $family ) {
+			continue;
+		}
+		$options[] = array(
+			'value' => $value,
+			'label' => $shade['label'],
+		);
+	}
+
+	return $options;
+}
+
+/**
  * Builds one async field that shares the common callback, options_key and
  * async_params — i.e. "the same settings" from the bug report. Used as the
  * building block for every test cell (bare / group / multi_group).
@@ -148,6 +186,8 @@ function wcf_demo_async_seed_data(): array {
 		'bare_select'      => 'color-900',
 		'bare_multi'       => array( 'color-2', 'color-3', 'color-4' ),
 		'legacy_select'    => 'color-20',
+		'shade_family'     => 'warm',
+		'dependent_shade'  => 'shade-7',
 		'group_fields'     => array(
 			'group_select' => 'color-5',
 			'group_multi'  => array( 'color-6', 'color-7' ),
@@ -222,12 +262,36 @@ function wcf_demo_register_async_dedup( $cf ): void {
 	$items['bare_select'] = wcf_demo_async_field( 'Bare select', 'select' );
 	$items['bare_multi']  = wcf_demo_async_field( 'Bare multi select', 'multi_select' );
 
-	// Legacy opt-out: cache_options=false keeps the old behavior (value sent in
-	// the browse request, excluded from the preresolved map) for callbacks that
-	// depend on value when returning the browse list.
+	// Legacy opt-out: cache_options=false keeps the old browse behavior (value
+	// sent in the browse request) for callbacks that depend on value when
+	// returning the browse list. Saved values are still preresolved.
 	$legacy_select                  = wcf_demo_async_field( 'Bare select (cache_options=false)', 'select' );
 	$legacy_select['cache_options'] = false;
 	$items['legacy_select']         = $legacy_select;
+
+	// Dependent (cascading) select: own options_key, async_params with a
+	// {{placeholder}}, cache_options=false. Saved value must still render as a
+	// label on storage-backed pages (placeholder params are dropped for the
+	// server-side preresolve; the callback labels from `value` alone).
+	$items['shade_family']    = array(
+		'type'    => 'select',
+		'label'   => 'Shade family (drives the dependent select)',
+		'options' => array(
+			'warm' => 'Warm',
+			'cool' => 'Cool',
+		),
+	);
+	$items['dependent_shade'] = array(
+		'type'          => 'select',
+		'label'         => 'Dependent shade (cache_options=false, {{shade_family}} param)',
+		'options'       => 'wcf_demo_async_shades_callback',
+		'options_key'   => 'wcf_demo_shades',
+		'cache_options' => false,
+		'async_params'  => array(
+			'family'  => '{{shade_family}}',
+			'context' => 'demo',
+		),
+	);
 
 	// --- Inside a GROUP -----------------------------------------------------
 	$items['group_fields'] = array(
