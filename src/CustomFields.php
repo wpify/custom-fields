@@ -410,7 +410,9 @@ class CustomFields {
 	 * Walks an item tree alongside its values and collects, per options_key,
 	 * the set of currently-selected values for async fields (those carrying an
 	 * options_callback). Recurses into group (object value) and multi_group
-	 * (array-of-rows value). Skips fields opting out via cache_options=false.
+	 * (array-of-rows value). Layout wrappers (wrapper, columns) carry no id or
+	 * value, so their children are collected in the wrapper's own value scope.
+	 * Skips fields opting out via cache_options=false.
 	 *
 	 * @param array $items  Normalized (or prepared) items.
 	 * @param array $values Values keyed by item id, matching the items' shape.
@@ -421,6 +423,13 @@ class CustomFields {
 		$collected = array();
 
 		foreach ( $items as $item ) {
+			if ( isset( $item['items'] ) && in_array( $item['type'] ?? '', array( 'wrapper', 'columns' ), true ) ) {
+				foreach ( $this->collect_async_values( $item['items'], $values ) as $key => $vals ) {
+					$collected[ $key ] = array_merge( $collected[ $key ] ?? array(), $vals );
+				}
+				continue;
+			}
+
 			$id    = $item['id'] ?? null;
 			$value = ( null !== $id && array_key_exists( $id, $values ) ) ? $values[ $id ] : ( $item['value'] ?? null );
 
@@ -433,7 +442,7 @@ class CustomFields {
 				continue;
 			}
 
-			if ( isset( $item['items'] ) && in_array( $item['type'] ?? '', array( 'group', 'wrapper', 'columns' ), true ) ) {
+			if ( isset( $item['items'] ) && 'group' === ( $item['type'] ?? '' ) ) {
 				foreach ( $this->collect_async_values( $item['items'], (array) $value ) as $key => $vals ) {
 					$collected[ $key ] = array_merge( $collected[ $key ] ?? array(), $vals );
 				}

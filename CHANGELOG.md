@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.11.2] - 2026-09-23
+
+### Fixed
+- Async `select` / `multi_select` fields nested in a `columns` or `wrapper` layout inside a `multi_group` (or `group`) are now included in `data-preresolved-options`. `collect_async_values()` dropped the row scope when passing through a layout wrapper, so the saved values of such fields rendered as raw IDs instead of labels.
+
 ## [4.11.1] - 2026-09-11
 
 ### Fixed

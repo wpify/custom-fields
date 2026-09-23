@@ -18,6 +18,11 @@
  *     "Server-side call count" field after each reload.
  *   - Add rows to the repeater to watch the call count climb further.
  *
+ * Seed values for the "inside columns" repeater are deliberately outside the
+ * 50-item browse window (color-914+): a value inside the window gets its label
+ * from the shared value-free browse anyway, which masks a missing entry in the
+ * preresolved map.
+ *
  * @package WcfDemo
  */
 
@@ -140,14 +145,14 @@ function wcf_demo_async_field( string $label, string $type = 'select' ): array {
  */
 function wcf_demo_async_seed_data(): array {
 	return array(
-		'bare_select'   => 'color-900',
-		'bare_multi'    => array( 'color-2', 'color-3', 'color-4' ),
-		'legacy_select' => 'color-20',
-		'group_fields'  => array(
+		'bare_select'      => 'color-900',
+		'bare_multi'       => array( 'color-2', 'color-3', 'color-4' ),
+		'legacy_select'    => 'color-20',
+		'group_fields'     => array(
 			'group_select' => 'color-5',
 			'group_multi'  => array( 'color-6', 'color-7' ),
 		),
-		'repeater'      => array(
+		'repeater'         => array(
 			array(
 				'row_select' => 'color-8',
 				'row_multi'  => array( 'color-9', 'color-10' ),
@@ -155,6 +160,12 @@ function wcf_demo_async_seed_data(): array {
 			array(
 				'row_select' => 'color-11',
 				'row_multi'  => array( 'color-12', 'color-13' ),
+			),
+		),
+		'repeater_columns' => array(
+			array(
+				'col_select' => 'color-914',
+				'col_multi'  => array( 'color-915', 'color-916' ),
 			),
 		),
 	);
@@ -235,6 +246,23 @@ function wcf_demo_register_async_dedup( $cf ): void {
 		'items' => array(
 			'row_select' => wcf_demo_async_field( 'Row select', 'select' ),
 			'row_multi'  => wcf_demo_async_field( 'Row multi select', 'multi_select' ),
+		),
+	);
+
+	// --- Inside a MULTI_GROUP, wrapped in a layout `columns` ------------------
+	// Layout wrappers have no id/value; the row scope must pass through them.
+	$items['repeater_columns'] = array(
+		'type'  => 'multi_group',
+		'label' => 'Repeater (multi_group) — async fields inside columns',
+		'items' => array(
+			array(
+				'type'    => 'columns',
+				'columns' => 2,
+				'items'   => array(
+					'col_select' => wcf_demo_async_field( 'Column select', 'select' ),
+					'col_multi'  => wcf_demo_async_field( 'Column multi select', 'multi_select' ),
+				),
+			),
 		),
 	);
 
