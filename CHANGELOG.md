@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.12.1] - 2026-10-13
+
+### Fixed
+- Build asset URLs, the REST namespace and the script handle are resolved correctly on Windows. `path_to_url()` and `get_api_basename()` stripped `WP_CONTENT_DIR` with a plain `str_replace()`, which never matched when `WP_CONTENT_DIR` mixes separators (`C:\xampp\htdocs/wp-content`) and `__DIR__` uses backslashes, so absolute Windows paths leaked into asset URLs and the REST namespace. Both paths now go through `wp_normalize_path()` and only a leading content-dir prefix is stripped. Thanks to František Musil for the report.
+- `get_api_basename()` now removes only the trailing `/src` segment. Previously every `/src` occurrence in the path was removed, so installs with another `/src` in the path (e.g. `plugins/src-tools/…` or a library vendored under a `src/` directory) get a different, correct REST namespace and script handle.
+
 ## [4.12.0] - 2026-09-23
 
 ### Added

@@ -19,7 +19,7 @@ tests/php/
   Core/                    # "core" suite — runs WITHOUT WooCommerce
     FieldType/             # sanitization, wp_type, defaults, normalization (field-type axis)
     Integration/           # Options round-trip (canonical axis) + per-surface round-trips
-    *.php                  # REST API, meta registration, Gutenberg, nested multi_group, no-WC degradation
+    *.php                  # REST API, meta registration, Gutenberg, nested multi_group, no-WC degradation, path resolution
   WooCommerce/             # "woocommerce" suite — runs WITH WooCommerce loaded
 ```
 

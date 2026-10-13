@@ -275,7 +275,32 @@ class CustomFields {
 			$content_url = str_replace( 'http://', 'https://', $content_url );
 		}
 
-		return str_replace( WP_CONTENT_DIR, $content_url, $path );
+		return $content_url . '/' . $this->relative_to_content_dir( $path );
+	}
+
+	/**
+	 * Returns the path relative to the content directory, with forward slashes.
+	 *
+	 * Both paths are normalized first, because on Windows WP_CONTENT_DIR usually
+	 * mixes separators (C:\htdocs/wp-content) while __DIR__ uses backslashes only.
+	 * A path outside the content directory is only normalized and stripped of its leading slash.
+	 *
+	 * @param string      $path        The absolute path.
+	 * @param string|null $content_dir The content directory, defaults to WP_CONTENT_DIR.
+	 *
+	 * @return string The relative path without leading slash.
+	 *
+	 * @internal
+	 */
+	public function relative_to_content_dir( string $path, ?string $content_dir = null ): string {
+		$path        = wp_normalize_path( $path );
+		$content_dir = untrailingslashit( wp_normalize_path( $content_dir ?? WP_CONTENT_DIR ) );
+
+		if ( str_starts_with( $path, $content_dir . '/' ) ) {
+			$path = substr( $path, strlen( $content_dir ) );
+		}
+
+		return ltrim( $path, '/' );
 	}
 
 	/**
@@ -332,8 +357,7 @@ class CustomFields {
 	 * @return array|string URL(s) to the CSS asset(s) for the specified item. Returns an array if there are multiple versions, otherwise returns a string.
 	 */
 	public function get_css_asset( string $item ): array|string {
-		$build_path = plugin_dir_path( __DIR__ ) . 'build/';
-		$asset_php  = $this->get_build_path( $item . '.asset.php' );
+		$asset_php = $this->get_build_path( $item . '.asset.php' );
 
 		if ( file_exists( $asset_php ) ) {
 			$asset = require $asset_php;
@@ -367,10 +391,7 @@ class CustomFields {
 	 * @return string The base name of the current implementation.
 	 */
 	public function get_api_basename(): string {
-		$content_path = str_replace( WP_CONTENT_DIR, '', __DIR__ );
-		$file_path    = basename( $content_path );
-
-		return ltrim( str_replace( '/' . $file_path, '', $content_path ), '/' );
+		return dirname( $this->relative_to_content_dir( __DIR__ ) );
 	}
 
 	/**

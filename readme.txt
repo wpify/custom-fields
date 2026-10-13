@@ -2,7 +2,7 @@
 
 Contributors:      wpify
 Tested up to:      6.7
-Stable tag:        4.12.0
+Stable tag:        4.12.1
 License:           GPLv3 or later
 License URI:       https://www.gnu.org/licenses/gpl-3.0.html
 Tags:              plugin best practices, testing, accessibility, performance, security
